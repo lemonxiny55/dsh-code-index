@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.dsh-code-index/
+coverage/
+*.tgz
+*.log
+.DS_Store

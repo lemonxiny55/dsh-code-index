@@ -1,0 +1,5 @@
+# dsh-code-index bundle: inserts the plugin row into the composition.
+# Later layers (profile cordis.patch.yml, --patch) may override this row by id.
+- insert:
+    - id: code-index
+      name: dsh-code-index
