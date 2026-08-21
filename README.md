@@ -1,5 +1,7 @@
 # dsh-code-index
 
+English | [中文](README.zh.md)
+
 Semantic repo index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked symbol search, and a bounded auto-updating repo map in the system prompt.
 
 Fills a real ecosystem gap: search of the `dsh-plugin` topic (2026-08) shows git/voice/browser/memory plugins galore, but **no native, model-usable code index / repo-map capability** — the kind of thing aider's repo-map and Cursor's `@Codebase` do for their agents.
