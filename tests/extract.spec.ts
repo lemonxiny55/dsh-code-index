@@ -62,6 +62,27 @@ describe('extractSymbols — typescript sample', () => {
   })
 })
 
+describe('extractSymbols — python sample', () => {
+  let rows: SymbolInfo[]
+
+  beforeAll(async () => {
+    rows = await extractSymbols(
+      'def greet(name: str) -> str:\n    return name\n\nclass Engine:\n    def start(self) -> None:\n        pass\n',
+      'python',
+    )
+  })
+
+  it('extracts functions and classes with parameters', () => {
+    const greet = rows.find((r) => r.name === 'greet')
+    const engine = rows.find((r) => r.name === 'Engine')
+    const start = rows.find((r) => r.name === 'start')
+    expect(greet).toMatchObject({ kind: 'function', line: 1, exported: false })
+    expect(greet!.signature).toBe('greet(name: str)')
+    expect(engine).toMatchObject({ kind: 'class', line: 4 })
+    expect(start).toMatchObject({ kind: 'function', line: 5 })
+  })
+})
+
 describe('extractSymbols — javascript sample', () => {
   let rows: SymbolInfo[]
 

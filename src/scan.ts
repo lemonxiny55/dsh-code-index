@@ -31,6 +31,8 @@ export const SUPPORTED_EXTS = new Set([
   '.jsx',
   '.mjs',
   '.cjs',
+  '.py',
+  '.pyi',
 ])
 
 export interface ScannedFile {

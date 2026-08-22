@@ -98,7 +98,7 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 
 ## Supported languages
 
-TypeScript + JavaScript (`.ts .tsx .mts .cts .js .jsx .mjs .cjs`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later.
+TypeScript + JavaScript + Python (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later.
 
 ## How it works
 

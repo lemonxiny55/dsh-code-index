@@ -18,7 +18,7 @@ import type { SymbolInfo, SymbolKind } from './types.js'
 const require = createRequire(import.meta.url)
 // web-tree-sitter@0.20.8 is CJS `export = Parser`; default-interop gives the class directly.
 
-export type LanguageId = 'typescript' | 'javascript'
+export type LanguageId = 'typescript' | 'javascript' | 'python'
 
 const WASM_DIR = path.dirname(require.resolve('tree-sitter-wasms/out/tree-sitter-typescript.wasm'))
 
@@ -31,6 +31,8 @@ const EXT_TO_LANG: Record<string, LanguageId> = {
   '.jsx': 'javascript',
   '.mjs': 'javascript',
   '.cjs': 'javascript',
+  '.py': 'python',
+  '.pyi': 'python',
 }
 
 export function languageForFile(filePath: string): LanguageId | null {
@@ -66,6 +68,10 @@ const QUERIES: Record<LanguageId, string> = {
     (class_declaration) @class
     (variable_declarator) @variable
   `,
+  python: `
+    (function_definition) @function
+    (class_definition) @class
+  `,
 }
 
 const CAPTURE_KINDS: Record<string, CaptureDef> = {
@@ -99,7 +105,12 @@ function getLanguage(id: LanguageId): Promise<Parser.Language> {
   let entry = languageCache.get(id)
   if (!entry) {
     entry = getParser().then(async (parser) => {
-      const grammarName = id === 'typescript' ? 'tree-sitter-typescript' : 'tree-sitter-javascript'
+      const grammarName =
+        id === 'typescript'
+          ? 'tree-sitter-typescript'
+          : id === 'javascript'
+            ? 'tree-sitter-javascript'
+            : 'tree-sitter-python'
       const grammarPath = path.join(WASM_DIR, `${grammarName}.wasm`)
       const bytes = await readFile(grammarPath)
       const lang = await Parser.Language.load(bytes)
@@ -166,7 +177,8 @@ function nameOf(node: Parser.SyntaxNode): string {
 function signatureFor(node: Parser.SyntaxNode): string {
   const name = nameOf(node)
   const params = node.namedChildren.find(
-    (c) => c.type === 'formal_parameters' || c.type === 'method_parameters',
+    (c) =>
+      c.type === 'formal_parameters' || c.type === 'method_parameters' || c.type === 'parameters',
   )
   if (params) {
     return `${name}${params.text}`
