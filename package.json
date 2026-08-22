@@ -40,6 +40,17 @@
     "vitest": "^4.1.8"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemonxiny55/dsh-code-index.git"
+  },
+  "homepage": "https://github.com/lemonxiny55/dsh-code-index",
+  "bugs": {
+    "url": "https://github.com/lemonxiny55/dsh-code-index/issues"
+  },
   "dependencies": {
     "@deepseek-ai/dsh-tools": "0.1.0-rc.8",
     "tree-sitter-wasms": "^0.1.13",

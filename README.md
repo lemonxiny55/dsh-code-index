@@ -1,5 +1,8 @@
 # dsh-code-index
 
+[![npm version](https://img.shields.io/npm/v/dsh-code-index)](https://www.npmjs.com/package/dsh-code-index)
+[![CI](https://github.com/lemonxiny55/dsh-code-index/actions/workflows/ci.yml/badge.svg)](https://github.com/lemonxiny55/dsh-code-index/actions)
+
 English | [中文](README.zh.md)
 
 Semantic repo index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked symbol search, and a bounded auto-updating repo map in the system prompt.
