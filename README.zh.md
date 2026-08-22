@@ -95,7 +95,7 @@ export function extractSymbols(code, id) — src/extract.ts:121
 
 ## 支持的语言
 
-TypeScript + JavaScript(`.ts .tsx .mts .cts .js .jsx .mjs .cjs`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。
+TypeScript + JavaScript + Python(`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。
 
 ## 工作原理
 
