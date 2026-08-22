@@ -32,10 +32,25 @@ export async function loadIndex(cachePath: string): Promise<RepoIndex | null> {
     const raw = await readFile(cachePath, 'utf8')
     const parsed = JSON.parse(raw) as RepoIndex
     if (!parsed || typeof parsed.root !== 'string' || !Array.isArray(parsed.files)) return null
-    return parsed
+    return healSymbolFiles(parsed)
   } catch {
     return null // missing or corrupt cache == no cache
   }
+}
+
+/**
+ * Self-heal caches written before the per-symbol file backfill (the
+ * "SymbolInfo.file is always set" invariant). Empty `file` fields are derived
+ * from the containing IndexedFile path on load, so any consumer of loadIndex
+ * sees consistent rows — and the next save persists the healed form.
+ */
+export function healSymbolFiles(index: RepoIndex): RepoIndex {
+  for (const file of index.files) {
+    for (const symbol of file.symbols) {
+      if (!symbol.file) symbol.file = file.path
+    }
+  }
+  return index
 }
 
 export async function saveIndex(cachePath: string, index: RepoIndex): Promise<void> {

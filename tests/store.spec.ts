@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { buildIndexWithCache } from '../src/buildIndex.js'
-import { cacheKeyForRoot, defaultCachePath, loadIndex, saveIndex } from '../src/store.js'
+import { cacheKeyForRoot, defaultCachePath, healSymbolFiles, loadIndex, saveIndex } from '../src/store.js'
 import type { RepoIndex } from '../src/types.js'
 
 const dirs: string[] = []
@@ -75,6 +75,41 @@ describe('index persistence', () => {
     await buildIndexWithCache(root)
     const second = await stat(cachePath)
     expect(second.mtimeMs).toBe(first.mtimeMs)
+  })
+
+  it('self-heals stale empty symbol.file fields on load', async () => {
+    const root = await tempDir()
+    const cachePath = defaultCachePath(root)
+    const stale = (): RepoIndex => ({
+      root,
+      generatedAt: 123,
+      excludedDirs: [],
+      files: [
+        {
+          path: 'src/a.ts',
+          lang: 'typescript',
+          mtimeMs: 1,
+          symbols: [
+            { name: 'legacyEmpty', kind: 'function', file: '', line: 1, endLine: 1, exported: true, signature: '' },
+            { name: 'alreadySet', kind: 'variable', file: 'src/a.ts', line: 2, endLine: 2, exported: false, signature: '' },
+          ],
+        },
+      ],
+    })
+    await saveIndex(cachePath, stale())
+    const loaded = (await loadIndex(cachePath))!
+    expect(loaded.files[0].symbols.map((s) => s.file)).toEqual(['src/a.ts', 'src/a.ts'])
+
+    // Pure helper behaves identically and returns the mutated index.
+    const healed = healSymbolFiles(stale())
+    expect(healed.files[0].symbols.every((s) => s.file === 'src/a.ts')).toBe(true)
+  })
+
+  it('returns null for a corrupt cache', async () => {
+    const root = await tempDir()
+    const cachePath = path.join(root, 'broken.json')
+    await writeFile(cachePath, '{ not json', 'utf8')
+    expect(await loadIndex(cachePath)).toBeNull()
   })
 
   it('replaces cache contents with valid json', async () => {
