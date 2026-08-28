@@ -98,3 +98,58 @@ describe('extractSymbols — javascript sample', () => {
     expect(rows.map((r) => r.kind)).toEqual(['function', 'class', 'method', 'variable'])
   })
 })
+
+describe('extractSymbols — module-scope accuracy (regressions)', () => {
+  it('indexes only module-level variables, not function locals', async () => {
+    const rows = await extractSymbols(
+      [
+        'const top = 1',
+        'export const shared = 2',
+        'function f() {',
+        '  const local = 3',
+        '  let alsoLocal = 4',
+        '  for (const item of []) {}',
+        '}',
+        'if (top) {',
+        '  const inBlock = 5',
+        '}',
+      ].join('\n'),
+      'typescript',
+    )
+    expect(rows.filter((r) => r.kind === 'variable').map((r) => r.name)).toEqual([
+      'top',
+      'shared',
+    ])
+  })
+
+  it('marks only module-level declarations exported — methods never inherit the class export', async () => {
+    const rows = await extractSymbols(
+      [
+        'export function pub() {}',
+        'function priv() {}',
+        'export class Box {',
+        '  private hidden() {}',
+        '  visible() {}',
+        '}',
+        'export const x = 1',
+        'const y = 2',
+        'export function outer() {',
+        '  function nested() {}',
+        '}',
+      ].join('\n'),
+      'typescript',
+    )
+    const exported = new Map(rows.map((r) => [r.name, r.exported]))
+    expect(exported.get('pub')).toBe(true)
+    expect(exported.get('priv')).toBe(false)
+    expect(exported.get('Box')).toBe(true)
+    // the original bug: `private hidden()` inherited `exported: true` from the
+    // enclosing `export class` because the ancestor walk passed through the
+    // class body.
+    expect(exported.get('hidden')).toBe(false)
+    expect(exported.get('visible')).toBe(false)
+    expect(exported.get('x')).toBe(true)
+    expect(exported.get('y')).toBe(false)
+    expect(exported.get('nested')).toBe(false)
+  })
+})

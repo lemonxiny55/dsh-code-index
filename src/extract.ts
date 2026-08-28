@@ -143,6 +143,10 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
         const def = CAPTURE_KINDS[cap.name]
         if (!def) continue
         const node = cap.node
+        // tree-sitter queries match at any depth; without this check the
+        // variable_declarator pattern would also capture function-body
+        // locals — pure index noise.
+        if (def.kind === 'variable' && !isModuleLevelVariable(node)) continue
         const name = nameOf(node)
         if (!name) continue
         rows.push({
@@ -187,15 +191,29 @@ function signatureFor(node: Parser.SyntaxNode): string {
   return first ? first.text.trim() : name
 }
 
-/** A node is exported when it sits directly inside an `export_statement`. */
+/**
+ * A variable is indexable only at module level: its declaration must sit
+ * directly inside the program (or the export_statement wrapping it). Anything
+ * deeper — function bodies, blocks, for-of heads — is a local with no
+ * navigation value.
+ */
+function isModuleLevelVariable(node: Parser.SyntaxNode): boolean {
+  const declaration = node.parent // variable_declaration | lexical_declaration
+  const container = declaration?.parent // program | export_statement | …
+  return container?.type === 'program' || container?.type === 'export_statement'
+}
+
+/**
+ * A symbol is exported when walking up from it reaches an export_statement
+ * before any function or class body — only module-level declarations count.
+ * A method inside `export class` must NOT inherit the class's export, and a
+ * function nested inside an exported function is not exported either.
+ */
 function isExported(node: Parser.SyntaxNode): boolean {
-  let parent = node.parent
-  let depth = 0
-  while (parent && depth < 3) {
+  for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
-    if (parent.type === 'statement_block') return false
-    parent = parent.parent
-    depth++
+    if (parent.type === 'statement_block' || parent.type === 'class_body') return false
+    if (parent.type === 'program') return false
   }
   return false
 }
