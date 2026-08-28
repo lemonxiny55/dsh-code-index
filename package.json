@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Semantic repo index for DeepSeek Harness — tree-sitter symbol index, code search, and a bounded ranked repo map injected into agent context.",
   "type": "module",
   "main": "./dist/index.js",
