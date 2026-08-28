@@ -44,9 +44,6 @@ import { applyConfig, getConfig, type PluginConfig } from './config.js'
 
 export const inject = ['tools', 'systemPrompt'] as const
 
-/** TTL for the auto-injected repo map (seconds). */
-const MAP_TTL_MS = 60_000
-
 export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
   applyConfig(pluginConfig)
   invalidateIndexCache()
@@ -97,7 +94,7 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
         order: 60, // before tool guidance (100–199), after persona (0)
         text: () => {
           const now = Date.now()
-          if (cached && now - cached.at < MAP_TTL_MS) return cached.text
+          if (cached && now - cached.at < getConfig().mapTtlMs) return cached.text
           void warmMap()
           return cached?.text ?? ''
         },

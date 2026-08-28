@@ -4,6 +4,8 @@ All notable changes to dsh-code-index are documented here.
 
 ## 0.1.1 — unreleased
 
+- **feat(extract):** correct Python semantics — class-body `def`s are now `method` (was `function`), and top-level defs/classes are `exported: true` since Python module-level symbols are importable; `exportedOnly` filtering now works for Python.
+- **feat(config):** new `mapTtlMs` option for the auto-injected map's refresh interval (default 60 000 ms, floor 1 000 ms).
 - **feat(map):** downweight test-looking paths in repo-map ranking (0.2× multiplier for `tests/`, `__tests__/`, `*.spec.*`, `*.test.*`, `test_*.py`, `*_test.py/go`) — symbol density actively favoured test files, so maps led with them.
 - **fix(extract):** collapse multi-line parameter lists in signatures to one line; they wrapped the repo-map format and burned its char budget.
 - **fix(extract):** index only module-level variables. The `variable_declarator` query matches at any depth, so function-body locals leaked in as noise — on one mid-size repo, 36% of all indexed symbols were locals.

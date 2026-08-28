@@ -76,10 +76,34 @@ describe('extractSymbols — python sample', () => {
     const greet = rows.find((r) => r.name === 'greet')
     const engine = rows.find((r) => r.name === 'Engine')
     const start = rows.find((r) => r.name === 'start')
-    expect(greet).toMatchObject({ kind: 'function', line: 1, exported: false })
+    // top-level defs/classes are importable: Python's notion of exported
+    expect(greet).toMatchObject({ kind: 'function', line: 1, exported: true })
     expect(greet!.signature).toBe('greet(name: str)')
-    expect(engine).toMatchObject({ kind: 'class', line: 4 })
-    expect(start).toMatchObject({ kind: 'function', line: 5 })
+    expect(engine).toMatchObject({ kind: 'class', line: 4, exported: true })
+    expect(start).toMatchObject({ kind: 'method', line: 5, exported: false })
+  })
+})
+
+describe('extractSymbols — python module-scope semantics', () => {
+  it('classifies class-body defs as methods, nested defs stay functions', async () => {
+    const rows = await extractSymbols(
+      [
+        'def top():',
+        '    def inner():',
+        '        pass',
+        '    return inner',
+        '',
+        'class Klass:',
+        '    def method(self):',
+        '        pass',
+      ].join('\n'),
+      'python',
+    )
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    expect(byName.get('top')).toMatchObject({ kind: 'function', exported: true })
+    expect(byName.get('inner')).toMatchObject({ kind: 'function', exported: false })
+    expect(byName.get('Klass')).toMatchObject({ kind: 'class', exported: true })
+    expect(byName.get('method')).toMatchObject({ kind: 'method', exported: false })
   })
 })
 

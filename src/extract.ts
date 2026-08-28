@@ -151,11 +151,11 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
         if (!name) continue
         rows.push({
           name,
-          kind: def.kind,
+          kind: kindFor(id, node, def.kind),
           file: '', // set by the caller (extractor is file-agnostic)
           line: node.startPosition.row + 1,
           endLine: node.endPosition.row + 1,
-          exported: isExported(node),
+          exported: isExported(id, node),
           signature: signatureFor(node),
         })
       }
@@ -223,13 +223,31 @@ function isModuleLevelVariable(node: Parser.SyntaxNode): boolean {
  * A method inside `export class` must NOT inherit the class's export, and a
  * function nested inside an exported function is not exported either.
  */
-function isExported(node: Parser.SyntaxNode): boolean {
+function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
+  if (id === 'python') {
+    // Python has no export syntax: a def/class directly under the module is
+    // importable, anything nested (methods, inner functions) is not a
+    // module-level symbol.
+    return node.parent?.type === 'module'
+  }
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
     if (parent.type === 'statement_block' || parent.type === 'class_body') return false
     if (parent.type === 'program') return false
   }
   return false
+}
+
+/**
+ * Python has no distinct method node: a function_definition sitting directly
+ * in a class body block is a method. Everything else keeps the query's kind.
+ */
+function kindFor(id: LanguageId, node: Parser.SyntaxNode, kind: SymbolKind): SymbolKind {
+  if (id === 'python' && kind === 'function') {
+    const inClassBody = node.parent?.type === 'block' && node.parent?.parent?.type === 'class_definition'
+    if (inClassBody) return 'method'
+  }
+  return kind
 }
 
 /** Compile a symbol query for a code sample (used by tests). */

@@ -9,6 +9,8 @@ export interface PluginConfig {
   mapTopFiles?: number
   /** Hard char cap for rendered maps. */
   mapMaxChars?: number
+  /** Refresh interval for the auto-injected map (ms, min 1000). */
+  mapTtlMs?: number
   /** Set false to disable the auto-injected system section. */
   autoInject?: boolean
 }
@@ -17,6 +19,7 @@ interface EffectiveConfig {
   excludeDirs: string[]
   mapTopFiles: number
   mapMaxChars: number
+  mapTtlMs: number
   autoInject: boolean
 }
 
@@ -24,6 +27,7 @@ const DEFAULTS: EffectiveConfig = {
   excludeDirs: [],
   mapTopFiles: 24,
   mapMaxChars: 3200,
+  mapTtlMs: 60_000,
   autoInject: true,
 }
 
@@ -42,6 +46,9 @@ export function applyConfig(partial?: PluginConfig): void {
   }
   if (!Number.isFinite(state.current.mapMaxChars) || state.current.mapMaxChars < 200) {
     state.current.mapMaxChars = DEFAULTS.mapMaxChars
+  }
+  if (!Number.isFinite(state.current.mapTtlMs) || state.current.mapTtlMs < 1_000) {
+    state.current.mapTtlMs = DEFAULTS.mapTtlMs
   }
 }
 
