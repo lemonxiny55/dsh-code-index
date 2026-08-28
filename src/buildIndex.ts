@@ -2,7 +2,7 @@
 
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
-import { extractSymbols, languageForFile } from './extract.js'
+import { extractAll, languageForFile } from './extract.js'
 import { scanRepo, DEFAULT_EXCLUDED_DIRS } from './scan.js'
 import {
   cacheKeyForRoot,
@@ -51,7 +51,7 @@ export async function buildIndex(
         } catch {
           return null
         }
-        const symbols = await extractSymbols(code, lang)
+        const { symbols, imports } = await extractAll(code, lang)
         // Backfill the repo-relative path: the extractor is file-agnostic and
         // leaves SymbolInfo.file empty, but search/render depend on it.
         return {
@@ -59,6 +59,7 @@ export async function buildIndex(
           lang,
           mtimeMs: f.mtimeMs,
           symbols: symbols.map((s) => ({ ...s, file: f.rel })),
+          imports,
         } satisfies IndexedFile
       }),
     )

@@ -20,7 +20,21 @@ function matchScore(name: string, query: string): number {
   if (n === q) return 1
   if (n.startsWith(q)) return 0.8
   if (n.includes(q)) return 0.5
+  if (q.length >= 3 && isSubsequence(q, n)) return 0.3
   return 0
+}
+
+/**
+ * Every query char appears in the name, in order — 'cfgldr' finds
+ * 'configLoader'. Gated to 3+ chars so short queries don't match everything.
+ */
+function isSubsequence(query: string, name: string): boolean {
+  let i = 0
+  for (const ch of name) {
+    if (ch === query[i]) i++
+    if (i === query.length) return true
+  }
+  return false
 }
 
 /** Filter symbols by file/kind/export, then score by name against query (if any). */

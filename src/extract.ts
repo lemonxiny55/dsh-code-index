@@ -85,6 +85,25 @@ const CAPTURE_KINDS: Record<string, CaptureDef> = {
   field: { kind: 'field' },
 }
 
+// Import statements per language. Whole statements are captured; the module
+// specifier is read from node fields in code (string quoting and dotted vs
+// relative syntax differ per grammar). CommonJS require() is out of scope —
+// the ES import surface covers the modern plugin ecosystem.
+const IMPORT_QUERIES: Record<LanguageId, string> = {
+  typescript: `
+    (import_statement) @import
+    (export_statement) @reexport
+  `,
+  javascript: `
+    (import_statement) @import
+    (export_statement) @reexport
+  `,
+  python: `
+    (import_from_statement) @import
+    (import_statement) @import
+  `,
+}
+
 let parserPromise: Promise<Parser> | null = null
 
 async function getParser(): Promise<Parser> {
@@ -117,6 +136,8 @@ function getLanguage(id: LanguageId): Promise<Parser.Language> {
       // Precompile queries per language to catch authoring errors early.
       const q = lang.query(QUERIES[id])
       q.delete()
+      const iq = lang.query(IMPORT_QUERIES[id])
+      iq.delete()
       return lang
     })
     languageCache.set(id, entry)
@@ -125,20 +146,27 @@ function getLanguage(id: LanguageId): Promise<Parser.Language> {
 }
 
 /**
- * Extract all top-level symbols from source text of the given language.
- * Returns rows ordered by file line. Never throws for parse errors — a
- * failed parse yields an empty list (the caller logs and continues).
+ * Extract symbols and raw import specifiers from source text of the given
+ * language, from a single parse. Returns rows ordered by file line. Never
+ * throws for parse errors — a failed parse yields empty lists (the caller
+ * logs and continues).
  */
-export async function extractSymbols(code: string, id: LanguageId): Promise<SymbolInfo[]> {
+export interface ExtractedFile {
+  symbols: SymbolInfo[]
+  /** Raw module specifiers, e.g. './util', 'node:fs', './utils' (py). */
+  imports: string[]
+}
+
+export async function extractAll(code: string, id: LanguageId): Promise<ExtractedFile> {
   const lang = await getLanguage(id)
   const parser = await getParser()
   parser.setLanguage(lang)
   const tree = parser.parse(code)
   try {
-    const query = lang.query(QUERIES[id])
-    const rows: SymbolInfo[] = []
+    const symbols: SymbolInfo[] = []
+    const symbolQuery = lang.query(QUERIES[id])
     try {
-      const captures = query.captures(tree.rootNode)
+      const captures = symbolQuery.captures(tree.rootNode)
       for (const cap of captures) {
         const def = CAPTURE_KINDS[cap.name]
         if (!def) continue
@@ -149,7 +177,7 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
         if (def.kind === 'variable' && !isModuleLevelVariable(node)) continue
         const name = nameOf(node)
         if (!name) continue
-        rows.push({
+        symbols.push({
           name,
           kind: kindFor(id, node, def.kind),
           file: '', // set by the caller (extractor is file-agnostic)
@@ -160,13 +188,31 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
         })
       }
     } finally {
-      query.delete()
+      symbolQuery.delete()
     }
-    rows.sort((a, b) => a.line - b.line)
-    return rows
+
+    const imports: string[] = []
+    const importQuery = lang.query(IMPORT_QUERIES[id])
+    try {
+      for (const cap of importQuery.captures(tree.rootNode)) {
+        if (cap.name !== 'import' && cap.name !== 'reexport') continue
+        const spec = specifierOf(id, cap.node)
+        if (spec) imports.push(spec)
+      }
+    } finally {
+      importQuery.delete()
+    }
+
+    symbols.sort((a, b) => a.line - b.line)
+    return { symbols, imports }
   } finally {
     tree.delete()
   }
+}
+
+/** Symbols only — see extractAll for the combined parse. */
+export async function extractSymbols(code: string, id: LanguageId): Promise<SymbolInfo[]> {
+  return (await extractAll(code, id)).symbols
 }
 
 /** The declared name of a declaration node, via its `name` field. */
@@ -175,6 +221,51 @@ function nameOf(node: Parser.SyntaxNode): string {
   if (field) return field.text.trim()
   // e.g. an anonymous default export — skip those.
   return ''
+}
+
+/** Read the raw module specifier out of a captured import statement. */
+function specifierOf(id: LanguageId, node: Parser.SyntaxNode): string | null {
+  switch (node.type) {
+    case 'import_statement':
+      // ts/js: `import … from './x'` (source); python: `import a.b` (name)
+      if (id === 'python') return dottedToPath(node.childForFieldName('name')?.text)
+      return stripQuotes(node.childForFieldName('source')?.text)
+    case 'export_statement':
+      // ts/js re-export: `export … from './x'`; plain exports have no source
+      return stripQuotes(node.childForFieldName('source')?.text)
+    case 'import_from_statement': {
+      // python: `from .utils import x` / `from mypkg.core import Thing`
+      const raw = node.childForFieldName('module_name')?.text
+      if (raw == null) return null
+      return raw.startsWith('.') ? pythonRelative(raw) : dottedToPath(raw)
+    }
+    default:
+      return null
+  }
+}
+
+function stripQuotes(text: string | undefined | null): string | null {
+  if (text == null || text.length < 2) return null
+  const first = text[0]
+  const last = text[text.length - 1]
+  if ((first === "'" && last === "'") || (first === '"' && last === '"')) {
+    return text.slice(1, -1)
+  }
+  return null
+}
+
+/** 'os.path' → 'os/path' — dotted module path to repo-relative-ish path. */
+function dottedToPath(text: string | undefined | null): string | null {
+  if (!text) return null
+  return text.trim().replace(/\./g, '/')
+}
+
+/** '.utils' → './utils', '..pkg.mod' → '../pkg/mod' — python relative import. */
+function pythonRelative(raw: string): string {
+  const dots = raw.match(/^\.+/)?.[0].length ?? 0
+  const rest = raw.slice(dots).replace(/\./g, '/')
+  const prefix = dots === 1 ? './' : '../'.repeat(dots - 1)
+  return prefix + rest
 }
 
 /** Best-effort declaration signature: `name` + parameter list, if any. */

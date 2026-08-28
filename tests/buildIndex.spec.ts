@@ -42,6 +42,20 @@ describe('buildIndex', () => {
     expect(renderHit(hit)).toContain('src/greet.ts:1')
   })
 
+  it('stores raw import specifiers per indexed file', async () => {
+    const solo = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-imports-'))
+    try {
+      await mkdir(path.join(solo, 'src'), { recursive: true })
+      await writeFile(path.join(solo, 'src', 'core.ts'), 'export const x = 1\n')
+      await writeFile(path.join(solo, 'src', 'app.ts'), "import { x } from './core'\n")
+      const index = await buildIndex(solo)
+      const app = index.files.find((f) => f.path === 'src/app.ts')
+      expect(app?.imports).toEqual(['./core'])
+    } finally {
+      await rm(solo, { recursive: true, force: true })
+    }
+  })
+
   it('incremental refresh picks up edits and new files', async () => {
     const first = await buildIndex(dir)
 

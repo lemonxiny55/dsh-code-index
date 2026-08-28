@@ -4,6 +4,8 @@ All notable changes to dsh-code-index are documented here.
 
 ## 0.1.1 — unreleased
 
+- **feat(map):** reference-aware ranking — imports are extracted per file (ES imports/re-exports, Python imports) and each in-repo import adds 0.5 to the target's map score, so heavily-imported core files outrank symbol-dense-but-peripheral ones. Resolution handles extensions, index files, `__init__.py`, and Go/Java-style rooted paths via suffix fallback.
+- **feat(search):** subsequence fuzzy matching (score 0.3, 3+ char queries) — 'cfgldr' now finds `configLoader` below exact/prefix/substring hits.
 - **feat(extract):** correct Python semantics — class-body `def`s are now `method` (was `function`), and top-level defs/classes are `exported: true` since Python module-level symbols are importable; `exportedOnly` filtering now works for Python.
 - **feat(config):** new `mapTtlMs` option for the auto-injected map's refresh interval (default 60 000 ms, floor 1 000 ms).
 - **feat(map):** downweight test-looking paths in repo-map ranking (0.2× multiplier for `tests/`, `__tests__/`, `*.spec.*`, `*.test.*`, `test_*.py`, `*_test.py/go`) — symbol density actively favoured test files, so maps led with them.

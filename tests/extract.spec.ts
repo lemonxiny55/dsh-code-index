@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { extractSymbols } from '../src/extract.js'
+import { extractSymbols, extractAll } from '../src/extract.js'
 import type { SymbolInfo } from '../src/types.js'
 
 const SAMPLE = `
@@ -183,5 +183,29 @@ describe('extractSymbols — module-scope accuracy (regressions)', () => {
       'typescript',
     )
     expect(rows[0].signature).toBe('wide(a: string, b: number)')
+  })
+})
+
+describe('extractAll — import specifiers', () => {
+  it('extracts ES import and re-export specifiers (ts/js)', async () => {
+    const { symbols, imports } = await extractAll(
+      [
+        "import { readFile } from 'node:fs/promises'",
+        "import x from './util'",
+        "export { y } from './core'",
+        'const z = 3',
+      ].join('\n'),
+      'typescript',
+    )
+    expect(symbols.map((s) => s.name)).toEqual(['z'])
+    expect(imports).toEqual(['node:fs/promises', './util', './core'])
+  })
+
+  it('normalises python imports: relatives to ./.., dotted to paths', async () => {
+    const { imports } = await extractAll(
+      ['from .utils import helper', 'from ..pkg.mod import Thing', 'from mypkg.core import T', 'import os.path'].join('\n'),
+      'python',
+    )
+    expect(imports).toEqual(['./utils', '../pkg/mod', 'mypkg/core', 'os/path'])
   })
 })

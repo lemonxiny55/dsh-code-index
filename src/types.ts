@@ -35,6 +35,9 @@ export interface IndexedFile {
   /** fs mtime of the source file at index time (milliseconds). */
   mtimeMs: number
   symbols: SymbolInfo[]
+  /** Raw import specifiers found in this file ('./util', 'mypkg/core', …).
+   *  Optional because caches written before reference ranking lack it. */
+  imports?: string[]
 }
 
 export interface RepoIndex {

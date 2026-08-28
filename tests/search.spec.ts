@@ -66,6 +66,19 @@ describe('searchSymbols', () => {
   it('respects limit', () => {
     expect(searchSymbols(index, {}, 2)).toHaveLength(2)
   })
+
+  it('subsequence-fuzzy matches rank below substring matches (3+ chars)', () => {
+    // 'shp' matches Shape only as a char subsequence
+    const hits = searchSymbols(index, { query: 'shp' }, 10)
+    expect(hits.map((h) => h.name)).toEqual(['Shape'])
+    expect(hits[0].score).toBe(0.3)
+    // substring still outranks fuzzy for the same symbol
+    const mixed = searchSymbols(index, { query: 'sha' }, 10)
+    expect(mixed[0]).toMatchObject({ name: 'Shape', score: 0.8 })
+    // no match at all — and short queries never fuzzy-match
+    expect(searchSymbols(index, { query: 'zzz' }, 10)).toHaveLength(0)
+    expect(searchSymbols(index, { query: 'zz' }, 10)).toHaveLength(0)
+  })
 })
 
 describe('renderHit', () => {

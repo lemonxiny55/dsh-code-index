@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { rankRepoMap, renderRepoMap, scoreFile } from '../src/repomap.js'
+import { countReferences, rankRepoMap, renderRepoMap, resolveImport, scoreFile } from '../src/repomap.js'
 import type { IndexedFile, RepoIndex } from '../src/types.js'
 
 function file(path: string, kinds: string[]): IndexedFile {
@@ -98,6 +98,68 @@ describe('rankRepoMap', () => {
     idx.files.push(file('empty.ts', []))
     const map = rankRepoMap(idx)
     expect(map.some((e) => e.path === 'empty.ts')).toBe(false)
+  })
+
+  it('lifts heavily-imported files over denser but unreferenced ones', () => {
+    const idx: RepoIndex = {
+      root: '/tmp/repo',
+      generatedAt: 0,
+      excludedDirs: [],
+      files: [
+        file('src/core.ts', ['class', 'method']),
+        file('src/core.spec.ts', Array.from({ length: 8 }, () => 'function')),
+        file('src/a.ts', ['function']),
+        file('src/b.ts', ['function']),
+      ],
+    }
+    idx.files[2].imports = ['./core']
+    idx.files[3].imports = ['./core', './a']
+    const map = rankRepoMap(idx, { topFiles: 4 })
+    // density + 2 incoming imports beats the denser (but damped) test file
+    expect(map.map((e) => e.path)).toEqual([
+      'src/core.ts',
+      'src/a.ts',
+      'src/b.ts',
+      'src/core.spec.ts',
+    ])
+  })
+})
+
+describe('resolveImport', () => {
+  const fileSet = new Set([
+    'src/a.ts',
+    'src/core.ts',
+    'src/util/index.ts',
+    'pkg/__init__.py',
+    'pkg/deep.py',
+  ])
+
+  it('resolves relative specifiers with extension and index fallbacks', () => {
+    expect(resolveImport('./core', 'src/a.ts', fileSet)).toBe('src/core.ts')
+    expect(resolveImport('./util', 'src/a.ts', fileSet)).toBe('src/util/index.ts')
+    expect(resolveImport('../core', 'src/nested/a.ts', fileSet)).toBe('src/core.ts')
+    expect(resolveImport('./missing', 'src/a.ts', fileSet)).toBeNull()
+  })
+
+  it('resolves absolute specifiers from the root with a suffix fallback', () => {
+    expect(resolveImport('pkg', 'src/a.ts', fileSet)).toBe('pkg/__init__.py')
+    expect(resolveImport('example.com/foo/pkg/deep', 'src/a.ts', fileSet)).toBe('pkg/deep.py')
+    expect(resolveImport('unknown/module', 'src/a.ts', fileSet)).toBeNull()
+  })
+})
+
+describe('countReferences', () => {
+  it('counts in-repo imports once per importer and ignores self-imports', () => {
+    const files = [
+      { ...file('src/core.ts', ['class']), imports: ['./core'] },
+      { ...file('src/a.ts', ['function']), imports: ['./core', './core', './a'] },
+      { ...file('src/b.ts', ['function']), imports: ['./core'] },
+      { ...file('src/c.ts', ['function']), imports: ['left-pad'] },
+    ]
+    const counts = countReferences(files)
+    expect(counts.get('src/core.ts')).toBe(2) // a + b, not the self-import
+    expect(counts.has('src/c.ts')).toBe(false)
+    expect(counts.has('left-pad')).toBe(false)
   })
 })
 

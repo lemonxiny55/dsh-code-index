@@ -27,7 +27,7 @@ export const name = 'dsh-code-index'
 
 // Public API surface (consumable by other bundles / tests).
 export { buildIndex, buildIndexWithCache, findRepoRoot } from './buildIndex.js'
-export { extractSymbols, languageForFile, parseFileToSymbols } from './extract.js'
+export { extractSymbols, extractAll, languageForFile, parseFileToSymbols } from './extract.js'
 export { scanRepo, DEFAULT_EXCLUDED_DIRS, SUPPORTED_EXTS } from './scan.js'
 export { loadIndex, saveIndex, defaultCachePath, CACHE_DIR_NAME } from './store.js'
 export { symbolCount } from './types.js'
