@@ -15,10 +15,10 @@ Fills a real ecosystem gap: search of the `dsh-plugin` topic (2026-08) shows git
 |---|---|
 | `code_index` | Status / (re)build the index for the current workspace |
 | `code_symbols` | List symbols (functions, classes, interfaces, types, methods…) with file:line — filtered by name, path, kind, exported |
-| `code_search` | Ranked lookup: exact > prefix > substring, exports first, relevance score + file:line |
-| `code_map` | Bounded ranked repo map (top files by symbol density, key symbols + lines) |
+| `code_search` | Ranked lookup: exact > prefix > substring > subsequence-fuzzy, exports first, relevance score + file:line |
+| `code_map` | Bounded ranked repo map (top files by symbol density + import references, key symbols + lines) |
 
-Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed with a 60s TTL. Set `autoInject: false` to disable and rely on the `code_map` tool only.
+Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed on a TTL (`mapTtlMs`, default 60s). Set `autoInject: false` to disable and rely on the `code_map` tool only.
 
 ## Install
 
@@ -94,11 +94,12 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 | `excludeDirs` | `[]` | Extra dirs appended to the built-in excludes (`node_modules`, `.git`, `dist`, `build`, `out`, `coverage`, `.next`, `.nuxt`, `.cache`, `target`, `vendor`, …) |
 | `mapTopFiles` | `24` | Max files in a ranked map |
 | `mapMaxChars` | `3200` | Hard cap on rendered map characters |
+| `mapTtlMs` | `60000` | Refresh interval for the auto-injected map (ms, min 1000) |
 | `autoInject` | `true` | Register the system prompt section |
 
 ## Supported languages
 
-TypeScript + JavaScript + Python (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later.
+TypeScript, JavaScript, Python, Go, Rust and Java (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later.
 
 ## How it works
 

@@ -12,10 +12,10 @@
 |---|---|
 | `code_index` | 查看 / (重)建当前工作区的索引 |
 | `code_symbols` | 列出符号(函数、类、接口、类型、方法……),带 file:line——支持按名称、路径、类型、是否导出过滤 |
-| `code_search` | 排名检索:精确 > 前缀 > 子串,导出优先,带相关度分数与 file:line |
-| `code_map` | 限量排名仓库地图(按符号密度取核心文件 + 关键符号与行号) |
+| `code_search` | 排名检索:精确 > 前缀 > 子串 > 子序列模糊,导出优先,带相关度分数与 file:line |
+| `code_map` | 限量排名仓库地图(按符号密度 + 被引用次数取核心文件 + 关键符号与行号) |
 
-外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,60 秒 TTL 自动刷新。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
+外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,按 TTL 自动刷新(`mapTtlMs`,默认 60 秒)。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
 
 ## 安装
 
@@ -91,11 +91,12 @@ export function extractSymbols(code, id) — src/extract.ts:121
 | `excludeDirs` | `[]` | 追加到内置排除列表(`node_modules`、`.git`、`dist`、`build`、`out`、`coverage`、`.next`、`.nuxt`、`.cache`、`target`、`vendor`……)之外的额外目录 |
 | `mapTopFiles` | `24` | 排名地图中的最大文件数 |
 | `mapMaxChars` | `3200` | 渲染地图的硬性字符上限 |
+| `mapTtlMs` | `60000` | 自动注入地图的刷新间隔(毫秒,最小 1000) |
 | `autoInject` | `true` | 是否注册系统提示词段 |
 
 ## 支持的语言
 
-TypeScript + JavaScript + Python(`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。
+TypeScript、JavaScript、Python、Go、Rust、Java(`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。
 
 ## 工作原理
 

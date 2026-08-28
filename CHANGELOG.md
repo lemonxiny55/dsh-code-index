@@ -4,6 +4,7 @@ All notable changes to dsh-code-index are documented here.
 
 ## 0.1.1 — unreleased
 
+- **feat(extract):** Go, Rust and Java support — functions/methods/types map onto the existing kind model (Go structs → class, interfaces → interface, uppercase = exported; Rust impl fns → method, `pub` = exported; Java records/interface members handled), and their imports feed reference ranking (`import` paths, `use` declarations, Java package imports).
 - **feat(map):** reference-aware ranking — imports are extracted per file (ES imports/re-exports, Python imports) and each in-repo import adds 0.5 to the target's map score, so heavily-imported core files outrank symbol-dense-but-peripheral ones. Resolution handles extensions, index files, `__init__.py`, and Go/Java-style rooted paths via suffix fallback.
 - **feat(search):** subsequence fuzzy matching (score 0.3, 3+ char queries) — 'cfgldr' now finds `configLoader` below exact/prefix/substring hits.
 - **feat(extract):** correct Python semantics — class-body `def`s are now `method` (was `function`), and top-level defs/classes are `exported: true` since Python module-level symbols are importable; `exportedOnly` filtering now works for Python.

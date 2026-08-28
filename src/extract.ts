@@ -18,9 +18,18 @@ import type { SymbolInfo, SymbolKind } from './types.js'
 const require = createRequire(import.meta.url)
 // web-tree-sitter@0.20.8 is CJS `export = Parser`; default-interop gives the class directly.
 
-export type LanguageId = 'typescript' | 'javascript' | 'python'
+export type LanguageId = 'typescript' | 'javascript' | 'python' | 'go' | 'rust' | 'java'
 
 const WASM_DIR = path.dirname(require.resolve('tree-sitter-wasms/out/tree-sitter-typescript.wasm'))
+
+const GRAMMAR_NAMES: Record<LanguageId, string> = {
+  typescript: 'tree-sitter-typescript',
+  javascript: 'tree-sitter-javascript',
+  python: 'tree-sitter-python',
+  go: 'tree-sitter-go',
+  rust: 'tree-sitter-rust',
+  java: 'tree-sitter-java',
+}
 
 const EXT_TO_LANG: Record<string, LanguageId> = {
   '.ts': 'typescript',
@@ -33,6 +42,9 @@ const EXT_TO_LANG: Record<string, LanguageId> = {
   '.cjs': 'javascript',
   '.py': 'python',
   '.pyi': 'python',
+  '.go': 'go',
+  '.rs': 'rust',
+  '.java': 'java',
 }
 
 export function languageForFile(filePath: string): LanguageId | null {
@@ -72,6 +84,25 @@ const QUERIES: Record<LanguageId, string> = {
     (function_definition) @function
     (class_definition) @class
   `,
+  go: `
+    (function_declaration) @function
+    (method_declaration) @method
+    (type_spec) @type
+  `,
+  rust: `
+    (function_item) @function
+    (function_signature_item) @method
+    (struct_item) @class
+    (enum_item) @enum
+    (trait_item) @interface
+  `,
+  java: `
+    (class_declaration) @class
+    (interface_declaration) @interface
+    (enum_declaration) @enum
+    (method_declaration) @method
+    (constructor_declaration) @method
+  `,
 }
 
 const CAPTURE_KINDS: Record<string, CaptureDef> = {
@@ -86,9 +117,9 @@ const CAPTURE_KINDS: Record<string, CaptureDef> = {
 }
 
 // Import statements per language. Whole statements are captured; the module
-// specifier is read from node fields in code (string quoting and dotted vs
-// relative syntax differ per grammar). CommonJS require() is out of scope —
-// the ES import surface covers the modern plugin ecosystem.
+// specifier is read from node fields in code (string quoting, dotted vs
+// relative vs URL-style syntax differ per grammar). CommonJS require() is out
+// of scope — the ES import surface covers the modern plugin ecosystem.
 const IMPORT_QUERIES: Record<LanguageId, string> = {
   typescript: `
     (import_statement) @import
@@ -101,6 +132,15 @@ const IMPORT_QUERIES: Record<LanguageId, string> = {
   python: `
     (import_from_statement) @import
     (import_statement) @import
+  `,
+  go: `
+    (import_spec) @import
+  `,
+  rust: `
+    (use_declaration) @use
+  `,
+  java: `
+    (import_declaration) @import
   `,
 }
 
@@ -123,14 +163,8 @@ const languageCache = new Map<LanguageId, Promise<Parser.Language>>()
 function getLanguage(id: LanguageId): Promise<Parser.Language> {
   let entry = languageCache.get(id)
   if (!entry) {
-    entry = getParser().then(async (parser) => {
-      const grammarName =
-        id === 'typescript'
-          ? 'tree-sitter-typescript'
-          : id === 'javascript'
-            ? 'tree-sitter-javascript'
-            : 'tree-sitter-python'
-      const grammarPath = path.join(WASM_DIR, `${grammarName}.wasm`)
+    entry = getParser().then(async () => {
+      const grammarPath = path.join(WASM_DIR, `${GRAMMAR_NAMES[id]}.wasm`)
       const bytes = await readFile(grammarPath)
       const lang = await Parser.Language.load(bytes)
       // Precompile queries per language to catch authoring errors early.
@@ -195,7 +229,6 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
     const importQuery = lang.query(IMPORT_QUERIES[id])
     try {
       for (const cap of importQuery.captures(tree.rootNode)) {
-        if (cap.name !== 'import' && cap.name !== 'reexport') continue
         const spec = specifierOf(id, cap.node)
         if (spec) imports.push(spec)
       }
@@ -239,9 +272,30 @@ function specifierOf(id: LanguageId, node: Parser.SyntaxNode): string | null {
       if (raw == null) return null
       return raw.startsWith('.') ? pythonRelative(raw) : dottedToPath(raw)
     }
+    case 'import_spec': // go: `import "example.com/foo/util"`
+      return stripQuotes(node.childForFieldName('path')?.text)
+    case 'use_declaration': // rust: `use crate::a::b::{c, d}`
+      return rustUsePath(node.childForFieldName('argument')?.text)
+    case 'import_declaration': // java: `import com.example.Thing;`
+      return dottedToPath(node.namedChildren[0]?.text)
     default:
       return null
   }
+}
+
+/**
+ * Rust use paths: 'crate::a::b' is root-relative, 'super::x' is parent-module
+ * ('../x'), 'self::x' is current ('./x'); everything else (std, external
+ * crates) stays root-relative and simply won't resolve in-repo. Use-lists
+ * ('a::b::{c,d}') contribute their base path.
+ */
+function rustUsePath(text: string | undefined | null): string | null {
+  if (!text) return null
+  const base = text.split('{')[0].trim()
+  if (!base) return null
+  const parts = base.split('::').filter(Boolean)
+  if (parts[0] === 'crate') parts.shift()
+  return parts.map((p) => (p === 'super' ? '..' : p === 'self' ? '.' : p)).join('/')
 }
 
 function stripQuotes(text: string | undefined | null): string | null {
@@ -271,10 +325,17 @@ function pythonRelative(raw: string): string {
 /** Best-effort declaration signature: `name` + parameter list, if any. */
 function signatureFor(node: Parser.SyntaxNode): string {
   const name = nameOf(node)
-  const params = node.namedChildren.find(
-    (c) =>
-      c.type === 'formal_parameters' || c.type === 'method_parameters' || c.type === 'parameters',
-  )
+  // Field first (go method_declaration has both a receiver and a parameters
+  // parameter_list — the field picks the right one), type fallback otherwise.
+  const params =
+    node.childForFieldName?.('parameters') ??
+    node.namedChildren.find(
+      (c) =>
+        c.type === 'formal_parameters' ||
+        c.type === 'method_parameters' ||
+        c.type === 'parameters' ||
+        c.type === 'parameter_list',
+    )
   if (params) {
     return `${name}${collapseSpace(params.text)}`
   }
@@ -321,6 +382,22 @@ function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
     // module-level symbol.
     return node.parent?.type === 'module'
   }
+  if (id === 'go') {
+    // Go exports by capitalisation, not by keyword.
+    const name = nameOf(node)
+    return !!name && /^[A-Z]/.test(name)
+  }
+  if (id === 'rust') {
+    // `pub` = exported; `pub(crate)` & friends are crate-local, not public.
+    return node.namedChildren.some(
+      (c) => c.type === 'visibility_modifier' && c.text === 'pub',
+    )
+  }
+  if (id === 'java') {
+    // Interface members are implicitly public.
+    if (node.parent?.type === 'interface_body') return true
+    return node.namedChildren.some((c) => c.type === 'modifiers' && /\bpublic\b/.test(c.text))
+  }
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
     if (parent.type === 'statement_block' || parent.type === 'class_body') return false
@@ -330,13 +407,25 @@ function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
 }
 
 /**
- * Python has no distinct method node: a function_definition sitting directly
- * in a class body block is a method. Everything else keeps the query's kind.
+ * Language quirks the query syntax can't express:
+ * - python: no distinct method node — a def directly in a class body is one
+ * - go: a type_spec is a class (struct) or interface by its type child
+ * - rust: function_item directly in an impl body is a method
  */
 function kindFor(id: LanguageId, node: Parser.SyntaxNode, kind: SymbolKind): SymbolKind {
   if (id === 'python' && kind === 'function') {
     const inClassBody = node.parent?.type === 'block' && node.parent?.parent?.type === 'class_definition'
     if (inClassBody) return 'method'
+  }
+  if (id === 'go' && node.type === 'type_spec') {
+    const type = node.childForFieldName('type')?.type
+    if (type === 'struct_type') return 'class'
+    if (type === 'interface_type') return 'interface'
+    return 'type'
+  }
+  if (id === 'rust' && node.type === 'function_item') {
+    const inImpl = node.parent?.type === 'declaration_list' && node.parent?.parent?.type === 'impl_item'
+    if (inImpl) return 'method'
   }
   return kind
 }

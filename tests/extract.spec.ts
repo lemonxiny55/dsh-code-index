@@ -208,4 +208,141 @@ describe('extractAll — import specifiers', () => {
     )
     expect(imports).toEqual(['./utils', '../pkg/mod', 'mypkg/core', 'os/path'])
   })
+
+  it('extracts go/rust/java import specifiers', async () => {
+    const go = await extractAll(
+      'package m\n\nimport (\n\t"os"\n\t"example.com/foo/internal/util"\n)\n',
+      'go',
+    )
+    expect(go.imports).toEqual(['os', 'example.com/foo/internal/util'])
+    const rust = await extractAll(
+      'use std::collections::HashMap;\nuse crate::engine::config::Settings;\nuse super::types::Mode;\nuse a::b::{c, d};\n',
+      'rust',
+    )
+    expect(rust.imports).toEqual([
+      'std/collections/HashMap',
+      'engine/config/Settings',
+      '../types/Mode',
+      'a/b',
+    ])
+    const java = await extractAll('import java.util.List;\nimport com.example.core.Thing;\n', 'java')
+    expect(java.imports).toEqual(['java/util/List', 'com/example/core/Thing'])
+  })
+})
+
+describe('extractSymbols — go sample', () => {
+  it('extracts funcs, methods, struct/interface types; uppercase = exported', async () => {
+    const rows = await extractSymbols(
+      [
+        'package main',
+        '',
+        'type Server struct {',
+        '\tPort int',
+        '}',
+        '',
+        'type Reader interface {',
+        '\tRead() error',
+        '}',
+        '',
+        'type Handle func()',
+        '',
+        'func Connect(addr string) (*Server, error) {',
+        '\treturn nil, nil',
+        '}',
+        '',
+        'func (s *Server) Start() error {',
+        '\treturn nil',
+        '}',
+        '',
+        'func internal() {}',
+      ].join('\n'),
+      'go',
+    )
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    expect(byName.get('Server')).toMatchObject({ kind: 'class', exported: true })
+    expect(byName.get('Reader')).toMatchObject({ kind: 'interface', exported: true })
+    expect(byName.get('Handle')).toMatchObject({ kind: 'type', exported: true })
+    expect(byName.get('Connect')).toMatchObject({ kind: 'function', exported: true })
+    expect(byName.get('Start')).toMatchObject({ kind: 'method', exported: true })
+    expect(byName.get('internal')).toMatchObject({ kind: 'function', exported: false })
+    expect(byName.get('Connect')!.signature).toBe('Connect(addr string)')
+    expect(byName.get('Start')!.signature).toBe('Start()')
+  })
+})
+
+describe('extractSymbols — rust sample', () => {
+  it('extracts fns, impl methods, struct/enum/trait; pub = exported', async () => {
+    const rows = await extractSymbols(
+      [
+        'pub struct Config {',
+        '    pub name: String,',
+        '}',
+        '',
+        'pub enum Mode { Fast, Slow }',
+        '',
+        'pub trait Runner {',
+        '    fn run(&self) -> u32;',
+        '}',
+        '',
+        'pub fn load(path: &str) -> Config {',
+        '    Config { name: path.into() }',
+        '}',
+        '',
+        'impl Runner for Config {',
+        '    fn run(&self) -> u32 { 0 }',
+        '}',
+        '',
+        'fn helper() {}',
+      ].join('\n'),
+      'rust',
+    )
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    expect(byName.get('Config')).toMatchObject({ kind: 'class', exported: true })
+    expect(byName.get('Mode')).toMatchObject({ kind: 'enum', exported: true })
+    expect(byName.get('Runner')).toMatchObject({ kind: 'interface', exported: true })
+    expect(byName.get('load')).toMatchObject({ kind: 'function', exported: true })
+    // both the trait signature and the impl body classify as methods
+    expect(rows.filter((r) => r.name === 'run').every((r) => r.kind === 'method')).toBe(true)
+    expect(byName.get('helper')).toMatchObject({ kind: 'function', exported: false })
+    expect(byName.get('load')!.signature).toBe('load(path: &str)')
+  })
+})
+
+describe('extractSymbols — java sample', () => {
+  it('extracts class/interface/enum/method/constructor; public = exported', async () => {
+    const rows = await extractSymbols(
+      [
+        'package com.example;',
+        '',
+        'public class Server {',
+        '    private int port;',
+        '',
+        '    public Server(int port) {',
+        '        this.port = port;',
+        '    }',
+        '',
+        '    public void start() {',
+        '    }',
+        '}',
+        '',
+        'interface Handler {',
+        '    void handle(String req);',
+        '}',
+        '',
+        'enum Mode { ON, OFF }',
+      ].join('\n'),
+      'java',
+    )
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    const serverClass = rows.find((r) => r.name === 'Server' && r.kind === 'class')
+    const serverCtor = rows.find((r) => r.name === 'Server' && r.kind === 'method')
+    expect(serverClass).toMatchObject({ exported: true })
+    expect(serverCtor).toMatchObject({ exported: true })
+    expect(serverCtor!.signature).toBe('Server(int port)')
+    expect(byName.get('Handler')).toMatchObject({ kind: 'interface', exported: false })
+    expect(byName.get('start')).toMatchObject({ kind: 'method', exported: true })
+    // interface members are implicitly public
+    expect(byName.get('handle')).toMatchObject({ kind: 'method', exported: true })
+    expect(byName.get('Mode')).toMatchObject({ kind: 'enum', exported: false })
+  })
 })
