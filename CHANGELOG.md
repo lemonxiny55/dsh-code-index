@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.2.0 — unreleased
+## 0.2.0 — 2026-08-28
 
 - **feat(extract):** Go, Rust and Java support — functions/methods/types map onto the existing kind model (Go structs → class, interfaces → interface, uppercase = exported; Rust impl fns → method, `pub` = exported; Java records/interface members handled), and their imports feed reference ranking (`import` paths, `use` declarations, Java package imports).
 - **feat(map):** reference-aware ranking — imports are extracted per file (ES imports/re-exports, Python imports) and each in-repo import adds 0.5 to the target's map score, so heavily-imported core files outrank symbol-dense-but-peripheral ones. Resolution handles extensions, index files, `__init__.py`, and Go/Java-style rooted paths via suffix fallback.
