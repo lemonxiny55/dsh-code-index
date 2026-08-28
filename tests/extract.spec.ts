@@ -152,4 +152,12 @@ describe('extractSymbols — module-scope accuracy (regressions)', () => {
     expect(exported.get('y')).toBe(false)
     expect(exported.get('nested')).toBe(false)
   })
+
+  it('collapses multi-line signatures to one line', async () => {
+    const rows = await extractSymbols(
+      'function wide(\n  a: string,\n  b: number,\n): void {}\n',
+      'typescript',
+    )
+    expect(rows[0].signature).toBe('wide(a: string, b: number)')
+  })
 })

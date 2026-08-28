@@ -37,6 +37,52 @@ describe('scoreFile', () => {
     const [engine, notes] = [scoreFile(makeIndex().files[0]), scoreFile(makeIndex().files[1])]
     expect(engine).toBeGreaterThan(notes)
   })
+
+  it('downweights test-looking paths, even symbol-dense ones', () => {
+    const src = file('src/core.ts', ['class', 'function'])
+    const spec = file('src/core.spec.ts', [
+      'function',
+      'function',
+      'function',
+      'function',
+      'function',
+      'function',
+    ])
+    expect(scoreFile(spec)).toBeGreaterThan(0)
+    expect(scoreFile(spec)).toBeLessThan(scoreFile(src))
+  })
+
+  it('recognises the common test path conventions', () => {
+    const kinds = ['function', 'function']
+    const baseline = scoreFile(file('pkg/core.ts', kinds))
+    const damped: Record<string, boolean> = {}
+    for (const p of [
+      'pkg/__tests__/a.ts',
+      'tests/a.ts',
+      'test/a.ts',
+      'pkg/a.test.tsx',
+      'pkg/a.spec.mjs',
+      'tests/test_core.py',
+      'pkg/core_test.py',
+      'pkg/core_test.go',
+    ]) {
+      damped[p] = scoreFile(file(p, kinds)) < baseline
+    }
+    expect(damped).toEqual({
+      'pkg/__tests__/a.ts': true,
+      'tests/a.ts': true,
+      'test/a.ts': true,
+      'pkg/a.test.tsx': true,
+      'pkg/a.spec.mjs': true,
+      'tests/test_core.py': true,
+      'pkg/core_test.py': true,
+      'pkg/core_test.go': true,
+    })
+    // and does not damp lookalike source paths
+    for (const p of ['src/testing-utils.ts', 'src/intest.ts', 'src/latest.ts']) {
+      expect(scoreFile(file(p, kinds))).toBe(baseline)
+    }
+  })
 })
 
 describe('rankRepoMap', () => {

@@ -34,14 +34,24 @@ export interface RepoMapEntry {
   symbols: Array<{ name: string; kind: SymbolKind; line: number; signature: string }>
 }
 
-/** Density-aware file score: weighted symbols minus bloat. */
+/**
+ * Paths that look like tests. A map led by test files reads as noise: tests
+ * reference an API, they rarely explain it — and symbol density actively
+ * favours them (many small functions), so they need an explicit damper.
+ */
+const TEST_PATH_RE =
+  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
+
+/** Density-aware file score: weighted symbols minus bloat; test paths damped. */
 export function scoreFile(file: IndexedFile): number {
   let score = 0
   for (const sym of file.symbols) {
     score += KIND_WEIGHT[sym.kind] ?? 0.3
     if (sym.exported) score += 0.3
   }
-  return score / (1 + file.symbols.length * 0.04)
+  score /= 1 + file.symbols.length * 0.04
+  if (TEST_PATH_RE.test(file.path)) score *= 0.2
+  return score
 }
 
 /** Rank files, take the top slice, cap per-file symbols. */

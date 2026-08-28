@@ -185,10 +185,24 @@ function signatureFor(node: Parser.SyntaxNode): string {
       c.type === 'formal_parameters' || c.type === 'method_parameters' || c.type === 'parameters',
   )
   if (params) {
-    return `${name}${params.text}`
+    return `${name}${collapseSpace(params.text)}`
   }
   const first = node.namedChildren[0]
-  return first ? first.text.trim() : name
+  return first ? collapseSpace(first.text) : name
+}
+
+/**
+ * Signatures must stay one line: repo-map rows are budgeted per line, and a
+ * multi-line parameter list would both wrap the format and burn chars.
+ */
+function collapseSpace(text: string): string {
+  return text
+    .replace(/\s+/g, ' ')
+    .replace(/\( /g, '(')
+    .replace(/ \)/g, ')')
+    .replace(/ ,/g, ',')
+    .replace(/,\)/g, ')')
+    .trim()
 }
 
 /**
