@@ -20,7 +20,9 @@ async function tempDir(): Promise<string> {
 }
 
 describe('index persistence', () => {
-  it('uses one cache key for Windows path casing aliases', () => {
+  // Casing canonicalization is a win32 branch in cacheKeyForRoot; the
+  // hardcoded C:\ fixtures only collapse there.
+  it.skipIf(process.platform !== 'win32')('uses one cache key for Windows path casing aliases', () => {
     expect(cacheKeyForRoot('C:\\Repo')).toBe(cacheKeyForRoot('c:\\repo'))
   })
 

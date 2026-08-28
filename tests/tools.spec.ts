@@ -51,7 +51,8 @@ describe('createIndexCache', () => {
     expect(await forced).not.toBe(await first)
   })
 
-  it('canonicalizes Windows path casing', async () => {
+  // Same win32-only branch as cacheKeyForRoot — see store.spec.ts.
+  it.skipIf(process.platform !== 'win32')('canonicalizes Windows path casing', async () => {
     let loads = 0
     const cache = createIndexCache(async (root) => index(root, ++loads))
     const first = await cache.get('C:\\Repo')
