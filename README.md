@@ -124,6 +124,15 @@ pnpm typecheck
 pnpm build       # tsup → dist/index.js (ESM, external deps)
 ```
 
+**WSL → Windows checkouts:** running `pnpm install` from WSL against a checkout on `/mnt/c` leaves Linux-style symlinks that Windows Node cannot traverse (`Cannot find package 'web-tree-sitter'`, `EACCES`). Repair without a reinstall from the Windows side:
+
+```sh
+node.exe scripts\fix-wsl-links.mjs            # this repo's node_modules
+node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # a dsh profile install
+```
+
+It re-points every dead link at its real `.pnpm` store entry as a junction; safe to re-run (idempotent, reports `fixed: 0` when clean).
+
 ## Feedback
 
 Found a bug, or the map ranks something badly? Please [open an issue](https://github.com/lemonxiny55/dsh-code-index/issues) — real-world usage reports (repos where the ranking misbehaves, languages you want next) directly drive the roadmap.

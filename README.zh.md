@@ -121,6 +121,15 @@ pnpm typecheck
 pnpm build       # tsup → dist/index.js(ESM,外部依赖)
 ```
 
+**WSL → Windows 检出**:从 WSL 对 `/mnt/c` 下的检出跑 `pnpm install`,会留下 Windows 侧 Node 无法穿透的 Linux 风格符号链接(`Cannot find package 'web-tree-sitter'`、`EACCES`)。无需重装,在 Windows 侧跑一次修复:
+
+```sh
+node.exe scripts\fix-wsl-links.mjs            # 本仓库的 node_modules
+node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profile 里的插件安装
+```
+
+它会把每个失效链接以 junction 形式重新指向 `.pnpm` store 里的真实位置;可重复执行(幂等,干净时报 `fixed: 0`)。
+
 ## 反馈
 
 发现 bug,或者地图排名不合理?请[提 issue](https://github.com/lemonxiny55/dsh-code-index/issues)——真实使用报告(排名失准的仓库、想支持的语言)直接决定路线图。
