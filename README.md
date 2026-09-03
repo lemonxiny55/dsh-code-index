@@ -119,10 +119,14 @@ TypeScript, JavaScript, Python, Go, Rust and Java (`.ts .tsx .mts .cts .js .jsx 
 
 ```sh
 pnpm install
-pnpm test        # vitest — extractor, scan, cache, search, repo map (35 tests)
+pnpm test        # vitest — extractor, scan, cache, search, repo map
 pnpm typecheck
 pnpm build       # tsup → dist/index.js (ESM, external deps)
 ```
+
+## Feedback
+
+Found a bug, or the map ranks something badly? Please [open an issue](https://github.com/lemonxiny55/dsh-code-index/issues) — real-world usage reports (repos where the ranking misbehaves, languages you want next) directly drive the roadmap.
 
 ## License
 

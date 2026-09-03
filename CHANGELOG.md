@@ -2,6 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.3.0 — unreleased
+
+- **feat(map):** personalized PageRank over the import graph replaces flat in-degree counting — rank flows A→B when A imports B, so a hub that other hubs themselves import now outranks a merely popular leaf (the transitive signal +0.5-per-importer could not see). The teleport vector is each file's density share, keeping graph-less repos at their exact 0.2.x ordering; deterministic power iteration (d=0.85).
+- **docs:** add a Feedback section to both READMEs — usage reports and ranking misbehaves now have an explicit entry point.
+
 ## 0.2.0 — 2026-08-28
 
 - **feat(extract):** Go, Rust and Java support — functions/methods/types map onto the existing kind model (Go structs → class, interfaces → interface, uppercase = exported; Rust impl fns → method, `pub` = exported; Java records/interface members handled), and their imports feed reference ranking (`import` paths, `use` declarations, Java package imports).

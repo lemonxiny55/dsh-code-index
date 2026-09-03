@@ -116,10 +116,14 @@ TypeScript、JavaScript、Python、Go、Rust、Java(`.ts .tsx .mts .cts .js .jsx
 
 ```sh
 pnpm install
-pnpm test        # vitest —— 提取器、扫描、缓存、搜索、仓库地图(35 项测试)
+pnpm test        # vitest —— 提取器、扫描、缓存、搜索、仓库地图
 pnpm typecheck
 pnpm build       # tsup → dist/index.js(ESM,外部依赖)
 ```
+
+## 反馈
+
+发现 bug,或者地图排名不合理?请[提 issue](https://github.com/lemonxiny55/dsh-code-index/issues)——真实使用报告(排名失准的仓库、想支持的语言)直接决定路线图。
 
 ## 许可证
 
