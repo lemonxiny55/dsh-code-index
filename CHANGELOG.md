@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.3.0 — unreleased
+## 0.3.0 — 2026-09-03
 
 - **feat(map):** personalized PageRank over the import graph replaces flat in-degree counting — rank flows A→B when A imports B, so a hub that other hubs themselves import now outranks a merely popular leaf (the transitive signal +0.5-per-importer could not see). The teleport vector is each file's density share, keeping graph-less repos at their exact 0.2.x ordering; deterministic power iteration (d=0.85).
 - **docs:** add a Feedback section to both READMEs — usage reports and ranking misbehaves now have an explicit entry point.
