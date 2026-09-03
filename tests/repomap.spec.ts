@@ -123,6 +123,54 @@ describe('rankRepoMap', () => {
       'src/core.spec.ts',
     ])
   })
+
+  it('propagates importance transitively — a hub imported by other hubs wins', () => {
+    const idx: RepoIndex = {
+      root: '/tmp/repo',
+      generatedAt: 0,
+      excludedDirs: [],
+      files: [
+        file('src/core.ts', ['class', 'function']),
+        file('src/mid.ts', ['class', 'function']),
+        file('src/leaf.ts', ['class', 'function']),
+      ],
+    }
+    idx.files[1].imports = ['./core']
+    idx.files[2].imports = ['./mid']
+    const map = rankRepoMap(idx, { topFiles: 3 })
+    // core receives flow from mid, which itself receives flow from leaf —
+    // flat in-degree (1 vs 1) cannot distinguish them, PageRank can.
+    expect(map[0].path).toBe('src/core.ts')
+    expect(map[0].score).toBeGreaterThan(map[1].score)
+    expect(map[1].path).toBe('src/mid.ts')
+  })
+
+  it('keeps the density ordering when the import graph is empty', () => {
+    const idx = makeIndex()
+    const map = rankRepoMap(idx, { topFiles: 3 })
+    const densities = idx.files
+      .map((f) => f.path)
+      .sort((a, b) => scoreFile(idx.files.find((f) => f.path === b)!) - scoreFile(idx.files.find((f) => f.path === a)!))
+    expect(map.map((e) => e.path)).toEqual(densities)
+  })
+
+  it('is deterministic across runs', () => {
+    const idx: RepoIndex = {
+      root: '/tmp/repo',
+      generatedAt: 0,
+      excludedDirs: [],
+      files: [
+        file('src/a.ts', ['class']),
+        file('src/b.ts', ['class']),
+        file('src/c.ts', ['class']),
+      ],
+    }
+    idx.files[0].imports = ['./b', './c']
+    idx.files[1].imports = ['./a']
+    const first = rankRepoMap(idx).map((e) => `${e.path}:${e.score}`)
+    const second = rankRepoMap(idx).map((e) => `${e.path}:${e.score}`)
+    expect(first).toEqual(second)
+  })
 })
 
 describe('resolveImport', () => {

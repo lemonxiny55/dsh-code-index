@@ -13,7 +13,7 @@
 | `code_index` | 查看 / (重)建当前工作区的索引 |
 | `code_symbols` | 列出符号(函数、类、接口、类型、方法……),带 file:line——支持按名称、路径、类型、是否导出过滤 |
 | `code_search` | 排名检索:精确 > 前缀 > 子串 > 子序列模糊,导出优先,带相关度分数与 file:line |
-| `code_map` | 限量排名仓库地图(按符号密度 + 被引用次数取核心文件 + 关键符号与行号) |
+| `code_map` | 限量排名仓库地图(按符号密度 + import 图 PageRank 取核心文件 + 关键符号与行号) |
 
 外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,按 TTL 自动刷新(`mapTtlMs`,默认 60 秒)。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
 
@@ -102,7 +102,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java(`.ts .tsx .mts .cts .js .jsx
 
 - **索引构建**(`src/buildIndex.ts`):递归扫描(应用排除规则),逐文件 tree-sitter 提取(`src/extract.ts`),JSON 缓存置于 `<repo>/.dsh-code-index/`,按 mtime 增量刷新(只有被改动的文件才重新解析)。
 - **搜索**(`src/search.ts`):纯打分——精确 `1` / 前缀 `0.8` / 子串 `0.5`,导出加权,名称序平局裁决。
-- **仓库地图**(`src/repomap.ts`):密度感知的文件打分(class/interface/function 加权,轻微反膨胀),取 Top-N 文件,每文件符号上限,硬截断。
+- **仓库地图**(`src/repomap.ts`):import 图上的个性化 PageRank(传送向量 = 各文件密度份额,被其他枢纽文件引用的枢纽会比平铺入度统计排得更靠前),以密度感知的文件打分为底(class/interface/function 加权,测试路径衰减),取 Top-N 文件,每文件符号上限,硬截断。
 - **工作区解析**:每个工具解析会话 cwd(`agent.session.header.cwd`)并向上查找最近的 `.git`(有界——没有仓库标记的目录绝不会被索引)。
 
 ## 已知限制

@@ -16,7 +16,7 @@ Fills a real ecosystem gap: search of the `dsh-plugin` topic (2026-08) shows git
 | `code_index` | Status / (re)build the index for the current workspace |
 | `code_symbols` | List symbols (functions, classes, interfaces, types, methods…) with file:line — filtered by name, path, kind, exported |
 | `code_search` | Ranked lookup: exact > prefix > substring > subsequence-fuzzy, exports first, relevance score + file:line |
-| `code_map` | Bounded ranked repo map (top files by symbol density + import references, key symbols + lines) |
+| `code_map` | Bounded ranked repo map (top files by symbol density + import-graph PageRank, key symbols + lines) |
 
 Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed on a TTL (`mapTtlMs`, default 60s). Set `autoInject: false` to disable and rely on the `code_map` tool only.
 
@@ -105,7 +105,7 @@ TypeScript, JavaScript, Python, Go, Rust and Java (`.ts .tsx .mts .cts .js .jsx 
 
 - **Index build** (`src/buildIndex.ts`): recursive scan (excludes applied), per-file tree-sitter extraction (`src/extract.ts`), JSON cache under `<repo>/.dsh-code-index/`, incremental refresh by mtime (only touched files re-parse).
 - **Search** (`src/search.ts`): pure scoring — exact `1` / prefix `0.8` / substring `0.5`, export boost, name order tiebreak.
-- **Repo map** (`src/repomap.ts`): density-aware file score (class/interface/function weighted, mild anti-bloat), top-N files, per-file symbol cap, hard char truncation.
+- **Repo map** (`src/repomap.ts`): personalized PageRank over the import graph (teleport = per-file density share, so hub files that are themselves imported by other hubs rise above flat in-degree counting), seeded by the density-aware file score (class/interface/function weighted, test paths damped), top-N files, per-file symbol cap, hard char truncation.
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).
 
 ## Known limitations

@@ -60,12 +60,16 @@ export function scoreFile(file: IndexedFile): number {
 export function rankRepoMap(index: RepoIndex, options: RepoMapOptions = {}): RepoMapEntry[] {
   const topFiles = options.topFiles ?? 24
   const perFile = options.symbolsPerFile ?? 18
-  const refs = countReferences(index.files)
+  const density = new Map<string, number>()
+  for (const f of index.files) {
+    if (f.symbols.length > 0) density.set(f.path, scoreFile(f))
+  }
+  const centrality = referencePageRank(index.files, density)
   const ranked = index.files
     .filter((f) => f.symbols.length > 0)
     .map((f) => ({
       file: f,
-      score: scoreFile(f) + REF_WEIGHT * (refs.get(f.path) ?? 0),
+      score: (density.get(f.path) ?? 0) + REF_WEIGHT * (centrality.get(f.path) ?? 0),
     }))
     .sort((a, b) => b.score - a.score || a.file.path.localeCompare(b.file.path))
     .slice(0, topFiles)
@@ -82,7 +86,7 @@ export function rankRepoMap(index: RepoIndex, options: RepoMapOptions = {}): Rep
   }))
 }
 
-/** How much one in-repo import is worth in map score. */
+/** How much one unit of reference centrality is worth in map score. */
 const REF_WEIGHT = 0.5
 
 /**
@@ -103,6 +107,82 @@ export function countReferences(files: IndexedFile[]): Map<string, number> {
     }
   }
   return counts
+}
+
+/** PageRank damping — the standard 0.85. */
+const DAMPING = 0.85
+/** Stop the power iteration once total rank movement drops below this. */
+const CONVERGENCE_TOL = 1e-6
+/** Hard cap; convergence on repo-sized graphs needs ~20-40. */
+const MAX_ITERATIONS = 100
+
+/**
+ * Personalized PageRank over the import graph: nodes are files, an edge
+ * A → B means A imports B, so rank flows toward heavily-imported hubs — and
+ * a hub that other hubs themselves import accumulates more than a merely
+ * popular leaf, which flat in-degree counting cannot see.
+ *
+ * Teleport uses each file's density share instead of a uniform vector, so
+ * sparsely-linked repos keep their 0.2.x ordering (with no edges the fixed
+ * point IS the normalized density vector). Returns L1-normalized importance
+ * mass per file.
+ */
+function referencePageRank(files: IndexedFile[], density: Map<string, number>): Map<string, number> {
+  const nodes = files.filter((f) => density.has(f.path)).map((f) => f.path)
+  const n = nodes.length
+  if (n === 0) return new Map()
+  if (n === 1) return new Map([[nodes[0]!, 1]])
+
+  const totalDensity = nodes.reduce((sum, p) => sum + (density.get(p) ?? 0), 0)
+  const teleport = nodes.map((p) => (density.get(p) ?? 0) / totalDensity)
+
+  const fileSet = new Set(nodes)
+  const out = new Map<string, Set<string>>()
+  for (const file of files) {
+    if (!fileSet.has(file.path)) continue
+    const targets = out.get(file.path) ?? new Set<string>()
+    for (const spec of file.imports ?? []) {
+      const target = resolveImport(spec, file.path, fileSet)
+      if (target && target !== file.path) targets.add(target)
+    }
+    out.set(file.path, targets)
+  }
+
+  const incoming = new Map<string, Array<[fromIdx: number, weight: number]>>()
+  for (const [from, targets] of out) {
+    if (targets.size === 0) continue
+    const weight = 1 / targets.size
+    const fromIdx = nodes.indexOf(from)
+    for (const target of targets) {
+      const list = incoming.get(target) ?? []
+      list.push([fromIdx, weight])
+      incoming.set(target, list)
+    }
+  }
+
+  let rank = teleport.slice()
+  for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+    let danglingMass = 0
+    for (let i = 0; i < n; i++) {
+      if (!out.get(nodes[i]!)?.size) danglingMass += rank[i]!
+    }
+    const next = new Array<number>(n)
+    let delta = 0
+    for (let i = 0; i < n; i++) {
+      let flow = 0
+      for (const [fromIdx, weight] of incoming.get(nodes[i]!) ?? []) {
+        flow += rank[fromIdx]! * weight
+      }
+      next[i] = (1 - DAMPING) * teleport[i]! + DAMPING * (flow + danglingMass * teleport[i]!)
+      delta += Math.abs(next[i]! - rank[i]!)
+    }
+    rank = next
+    if (delta < CONVERGENCE_TOL) break
+  }
+
+  const result = new Map<string, number>()
+  for (let i = 0; i < n; i++) result.set(nodes[i]!, rank[i]!)
+  return result
 }
 
 /**
