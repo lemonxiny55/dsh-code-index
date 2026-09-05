@@ -2,6 +2,12 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.3.1 — 2026-09-04
+
+- **feat(extract):** adapt to web-tree-sitter ≥ 0.25 — ESM named exports (`Language`, `Query`, `Node`) replace the 0.20.x CJS default export, the deprecated `lang.query()` gives way to the `Query` constructor, a null `parse()` result now raises instead of failing downstream, and node-child access hardens with optional chaining.
+- **fix(pkg):** declare `@deepseek-ai/dsh-tools` as an optional peer dependency instead of a bundled runtime dependency (it moves to devDependencies for local typechecking), and ship the `scripts/` directory in the published package.
+- **docs:** refresh the positioning copy in both READMEs and update the web-tree-sitter version note to `^0.25`.
+
 ## 0.3.0 — 2026-09-03
 
 - **feat(map):** personalized PageRank over the import graph replaces flat in-degree counting — rank flows A→B when A imports B, so a hub that other hubs themselves import now outranks a merely popular leaf (the transitive signal +0.5-per-importer could not see). The teleport vector is each file's density share, keeping graph-less repos at their exact 0.2.x ordering; deterministic power iteration (d=0.85).

@@ -7,7 +7,7 @@ English | [中文](README.zh.md)
 
 Semantic repo index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked symbol search, and a bounded auto-updating repo map in the system prompt.
 
-Fills a real ecosystem gap: search of the `dsh-plugin` topic (2026-08) shows git/voice/browser/memory plugins galore, but **no native, model-usable code index / repo-map capability** — the kind of thing aider's repo-map and Cursor's `@Codebase` do for their agents.
+Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **dependency-free** — pure in-process tree-sitter over WASM, the aider repo-map / Cursor `@Codebase` style for dsh agents.
 
 ## What the model gets
 
@@ -110,7 +110,7 @@ TypeScript, JavaScript, Python, Go, Rust and Java (`.ts .tsx .mts .cts .js .jsx 
 
 ## Known limitations
 
-- **web-tree-sitter pinned to `^0.20.8`** — newer releases expect dylinked grammar wasm while `tree-sitter-wasms` ships static builds; this pair is verified working under Node ≥ 22/24.
+- **web-tree-sitter pinned to `^0.25` (ESM)** — the 0.25 line uses ESM named exports (`Language`/`Query`); this pairing with `tree-sitter-wasms` static builds is verified working under Node ≥ 22/24.
 - Auto-injected section targets the **default workspace** (launch directory, matching headless/CLI mode). Multi-workspace Web UI sessions should use `code_map`/`code_symbols` (they resolve per-session cwd).
 - Local variables are indexed too — recall over precision; `code_search` ranking keeps them low.
 - Developer-preview harness: expect breaking harness/plugin API changes upstream.

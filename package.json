@@ -1,12 +1,13 @@
 {
   "name": "dsh-code-index",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Semantic repo index for DeepSeek Harness — tree-sitter symbol index, code search, and a bounded ranked repo map injected into agent context.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "scripts",
     "cordis.patch.yml"
   ],
   "scripts": {
@@ -32,9 +33,16 @@
     }
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1"
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.1 <0.2.0-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.8",
     "@types/node": "^26.2.0",
     "tsup": "^8.5.0",
     "typescript": "^6.0.3",
@@ -53,8 +61,7 @@
     "url": "https://github.com/lemonxiny55/dsh-code-index/issues"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.0-rc.8",
     "tree-sitter-wasms": "^0.1.13",
-    "web-tree-sitter": "^0.20.8"
+    "web-tree-sitter": "^0.25.10"
   }
 }

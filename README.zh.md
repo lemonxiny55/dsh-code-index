@@ -4,7 +4,7 @@
 
 语义仓库索引 —— 一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`)插件,为 agent 提供**代码库地图**:基于 tree-sitter 的符号索引、带排名的符号搜索,以及注入到系统提示词里的限量自动更新仓库地图。
 
-填补了一个真实的生态缺口:检索 `dsh-plugin` 话题(2026-08)会发现 git/语音/浏览器/记忆类插件琳琅满目,但**缺少原生、模型可用的代码索引 / 仓库地图能力**——也就是 aider 的 repo-map 和 Cursor 的 `@Codebase` 为各自 agent 提供的同类能力。
+在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**零外部依赖**——纯进程内 tree-sitter WASM,把 aider repo-map / Cursor `@Codebase` 的同类能力带给 dsh agent。
 
 ## 模型能得到什么
 
@@ -107,7 +107,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java(`.ts .tsx .mts .cts .js .jsx
 
 ## 已知限制
 
-- **web-tree-sitter 固定为 `^0.20.8`** —— 新版本期望 dylink 语法的 wasm,而 `tree-sitter-wasms` 提供静态构建;此组合在 Node ≥ 22/24 下验证可用。
+- **web-tree-sitter 固定为 `^0.25`(ESM)** —— 0.25 采用 ESM 具名导出(`Language`/`Query`);与 `tree-sitter-wasms` 静态构建的组合在 Node ≥ 22/24 下验证可用。
 - 自动注入段针对**默认工作区**(启动目录,与 headless/CLI 模式一致)。多工作区 Web UI 会话应使用 `code_map`/`code_symbols`(它们按会话 cwd 解析)。
 - 局部变量也会被索引——召回优先于精确;`code_search` 的排名会压低它们。
 - 开发者预览版 harness:上游 harness/插件 API 大概率有破坏性变更。

@@ -12,11 +12,13 @@
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import Parser from 'web-tree-sitter'
+import { type Node, Language, Parser, Query } from 'web-tree-sitter'
 import type { SymbolInfo, SymbolKind } from './types.js'
 
 const require = createRequire(import.meta.url)
-// web-tree-sitter@0.20.8 is CJS `export = Parser`; default-interop gives the class directly.
+// web-tree-sitter ≥0.25 is ESM with named exports; 0.20.x was CJS
+// `export = Parser`. tsup externalizes the dep, so the import shape must
+// match the published ESM entry.
 
 export type LanguageId = 'typescript' | 'javascript' | 'python' | 'go' | 'rust' | 'java'
 
@@ -158,20 +160,19 @@ async function getParser(): Promise<Parser> {
   return parserPromise
 }
 
-const languageCache = new Map<LanguageId, Promise<Parser.Language>>()
+const languageCache = new Map<LanguageId, Promise<Language>>()
 
-function getLanguage(id: LanguageId): Promise<Parser.Language> {
+function getLanguage(id: LanguageId): Promise<Language> {
   let entry = languageCache.get(id)
   if (!entry) {
     entry = getParser().then(async () => {
       const grammarPath = path.join(WASM_DIR, `${GRAMMAR_NAMES[id]}.wasm`)
       const bytes = await readFile(grammarPath)
-      const lang = await Parser.Language.load(bytes)
+      const lang = await Language.load(bytes)
       // Precompile queries per language to catch authoring errors early.
-      const q = lang.query(QUERIES[id])
-      q.delete()
-      const iq = lang.query(IMPORT_QUERIES[id])
-      iq.delete()
+      // (0.25 deprecates lang.query(); use the Query constructor.)
+      new Query(lang, QUERIES[id]).delete()
+      new Query(lang, IMPORT_QUERIES[id]).delete()
       return lang
     })
     languageCache.set(id, entry)
@@ -196,9 +197,10 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
   const parser = await getParser()
   parser.setLanguage(lang)
   const tree = parser.parse(code)
+  if (!tree) throw new Error(`tree-sitter parse returned null for a ${id} source`)
   try {
     const symbols: SymbolInfo[] = []
-    const symbolQuery = lang.query(QUERIES[id])
+    const symbolQuery = new Query(lang, QUERIES[id])
     try {
       const captures = symbolQuery.captures(tree.rootNode)
       for (const cap of captures) {
@@ -226,7 +228,7 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
     }
 
     const imports: string[] = []
-    const importQuery = lang.query(IMPORT_QUERIES[id])
+    const importQuery = new Query(lang, IMPORT_QUERIES[id])
     try {
       for (const cap of importQuery.captures(tree.rootNode)) {
         const spec = specifierOf(id, cap.node)
@@ -249,7 +251,7 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
 }
 
 /** The declared name of a declaration node, via its `name` field. */
-function nameOf(node: Parser.SyntaxNode): string {
+function nameOf(node: Node): string {
   const field = node.childForFieldName?.('name')
   if (field) return field.text.trim()
   // e.g. an anonymous default export — skip those.
@@ -257,7 +259,7 @@ function nameOf(node: Parser.SyntaxNode): string {
 }
 
 /** Read the raw module specifier out of a captured import statement. */
-function specifierOf(id: LanguageId, node: Parser.SyntaxNode): string | null {
+function specifierOf(id: LanguageId, node: Node): string | null {
   switch (node.type) {
     case 'import_statement':
       // ts/js: `import … from './x'` (source); python: `import a.b` (name)
@@ -323,7 +325,7 @@ function pythonRelative(raw: string): string {
 }
 
 /** Best-effort declaration signature: `name` + parameter list, if any. */
-function signatureFor(node: Parser.SyntaxNode): string {
+function signatureFor(node: Node): string {
   const name = nameOf(node)
   // Field first (go method_declaration has both a receiver and a parameters
   // parameter_list — the field picks the right one), type fallback otherwise.
@@ -331,10 +333,10 @@ function signatureFor(node: Parser.SyntaxNode): string {
     node.childForFieldName?.('parameters') ??
     node.namedChildren.find(
       (c) =>
-        c.type === 'formal_parameters' ||
-        c.type === 'method_parameters' ||
-        c.type === 'parameters' ||
-        c.type === 'parameter_list',
+        c?.type === 'formal_parameters' ||
+        c?.type === 'method_parameters' ||
+        c?.type === 'parameters' ||
+        c?.type === 'parameter_list',
     )
   if (params) {
     return `${name}${collapseSpace(params.text)}`
@@ -363,7 +365,7 @@ function collapseSpace(text: string): string {
  * deeper — function bodies, blocks, for-of heads — is a local with no
  * navigation value.
  */
-function isModuleLevelVariable(node: Parser.SyntaxNode): boolean {
+function isModuleLevelVariable(node: Node): boolean {
   const declaration = node.parent // variable_declaration | lexical_declaration
   const container = declaration?.parent // program | export_statement | …
   return container?.type === 'program' || container?.type === 'export_statement'
@@ -375,7 +377,7 @@ function isModuleLevelVariable(node: Parser.SyntaxNode): boolean {
  * A method inside `export class` must NOT inherit the class's export, and a
  * function nested inside an exported function is not exported either.
  */
-function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
+function isExported(id: LanguageId, node: Node): boolean {
   if (id === 'python') {
     // Python has no export syntax: a def/class directly under the module is
     // importable, anything nested (methods, inner functions) is not a
@@ -390,13 +392,13 @@ function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
   if (id === 'rust') {
     // `pub` = exported; `pub(crate)` & friends are crate-local, not public.
     return node.namedChildren.some(
-      (c) => c.type === 'visibility_modifier' && c.text === 'pub',
+      (c) => c?.type === 'visibility_modifier' && c.text === 'pub',
     )
   }
   if (id === 'java') {
     // Interface members are implicitly public.
     if (node.parent?.type === 'interface_body') return true
-    return node.namedChildren.some((c) => c.type === 'modifiers' && /\bpublic\b/.test(c.text))
+    return node.namedChildren.some((c) => c?.type === 'modifiers' && /\bpublic\b/.test(c?.text ?? ''))
   }
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
@@ -412,7 +414,7 @@ function isExported(id: LanguageId, node: Parser.SyntaxNode): boolean {
  * - go: a type_spec is a class (struct) or interface by its type child
  * - rust: function_item directly in an impl body is a method
  */
-function kindFor(id: LanguageId, node: Parser.SyntaxNode, kind: SymbolKind): SymbolKind {
+function kindFor(id: LanguageId, node: Node, kind: SymbolKind): SymbolKind {
   if (id === 'python' && kind === 'function') {
     const inClassBody = node.parent?.type === 'block' && node.parent?.parent?.type === 'class_definition'
     if (inClassBody) return 'method'
