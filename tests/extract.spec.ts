@@ -346,3 +346,98 @@ describe('extractSymbols — java sample', () => {
     expect(byName.get('Mode')).toMatchObject({ kind: 'enum', exported: false })
   })
 })
+describe('extractSymbols — cpp sample', () => {
+  const CPP_SAMPLE = [
+    'namespace app {',
+    'class Widget {',
+    'public:',
+    '  Widget(int w);',
+    '  virtual void draw() const;',
+    '  int width() const { return w_; }',
+    'private:',
+    '  int w_ = 0;',
+    '};',
+    'enum class Color { Red, Green };',
+    'struct Point { int x; int y; };',
+    'template<typename T> T clamp(T v, T lo, T hi);',
+    'using HandleU = unsigned int;',
+    '}',
+    'int app::main_entry(int argc, char** argv) { return 0; }',
+    'static int counter_ = 0;',
+  ].join('\n')
+
+  let rows: Awaited<ReturnType<typeof extractSymbols>>
+
+  beforeAll(async () => {
+    rows = await extractSymbols(CPP_SAMPLE, 'cpp')
+  })
+
+  it('extracts class, struct, enum with kind and line', () => {
+    const widget = rows.find((r) => r.name === 'Widget' && r.kind === 'class')
+    expect(widget).toMatchObject({ line: 2 })
+    const ctor = rows.find((r) => r.name === 'Widget' && r.kind === 'method')
+    expect(ctor).toMatchObject({ line: 4, exported: true })
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    expect(byName.get('Point')).toMatchObject({ kind: 'class' })
+    expect(byName.get('Color')).toMatchObject({ kind: 'enum' })
+    expect(byName.get('app')).toMatchObject({ kind: 'module' })
+    expect(byName.get('HandleU')).toMatchObject({ kind: 'type' })
+  })
+
+  it('extracts out-of-class definition name through the declarator chain', () => {
+    const main = rows.find((r) => r.name === 'main_entry')
+    expect(main).toMatchObject({ kind: 'function', line: 15 })
+    expect(main!.signature).toContain('main_entry(int argc')
+  })
+
+  it('classifies in-class method definitions as method with public/private', () => {
+    const width = rows.find((r) => r.name === 'width')
+    expect(width).toMatchObject({ kind: 'method', exported: true })
+    const w = rows.find((r) => r.name === 'w_')
+    expect(w).toMatchObject({ kind: 'field', exported: false })
+  })
+
+  it('does not capture header declarations without bodies twice or locals', () => {
+    expect(rows.filter((r) => r.name === 'Widget').length).toBeLessThanOrEqual(2)
+    expect(rows.find((r) => r.name === 'Red')).toBeUndefined()
+    expect(rows.every((r) => r.name !== 'argc')).toBe(true)
+  })
+
+  it('static file-scope variable is indexed but not exported', () => {
+    const counter = rows.find((r) => r.name === 'counter_')
+    expect(counter).toMatchObject({ kind: 'variable', exported: false })
+  })
+})
+
+describe('extractSymbols — c sample', () => {
+  it('extracts functions, struct, enum, typedef; static = not exported', async () => {
+    const rows = await extractSymbols(
+      [
+        'struct Config { int verbose; };',
+        'typedef struct Config Config;',
+        'enum Mode { MODE_A, MODE_B };',
+        'static int helper(int x) { return x + 1; }',
+        'int main(int argc, char** argv) { return helper(argc); }',
+      ].join('\n'),
+      'c',
+    )
+    const byName = new Map(rows.map((r) => [r.name, r]))
+    const configStruct = rows.find((r) => r.name === 'Config' && r.kind === 'class')
+    expect(configStruct).toMatchObject({ line: 1 })
+    expect(byName.get('Config')).toMatchObject({ kind: 'type', line: 2 })
+    expect(byName.get('Mode')).toMatchObject({ kind: 'enum' })
+    expect(byName.get('helper')).toMatchObject({ kind: 'function', exported: false, line: 4 })
+    expect(byName.get('main')).toMatchObject({ kind: 'function', exported: true, line: 5 })
+    expect(byName.get('main')!.signature).toBe('main(int argc, char** argv)')
+  })
+})
+
+describe('extractAll — C/C++ include specifiers', () => {
+  it('extracts quoted includes, drops system headers', async () => {
+    const { imports } = await extractAll(
+      ['#include <cstdio>', '#include "net/socket.hpp"', '#include "util.h"'].join('\n'),
+      'cpp',
+    )
+    expect(imports).toEqual(['net/socket.hpp', 'util.h'])
+  })
+})

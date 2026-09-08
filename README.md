@@ -99,7 +99,7 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 
 ## Supported languages
 
-TypeScript, JavaScript, Python, Go, Rust and Java (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later.
+TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java .cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later. C/C++ symbol extraction resolves names through the declarator chain (templates, qualified `ns::name` definitions, in-class methods), and `#include "…"` specifiers feed the repo-map reference graph.
 
 ## How it works
 

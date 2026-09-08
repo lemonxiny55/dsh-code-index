@@ -208,6 +208,9 @@ export function resolveImport(spec: string, fromPath: string, fileSet: Set<strin
 
 /** Extension and index-file candidates for a specifier base path. */
 function candidateFor(base: string, fileSet: Set<string>): string | null {
+  // Bare path first: C/C++ includes already carry their extension
+  // ("net/socket.hpp"), and matching the exact file beats guessing.
+  if (fileSet.has(base)) return base
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}${ext}`)) return `${base}${ext}`
   }

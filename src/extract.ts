@@ -20,7 +20,15 @@ const require = createRequire(import.meta.url)
 // `export = Parser`. tsup externalizes the dep, so the import shape must
 // match the published ESM entry.
 
-export type LanguageId = 'typescript' | 'javascript' | 'python' | 'go' | 'rust' | 'java'
+export type LanguageId =
+  | 'typescript'
+  | 'javascript'
+  | 'python'
+  | 'go'
+  | 'rust'
+  | 'java'
+  | 'cpp'
+  | 'c'
 
 const WASM_DIR = path.dirname(require.resolve('tree-sitter-wasms/out/tree-sitter-typescript.wasm'))
 
@@ -31,6 +39,8 @@ const GRAMMAR_NAMES: Record<LanguageId, string> = {
   go: 'tree-sitter-go',
   rust: 'tree-sitter-rust',
   java: 'tree-sitter-java',
+  cpp: 'tree-sitter-cpp',
+  c: 'tree-sitter-c',
 }
 
 const EXT_TO_LANG: Record<string, LanguageId> = {
@@ -47,6 +57,18 @@ const EXT_TO_LANG: Record<string, LanguageId> = {
   '.go': 'go',
   '.rs': 'rust',
   '.java': 'java',
+  '.cpp': 'cpp',
+  '.cc': 'cpp',
+  '.cxx': 'cpp',
+  '.c++': 'cpp',
+  '.hpp': 'cpp',
+  '.hxx': 'cpp',
+  '.hh': 'cpp',
+  '.h': 'cpp',
+  '.ipp': 'cpp',
+  '.tpp': 'cpp',
+  '.inl': 'cpp',
+  '.c': 'c',
 }
 
 export function languageForFile(filePath: string): LanguageId | null {
@@ -105,6 +127,31 @@ const QUERIES: Record<LanguageId, string> = {
     (method_declaration) @method
     (constructor_declaration) @method
   `,
+  // C++ grammar (superset of C — also serves .h headers). function names
+  // live inside the declarator chain, so patterns stay broad and names,
+  // kinds and signatures are resolved in code (cppNameOf / kindFor /
+  // signatureFor). Top-level `declaration` covers prototypes, constructors
+  // and globals; field_declaration covers class-body members.
+  cpp: `
+    (function_definition) @function
+    (class_specifier body: (_)) @class
+    (struct_specifier body: (_)) @class
+    (enum_specifier body: (_)) @enum
+    (type_definition) @type
+    (alias_declaration) @type
+    (namespace_definition) @module
+    (field_declaration) @field
+    (declaration) @variable
+  `,
+  // Plain C: same core nodes minus C++-only namespace/alias forms.
+  c: `
+    (function_definition) @function
+    (struct_specifier body: (_)) @class
+    (enum_specifier body: (_)) @enum
+    (type_definition) @type
+    (field_declaration) @field
+    (declaration) @variable
+  `,
 }
 
 const CAPTURE_KINDS: Record<string, CaptureDef> = {
@@ -116,6 +163,7 @@ const CAPTURE_KINDS: Record<string, CaptureDef> = {
   enum: { kind: 'enum' },
   variable: { kind: 'variable' },
   field: { kind: 'field' },
+  module: { kind: 'module' },
 }
 
 // Import statements per language. Whole statements are captured; the module
@@ -143,6 +191,14 @@ const IMPORT_QUERIES: Record<LanguageId, string> = {
   `,
   java: `
     (import_declaration) @import
+  `,
+  // C/C++: #include "local.hpp" — quoted form resolves in-repo; <system>
+  // captures too but yields null and is dropped by the extractor.
+  cpp: `
+    (preproc_include) @import
+  `,
+  c: `
+    (preproc_include) @import
   `,
 }
 
@@ -210,8 +266,8 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
         // tree-sitter queries match at any depth; without this check the
         // variable_declarator pattern would also capture function-body
         // locals — pure index noise.
-        if (def.kind === 'variable' && !isModuleLevelVariable(node)) continue
-        const name = nameOf(node)
+        if (def.kind === 'variable' && !isModuleLevelVariable(id, node)) continue
+        const name = nameOf(id, node)
         if (!name) continue
         symbols.push({
           name,
@@ -220,7 +276,7 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
           line: node.startPosition.row + 1,
           endLine: node.endPosition.row + 1,
           exported: isExported(id, node),
-          signature: signatureFor(node),
+          signature: signatureFor(id, node),
         })
       }
     } finally {
@@ -239,7 +295,14 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
     }
 
     symbols.sort((a, b) => a.line - b.line)
-    return { symbols, imports }
+    const seen = new Set<string>()
+    const deduped = symbols.filter((s) => {
+      const key = `${s.kind}|${s.name}|${s.line}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    return { symbols: deduped, imports }
   } finally {
     tree.delete()
   }
@@ -250,11 +313,61 @@ export async function extractSymbols(code: string, id: LanguageId): Promise<Symb
   return (await extractAll(code, id)).symbols
 }
 
-/** The declared name of a declaration node, via its `name` field. */
-function nameOf(node: Node): string {
+/** The declared name of a declaration node — language-aware dispatch. */
+function nameOf(id: LanguageId, node: Node): string {
+  if (id === 'cpp' || id === 'c') return cppNameOf(node)
   const field = node.childForFieldName?.('name')
   if (field) return field.text.trim()
   // e.g. an anonymous default export — skip those.
+  return ''
+}
+
+/**
+ * C/C++ declaration names hide in the declarator chain:
+ * - function_definition → declarator:function_declarator → identifier |
+ *   qualified_identifier (A::b) | field_identifier (in-class method)
+ * - class/struct/enum specifiers and alias_declaration carry `name`
+ * - type_definition → declarator:type_identifier
+ * Returns '' for anonymous declarations (skipped upstream).
+ */
+function cppNameOf(node: Node): string {
+  const nameField = node.childForFieldName?.('name')
+  if (nameField) return nameField.text.trim()
+  if (node.type === 'type_definition') {
+    return node.childForFieldName?.('declarator')?.text.trim() ?? ''
+  }
+  let declarator = node.childForFieldName?.('declarator')
+  if (declarator?.type === 'init_declarator') {
+    declarator = declarator.childForFieldName?.('declarator')
+  }
+  if (declarator) {
+    let current: Node | null = declarator
+    while (current) {
+      if (
+        current.type === 'function_declarator' ||
+        current.type === 'pointer_declarator' ||
+        current.type === 'array_declarator' ||
+        current.type === 'reference_declarator' ||
+        current.type === 'parenthesized_declarator' ||
+        current.type === 'init_declarator'
+      ) {
+        current = current.childForFieldName?.('declarator') ?? current.namedChildren[0] ?? null
+        continue
+      }
+      if (current.type === 'qualified_identifier') {
+        // app::main_entry — the bare name is the last segment.
+        return current.childForFieldName?.('name')?.text.trim() ?? current.text.trim()
+      }
+      if (
+        current.type === 'identifier' ||
+        current.type === 'field_identifier' ||
+        current.type === 'type_identifier'
+      ) {
+        return current.text.trim()
+      }
+      break
+    }
+  }
   return ''
 }
 
@@ -280,6 +393,10 @@ function specifierOf(id: LanguageId, node: Node): string | null {
       return rustUsePath(node.childForFieldName('argument')?.text)
     case 'import_declaration': // java: `import com.example.Thing;`
       return dottedToPath(node.namedChildren[0]?.text)
+    case 'preproc_include':
+      // path field: string_literal for "x.hpp" (in-repo, resolvable) or
+      // system_lib_string for <cstdio> (stripQuotes yields null → dropped).
+      return stripQuotes(node.childForFieldName('path')?.text)
     default:
       return null
   }
@@ -325,8 +442,13 @@ function pythonRelative(raw: string): string {
 }
 
 /** Best-effort declaration signature: `name` + parameter list, if any. */
-function signatureFor(node: Node): string {
-  const name = nameOf(node)
+function signatureFor(id: LanguageId, node: Node): string {
+  const sig = rawSignature(id, node)
+  return sig.length > 80 ? `${sig.slice(0, 77)}...` : sig
+}
+
+function rawSignature(id: LanguageId, node: Node): string {
+  const name = nameOf(id, node)
   // Field first (go method_declaration has both a receiver and a parameters
   // parameter_list — the field picks the right one), type fallback otherwise.
   const params =
@@ -340,6 +462,18 @@ function signatureFor(node: Node): string {
     )
   if (params) {
     return `${name}${collapseSpace(params.text)}`
+  }
+  if (id === 'cpp' || id === 'c') {
+    // C/C++: the parameter list hides inside the declarator chain.
+    let current = node.childForFieldName?.('declarator')
+    while (current) {
+      if (current.type === 'function_declarator') {
+        const list = current.childForFieldName?.('parameters')
+        return list ? `${name}${collapseSpace(list.text)}` : name
+      }
+      current = current.childForFieldName?.('declarator') ?? current.namedChildren[0] ?? null
+      if (current && !current.type.includes('declarator') && current.type !== 'identifier' && current.type !== 'qualified_identifier' && current.type !== 'field_identifier') break
+    }
   }
   const first = node.namedChildren[0]
   return first ? collapseSpace(first.text) : name
@@ -365,7 +499,16 @@ function collapseSpace(text: string): string {
  * deeper — function bodies, blocks, for-of heads — is a local with no
  * navigation value.
  */
-function isModuleLevelVariable(node: Node): boolean {
+function isModuleLevelVariable(id: LanguageId, node: Node): boolean {
+  if (id === 'cpp' || id === 'c') {
+    // A (field_)declaration is indexable at namespace/file scope or in a
+    // class body — anything inside a function body is a local.
+    for (let parent = node.parent; parent; parent = parent.parent) {
+      if (parent.type === 'function_definition' || parent.type === 'compound_statement') return false
+      if (parent.type === 'translation_unit' || parent.type === 'declaration_list' || parent.type === 'field_declaration_list') return true
+    }
+    return false
+  }
   const declaration = node.parent // variable_declaration | lexical_declaration
   const container = declaration?.parent // program | export_statement | …
   return container?.type === 'program' || container?.type === 'export_statement'
@@ -386,7 +529,7 @@ function isExported(id: LanguageId, node: Node): boolean {
   }
   if (id === 'go') {
     // Go exports by capitalisation, not by keyword.
-    const name = nameOf(node)
+    const name = nameOf(id, node)
     return !!name && /^[A-Z]/.test(name)
   }
   if (id === 'rust') {
@@ -400,12 +543,52 @@ function isExported(id: LanguageId, node: Node): boolean {
     if (node.parent?.type === 'interface_body') return true
     return node.namedChildren.some((c) => c?.type === 'modifiers' && /\bpublic\b/.test(c?.text ?? ''))
   }
+  if (id === 'cpp' || id === 'c') {
+    return cppIsExported(node)
+  }
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
     if (parent.type === 'statement_block' || parent.type === 'class_body') return false
     if (parent.type === 'program') return false
   }
   return false
+}
+
+/**
+ * C/C++ export semantics:
+ * - anything under `public:` in a class body is exported; `private:`/
+ *   `protected:` sections are not
+ * - top-level declarations are exported unless marked `static`
+ * (internal-linkage). C has no access sections; C++ namespaces stay
+ * transparent — a symbol under namespace X is still module-level.
+ */
+function cppIsExported(node: Node): boolean {
+  const isStatic = node.namedChildren.some(
+    (c) => c?.type === 'storage_class_specifier' && c.text === 'static',
+  )
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'field_declaration_list') {
+      const body = parent
+      // Struct members default to public, class members to private (C++ rule).
+      const structKind = body.parent?.type === 'struct_specifier' ? 'struct' : 'class'
+      let current: string | null = structKind === 'struct' ? 'public' : 'private'
+      for (let up: Node | null = node; up && up.id !== body.id; up = up.parent) {
+        const next = up.parent
+        if (next?.type === 'field_declaration_list') {
+          const siblingIndex = next.namedChildren.findIndex((c) => c?.id === up.id)
+          const accessBefore = next.namedChildren
+            .slice(0, siblingIndex)
+            .filter((c) => c?.type === 'access_specifier')
+          if (accessBefore.length > 0) {
+            current = accessBefore.at(-1)!.text.replace(':', '').trim()
+          }
+        }
+      }
+      return current === 'public' && !isStatic
+    }
+    if (parent.type === 'translation_unit') return !isStatic
+  }
+  return !isStatic
 }
 
 /**
@@ -428,6 +611,22 @@ function kindFor(id: LanguageId, node: Node, kind: SymbolKind): SymbolKind {
   if (id === 'rust' && node.type === 'function_item') {
     const inImpl = node.parent?.type === 'declaration_list' && node.parent?.parent?.type === 'impl_item'
     if (inImpl) return 'method'
+  }
+  if ((id === 'cpp' || id === 'c') && (kind === 'variable' || kind === 'field')) {
+    // A declaration whose declarator chain holds a function_declarator is a
+    // function prototype/definition — not a data member or global.
+    let current = node.childForFieldName?.('declarator')
+    while (current) {
+      if (current.type === 'function_declarator') {
+        return node.parent?.type === 'field_declaration_list' ? 'method' : 'function'
+      }
+      current = current.childForFieldName?.('declarator') ?? current.namedChildren[0] ?? null
+    }
+    return node.type === 'field_declaration' ? 'field' : 'variable'
+  }
+  if ((id === 'cpp' || id === 'c') && node.type === 'function_definition') {
+    // A function defined directly in a class/struct body is a method.
+    if (node.parent?.type === 'field_declaration_list') return 'method'
   }
   return kind
 }

@@ -36,6 +36,18 @@ export const SUPPORTED_EXTS = new Set([
   '.go',
   '.rs',
   '.java',
+  '.cpp',
+  '.cc',
+  '.cxx',
+  '.c++',
+  '.hpp',
+  '.hxx',
+  '.hh',
+  '.h',
+  '.ipp',
+  '.tpp',
+  '.inl',
+  '.c',
 ])
 
 export interface ScannedFile {

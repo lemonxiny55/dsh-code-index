@@ -2,6 +2,13 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.4.0 — 2026-09-08
+
+- **feat(extract):** C and C++ support — 11 new extensions (`.cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`) parse through `tree-sitter-cpp`/`tree-sitter-c` with zero new dependencies (both grammars ship in the existing `tree-sitter-wasms` pack). Symbol extraction resolves names through the declarator chain: free functions, in-class methods, out-of-class definitions (`Scene::queryRegion` → bare `queryRegion`), constructors, templates, namespaces (→ module kind), structs/unions, enums and typedefs. `public:`/`private:` section tracking (structs default public, classes private) plus `static` internal-linkage detection drive the exported flag.
+- **feat(map):** `#include "…"` specifiers feed the import graph — quoted includes resolve in-repo (sibling-relative and project-root styles), `<system>` headers are dropped, and bare-path candidates match extension-carrying targets (`net/socket.hpp`).
+- **feat(extract):** signatures hard-capped at 80 chars so multi-line C++ declarations (mock frameworks, template specials) cannot blow up repo-map rows or search hits.
+- **fix(map):** symbol dedupe on `kind|name|line` guards double captures (e.g. a typedef aliasing a struct definition).
+
 ## 0.3.1 — 2026-09-04
 
 - **feat(extract):** adapt to web-tree-sitter ≥ 0.25 — ESM named exports (`Language`, `Query`, `Node`) replace the 0.20.x CJS default export, the deprecated `lang.query()` gives way to the `Query` constructor, a null `parse()` result now raises instead of failing downstream, and node-child access hardens with optional chaining.
