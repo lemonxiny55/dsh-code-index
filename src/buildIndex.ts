@@ -51,7 +51,7 @@ export async function buildIndex(
         } catch {
           return null
         }
-        const { symbols, imports } = await extractAll(code, lang)
+        const { symbols, imports, calls } = await extractAll(code, lang)
         // Backfill the repo-relative path: the extractor is file-agnostic and
         // leaves SymbolInfo.file empty, but search/render depend on it.
         return {
@@ -60,6 +60,7 @@ export async function buildIndex(
           mtimeMs: f.mtimeMs,
           symbols: symbols.map((s) => ({ ...s, file: f.rel })),
           imports,
+          calls,
         } satisfies IndexedFile
       }),
     )
@@ -114,6 +115,7 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
       return false
     }
     if (file.symbols.length !== other.symbols.length) return false
+    if (!callsEqual(file.calls, other.calls)) return false
     return file.symbols.every((symbol, symbolIndex) => {
       const candidate = other.symbols[symbolIndex]
       return candidate !== undefined
@@ -125,6 +127,23 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
         && symbol.exported === candidate.exported
         && symbol.signature === candidate.signature
     })
+  })
+}
+
+/**
+ * Calls are compared so a cache written before call-graph support is treated as
+ * stale and re-persisted, instead of silently shadowing the richer fresh index.
+ */
+function callsEqual(left: IndexedFile['calls'], right: IndexedFile['calls']): boolean {
+  const a = left ?? []
+  const b = right ?? []
+  if (a.length !== b.length) return false
+  return a.every((call, index) => {
+    const other = b[index]
+    return other !== undefined
+      && call.name === other.name
+      && call.line === other.line
+      && call.from === other.from
   })
 }
 

@@ -5,6 +5,8 @@ import path from 'node:path'
 import { buildIndexWithCache, findRepoRoot } from './buildIndex.js'
 import { renderHit, searchSymbols } from './search.js'
 import { rankRepoMap, renderRepoMap } from './repomap.js'
+import { symbolRefs } from './refgraph.js'
+import { findCycles, findOrphanModules } from './health.js'
 import { getConfig, indexOptions } from './config.js'
 import { cacheKeyForRoot } from './store.js'
 import type { RepoIndex } from './types.js'
@@ -116,6 +118,57 @@ async function resolveRoot(arg: string | undefined, exec: ToolRunExec): Promise<
   return root
 }
 
+/** Group hit rows into the search card's matches shape for UI replay. */
+function hitsToSearchMeta(hits: JsonValue[]): JsonValue {
+  const byFile = new Map<string, Array<{ lineNumber: number; line: string }>>()
+  for (const raw of hits) {
+    const hit = raw as unknown as {
+      file?: string
+      line?: number
+      kind?: string
+      name?: string
+      signature?: string
+    }
+    if (!hit.file || typeof hit.line !== 'number') continue
+    const label = `${hit.kind ?? ''} ${hit.signature || hit.name || ''}`.trim()
+    const list = byFile.get(hit.file) ?? []
+    list.push({ lineNumber: hit.line, line: label })
+    byFile.set(hit.file, list)
+  }
+  return {
+    shape: 'matches',
+    files: [...byFile.entries()].map(([path, matches]) => ({ path, matches })),
+    truncated: false,
+    total: hits.length,
+  }
+}
+
+/** Narrow persisted presentation metadata back into a completed search card. */
+function searchCardFromMeta(meta: JsonValue | undefined):
+  | {
+      card: 'search'
+      shape: 'matches'
+      files: Array<{ path: string; matches: Array<{ lineNumber: number; line: string }> }>
+      truncated: boolean
+      total: number
+    }
+  | undefined {
+  if (!meta || typeof meta !== 'object' || Array.isArray(meta)) return undefined
+  const record = meta as Record<string, JsonValue>
+  if (record.shape !== 'matches' || !Array.isArray(record.files)) return undefined
+  const files = record.files.filter(
+    (entry): entry is { path: string; matches: Array<{ lineNumber: number; line: string }> } =>
+      typeof entry === 'object' && entry !== null && !Array.isArray(entry),
+  )
+  return {
+    card: 'search',
+    shape: 'matches',
+    files,
+    truncated: record.truncated === true,
+    total: typeof record.total === 'number' ? record.total : 0,
+  }
+}
+
 export const tools = [
   defineTool({
     name: 'code_index',
@@ -194,7 +247,15 @@ export const tools = [
           type: 'text' as const,
           text: renderHit(v as unknown as Parameters<typeof renderHit>[0]),
         })),
+      presentationMeta: (_args, value) => hitsToSearchMeta(value),
     },
+    presentCall: (args) => ({
+      card: 'generic',
+      title: args.kind ? `List ${args.kind} symbols` : 'List symbols',
+      kind: 'search',
+      rawInput: { query: args.query, file: args.file, kind: args.kind },
+    }),
+    presentResult: (_args, result) => searchCardFromMeta(result.meta),
     async execute(
       args: {
         query?: string
@@ -243,7 +304,15 @@ export const tools = [
           type: 'text' as const,
           text: renderHit(v as unknown as Parameters<typeof renderHit>[0]),
         })),
+      presentationMeta: (_args, value) => hitsToSearchMeta(value),
     },
+    presentCall: (args) => ({
+      card: 'generic',
+      title: `Search "${args.query}"`,
+      kind: 'search',
+      rawInput: { query: args.query },
+    }),
+    presentResult: (_args, result) => searchCardFromMeta(result.meta),
     async execute(
       args: { query: string; limit?: number; repoRoot?: string },
       exec: ToolRunExec,
@@ -282,6 +351,129 @@ export const tools = [
         return map
       } catch (error) {
         return `code_index: ${(error as Error).message ?? String(error)}`
+      }
+    },
+  }),
+
+  defineTool({
+    name: 'code_refs',
+    description:
+      'Trace a symbol through the call graph: who calls it (callers) and what it calls (callees), resolved to in-repo definitions with file:line. Complements code_search — search finds a definition, code_refs shows how it is used. Resolution is name-based, so like-named symbols are reported as candidate definitions.',
+    parameters: {
+      symbol: {
+        type: 'string',
+        required: true,
+        description: 'Symbol name to trace (case-sensitive).',
+      },
+      direction: {
+        type: 'string',
+        enum: ['callers', 'callees', 'both'],
+        description: 'Which side of the call graph to return (default "both").',
+      },
+      limit: {
+        type: 'number',
+        description: 'Max rows per side (default 50).',
+      },
+      repoRoot: {
+        type: 'string',
+        description: 'Optional absolute repo path; defaults to the session workspace root.',
+      },
+    },
+    output: {
+      schema: { type: 'string' },
+      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+    },
+    presentCall: (args) => ({
+      card: 'generic',
+      title: `Refs ${args.symbol}`,
+      kind: 'search',
+      rawInput: { symbol: args.symbol, direction: args.direction },
+    }),
+    async execute(
+      args: { symbol: string; direction?: string; limit?: number; repoRoot?: string },
+      exec: ToolRunExec,
+    ): Promise<string> {
+      try {
+        const root = await resolveRoot(args.repoRoot, exec)
+        const index = await getIndex(root)
+        const refs = symbolRefs(index, args.symbol, args.limit ?? 50)
+        const direction = args.direction ?? 'both'
+        const lines: string[] = []
+
+        if (refs.defs.length > 0) {
+          lines.push('definitions:')
+          for (const def of refs.defs) {
+            lines.push(`  ${def.kind} ${def.signature || def.name} — ${def.file}:${def.line}`)
+          }
+        } else {
+          lines.push(`no definition of "${args.symbol}" in this repo`)
+        }
+
+        if (direction === 'callers' || direction === 'both') {
+          lines.push('', `callers (${refs.callers.length}):`)
+          if (refs.callers.length === 0) lines.push('  (none)')
+          for (const caller of refs.callers) {
+            lines.push(`  ${caller.file}:${caller.line}${caller.from ? ` in ${caller.from}` : ''}`)
+          }
+        }
+
+        if (direction === 'callees' || direction === 'both') {
+          lines.push('', `callees (${refs.callees.length}):`)
+          if (refs.callees.length === 0) lines.push('  (none)')
+          for (const callee of refs.callees) {
+            const target = callee.targets[0]
+            lines.push(
+              `  ${callee.name} :${callee.line}${target ? ` → ${target.file}:${target.line}` : ' (external)'}`,
+            )
+          }
+        }
+
+        return lines.join('\n')
+      } catch (error) {
+        return `code_refs: ${(error as Error).message ?? String(error)}`
+      }
+    },
+  }),
+
+  defineTool({
+    name: 'code_health',
+    description:
+      'Report structural health from the import graph: circular dependencies (import cycles) and orphan modules (symbol-bearing files that nothing imports and that import nothing, excluding entry points and tests).',
+    parameters: {
+      limit: {
+        type: 'number',
+        description: 'Max cycles and orphan rows to list (default 50).',
+      },
+      repoRoot: {
+        type: 'string',
+        description: 'Optional absolute repo path; defaults to the session workspace root.',
+      },
+    },
+    output: {
+      schema: { type: 'string' },
+      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+    },
+    presentCall: () => ({ card: 'generic', title: 'Code health', kind: 'read' }),
+    async execute(args: { limit?: number; repoRoot?: string }, exec: ToolRunExec): Promise<string> {
+      try {
+        const root = await resolveRoot(args.repoRoot, exec)
+        const index = await getIndex(root)
+        const limit = args.limit ?? 50
+        const cycles = findCycles(index)
+        const orphans = findOrphanModules(index)
+
+        const lines = [`repo health — ${index.files.length} files`]
+        lines.push('', `circular dependencies (${cycles.length}):`)
+        if (cycles.length === 0) lines.push('  (none)')
+        for (const cycle of cycles.slice(0, limit)) lines.push(`  ${cycle.join(' → ')}`)
+
+        lines.push('', `orphan modules (${orphans.length}):`)
+        if (orphans.length === 0) lines.push('  (none)')
+        for (const orphan of orphans.slice(0, limit)) lines.push(`  ${orphan}`)
+
+        return lines.join('\n')
+      } catch (error) {
+        return `code_health: ${(error as Error).message ?? String(error)}`
       }
     },
   }),

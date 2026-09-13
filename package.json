@@ -1,23 +1,34 @@
 {
   "name": "dsh-code-index",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Semantic repo index for DeepSeek Harness — tree-sitter symbol index, code search, and a bounded ranked repo map injected into agent context.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "default": "./dist/client.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
     "scripts",
     "cordis.patch.yml"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsup --config tsup.client.config.ts",
     "dev": "tsup --watch",
+    "dev:client": "tsup --config tsup.client.config.ts --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "fix:wsl-links": "node scripts/fix-wsl-links.mjs",
-    "prepare": "tsup",
-    "prepublishOnly": "tsup"
+    "prepare": "tsup && tsup --config tsup.client.config.ts",
+    "prepublishOnly": "tsup && tsup --config tsup.client.config.ts"
   },
   "keywords": [
     "dsh-plugin",
@@ -30,6 +41,9 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
     }
   },
   "peerDependencies": {
@@ -44,6 +58,8 @@
   "devDependencies": {
     "@deepseek-ai/dsh-tools": "0.1.0-rc.8",
     "@types/node": "^26.2.0",
+    "@types/react": "^18.3.31",
+    "react": "^18.3.1",
     "tsup": "^8.5.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
@@ -61,6 +77,7 @@
     "url": "https://github.com/lemonxiny55/dsh-code-index/issues"
   },
   "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.2",
     "tree-sitter-wasms": "^0.1.13",
     "web-tree-sitter": "^0.25.10"
   }

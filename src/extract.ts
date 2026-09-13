@@ -13,7 +13,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { type Node, Language, Parser, Query } from 'web-tree-sitter'
-import type { SymbolInfo, SymbolKind } from './types.js'
+import type { CallInfo, SymbolInfo, SymbolKind } from './types.js'
 
 const require = createRequire(import.meta.url)
 // web-tree-sitter ≥0.25 is ESM with named exports; 0.20.x was CJS
@@ -202,6 +202,74 @@ const IMPORT_QUERIES: Record<LanguageId, string> = {
   `,
 }
 
+// Call expressions per language. Each capture binds the CALLEE name node, so
+// the extractor can build a function-level call graph (see enclosingCallable).
+// Member/selector calls capture the property/field tail, which is what a
+// definition lookup matches; `new X()` is a construction call.
+const CALL_QUERIES: Record<LanguageId, string> = {
+  typescript: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (member_expression property: (property_identifier) @call))
+    (new_expression constructor: (identifier) @call)
+  `,
+  javascript: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (member_expression property: (property_identifier) @call))
+    (new_expression constructor: (identifier) @call)
+  `,
+  python: `
+    (call function: (identifier) @call)
+    (call function: (attribute attribute: (identifier) @call))
+  `,
+  go: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (selector_expression field: (field_identifier) @call))
+  `,
+  rust: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (field_expression field: (field_identifier) @call))
+    (call_expression function: (scoped_identifier name: (identifier) @call))
+  `,
+  java: `
+    (method_invocation name: (identifier) @call)
+    (object_creation_expression type: (type_identifier) @call)
+  `,
+  cpp: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (field_expression field: (field_identifier) @call))
+    (call_expression function: (qualified_identifier name: (identifier) @call))
+  `,
+  c: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (field_expression field: (field_identifier) @call))
+  `,
+}
+
+// Ancestor node types that own a call body, per language. Walking up from a
+// call site to the nearest one yields the function whose callees they are.
+const CALLABLE_NODES: Record<LanguageId, Set<string>> = {
+  typescript: new Set([
+    'function_declaration',
+    'generator_function_declaration',
+    'method_definition',
+    'function_expression',
+    'arrow_function',
+  ]),
+  javascript: new Set([
+    'function_declaration',
+    'generator_function_declaration',
+    'method_definition',
+    'function_expression',
+    'arrow_function',
+  ]),
+  python: new Set(['function_definition']),
+  go: new Set(['function_declaration', 'method_declaration', 'func_literal']),
+  rust: new Set(['function_item', 'function_signature_item']),
+  java: new Set(['method_declaration', 'constructor_declaration']),
+  cpp: new Set(['function_definition', 'lambda_expression']),
+  c: new Set(['function_definition']),
+}
+
 let parserPromise: Promise<Parser> | null = null
 
 async function getParser(): Promise<Parser> {
@@ -229,6 +297,7 @@ function getLanguage(id: LanguageId): Promise<Language> {
       // (0.25 deprecates lang.query(); use the Query constructor.)
       new Query(lang, QUERIES[id]).delete()
       new Query(lang, IMPORT_QUERIES[id]).delete()
+      new Query(lang, CALL_QUERIES[id]).delete()
       return lang
     })
     languageCache.set(id, entry)
@@ -246,6 +315,8 @@ export interface ExtractedFile {
   symbols: SymbolInfo[]
   /** Raw module specifiers, e.g. './util', 'node:fs', './utils' (py). */
   imports: string[]
+  /** Call sites, ordered by line: callee name + enclosing function. */
+  calls: CallInfo[]
 }
 
 export async function extractAll(code: string, id: LanguageId): Promise<ExtractedFile> {
@@ -294,6 +365,25 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
       importQuery.delete()
     }
 
+    const calls: CallInfo[] = []
+    const callQuery = new Query(lang, CALL_QUERIES[id])
+    try {
+      const seen = new Set<string>()
+      for (const cap of callQuery.captures(tree.rootNode)) {
+        const name = cap.node.text.trim()
+        if (!name) continue
+        const line = cap.node.startPosition.row + 1
+        const from = enclosingCallable(id, cap.node)
+        const key = `${from}|${name}|${line}`
+        if (seen.has(key)) continue
+        seen.add(key)
+        calls.push({ name, line, from })
+      }
+    } finally {
+      callQuery.delete()
+    }
+    calls.sort((a, b) => a.line - b.line || a.name.localeCompare(b.name))
+
     symbols.sort((a, b) => a.line - b.line)
     const seen = new Set<string>()
     const deduped = symbols.filter((s) => {
@@ -302,7 +392,7 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
       seen.add(key)
       return true
     })
-    return { symbols: deduped, imports }
+    return { symbols: deduped, imports, calls }
   } finally {
     tree.delete()
   }
@@ -371,9 +461,27 @@ function cppNameOf(node: Node): string {
   return ''
 }
 
+/**
+ * The nearest enclosing function/method of a call site. Anonymous function
+ * forms (arrow / function expression) borrow the name of the variable they are
+ * assigned to; a call at module scope returns ''.
+ */
+function enclosingCallable(id: LanguageId, node: Node): string {
+  const callable = CALLABLE_NODES[id]
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (!callable.has(parent.type)) continue
+    const named = nameOf(id, parent)
+    if (named) return named
+    const declaration = parent.parent
+    const field = declaration?.type === 'variable_declarator' ? 'name' : null
+    if (field) return declaration?.childForFieldName?.(field)?.text.trim() ?? ''
+    return ''
+  }
+  return ''
+}
+
 /** Read the raw module specifier out of a captured import statement. */
-function specifierOf(id: LanguageId, node: Node): string | null {
-  switch (node.type) {
+function specifierOf(id: LanguageId, node: Node): string | null {  switch (node.type) {
     case 'import_statement':
       // ts/js: `import … from './x'` (source); python: `import a.b` (name)
       if (id === 'python') return dottedToPath(node.childForFieldName('name')?.text)

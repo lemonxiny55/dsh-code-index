@@ -1,6 +1,7 @@
 /** Pure search / filter logic over a RepoIndex — unit-testable, no IO. */
 
 import type { RepoIndex, SymbolInfo, SymbolKind } from './types.js'
+import { callerCounts } from './refgraph.js'
 
 export interface SymbolFilter {
   query?: string
@@ -58,11 +59,13 @@ export function searchSymbols(
     }
   }
 
-  // Export boost, then relevance, then stable name order.
+  // Export boost, then relevance, then call fan-in, then stable name order.
+  const refs = callerCounts(index)
   hits.sort((a, b) => {
     const ab =
       Number(b.exported) - Number(a.exported) ||
       b.score - a.score ||
+      (refs.get(b.name) ?? 0) - (refs.get(a.name) ?? 0) ||
       a.name.localeCompare(b.name) ||
       a.file.localeCompare(b.file)
     return ab

@@ -33,13 +33,25 @@ describe('plugin lifecycle', () => {
     }
 
     const first = mount()
-    expect(first.registered).toEqual(['code_index', 'code_symbols', 'code_search', 'code_map'])
+    expect(first.registered).toEqual([
+      'code_index',
+      'code_symbols',
+      'code_search',
+      'code_map',
+      'code_refs',
+    ])
     first.dispose()
-    expect(first.disposedTools()).toBe(4)
+    expect(first.disposedTools()).toBe(5)
     expect(first.disposedSections()).toBe(1)
 
     const second = mount()
-    expect(second.registered).toEqual(['code_index', 'code_symbols', 'code_search', 'code_map'])
+    expect(second.registered).toEqual([
+      'code_index',
+      'code_symbols',
+      'code_search',
+      'code_map',
+      'code_refs',
+    ])
     second.dispose()
   })
 })

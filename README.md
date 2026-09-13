@@ -17,6 +17,8 @@ Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/mem
 | `code_symbols` | List symbols (functions, classes, interfaces, types, methods…) with file:line — filtered by name, path, kind, exported |
 | `code_search` | Ranked lookup: exact > prefix > substring > subsequence-fuzzy, exports first, relevance score + file:line |
 | `code_map` | Bounded ranked repo map (top files by symbol density + import-graph PageRank, key symbols + lines) |
+| `code_refs` | Trace a symbol through the call graph: callers (who calls it) and callees (what it calls), resolved to file:line |
+| `code_health` | Opt-in (`codeHealth: true`): circular dependencies (import cycles) and orphan modules |
 
 Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed on a TTL (`mapTtlMs`, default 60s). Set `autoInject: false` to disable and rely on the `code_map` tool only.
 
@@ -96,6 +98,7 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 | `mapMaxChars` | `3200` | Hard cap on rendered map characters |
 | `mapTtlMs` | `60000` | Refresh interval for the auto-injected map (ms, min 1000) |
 | `autoInject` | `true` | Register the system prompt section |
+| `codeHealth` | `false` | Register the `code_health` tool (cycles / orphan modules) |
 
 ## Supported languages
 
@@ -106,6 +109,8 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - **Index build** (`src/buildIndex.ts`): recursive scan (excludes applied), per-file tree-sitter extraction (`src/extract.ts`), JSON cache under `<repo>/.dsh-code-index/`, incremental refresh by mtime (only touched files re-parse).
 - **Search** (`src/search.ts`): pure scoring — exact `1` / prefix `0.8` / substring `0.5`, export boost, name order tiebreak.
 - **Repo map** (`src/repomap.ts`): personalized PageRank over the import graph (teleport = per-file density share, so hub files that are themselves imported by other hubs rise above flat in-degree counting), seeded by the density-aware file score (class/interface/function weighted, test paths damped), top-N files, per-file symbol cap, hard char truncation.
+- **Call graph** (`src/refgraph.ts`): call sites extracted per file (per language, with their enclosing function) are resolved by name into callers and callees — `code_refs` exposes this directly, and `code_search` uses call fan-in as a ranking tie-break.
+- **Health** (`src/health.ts`): Tarjan SCC over the import graph yields circular dependencies; orphan-module detection lists symbol-bearing files with no inbound or outbound imports (entry points and tests excluded).
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).
 
 ## Known limitations
@@ -119,7 +124,7 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 
 ```sh
 pnpm install
-pnpm test        # vitest — extractor, scan, cache, search, repo map
+pnpm test        # vitest — extractor, scan, cache, search, repo map, call graph, health
 pnpm typecheck
 pnpm build       # tsup → dist/index.js (ESM, external deps)
 ```

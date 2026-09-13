@@ -28,6 +28,16 @@ export interface SymbolInfo {
   signature: string
 }
 
+/** One call site: callee name, line, and the enclosing function ('' = module level). */
+export interface CallInfo {
+  /** Callee name as written (identifier, member/property, or qualified tail). */
+  name: string
+  /** 1-based line of the call expression. */
+  line: number
+  /** Enclosing function/method name, or '' for a module-level call. */
+  from: string
+}
+
 export interface IndexedFile {
   /** Repo-relative path (forward-slash). */
   path: string
@@ -38,6 +48,9 @@ export interface IndexedFile {
   /** Raw import specifiers found in this file ('./util', 'mypkg/core', …).
    *  Optional because caches written before reference ranking lack it. */
   imports?: string[]
+  /** Call sites found in this file (callee + line + enclosing function).
+   *  Optional because caches written before call-graph support lack it. */
+  calls?: CallInfo[]
 }
 
 export interface RepoIndex {

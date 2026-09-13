@@ -2,6 +2,17 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.5.0 — 2026-09-13
+
+- **feat(refs):** new `code_refs` tool — a function-level call graph built from the cache. For any symbol it returns in-repo definitions, callers (every call site invoking it, with the enclosing function) and callees (what the definition itself calls, resolved to `file:line`). Name-based resolution, so like-named symbols surface as candidate definitions rather than being guessed apart.
+- **feat(extract):** call-site extraction across all eight languages (TS/JS calls + `new`, Python `call`/`attribute`, Go `call_expression`/`selector_expression`, Rust calls + `field_expression`/`scoped_identifier`, Java `method_invocation`/`object_creation_expression`, C/C++ calls + `field_expression`/`qualified_identifier`). Each call records its enclosing function (`''` at module scope), which is what makes callers/callees precise without a second parse.
+- **feat(health):** optional `code_health` tool (off by default; enable with `codeHealth: true`) — Tarjan SCC detection over the import graph reports circular dependencies, and orphan-module detection flags symbol-bearing files that neither import nor are imported, excluding entry points and tests.
+- **feat(search):** call fan-in is now a tie-break in `code_search` ranking — when relevance and export status are equal, a symbol called from more places ranks first.
+- **feat(ui):** `code_search` and `code_symbols` emit a search-shaped `presentationMeta` and a `search` result card, so capable clients render matches as grouped-by-file results instead of raw text.
+- **feat(client):** browser half — per-tool cards for the `code_*` tools (structured search results with clickable file:line) and a `code-index` settings card in the Plugins settings page (auto-inject / code_health toggles plus repo-map size), backed by a Host settings namespace registered when a settings provider is present.
+- **feat(store):** caches written before call-graph support are treated as stale (calls are compared during the equality check) instead of silently shadowing the richer fresh index.
+- **test:** call-extraction coverage across all eight languages, call-graph resolution, cycle/orphan detection, and end-to-end `code_refs`/`code_health` execution.
+
 ## 0.4.0 — 2026-09-08
 
 - **feat(extract):** C and C++ support — 11 new extensions (`.cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`) parse through `tree-sitter-cpp`/`tree-sitter-c` with zero new dependencies (both grammars ship in the existing `tree-sitter-wasms` pack). Symbol extraction resolves names through the declarator chain: free functions, in-class methods, out-of-class definitions (`Scene::queryRegion` → bare `queryRegion`), constructors, templates, namespaces (→ module kind), structs/unions, enums and typedefs. `public:`/`private:` section tracking (structs default public, classes private) plus `static` internal-linkage detection drive the exported flag.

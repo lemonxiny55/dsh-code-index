@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { mkdtemp, rm, stat } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createIndexCache, tools } from '../src/tools.js'
@@ -124,5 +124,52 @@ describe('tool repository boundary', () => {
     const result = await codeIndex.execute({ action: 'status', repoRoot: root }, unusedContext)
     expect(result).toContain('no git repository found')
     await expect(stat(path.join(root, '.dsh-code-index'))).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+})
+
+describe('code_refs / code_health tools', () => {
+  it('traces callers across a real workspace', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-refs-'))
+    tempDirs.push(root)
+    await mkdir(path.join(root, '.git'), { recursive: true })
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await writeFile(
+      path.join(root, 'src/core.ts'),
+      ['export function helper() { return 1 }', 'export function main() { return helper() }'].join('\n'),
+    )
+    await writeFile(
+      path.join(root, 'src/use.ts'),
+      ["import { main } from './core'", 'export function run() { return main() }'].join('\n'),
+    )
+
+    const refs = tools.find((tool) => tool.name === 'code_refs')!
+    const context = {} as Parameters<typeof refs.execute>[1]
+    const callers = await refs.execute({ symbol: 'helper', direction: 'callers', repoRoot: root }, context)
+    expect(callers).toContain('src/core.ts:2')
+    expect(callers).toContain('callers (1)')
+
+    const callees = await refs.execute({ symbol: 'main', direction: 'callees', repoRoot: root }, context)
+    expect(callees).toContain('helper :2')
+  })
+
+  it('reports an import cycle from the graph', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-health-'))
+    tempDirs.push(root)
+    await mkdir(path.join(root, '.git'), { recursive: true })
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await writeFile(
+      path.join(root, 'src/a.ts'),
+      "import { b } from './b'\nexport function a() { return b() }\n",
+    )
+    await writeFile(
+      path.join(root, 'src/b.ts'),
+      "import { a } from './a'\nexport function b() { return a() }\n",
+    )
+
+    const health = tools.find((tool) => tool.name === 'code_health')!
+    const context = {} as Parameters<typeof health.execute>[1]
+    const report = await health.execute({ repoRoot: root }, context)
+    expect(report).toContain('circular dependencies (1)')
+    expect(report).toContain('src/a.ts → src/b.ts')
   })
 })

@@ -1,9 +1,10 @@
 /**
  * dsh-code-index — DeepSeek Harness bundle entry.
  *
- * Registers four model-visible tools (code_index / code_symbols /
- * code_search / code_map) backed by a tree-sitter symbol index, and
- * injects a bounded auto-updating repo map for the default workspace
+ * Registers five model-visible tools (code_index / code_symbols /
+ * code_search / code_map / code_refs) plus an opt-in code_health
+ * (config.codeHealth) backed by a tree-sitter symbol + call-graph index,
+ * and injects a bounded auto-updating repo map for the default workspace
  * into the system prompt.
  */
 
@@ -14,6 +15,8 @@ type Disposer = void | (() => void)
 interface MinimalContext {
   effect(fn: () => Disposer): void
   tools: { register(t: unknown): () => void }
+  get?(name: string): unknown
+  inject?(deps: string[], run: (ctx: MinimalContext) => void): unknown
   systemPrompt: {
     section(section: {
       name: string
@@ -34,6 +37,8 @@ export { symbolCount } from './types.js'
 export type { RepoIndex, IndexedFile, SymbolInfo, SymbolKind, IndexOptions } from './types.js'
 export { searchSymbols, renderHit } from './search.js'
 export { rankRepoMap, renderRepoMap, scoreFile } from './repomap.js'
+export { symbolRefs, buildSymbolTable, callerCounts } from './refgraph.js'
+export { findCycles, findOrphanModules, buildModuleGraph } from './health.js'
 export { tools } from './tools.js'
 
 import { getIndex, invalidateIndexCache, tools } from './tools.js'
@@ -41,6 +46,7 @@ import { findRepoRoot } from './buildIndex.js'
 import { rankRepoMap, renderRepoMap } from './repomap.js'
 import { symbolCount } from './types.js'
 import { applyConfig, getConfig, type PluginConfig } from './config.js'
+import { registerSettings } from './settings.js'
 
 export const inject = ['tools', 'systemPrompt'] as const
 
@@ -50,7 +56,23 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
   ctx.effect(() => {
     const disposers: Array<() => void> = []
     console.log('[dsh-code-index] plugin loaded')
+
+    // User-editable settings resolve over the composed plugin row; when a
+    // settings provider is mounted, every committed change reconfigures live.
+    // The provider initializes asynchronously, so wait for the service rather
+    // than reading it once at load (which can precede its availability).
+    if (ctx.inject) {
+      ctx.inject(['settings'], (settingsCtx) => {
+        registerSettings(
+          (name) => settingsCtx.get!(name),
+          pluginConfig,
+          (resolved) => applyConfig(resolved),
+        )
+      })
+    }
+
     for (const tool of tools) {
+      if (tool.name === 'code_health' && !getConfig().codeHealth) continue
       disposers.push(ctx.tools.register(tool))
       console.log(`[dsh-code-index] registered tool: ${tool.name}`)
     }

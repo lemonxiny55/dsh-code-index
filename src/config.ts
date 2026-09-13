@@ -13,6 +13,8 @@ export interface PluginConfig {
   mapTtlMs?: number
   /** Set false to disable the auto-injected system section. */
   autoInject?: boolean
+  /** Register the code_health tool (circles / orphans). Off by default. */
+  codeHealth?: boolean
 }
 
 interface EffectiveConfig {
@@ -21,6 +23,7 @@ interface EffectiveConfig {
   mapMaxChars: number
   mapTtlMs: number
   autoInject: boolean
+  codeHealth: boolean
 }
 
 const DEFAULTS: EffectiveConfig = {
@@ -29,6 +32,7 @@ const DEFAULTS: EffectiveConfig = {
   mapMaxChars: 3200,
   mapTtlMs: 60_000,
   autoInject: true,
+  codeHealth: false,
 }
 
 const state: { current: EffectiveConfig } = { current: { ...DEFAULTS } }

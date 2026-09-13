@@ -14,6 +14,8 @@
 | `code_symbols` | 列出符号(函数、类、接口、类型、方法……),带 file:line——支持按名称、路径、类型、是否导出过滤 |
 | `code_search` | 排名检索:精确 > 前缀 > 子串 > 子序列模糊,导出优先,带相关度分数与 file:line |
 | `code_map` | 限量排名仓库地图(按符号密度 + import 图 PageRank 取核心文件 + 关键符号与行号) |
+| `code_refs` | 沿调用图追踪符号:callers(谁调用了它)与 callees(它调用了谁),解析到 file:line |
+| `code_health` | 可选开启(`codeHealth: true`):环依赖(import 环)与孤儿模块 |
 
 外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,按 TTL 自动刷新(`mapTtlMs`,默认 60 秒)。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
 
@@ -93,6 +95,7 @@ export function extractSymbols(code, id) — src/extract.ts:121
 | `mapMaxChars` | `3200` | 渲染地图的硬性字符上限 |
 | `mapTtlMs` | `60000` | 自动注入地图的刷新间隔(毫秒,最小 1000) |
 | `autoInject` | `true` | 是否注册系统提示词段 |
+| `codeHealth` | `false` | 是否注册 `code_health` 工具(环/孤儿模块) |
 
 ## 支持的语言
 
@@ -103,6 +106,8 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - **索引构建**(`src/buildIndex.ts`):递归扫描(应用排除规则),逐文件 tree-sitter 提取(`src/extract.ts`),JSON 缓存置于 `<repo>/.dsh-code-index/`,按 mtime 增量刷新(只有被改动的文件才重新解析)。
 - **搜索**(`src/search.ts`):纯打分——精确 `1` / 前缀 `0.8` / 子串 `0.5`,导出加权,名称序平局裁决。
 - **仓库地图**(`src/repomap.ts`):import 图上的个性化 PageRank(传送向量 = 各文件密度份额,被其他枢纽文件引用的枢纽会比平铺入度统计排得更靠前),以密度感知的文件打分为底(class/interface/function 加权,测试路径衰减),取 Top-N 文件,每文件符号上限,硬截断。
+- **调用图**(`src/refgraph.ts`):逐文件提取调用点(按语言,并记录其所属函数),按名称解析成 callers 与 callees——`code_refs` 直接暴露,`code_search` 也把调用热度作为排名平局裁决。
+- **健康检查**(`src/health.ts`):对 import 图跑 Tarjan SCC 得到环依赖;孤儿模块检测列出既不被 import、也不 import 任何文件的含符号文件(排除入口与测试)。
 - **工作区解析**:每个工具解析会话 cwd(`agent.session.header.cwd`)并向上查找最近的 `.git`(有界——没有仓库标记的目录绝不会被索引)。
 
 ## 已知限制
@@ -116,7 +121,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 
 ```sh
 pnpm install
-pnpm test        # vitest —— 提取器、扫描、缓存、搜索、仓库地图
+pnpm test        # vitest —— 提取器、扫描、缓存、搜索、仓库地图、调用图、健康检查
 pnpm typecheck
 pnpm build       # tsup → dist/index.js(ESM,外部依赖)
 ```
