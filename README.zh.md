@@ -74,6 +74,12 @@ export function extractSymbols(code, id) — src/extract.ts:121
 
 索引在首次使用时惰性构建;后续调用由磁盘缓存提供,并按 mtime 增量刷新。
 
+### 调用图
+
+`code_refs` 沿调用图追踪符号——下例直接跑在本仓库自身(`getIndex` 定义于 `src/tools.ts:105`,有 7 个调用点,其 callee 解析到 `src/tools.ts:74`):
+
+![在本仓库上运行 code_refs:定义、7 个带所属函数的调用点,以及解析到 file:line 的 callees](assets/code-refs-demo.png)
+
 ## 配置
 
 选项通过插件行的 `config` 在 profile 补丁中传入(缺省时使用默认值):

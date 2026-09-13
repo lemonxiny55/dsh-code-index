@@ -77,6 +77,12 @@ export function extractSymbols(code, id) — src/extract.ts:121
 
 The index builds lazily on first use; later calls are served from the on-disk cache with mtime-incremental refresh.
 
+### Call graph
+
+`code_refs` traces a symbol through the call graph — the run below is on this repo itself (`getIndex` is defined at `src/tools.ts:105`, called from 7 sites, and its callee resolves to `src/tools.ts:74`):
+
+![code_refs on dsh-code-index: definitions, 7 callers with their enclosing function, and callees resolved to file:line](assets/code-refs-demo.png)
+
 ## Configuration
 
 Options are passed as the plugin row's `config` in the profile patch (or defaults are used if absent):
