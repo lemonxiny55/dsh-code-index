@@ -11,7 +11,8 @@ import {
   loadIndex,
   saveIndex,
 } from './store.js'
-import type { IndexOptions, IndexedFile, RepoIndex } from './types.js'
+import type { IndexOptions, IndexedFile, RepoIndex, SymbolInfo } from './types.js'
+import { REPO_INDEX_SCHEMA_VERSION } from './types.js'
 
 /**
  * Full build: scan + extract every supported file. Existing per-file
@@ -51,7 +52,7 @@ export async function buildIndex(
         } catch {
           return null
         }
-        const { symbols, imports, calls } = await extractAll(code, lang)
+        const { symbols, imports, importDetails, calls } = await extractAll(code, lang, f.rel)
         // Backfill the repo-relative path: the extractor is file-agnostic and
         // leaves SymbolInfo.file empty, but search/render depend on it.
         return {
@@ -60,6 +61,7 @@ export async function buildIndex(
           mtimeMs: f.mtimeMs,
           symbols: symbols.map((s) => ({ ...s, file: f.rel })),
           imports,
+          importDetails,
           calls,
         } satisfies IndexedFile
       }),
@@ -70,6 +72,7 @@ export async function buildIndex(
   }
 
   return {
+    schemaVersion: REPO_INDEX_SCHEMA_VERSION,
     root,
     generatedAt: Date.now(),
     files,
@@ -104,6 +107,7 @@ export async function buildIndexWithCache(
 }
 
 function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
+  if (left.schemaVersion !== right.schemaVersion) return false
   if (cacheKeyForRoot(left.root) !== cacheKeyForRoot(right.root)) return false
   if (left.files.length !== right.files.length) return false
   if (left.excludedDirs.length !== right.excludedDirs.length) return false
@@ -116,9 +120,11 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
     }
     if (file.symbols.length !== other.symbols.length) return false
     if (!callsEqual(file.calls, other.calls)) return false
+    if (!importsEqual(file.importDetails, other.importDetails)) return false
     return file.symbols.every((symbol, symbolIndex) => {
       const candidate = other.symbols[symbolIndex]
       return candidate !== undefined
+        && symbol.id === candidate.id
         && symbol.name === candidate.name
         && symbol.kind === candidate.kind
         && symbol.file === candidate.file
@@ -126,6 +132,47 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
         && symbol.endLine === candidate.endLine
         && symbol.exported === candidate.exported
         && symbol.signature === candidate.signature
+        && symbol.ordinal === candidate.ordinal
+        && scopesEqual(symbol.scope, candidate.scope)
+    })
+  })
+}
+
+function scopesEqual(left: SymbolInfo['scope'], right: SymbolInfo['scope']): boolean {
+  if (left.length !== right.length) return false
+  return left.every((part, index) => {
+    const other = right[index]
+    return other !== undefined
+      && part.kind === other.kind
+      && part.name === other.name
+      && part.ordinal === other.ordinal
+  })
+}
+
+function importsEqual(
+  left: IndexedFile['importDetails'],
+  right: IndexedFile['importDetails'],
+): boolean {
+  const a = left ?? []
+  const b = right ?? []
+  if (a.length !== b.length) return false
+  return a.every((info, index) => {
+    const other = b[index]
+    if (
+      !other ||
+      info.specifier !== other.specifier ||
+      info.line !== other.line ||
+      info.kind !== other.kind ||
+      info.bindings.length !== other.bindings.length
+    ) {
+      return false
+    }
+    return info.bindings.every((binding, bindingIndex) => {
+      const candidate = other.bindings[bindingIndex]
+      return candidate !== undefined
+        && binding.imported === candidate.imported
+        && binding.local === candidate.local
+        && binding.kind === candidate.kind
     })
   })
 }
@@ -144,6 +191,8 @@ function callsEqual(left: IndexedFile['calls'], right: IndexedFile['calls']): bo
       && call.name === other.name
       && call.line === other.line
       && call.from === other.from
+      && call.fromId === other.fromId
+      && call.qualifier === other.qualifier
   })
 }
 

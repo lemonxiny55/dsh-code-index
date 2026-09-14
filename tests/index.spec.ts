@@ -39,9 +39,10 @@ describe('plugin lifecycle', () => {
       'code_search',
       'code_map',
       'code_refs',
+      'code_change_context',
     ])
     first.dispose()
-    expect(first.disposedTools()).toBe(5)
+    expect(first.disposedTools()).toBe(6)
     expect(first.disposedSections()).toBe(1)
 
     const second = mount()
@@ -51,6 +52,7 @@ describe('plugin lifecycle', () => {
       'code_search',
       'code_map',
       'code_refs',
+      'code_change_context',
     ])
     second.dispose()
   })

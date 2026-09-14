@@ -1,9 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { buildModuleGraph, findCycles, findOrphanModules } from '../src/health.js'
-import type { IndexedFile, RepoIndex, SymbolInfo } from '../src/types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type IndexedFile, type RepoIndex, type SymbolInfo } from '../src/types.js'
 
 function sym(name: string): SymbolInfo {
-  return { name, kind: 'function', file: '', line: 1, endLine: 1, exported: true, signature: `${name}()` }
+  return {
+    id: `sym:v1:test#function:${name}@1`,
+    name,
+    kind: 'function',
+    file: '',
+    line: 1,
+    endLine: 1,
+    exported: true,
+    signature: `${name}()`,
+    scope: [],
+    ordinal: 1,
+  }
 }
 
 function file(path: string, imports: string[], symbolCount = 1): IndexedFile {
@@ -17,7 +28,7 @@ function file(path: string, imports: string[], symbolCount = 1): IndexedFile {
 }
 
 function index(files: IndexedFile[]): RepoIndex {
-  return { root: '/tmp/repo', generatedAt: 0, excludedDirs: [], files }
+  return { schemaVersion: REPO_INDEX_SCHEMA_VERSION, root: '/tmp/repo', generatedAt: 0, excludedDirs: [], files }
 }
 
 describe('buildModuleGraph', () => {

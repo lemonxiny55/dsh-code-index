@@ -322,7 +322,15 @@ export const name = 'dsh-code-index'
 /** `slots` is required for direct access; `settingsScope` binds lazily below. */
 export const inject = ['slots']
 
-const TOOLVIEW_KEYS = ['code_index', 'code_symbols', 'code_search', 'code_map', 'code_refs', 'code_health']
+const TOOLVIEW_KEYS = [
+  'code_index',
+  'code_symbols',
+  'code_search',
+  'code_map',
+  'code_refs',
+  'code_change_context',
+  'code_health',
+]
 
 export function apply(ctx: ClientContextLike): void {
   const card = CodeToolCard as unknown as (props: never) => ReactNode

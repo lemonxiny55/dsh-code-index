@@ -13,7 +13,15 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { type Node, Language, Parser, Query } from 'web-tree-sitter'
-import type { CallInfo, SymbolInfo, SymbolKind } from './types.js'
+import type {
+  CallInfo,
+  ImportBinding,
+  ImportInfo,
+  ScopeKind,
+  SymbolInfo,
+  SymbolKind,
+  SymbolScopePart,
+} from './types.js'
 
 const require = createRequire(import.meta.url)
 // web-tree-sitter ≥0.25 is ESM with named exports; 0.20.x was CJS
@@ -311,22 +319,42 @@ function getLanguage(id: LanguageId): Promise<Language> {
  * throws for parse errors — a failed parse yields empty lists (the caller
  * logs and continues).
  */
+/** RFC 3986-strict component encoding for symbol ids (encodes `! ' ( ) * ~`). */
+export function encodeSymbolComponent(value: string): string {
+  return encodeURIComponent(value).replace(
+    /[!'()*~]/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+  )
+}
+
+/** A captured declaration retained until stable ids can be assigned. */
+export interface SymbolDraft {
+  symbol: Omit<SymbolInfo, 'id' | 'scope' | 'ordinal' | 'file'>
+  node: Node
+}
+
 export interface ExtractedFile {
   symbols: SymbolInfo[]
-  /** Raw module specifiers, e.g. './util', 'node:fs', './utils' (py). */
+  /** Derived compatibility view of {@link importDetails} specifiers. */
   imports: string[]
+  /** Structured import/include/use sites with name bindings. */
+  importDetails: ImportInfo[]
   /** Call sites, ordered by line: callee name + enclosing function. */
   calls: CallInfo[]
 }
 
-export async function extractAll(code: string, id: LanguageId): Promise<ExtractedFile> {
+export async function extractAll(
+  code: string,
+  id: LanguageId,
+  file = '',
+): Promise<ExtractedFile> {
   const lang = await getLanguage(id)
   const parser = await getParser()
   parser.setLanguage(lang)
   const tree = parser.parse(code)
   if (!tree) throw new Error(`tree-sitter parse returned null for a ${id} source`)
   try {
-    const symbols: SymbolInfo[] = []
+    const drafts: SymbolDraft[] = []
     const symbolQuery = new Query(lang, QUERIES[id])
     try {
       const captures = symbolQuery.captures(tree.rootNode)
@@ -340,30 +368,37 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
         if (def.kind === 'variable' && !isModuleLevelVariable(id, node)) continue
         const name = nameOf(id, node)
         if (!name) continue
-        symbols.push({
-          name,
-          kind: kindFor(id, node, def.kind),
-          file: '', // set by the caller (extractor is file-agnostic)
-          line: node.startPosition.row + 1,
-          endLine: node.endPosition.row + 1,
-          exported: isExported(id, node),
-          signature: signatureFor(id, node),
+        drafts.push({
+          symbol: {
+            name,
+            kind: kindFor(id, node, def.kind),
+            line: node.startPosition.row + 1,
+            endLine: node.endPosition.row + 1,
+            exported: isExported(id, node),
+            signature: signatureFor(id, node),
+          },
+          node,
         })
       }
     } finally {
       symbolQuery.delete()
     }
 
-    const imports: string[] = []
+    const dedupedDrafts = dedupeDrafts(drafts)
+    const symbols = assignSymbolIds(file, dedupedDrafts, id)
+    const symbolByNodeId = new Map<number, SymbolInfo>()
+    dedupedDrafts.forEach((draft, index) => symbolByNodeId.set(draft.node.id, symbols[index]))
+
+    const importDetails: ImportInfo[] = []
     const importQuery = new Query(lang, IMPORT_QUERIES[id])
     try {
       for (const cap of importQuery.captures(tree.rootNode)) {
-        const spec = specifierOf(id, cap.node)
-        if (spec) imports.push(spec)
+        for (const info of importInfoFor(id, cap.node)) importDetails.push(info)
       }
     } finally {
       importQuery.delete()
     }
+    const imports = importDetails.map((info) => info.specifier)
 
     const calls: CallInfo[] = []
     const callQuery = new Query(lang, CALL_QUERIES[id])
@@ -373,29 +408,344 @@ export async function extractAll(code: string, id: LanguageId): Promise<Extracte
         const name = cap.node.text.trim()
         if (!name) continue
         const line = cap.node.startPosition.row + 1
-        const from = enclosingCallable(id, cap.node)
+        const callable = enclosingCallableNode(id, cap.node)
+        const from = callable ? callableNameOf(id, callable) : ''
+        const fromId = callable ? nearestDraftId(callable, symbolByNodeId) : null
         const key = `${from}|${name}|${line}`
         if (seen.has(key)) continue
         seen.add(key)
-        calls.push({ name, line, from })
+        calls.push({ name, line, from, fromId, qualifier: qualifierOf(cap.node) })
       }
     } finally {
       callQuery.delete()
     }
     calls.sort((a, b) => a.line - b.line || a.name.localeCompare(b.name))
 
-    symbols.sort((a, b) => a.line - b.line)
-    const seen = new Set<string>()
-    const deduped = symbols.filter((s) => {
-      const key = `${s.kind}|${s.name}|${s.line}`
-      if (seen.has(key)) return false
-      seen.add(key)
-      return true
-    })
-    return { symbols: deduped, imports, calls }
+    symbols.sort(
+      (a, b) =>
+        a.line - b.line ||
+        a.endLine - b.endLine ||
+        a.kind.localeCompare(b.kind) ||
+        a.name.localeCompare(b.name),
+    )
+    return { symbols, imports, importDetails, calls }
   } finally {
     tree.delete()
   }
+}
+
+/**
+ * Drop duplicate captures of the *same* AST node only. Keying by
+ * `kind|name|line` would also collapse two distinct same-named declarations
+ * sharing a line (`class A { run() {} } class B { run() {} }`); identity
+ * keeps them so `assignOrdinals` can separate them by source order.
+ */
+function dedupeDrafts(drafts: SymbolDraft[]): SymbolDraft[] {
+  const sorted = [...drafts].sort(
+    (a, b) => a.symbol.line - b.symbol.line || a.node.startIndex - b.node.startIndex,
+  )
+  const seen = new Set<number>()
+  const out: SymbolDraft[] = []
+  for (const draft of sorted) {
+    if (seen.has(draft.node.id)) continue
+    seen.add(draft.node.id)
+    out.push(draft)
+  }
+  return out
+}
+
+/** One scope owner descriptor produced by a language-specific helper. */
+interface OwnerDesc {
+  kind: ScopeKind
+  name: string
+}
+
+/** A scope node: a captured declaration or a synthetic owner, by index. */
+interface ScopeEntry {
+  kind: ScopeKind
+  name: string
+  startIndex: number
+  endIndex: number
+  /** Index of the parent entry; -1 = module root. */
+  parent: number
+  ordinal: number
+  scopeKey: string
+  /** Draft index for captured declarations; -1 for synthetic owners. */
+  draftIndex: number
+}
+
+const MATCHABLE_OWNER_KINDS: ReadonlySet<ScopeKind> = new Set([
+  'class',
+  'interface',
+  'trait',
+  'module',
+  'namespace',
+  'impl',
+])
+
+/** Map a captured symbol kind onto the scope vocabulary used in symbol ids. */
+function scopeKindOf(language: LanguageId, kind: SymbolKind): ScopeKind {
+  switch (kind) {
+    case 'class':
+      return 'class'
+    case 'interface':
+      return language === 'rust' ? 'trait' : 'interface'
+    case 'function':
+      return 'function'
+    case 'method':
+      return 'method'
+    case 'module':
+      return language === 'cpp' ? 'namespace' : 'module'
+    default:
+      return 'owner'
+  }
+}
+
+function segmentOf(entry: ScopeEntry): string {
+  return `${entry.kind}:${encodeSymbolComponent(entry.name)}@${entry.ordinal}`
+}
+
+/**
+ * Assign stable qualified ids, owner scopes and sibling ordinals to captured
+ * declarations. Ordinals are 1-based within a `(parent scope, kind, name)`
+ * group, ordered by source position, so ids survive blank-line/comment/body
+ * edits but not reordering or inserting an earlier duplicate.
+ */
+export function assignSymbolIds(
+  file: string,
+  drafts: readonly SymbolDraft[],
+  language: LanguageId,
+): SymbolInfo[] {
+  const entries: ScopeEntry[] = drafts.map((draft, index) => ({
+    kind: scopeKindOf(language, draft.symbol.kind),
+    name: draft.symbol.name,
+    startIndex: draft.node.startIndex,
+    endIndex: draft.node.endIndex,
+    parent: -1,
+    ordinal: 1,
+    scopeKey: '',
+    draftIndex: index,
+  }))
+  const entryByNodeId = new Map<number, number>()
+  drafts.forEach((draft, index) => entryByNodeId.set(draft.node.id, index))
+  const entriesByName = new Map<string, number[]>()
+  entries.forEach((entry, index) => {
+    const list = entriesByName.get(entry.name)
+    if (list) list.push(index)
+    else entriesByName.set(entry.name, [index])
+  })
+
+  const syntheticByKey = new Map<string, number>()
+
+  const resolveOwner = (desc: OwnerDesc, parent: number, selfIndex: number): number => {
+    const matches = entriesByName.get(desc.name)
+    // Only an owner already scoped under the same parent may absorb this
+    // segment — a global name match would attach `b::Widget::draw` to the
+    // first `Widget` in the file. `owner` is a wildcard kind: the qualified
+    // segment does not know whether it names a class or a namespace.
+    const typed = matches?.find((index) => {
+      if (index === selfIndex) return false
+      const entry = entries[index]!
+      if (!MATCHABLE_OWNER_KINDS.has(entry.kind)) return false
+      if (entry.parent !== parent) return false
+      return desc.kind === 'owner' || entry.kind === desc.kind
+    })
+    if (typed !== undefined) return typed
+    const key = `${parent}\u0000${desc.kind}\u0000${desc.name}`
+    const existing = syntheticByKey.get(key)
+    if (existing !== undefined) return existing
+    const index = entries.length
+    entries.push({
+      kind: desc.kind,
+      name: desc.name,
+      startIndex: Number.MAX_SAFE_INTEGER,
+      endIndex: Number.MAX_SAFE_INTEGER,
+      parent,
+      ordinal: 1,
+      scopeKey: '',
+      draftIndex: -1,
+    })
+    syntheticByKey.set(key, index)
+    return index
+  }
+
+  drafts.forEach((draft, index) => {
+    let parent = -1
+    for (let node = draft.node.parent; node; node = node.parent) {
+      const owner = entryByNodeId.get(node.id)
+      if (owner !== undefined) {
+        parent = owner
+        break
+      }
+    }
+    for (const desc of ownerScopeOf(language, draft.node)) {
+      parent = resolveOwner(desc, parent, index)
+    }
+    entries[index]!.parent = parent
+  })
+
+  assignOrdinals(entries)
+
+  return drafts.map((draft, index) => {
+    const entry = entries[index]!
+    const chain: ScopeEntry[] = []
+    for (let node: ScopeEntry | undefined = entries[entry.parent]; node; node = entries[node.parent]) {
+      chain.push(node)
+    }
+    chain.reverse()
+    const scope: SymbolScopePart[] = chain.map((node) => ({
+      kind: node.kind,
+      name: node.name,
+      ordinal: node.ordinal,
+    }))
+    const segments = [...chain.map(segmentOf), segmentOf(entry)]
+    return {
+      ...draft.symbol,
+      file,
+      id: `sym:v1:${encodeSymbolComponent(file)}#${segments.join('/')}`,
+      scope,
+      ordinal: entry.ordinal,
+    }
+  })
+}
+
+/** BFS by depth so a parent's scopeKey is known before its children group. */
+function assignOrdinals(entries: ScopeEntry[]): void {
+  const depthCache = new Map<number, number>()
+  const depthOf = (index: number): number => {
+    const cached = depthCache.get(index)
+    if (cached !== undefined) return cached
+    const parent = entries[index]!.parent
+    const value = parent >= 0 ? depthOf(parent) + 1 : 0
+    depthCache.set(index, value)
+    return value
+  }
+
+  const byDepth = new Map<number, number[]>()
+  let maxDepth = 0
+  for (let index = 0; index < entries.length; index++) {
+    const depth = depthOf(index)
+    maxDepth = Math.max(maxDepth, depth)
+    const list = byDepth.get(depth)
+    if (list) list.push(index)
+    else byDepth.set(depth, [index])
+  }
+
+  for (let depth = 0; depth <= maxDepth; depth++) {
+    const groups = new Map<string, number[]>()
+    for (const index of byDepth.get(depth) ?? []) {
+      const entry = entries[index]!
+      const parentKey = entry.parent >= 0 ? entries[entry.parent]!.scopeKey : ''
+      const key = `${parentKey}\u0000${entry.kind}\u0000${entry.name}`
+      const list = groups.get(key)
+      if (list) list.push(index)
+      else groups.set(key, [index])
+    }
+    for (const group of groups.values()) {
+      group.sort((a, b) => {
+        const left = entries[a]!
+        const right = entries[b]!
+        return (
+          left.startIndex - right.startIndex ||
+          left.endIndex - right.endIndex ||
+          left.kind.localeCompare(right.kind) ||
+          left.name.localeCompare(right.name)
+        )
+      })
+      group.forEach((index, position) => {
+        const entry = entries[index]!
+        entry.ordinal = position + 1
+        const segment = segmentOf(entry)
+        entry.scopeKey =
+          entry.parent >= 0 ? `${entries[entry.parent]!.scopeKey}/${segment}` : segment
+      })
+    }
+  }
+}
+
+/** Owners not represented by lexical ancestry (receiver/impl/qualified names). */
+function ownerScopeOf(language: LanguageId, node: Node): OwnerDesc[] {
+  if (language === 'go') return goReceiverOwners(node)
+  if (language === 'rust') return rustImplOwners(node)
+  if (language === 'cpp' || language === 'c') return cppQualifiedOwners(node)
+  return []
+}
+
+function goReceiverOwners(node: Node): OwnerDesc[] {
+  if (node.type !== 'method_declaration') return []
+  const receiver = node.childForFieldName('receiver')
+  const type = receiver ? findDescendant(receiver, 'type_identifier') : null
+  return type ? [{ kind: 'class', name: type.text.trim() }] : []
+}
+
+function rustImplOwners(node: Node): OwnerDesc[] {
+  if (node.type !== 'function_item' && node.type !== 'function_signature_item') return []
+  let impl: Node | null = null
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'impl_item') {
+      impl = parent
+      break
+    }
+    if (parent.type === 'trait_item' || CALLABLE_NODES.rust.has(parent.type)) return []
+  }
+  if (!impl) return []
+  const type = impl.childForFieldName('type')
+  const targetName = type ? findDescendant(type, 'type_identifier')?.text.trim() : undefined
+  const traitName = impl.childForFieldName('trait')?.text.trim()
+  // Keep the impl as its own scope segment: distinct trait impls for one type
+  // are separate scopes. Carry `Trait for Type` so `impl A for Config` and
+  // `impl B for Config` do not collide; a bare type name covers inherent impls.
+  const name = targetName && traitName ? `${traitName} for ${targetName}` : (targetName ?? traitName)
+  return name ? [{ kind: 'impl', name }] : []
+}
+
+function cppQualifiedOwners(node: Node): OwnerDesc[] {
+  const declarator = cppDeclaratorQid(node)
+  if (!declarator) return []
+  return cppQualifiedSegments(declarator)
+    .slice(0, -1)
+    .map((name) => ({ kind: 'owner' as ScopeKind, name }))
+}
+
+/** Descend the C/C++ declarator chain to an out-of-class `Scope::name` form. */
+function cppDeclaratorQid(node: Node): Node | null {
+  let current = node.childForFieldName?.('declarator')
+  while (current) {
+    if (current.type === 'qualified_identifier') return current
+    if (!current.type.includes('declarator')) return null
+    current = current.childForFieldName?.('declarator') ?? current.namedChildren[0] ?? null
+  }
+  return null
+}
+
+/** Flatten a (right-nested) C++ qualified identifier, outermost name first. */
+function cppQualifiedSegments(qualified: Node): string[] {
+  const scope = qualified.childForFieldName('scope')
+  const name = qualified.childForFieldName('name')
+  const head = scope ? [scope.text.trim()] : []
+  const tail =
+    name?.type === 'qualified_identifier'
+      ? cppQualifiedSegments(name)
+      : [name?.text.trim() ?? '']
+  return [...head, ...tail].filter(Boolean)
+}
+
+function findDescendant(node: Node, type: string): Node | null {
+  if (node.type === type) return node
+  for (const child of node.namedChildren) {
+    if (!child) continue
+    const nested = findDescendant(child, type)
+    if (nested) return nested
+  }
+  return null
+}
+
+function nearestDraftId(node: Node, symbols: Map<number, SymbolInfo>): string | null {
+  for (let current: Node | null = node; current; current = current.parent) {
+    const symbol = symbols.get(current.id)
+    if (symbol) return symbol.id
+  }
+  return null
 }
 
 /** Symbols only — see extractAll for the combined parse. */
@@ -445,8 +795,8 @@ function cppNameOf(node: Node): string {
         continue
       }
       if (current.type === 'qualified_identifier') {
-        // app::main_entry — the bare name is the last segment.
-        return current.childForFieldName?.('name')?.text.trim() ?? current.text.trim()
+        // app::inner::Widget::draw — the bare name is the deepest segment.
+        return cppQualifiedSegments(current).at(-1) ?? ''
       }
       if (
         current.type === 'identifier' ||
@@ -462,52 +812,274 @@ function cppNameOf(node: Node): string {
 }
 
 /**
- * The nearest enclosing function/method of a call site. Anonymous function
- * forms (arrow / function expression) borrow the name of the variable they are
- * assigned to; a call at module scope returns ''.
+ * The nearest enclosing function/method node of a call site; module level
+ * returns null. Anonymous function forms (arrow / function expression) are
+ * owned by the variable they are assigned to (see {@link callableNameOf} and
+ * {@link nearestDraftId}).
  */
-function enclosingCallable(id: LanguageId, node: Node): string {
+function enclosingCallableNode(id: LanguageId, node: Node): Node | null {
   const callable = CALLABLE_NODES[id]
   for (let parent = node.parent; parent; parent = parent.parent) {
-    if (!callable.has(parent.type)) continue
-    const named = nameOf(id, parent)
-    if (named) return named
-    const declaration = parent.parent
-    const field = declaration?.type === 'variable_declarator' ? 'name' : null
-    if (field) return declaration?.childForFieldName?.(field)?.text.trim() ?? ''
-    return ''
+    if (callable.has(parent.type)) return parent
+  }
+  return null
+}
+
+/** Name of the function/method owning a callable node; '' when anonymous. */
+function callableNameOf(id: LanguageId, callable: Node): string {
+  const named = nameOf(id, callable)
+  if (named) return named
+  const declaration = callable.parent
+  if (declaration?.type === 'variable_declarator') {
+    return declaration.childForFieldName?.('name')?.text.trim() ?? ''
   }
   return ''
 }
 
-/** Read the raw module specifier out of a captured import statement. */
-function specifierOf(id: LanguageId, node: Node): string | null {  switch (node.type) {
-    case 'import_statement':
-      // ts/js: `import … from './x'` (source); python: `import a.b` (name)
-      if (id === 'python') return dottedToPath(node.childForFieldName('name')?.text)
-      return stripQuotes(node.childForFieldName('source')?.text)
-    case 'export_statement':
-      // ts/js re-export: `export … from './x'`; plain exports have no source
-      return stripQuotes(node.childForFieldName('source')?.text)
-    case 'import_from_statement': {
-      // python: `from .utils import x` / `from mypkg.core import Thing`
-      const raw = node.childForFieldName('module_name')?.text
-      if (raw == null) return null
-      return raw.startsWith('.') ? pythonRelative(raw) : dottedToPath(raw)
-    }
-    case 'import_spec': // go: `import "example.com/foo/util"`
-      return stripQuotes(node.childForFieldName('path')?.text)
-    case 'use_declaration': // rust: `use crate::a::b::{c, d}`
-      return rustUsePath(node.childForFieldName('argument')?.text)
-    case 'import_declaration': // java: `import com.example.Thing;`
-      return dottedToPath(node.namedChildren[0]?.text)
-    case 'preproc_include':
-      // path field: string_literal for "x.hpp" (in-repo, resolvable) or
-      // system_lib_string for <cstdio> (stripQuotes yields null → dropped).
-      return stripQuotes(node.childForFieldName('path')?.text)
+/** Receiver/namespace text of a qualified call (`ns.foo()` -> "ns"), else null. */
+function qualifierOf(node: Node): string | null {
+  const parent = node.parent
+  if (!parent) return null
+  let receiver: Node | null | undefined
+  switch (parent.type) {
+    case 'member_expression':
+    case 'method_invocation':
+    case 'attribute':
+      receiver = parent.childForFieldName('object')
+      break
+    case 'selector_expression':
+      receiver = parent.childForFieldName('operand')
+      break
+    case 'field_expression':
+      receiver = parent.childForFieldName('value') ?? parent.childForFieldName('argument')
+      break
+    case 'qualified_identifier':
+    case 'scoped_identifier':
+      receiver = parent.childForFieldName('scope') ?? parent.childForFieldName('path')
+      break
     default:
       return null
   }
+  const text = receiver?.text.replace(/\s+/g, ' ').trim()
+  return text ? text : null
+}
+
+/** Structured import sites for a captured import/include/use statement. */
+function importInfoFor(id: LanguageId, node: Node): ImportInfo[] {
+  const line = node.startPosition.row + 1
+  switch (node.type) {
+    case 'import_statement':
+      return id === 'python' ? pythonModuleImports(node, line) : tsJsImports(node, line)
+    case 'export_statement':
+      return tsJsReexport(node, line)
+    case 'import_from_statement':
+      return pythonFromImport(node, line)
+    case 'import_spec':
+      return goImport(node, line)
+    case 'use_declaration':
+      return rustUse(node, line)
+    case 'import_declaration':
+      return javaImport(node, line)
+    case 'preproc_include': {
+      const specifier = stripQuotes(node.childForFieldName('path')?.text)
+      return specifier ? [{ specifier, line, kind: 'include', bindings: [] }] : []
+    }
+    default:
+      return []
+  }
+}
+
+function tsJsImports(node: Node, line: number): ImportInfo[] {
+  const specifier = stripQuotes(node.childForFieldName('source')?.text)
+  if (!specifier) return []
+  return [{ specifier, line, kind: 'import', bindings: importClauseBindings(node) }]
+}
+
+function importClauseBindings(node: Node): ImportBinding[] {
+  const bindings: ImportBinding[] = []
+  const clause = node.namedChildren.find((child) => child?.type === 'import_clause')
+  if (!clause) return bindings
+  for (const child of clause.namedChildren) {
+    if (!child) continue
+    if (child.type === 'identifier') {
+      bindings.push({ imported: 'default', local: child.text.trim(), kind: 'default' })
+    } else if (child.type === 'namespace_import') {
+      const local = child.namedChildren.find((c) => c?.type === 'identifier')?.text.trim()
+      if (local) bindings.push({ imported: '*', local, kind: 'namespace' })
+    } else if (child.type === 'named_imports') {
+      for (const spec of child.namedChildren) {
+        if (spec?.type !== 'import_specifier') continue
+        const imported = spec.childForFieldName('name')?.text.trim()
+        if (!imported) continue
+        const alias = spec.childForFieldName('alias')?.text.trim()
+        bindings.push({ imported, local: alias ?? imported, kind: 'named' })
+      }
+    }
+  }
+  return bindings
+}
+
+function tsJsReexport(node: Node, line: number): ImportInfo[] {
+  const specifier = stripQuotes(node.childForFieldName('source')?.text)
+  if (!specifier) return []
+  const bindings: ImportBinding[] = []
+  const clause = node.namedChildren.find((child) => child?.type === 'export_clause')
+  for (const spec of clause?.namedChildren ?? []) {
+    if (spec?.type !== 'export_specifier') continue
+    const imported = spec.childForFieldName('name')?.text.trim()
+    if (!imported) continue
+    const alias = spec.childForFieldName('alias')?.text.trim()
+    bindings.push({ imported, local: alias ?? imported, kind: 'named' })
+  }
+  const namespaceExport = node.namedChildren.find((child) => child?.type === 'namespace_export')
+  const local = namespaceExport?.namedChildren.find((c) => c?.type === 'identifier')?.text.trim()
+  if (local) bindings.push({ imported: '*', local, kind: 'namespace' })
+  return [{ specifier, line, kind: 'reexport', bindings }]
+}
+
+function pythonModuleImports(node: Node, line: number): ImportInfo[] {
+  const out: ImportInfo[] = []
+  for (const nameNode of node.childrenForFieldName('name')) {
+    if (!nameNode) continue
+    if (nameNode.type === 'aliased_import') {
+      const moduleName = nameNode.childForFieldName('name')?.text.trim()
+      const specifier = dottedToPath(moduleName)
+      if (!specifier) continue
+      const alias = nameNode.childForFieldName('alias')?.text.trim()
+      out.push({
+        specifier,
+        line,
+        kind: 'import',
+        bindings: [
+          { imported: moduleName ?? null, local: alias ?? moduleName ?? '', kind: 'namespace' },
+        ],
+      })
+    } else if (nameNode.type === 'dotted_name') {
+      const moduleName = nameNode.text.trim()
+      const specifier = dottedToPath(moduleName)
+      if (!specifier) continue
+      out.push({
+        specifier,
+        line,
+        kind: 'import',
+        bindings: [{ imported: null, local: moduleName.split('.')[0] ?? moduleName, kind: 'package' }],
+      })
+    }
+  }
+  return out
+}
+
+function pythonFromImport(node: Node, line: number): ImportInfo[] {
+  const raw = node.childForFieldName('module_name')?.text
+  if (raw == null) return []
+  const specifier = raw.startsWith('.') ? pythonRelative(raw) : dottedToPath(raw)
+  if (!specifier) return []
+  const moduleNode = node.childForFieldName('module_name')
+  const bindings: ImportBinding[] = []
+  for (const nameNode of node.namedChildren) {
+    if (!nameNode || nameNode.id === moduleNode?.id) continue
+    if (nameNode.type === 'aliased_import') {
+      const imported = nameNode.childForFieldName('name')?.text.trim()
+      if (!imported) continue
+      const alias = nameNode.childForFieldName('alias')?.text.trim()
+      bindings.push({ imported, local: alias ?? lastDotSegment(imported), kind: 'named' })
+    } else if (nameNode.type === 'dotted_name') {
+      const imported = nameNode.text.trim()
+      bindings.push({ imported, local: lastDotSegment(imported), kind: 'named' })
+    } else if (nameNode.type === 'wildcard_import') {
+      bindings.push({ imported: '*', local: '*', kind: 'glob' })
+    }
+  }
+  return [{ specifier, line, kind: 'import', bindings }]
+}
+
+function goImport(node: Node, line: number): ImportInfo[] {
+  const specifier = stripQuotes(node.childForFieldName('path')?.text)
+  if (!specifier) return []
+  const nameNode = node.childForFieldName('name')
+  let binding: ImportBinding
+  if (!nameNode) {
+    binding = { imported: null, local: lastSlashSegment(specifier), kind: 'package' }
+  } else if (nameNode.type === 'dot') {
+    binding = { imported: '*', local: '.', kind: 'glob' }
+  } else {
+    binding = { imported: null, local: nameNode.text.trim(), kind: 'package' }
+  }
+  return [{ specifier, line, kind: 'import', bindings: [binding] }]
+}
+
+function rustUse(node: Node, line: number): ImportInfo[] {
+  const argument = node.childForFieldName('argument')
+  if (!argument) return []
+  const base = argument.type === 'use_as_clause' ? argument.childForFieldName('path') : argument
+  const specifier = rustUsePath(base?.text ?? argument.text)
+  if (!specifier) return []
+  return [{ specifier, line, kind: 'use', bindings: rustBindings(argument) }]
+}
+
+function rustBindings(node: Node): ImportBinding[] {
+  switch (node.type) {
+    case 'scoped_identifier': {
+      const imported = node.childForFieldName('name')?.text.trim()
+      return imported ? [{ imported, local: imported, kind: 'named' }] : []
+    }
+    case 'identifier': {
+      const name = node.text.trim()
+      return name ? [{ imported: name, local: name, kind: 'named' }] : []
+    }
+    case 'use_as_clause': {
+      const path = node.childForFieldName('path')
+      const alias = node.childForFieldName('alias')?.text.trim()
+      const imported = path ? rustLeafName(path) : null
+      return imported && alias ? [{ imported, local: alias, kind: 'named' }] : []
+    }
+    case 'scoped_use_list': {
+      const bindings: ImportBinding[] = []
+      for (const item of node.childForFieldName('list')?.namedChildren ?? []) {
+        if (item) bindings.push(...rustBindings(item))
+      }
+      return bindings
+    }
+    case 'use_wildcard':
+      return [{ imported: '*', local: '*', kind: 'glob' }]
+    default:
+      return []
+  }
+}
+
+function rustLeafName(node: Node): string | null {
+  if (node.type === 'identifier') return node.text.trim()
+  return node.childForFieldName('name')?.text.trim() ?? null
+}
+
+function javaImport(node: Node, line: number): ImportInfo[] {
+  const path = node.namedChildren.find((child) => child?.type === 'scoped_identifier')
+  const specifier = dottedToPath(path?.text)
+  if (!specifier) return []
+  const wildcard = node.namedChildren.some((child) => child?.type === 'asterisk')
+  if (wildcard) {
+    return [
+      { specifier, line, kind: 'import', bindings: [{ imported: '*', local: '*', kind: 'glob' }] },
+    ]
+  }
+  const imported = path?.childForFieldName('name')?.text.trim() ?? lastSlashSegment(specifier)
+  const isStatic = /^import\s+static\b/.test(node.text)
+  return [
+    {
+      specifier,
+      line,
+      kind: 'import',
+      bindings: [{ imported, local: imported, kind: isStatic ? 'static' : 'named' }],
+    },
+  ]
+}
+
+function lastDotSegment(value: string): string {
+  return value.split('.').pop() ?? value
+}
+
+function lastSlashSegment(value: string): string {
+  return value.split('/').pop() ?? value
 }
 
 /**
@@ -748,7 +1320,7 @@ export async function parseFileToSymbols(
   const lang = languageForFile(filePath)
   if (!lang) return []
   const text = code ?? (await readFile(filePath, 'utf8'))
-  const rows = await extractSymbols(text, lang)
   const rel = path.relative(repoRoot, filePath).split(path.sep).join('/')
-  return rows.map((r) => ({ ...r, file: rel }))
+  const { symbols } = await extractAll(text, lang, rel)
+  return symbols
 }

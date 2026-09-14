@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { countReferences, rankRepoMap, renderRepoMap, resolveImport, scoreFile } from '../src/repomap.js'
-import type { IndexedFile, RepoIndex } from '../src/types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type IndexedFile, type RepoIndex } from '../src/types.js'
 
 function file(path: string, kinds: string[]): IndexedFile {
   return {
@@ -8,6 +8,7 @@ function file(path: string, kinds: string[]): IndexedFile {
     lang: 'typescript',
     mtimeMs: 1,
     symbols: kinds.map((k, i) => ({
+      id: `sym:v1:${path}#${k}:sym${i}@1`,
       name: `${path.split('/').pop()}_${i}`,
       kind: k as IndexedFile['symbols'][number]['kind'],
       file: path,
@@ -15,12 +16,15 @@ function file(path: string, kinds: string[]): IndexedFile {
       endLine: i + 1,
       exported: i === 0,
       signature: '',
+      scope: [],
+      ordinal: 1,
     })),
   }
 }
 
 function makeIndex(): RepoIndex {
   return {
+    schemaVersion: REPO_INDEX_SCHEMA_VERSION,
     root: '/tmp/repo',
     generatedAt: 0,
     excludedDirs: [],
@@ -102,6 +106,7 @@ describe('rankRepoMap', () => {
 
   it('lifts heavily-imported files over denser but unreferenced ones', () => {
     const idx: RepoIndex = {
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
       root: '/tmp/repo',
       generatedAt: 0,
       excludedDirs: [],
@@ -126,6 +131,7 @@ describe('rankRepoMap', () => {
 
   it('propagates importance transitively — a hub imported by other hubs wins', () => {
     const idx: RepoIndex = {
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
       root: '/tmp/repo',
       generatedAt: 0,
       excludedDirs: [],
@@ -156,6 +162,7 @@ describe('rankRepoMap', () => {
 
   it('is deterministic across runs', () => {
     const idx: RepoIndex = {
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
       root: '/tmp/repo',
       generatedAt: 0,
       excludedDirs: [],
@@ -193,6 +200,15 @@ describe('resolveImport', () => {
     expect(resolveImport('pkg', 'src/a.ts', fileSet)).toBe('pkg/__init__.py')
     expect(resolveImport('example.com/foo/pkg/deep', 'src/a.ts', fileSet)).toBe('pkg/deep.py')
     expect(resolveImport('unknown/module', 'src/a.ts', fileSet)).toBeNull()
+  })
+
+  it('maps NodeNext ESM js specifiers back to their TS source', () => {
+    const ts = new Set(['src/util.ts', 'src/view.tsx', 'src/mod.mts', 'src/legacy.cts'])
+    expect(resolveImport('./util.js', 'src/a.ts', ts)).toBe('src/util.ts')
+    expect(resolveImport('./view.js', 'src/a.ts', ts)).toBe('src/view.tsx')
+    expect(resolveImport('./mod.mjs', 'src/a.ts', ts)).toBe('src/mod.mts')
+    expect(resolveImport('./legacy.cjs', 'src/a.ts', ts)).toBe('src/legacy.cts')
+    expect(resolveImport('./gone.js', 'src/a.ts', ts)).toBeNull()
   })
 })
 

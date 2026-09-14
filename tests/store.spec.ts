@@ -5,7 +5,7 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { buildIndexWithCache } from '../src/buildIndex.js'
 import { cacheKeyForRoot, defaultCachePath, healSymbolFiles, loadIndex, saveIndex } from '../src/store.js'
-import type { RepoIndex } from '../src/types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type RepoIndex } from '../src/types.js'
 
 const dirs: string[] = []
 
@@ -36,6 +36,7 @@ describe('index persistence', () => {
     const legacyHash = createHash('sha1').update(root).digest('hex').slice(0, 12)
     const legacyPath = path.join(cacheDir, `${legacyHash}.json`)
     const legacy: RepoIndex = {
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
       root,
       generatedAt: 123,
       excludedDirs: [],
@@ -43,7 +44,7 @@ describe('index persistence', () => {
         path: 'src/index.ts',
         lang: 'typescript',
         mtimeMs: sourceStat.mtimeMs,
-        symbols: [{ name: 'legacyOnly', kind: 'variable', file: '', line: 1, endLine: 1, exported: true, signature: 'legacyOnly' }],
+        symbols: [{ id: 'sym:v1:src/index.ts#owner:legacyOnly@1', name: 'legacyOnly', kind: 'variable', file: '', line: 1, endLine: 1, exported: true, signature: 'legacyOnly', scope: [], ordinal: 1 }],
       }],
     }
     await saveIndex(legacyPath, legacy)
@@ -83,6 +84,7 @@ describe('index persistence', () => {
     const root = await tempDir()
     const cachePath = defaultCachePath(root)
     const stale = (): RepoIndex => ({
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
       root,
       generatedAt: 123,
       excludedDirs: [],
@@ -92,8 +94,8 @@ describe('index persistence', () => {
           lang: 'typescript',
           mtimeMs: 1,
           symbols: [
-            { name: 'legacyEmpty', kind: 'function', file: '', line: 1, endLine: 1, exported: true, signature: '' },
-            { name: 'alreadySet', kind: 'variable', file: 'src/a.ts', line: 2, endLine: 2, exported: false, signature: '' },
+            { id: 'sym:v1:src/a.ts#function:legacyEmpty@1', name: 'legacyEmpty', kind: 'function', file: '', line: 1, endLine: 1, exported: true, signature: '', scope: [], ordinal: 1 },
+            { id: 'sym:v1:src/a.ts#owner:alreadySet@1', name: 'alreadySet', kind: 'variable', file: 'src/a.ts', line: 2, endLine: 2, exported: false, signature: '', scope: [], ordinal: 1 },
           ],
         },
       ],
@@ -117,12 +119,38 @@ describe('index persistence', () => {
   it('replaces cache contents with valid json', async () => {
     const root = await tempDir()
     const cachePath = defaultCachePath(root)
-    const value: RepoIndex = { root, generatedAt: 123, files: [], excludedDirs: [] }
+    const value: RepoIndex = {
+      schemaVersion: REPO_INDEX_SCHEMA_VERSION,
+      root,
+      generatedAt: 123,
+      files: [],
+      excludedDirs: [],
+    }
     await saveIndex(cachePath, { ...value, generatedAt: 1 })
     await saveIndex(cachePath, value)
     expect(await loadIndex(cachePath)).toEqual(value)
     const raw = await readFile(cachePath, 'utf8')
     expect(() => JSON.parse(raw)).not.toThrow()
     expect(await readdir(path.dirname(cachePath))).toEqual([path.basename(cachePath)])
+  })
+
+  it('rejects a cache written with an older schema version', async () => {
+    const root = await tempDir()
+    await mkdir(path.join(root, 'src'))
+    await writeFile(path.join(root, 'src', 'index.ts'), 'export const value = 1\n')
+    const cachePath = defaultCachePath(root)
+    await mkdir(path.dirname(cachePath), { recursive: true })
+    const old = {
+      schemaVersion: 1,
+      root,
+      generatedAt: 1,
+      excludedDirs: [],
+      files: [],
+    }
+    await writeFile(cachePath, JSON.stringify(old), 'utf8')
+    expect(await loadIndex(cachePath)).toBeNull()
+    const rebuilt = await buildIndexWithCache(root)
+    expect(rebuilt.schemaVersion).toBe(REPO_INDEX_SCHEMA_VERSION)
+    expect(rebuilt.files).toHaveLength(1)
   })
 })

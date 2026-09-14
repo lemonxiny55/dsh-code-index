@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { searchSymbols, renderHit } from '../src/search.js'
-import type { RepoIndex } from '../src/types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type RepoIndex } from '../src/types.js'
 
 function makeIndex(): RepoIndex {
   return {
+    schemaVersion: REPO_INDEX_SCHEMA_VERSION,
     root: '/tmp/repo',
     generatedAt: 0,
     excludedDirs: [],
@@ -13,9 +14,9 @@ function makeIndex(): RepoIndex {
         lang: 'typescript',
         mtimeMs: 1,
         symbols: [
-          { name: 'Shape', kind: 'interface', file: 'src/core/shapes.ts', line: 3, endLine: 6, exported: true, signature: '' },
-          { name: 'draw', kind: 'function', file: 'src/core/shapes.ts', line: 9, endLine: 9, exported: true, signature: 'draw(s: Shape)' },
-          { name: 'hidden_helper', kind: 'function', file: 'src/core/shapes.ts', line: 14, endLine: 14, exported: false, signature: '' },
+          { id: 'sym:v1:src/core/shapes.ts#interface:Shape@1', name: 'Shape', kind: 'interface', file: 'src/core/shapes.ts', line: 3, endLine: 6, exported: true, signature: '', scope: [], ordinal: 1 },
+          { id: 'sym:v1:src/core/shapes.ts#function:draw@1', name: 'draw', kind: 'function', file: 'src/core/shapes.ts', line: 9, endLine: 9, exported: true, signature: 'draw(s: Shape)', scope: [], ordinal: 1 },
+          { id: 'sym:v1:src/core/shapes.ts#function:hidden_helper@1', name: 'hidden_helper', kind: 'function', file: 'src/core/shapes.ts', line: 14, endLine: 14, exported: false, signature: '', scope: [], ordinal: 1 },
         ],
       },
       {
@@ -23,8 +24,8 @@ function makeIndex(): RepoIndex {
         lang: 'typescript',
         mtimeMs: 1,
         symbols: [
-          { name: 'capitalize', kind: 'function', file: 'src/util/strings.ts', line: 2, endLine: 4, exported: true, signature: 'capitalize(s: string)' },
-          { name: 'cap', kind: 'type', file: 'src/util/strings.ts', line: 7, endLine: 7, exported: false, signature: '' },
+          { id: 'sym:v1:src/util/strings.ts#function:capitalize@1', name: 'capitalize', kind: 'function', file: 'src/util/strings.ts', line: 2, endLine: 4, exported: true, signature: 'capitalize(s: string)', scope: [], ordinal: 1 },
+          { id: 'sym:v1:src/util/strings.ts#owner:cap@1', name: 'cap', kind: 'type', file: 'src/util/strings.ts', line: 7, endLine: 7, exported: false, signature: '', scope: [], ordinal: 1 },
         ],
       },
     ],

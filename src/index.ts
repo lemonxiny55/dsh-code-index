@@ -39,6 +39,27 @@ export { searchSymbols, renderHit } from './search.js'
 export { rankRepoMap, renderRepoMap, scoreFile } from './repomap.js'
 export { symbolRefs, buildSymbolTable, callerCounts } from './refgraph.js'
 export { findCycles, findOrphanModules, buildModuleGraph } from './health.js'
+export { parseUnifiedDiff, readWorkingTreeDiff, readGitFileAtRef } from './git-diff.js'
+export type { DiffHunk, FileChange } from './git-diff.js'
+export {
+  buildChangeContext,
+  changeContextInputFromArgs,
+  renderChangeContext,
+} from './change-context.js'
+export type {
+  CodeChangeContextArgs,
+  ChangeContextInput,
+  ChangeContextOptions,
+  ChangeKind,
+  ChangedSymbol,
+  UnmappedChange,
+  ImpactHop,
+  ImpactRow,
+  SymbolPath,
+  ImportDependent,
+  AffectedTest,
+  ChangeContextResult,
+} from './change-context.js'
 export { tools } from './tools.js'
 
 import { getIndex, invalidateIndexCache, tools } from './tools.js'

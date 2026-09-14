@@ -1,10 +1,27 @@
 import { describe, expect, it } from 'vitest'
 import { extractAll } from '../src/extract.js'
 import { buildSymbolTable, callerCounts, symbolRefs } from '../src/refgraph.js'
-import type { CallInfo, IndexedFile, RepoIndex, SymbolInfo } from '../src/types.js'
+import {
+  REPO_INDEX_SCHEMA_VERSION,
+  type CallInfo,
+  type IndexedFile,
+  type RepoIndex,
+  type SymbolInfo,
+} from '../src/types.js'
 
 function sym(name: string, kind: SymbolInfo['kind'], line: number): SymbolInfo {
-  return { name, kind, file: '', line, endLine: line, exported: true, signature: `${name}()` }
+  return {
+    id: `sym:v1:test#${kind}:${name}@1`,
+    name,
+    kind,
+    file: '',
+    line,
+    endLine: line,
+    exported: true,
+    signature: `${name}()`,
+    scope: [],
+    ordinal: 1,
+  }
 }
 
 function file(path: string, symbols: SymbolInfo[], calls: CallInfo[], imports: string[] = []): IndexedFile {
@@ -19,7 +36,7 @@ function file(path: string, symbols: SymbolInfo[], calls: CallInfo[], imports: s
 }
 
 function index(files: IndexedFile[]): RepoIndex {
-  return { root: '/tmp/repo', generatedAt: 0, excludedDirs: [], files }
+  return { schemaVersion: REPO_INDEX_SCHEMA_VERSION, root: '/tmp/repo', generatedAt: 0, excludedDirs: [], files }
 }
 
 describe('extractAll — call sites', () => {
@@ -47,7 +64,7 @@ describe('extractAll — call sites', () => {
 
   it('attributes a module-level call to the empty scope', async () => {
     const { calls } = await extractAll('bootstrap()\n', 'typescript')
-    expect(calls).toEqual([{ name: 'bootstrap', line: 1, from: '' }])
+    expect(calls).toEqual([{ name: 'bootstrap', line: 1, from: '', fromId: null, qualifier: null }])
   })
 
   it('captures calls across python, go, rust, java and c', async () => {
@@ -76,14 +93,14 @@ describe('symbolRefs', () => {
     file(
       'src/core.ts',
       [sym('helper', 'function', 1), sym('main', 'function', 5)],
-      [{ name: 'helper', line: 6, from: 'main' }],
+      [{ name: 'helper', line: 6, from: 'main', fromId: null, qualifier: null }],
     ),
     file(
       'src/use.ts',
       [sym('run', 'function', 1)],
       [
-        { name: 'main', line: 2, from: 'run' },
-        { name: 'helper', line: 3, from: 'run' },
+        { name: 'main', line: 2, from: 'run', fromId: null, qualifier: null },
+        { name: 'helper', line: 3, from: 'run', fromId: null, qualifier: null },
       ],
       ['./core'],
     ),

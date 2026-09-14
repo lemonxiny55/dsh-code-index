@@ -7,6 +7,11 @@ import { renderHit, searchSymbols } from './search.js'
 import { rankRepoMap, renderRepoMap } from './repomap.js'
 import { symbolRefs } from './refgraph.js'
 import { findCycles, findOrphanModules } from './health.js'
+import {
+  buildChangeContext,
+  changeContextInputFromArgs,
+  renderChangeContext,
+} from './change-context.js'
 import { getConfig, indexOptions } from './config.js'
 import { cacheKeyForRoot } from './store.js'
 import type { RepoIndex } from './types.js'
@@ -431,6 +436,96 @@ export const tools = [
         return lines.join('\n')
       } catch (error) {
         return `code_refs: ${(error as Error).message ?? String(error)}`
+      }
+    },
+  }),
+
+  defineTool({
+    name: 'code_change_context',
+    description:
+      'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Every relation is labeled exact / import-scoped / name-only, so confidence is explicit. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
+    parameters: {
+      repoRoot: {
+        type: 'string',
+        description: 'Optional absolute repo path; defaults to the session workspace root.',
+      },
+      diff: {
+        type: 'string',
+        description: 'Caller-supplied unified diff text; when present no git command runs.',
+      },
+      baseRef: {
+        type: 'string',
+        description: 'Git ref to diff against (default "HEAD"); also the baseline read for deletions.',
+      },
+      files: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'Repo-relative files to treat as wholly changed (mutually exclusive with diff/symbols).',
+      },
+      symbols: {
+        type: 'array',
+        items: { type: 'string' },
+        description: 'SymbolInfo ids to treat as changed (mutually exclusive with diff/files).',
+      },
+      maxDepth: {
+        type: 'number',
+        description: 'Transitive caller depth, 1..6 (default 3).',
+      },
+      maxImpact: {
+        type: 'number',
+        description: 'Max direct-caller / impact / dependent rows, 1..200 (default 40).',
+      },
+      maxPaths: {
+        type: 'number',
+        description: 'Max entry-point paths, 1..50 (default 10).',
+      },
+      maxTests: {
+        type: 'number',
+        description: 'Max affected-test rows, 1..100 (default 20).',
+      },
+    },
+    output: {
+      schema: { type: 'string' },
+      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+    },
+    presentCall: (args) => ({
+      card: 'generic',
+      title: 'Change context',
+      kind: 'search',
+      rawInput: {
+        baseRef: args.baseRef,
+        files: args.files,
+        symbols: args.symbols,
+        diff: args.diff !== undefined ? '(inline diff)' : undefined,
+      },
+    }),
+    async execute(
+      args: {
+        repoRoot?: string
+        diff?: string
+        baseRef?: string
+        files?: string[]
+        symbols?: string[]
+        maxDepth?: number
+        maxImpact?: number
+        maxPaths?: number
+        maxTests?: number
+      },
+      exec: ToolRunExec,
+    ): Promise<string> {
+      try {
+        const root = await resolveRoot(args.repoRoot, exec)
+        const index = await getIndex(root)
+        const input = changeContextInputFromArgs(args, root)
+        const result = await buildChangeContext(index, input, {
+          maxDepth: args.maxDepth,
+          maxImpact: args.maxImpact,
+          maxPaths: args.maxPaths,
+          maxTests: args.maxTests,
+        })
+        return renderChangeContext(result)
+      } catch (error) {
+        return `code_change_context: ${(error as Error).message ?? String(error)}`
       }
     },
   }),

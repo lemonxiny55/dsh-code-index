@@ -3,10 +3,10 @@ import { mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { createIndexCache, tools } from '../src/tools.js'
-import type { RepoIndex } from '../src/types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type RepoIndex } from '../src/types.js'
 
 function index(root: string, generatedAt: number): RepoIndex {
-  return { root, generatedAt, files: [], excludedDirs: [] }
+  return { schemaVersion: REPO_INDEX_SCHEMA_VERSION, root, generatedAt, files: [], excludedDirs: [] }
 }
 
 const tempDirs: string[] = []

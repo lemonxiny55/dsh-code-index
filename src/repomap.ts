@@ -5,7 +5,7 @@
 
 import path from 'node:path'
 import { SUPPORTED_EXTS } from './scan.js'
-import type { IndexedFile, RepoIndex, SymbolInfo, SymbolKind } from './types.js'
+import type { IndexedFile, RepoIndex, SymbolKind } from './types.js'
 
 /** Higher-weight symbols pull their file up the map. */
 export const KIND_WEIGHT: Record<SymbolKind, number> = {
@@ -185,25 +185,47 @@ function referencePageRank(files: IndexedFile[], density: Map<string, number>): 
   return result
 }
 
+/** Outcome of {@link resolveImportDetailed}: the target plus how it matched. */
+export interface ImportResolution {
+  target: string | null
+  /**
+   * True when only the nested-segment suffix fallback matched (Go module paths,
+   * Java packages). Callers that must not over-claim can use this to keep a
+   * fuzzy match weaker; the NodeNext `.js`/`.jsx`/`.mjs`/`.cjs` → TS-source
+   * substitution at skip 0 is a direct hit, not a fallback.
+   */
+  suffixSkipped: boolean
+}
+
 /**
- * Resolve a raw import specifier against the indexed file set; returns the
- * repo-relative target path or null. Relative specifiers resolve against the
- * importing file; absolute ones against the repo root — with a suffix
- * fallback so Go module paths and Java package names match their in-repo
- * location without reading go.mod / package-info.
+ * Resolve a raw import specifier against the indexed file set, reporting both
+ * the repo-relative target and whether the nested-segment suffix fallback was
+ * needed. Relative specifiers resolve against the importing file; absolute
+ * ones against the repo root — the suffix fallback lets Go module paths and
+ * Java package names match their in-repo location without reading go.mod /
+ * package-info.
  */
-export function resolveImport(spec: string, fromPath: string, fileSet: Set<string>): string | null {
-  if (!spec) return null
+export function resolveImportDetailed(
+  spec: string,
+  fromPath: string,
+  fileSet: Set<string>,
+): ImportResolution {
+  if (!spec) return { target: null, suffixSkipped: false }
   if (spec.startsWith('./') || spec.startsWith('../')) {
     const base = path.posix.normalize(path.posix.join(path.posix.dirname(fromPath), spec))
-    return candidateFor(base, fileSet)
+    return { target: candidateFor(base, fileSet), suffixSkipped: false }
   }
   const segments = spec.split('/').filter(Boolean)
   for (let skip = 0; skip < segments.length; skip++) {
     const hit = candidateFor(segments.slice(skip).join('/'), fileSet)
-    if (hit) return hit
+    if (hit) return { target: hit, suffixSkipped: skip > 0 }
   }
-  return null
+  return { target: null, suffixSkipped: false }
+}
+
+/** Thin wrapper over {@link resolveImportDetailed} returning just the target. */
+export function resolveImport(spec: string, fromPath: string, fileSet: Set<string>): string | null {
+  return resolveImportDetailed(spec, fromPath, fileSet).target
 }
 
 /** Extension and index-file candidates for a specifier base path. */
@@ -214,9 +236,33 @@ function candidateFor(base: string, fileSet: Set<string>): string | null {
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}${ext}`)) return `${base}${ext}`
   }
+  // TS 5 / NodeNext ESM: a local import is written with the *emitted* extension
+  // ('./util.js') while the source on disk is './util.ts'. Map the JS family
+  // back to its TypeScript source before falling through to directory indexes.
+  const aliased = tsSourceForJsSpecifier(base, fileSet)
+  if (aliased) return aliased
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}/index${ext}`)) return `${base}/index${ext}`
     if (fileSet.has(`${base}/__init__${ext}`)) return `${base}/__init__${ext}`
+  }
+  return null
+}
+
+/** Resolve a JS-extension specifier ('.js/.jsx/.mjs/.cjs') to on-disk TS source. */
+function tsSourceForJsSpecifier(base: string, fileSet: Set<string>): string | null {
+  const match = /\.(js|jsx|mjs|cjs)$/.exec(base)
+  if (!match) return null
+  const stem = base.slice(0, base.length - match[0].length)
+  const candidates =
+    match[1] === 'jsx'
+      ? ['.tsx', '.ts']
+      : match[1] === 'mjs'
+        ? ['.mts', '.ts']
+        : match[1] === 'cjs'
+          ? ['.cts', '.ts']
+          : ['.ts', '.tsx']
+  for (const ext of candidates) {
+    if (fileSet.has(`${stem}${ext}`)) return `${stem}${ext}`
   }
   return null
 }

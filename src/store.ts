@@ -3,7 +3,7 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createHash, randomUUID } from 'node:crypto'
-import type { RepoIndex } from './types.js'
+import { REPO_INDEX_SCHEMA_VERSION, type RepoIndex } from './types.js'
 
 export const CACHE_DIR_NAME = '.dsh-code-index'
 
@@ -32,6 +32,9 @@ export async function loadIndex(cachePath: string): Promise<RepoIndex | null> {
     const raw = await readFile(cachePath, 'utf8')
     const parsed = JSON.parse(raw) as RepoIndex
     if (!parsed || typeof parsed.root !== 'string' || !Array.isArray(parsed.files)) return null
+    // Reject caches from an older layout instead of partially healing graph
+    // data — the build path reconstructs them at the same path.
+    if (parsed.schemaVersion !== REPO_INDEX_SCHEMA_VERSION) return null
     return healSymbolFiles(parsed)
   } catch {
     return null // missing or corrupt cache == no cache

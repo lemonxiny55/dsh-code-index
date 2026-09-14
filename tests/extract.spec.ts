@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { extractSymbols, extractAll } from '../src/extract.js'
+import { encodeSymbolComponent, extractSymbols, extractAll } from '../src/extract.js'
 import type { SymbolInfo } from '../src/types.js'
 
 const SAMPLE = `

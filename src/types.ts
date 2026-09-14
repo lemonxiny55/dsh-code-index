@@ -1,5 +1,8 @@
 /** Shared data model for dsh-code-index. */
 
+/** On-disk cache layout version. Bump when persisted graph/symbol shapes change. */
+export const REPO_INDEX_SCHEMA_VERSION = 2 as const
+
 export type SymbolKind =
   | 'function'
   | 'method'
@@ -12,7 +15,31 @@ export type SymbolKind =
   | 'import'
   | 'module'
 
+/** Stable, file-qualified symbol identity: `sym:v1:<file>#<scope>/<segment>`. */
+export type SymbolId = string
+
+/** Vocabulary for one scope segment in a qualified symbol id. */
+export type ScopeKind =
+  | 'module'
+  | 'namespace'
+  | 'class'
+  | 'interface'
+  | 'trait'
+  | 'impl'
+  | 'function'
+  | 'method'
+  | 'owner'
+
+export interface SymbolScopePart {
+  kind: ScopeKind
+  name: string
+  /** 1-based among sibling scope owners with the same kind and name. */
+  ordinal: number
+}
+
 export interface SymbolInfo {
+  /** Stable qualified id; unique within a RepoIndex. */
+  id: SymbolId
   /** Symbol name (identifier / type id / member name). */
   name: string
   kind: SymbolKind
@@ -26,9 +53,30 @@ export interface SymbolInfo {
   exported: boolean
   /** Short human-readable signature, e.g. `greet(name: string)` — empty when n/a. */
   signature: string
+  /** Owners only; excludes the symbol itself. Empty at module level. */
+  scope: SymbolScopePart[]
+  /** 1-based among symbols with the same scope, kind, and name. */
+  ordinal: number
 }
 
-/** One call site: callee name, line, and the enclosing function ('' = module level). */
+/** One name bound by an import statement, with its local alias. */
+export interface ImportBinding {
+  /** Imported name: "foo" | "default" | "*" | null (namespace/package). */
+  imported: string | null
+  /** Name visible in this file (alias when renamed). */
+  local: string
+  kind: 'named' | 'default' | 'namespace' | 'package' | 'static' | 'glob'
+}
+
+/** Structured form of one import/include/use site. */
+export interface ImportInfo {
+  specifier: string
+  line: number
+  kind: 'import' | 'reexport' | 'include' | 'use'
+  bindings: ImportBinding[]
+}
+
+/** One call site: callee name, line, and enclosing function ('' = module level). */
 export interface CallInfo {
   /** Callee name as written (identifier, member/property, or qualified tail). */
   name: string
@@ -36,6 +84,10 @@ export interface CallInfo {
   line: number
   /** Enclosing function/method name, or '' for a module-level call. */
   from: string
+  /** Structural owner from AST containment; null at module level. */
+  fromId: SymbolId | null
+  /** Receiver/namespace text when available: `ns.foo()` -> "ns"; bare -> null. */
+  qualifier: string | null
 }
 
 export interface IndexedFile {
@@ -45,15 +97,18 @@ export interface IndexedFile {
   /** fs mtime of the source file at index time (milliseconds). */
   mtimeMs: number
   symbols: SymbolInfo[]
-  /** Raw import specifiers found in this file ('./util', 'mypkg/core', …).
-   *  Optional because caches written before reference ranking lack it. */
+  /** Derived compatibility view of {@link importDetails} specifiers. */
   imports?: string[]
+  /** Structured import/include/use sites with their name bindings. */
+  importDetails?: ImportInfo[]
   /** Call sites found in this file (callee + line + enclosing function).
    *  Optional because caches written before call-graph support lack it. */
   calls?: CallInfo[]
 }
 
 export interface RepoIndex {
+  /** Persisted layout version; see {@link REPO_INDEX_SCHEMA_VERSION}. */
+  schemaVersion: typeof REPO_INDEX_SCHEMA_VERSION
   /** Absolute source root this index describes. */
   root: string
   /** Unix ms when the index was generated. */
