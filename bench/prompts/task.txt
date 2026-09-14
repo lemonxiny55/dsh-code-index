@@ -1,0 +1,10 @@
+Benchmark task: {{TASK_ID}}
+Category: {{CATEGORY}}
+Repository: {{REPO_URL}}
+Pinned commit: {{REPO_COMMIT}}
+Subdirectory: {{SUBDIR}}
+Budgets: maxTurns={{MAX_TURNS}} maxToolCalls={{MAX_TOOL_CALLS}} timeoutMs={{TIMEOUT_MS}}
+
+{{PROMPT}}
+
+End of task. Stop once the working tree satisfies the requirements above.

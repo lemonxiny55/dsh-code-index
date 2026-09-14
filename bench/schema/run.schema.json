@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lemonxiny55/dsh-code-index/bench/schema/run.schema.json",
+  "title": "BenchmarkRun",
+  "description": "One arm execution of one task at one seed. Token counts that the provider does not report MUST be null, never guessed or defaulted to 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "blockId",
+    "taskId",
+    "category",
+    "armId",
+    "seed",
+    "repo",
+    "model",
+    "startedAt",
+    "finishedAt",
+    "tokens",
+    "toolCalls",
+    "turns",
+    "pluginContextChars",
+    "exitCode",
+    "timedOut",
+    "excluded",
+    "exclusionReason",
+    "success",
+    "judgeResults",
+    "transcriptPath",
+    "patchPath"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable id: <taskId>::<armId>::seed=<seed>."
+    },
+    "blockId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Matched task-seed block: <taskId>::seed=<seed>. Arm comparisons are only valid within a block."
+    },
+    "taskId": { "type": "string", "minLength": 1 },
+    "category": { "enum": ["narrow-lookup", "broad-change-impact"] },
+    "armId": { "type": "string", "minLength": 1 },
+    "seed": { "type": "integer", "minimum": 0 },
+    "repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "commit"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "subdir": { "type": ["string", "null"] }
+      }
+    },
+    "model": { "type": ["string", "null"] },
+    "temperature": { "type": ["number", "null"] },
+    "dshVersion": { "type": ["string", "null"] },
+    "pluginVersion": { "type": ["string", "null"] },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "finishedAt": { "type": "string", "format": "date-time" },
+    "wallMs": { "type": ["integer", "null"], "minimum": 0 },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Provider-reported token counts. null = not reported. Never substitute 0.",
+      "required": ["input", "output", "cached", "reasoning"],
+      "properties": {
+        "input": { "type": ["integer", "null"], "minimum": 0 },
+        "output": { "type": ["integer", "null"], "minimum": 0 },
+        "cached": { "type": ["integer", "null"], "minimum": 0 },
+        "reasoning": { "type": ["integer", "null"], "minimum": 0 },
+        "source": {
+          "type": ["string", "null"],
+          "description": "Where the counts came from, e.g. 'dsh --output-json'. null if unavailable."
+        }
+      }
+    },
+    "toolCalls": { "type": ["integer", "null"], "minimum": 0 },
+    "turns": { "type": ["integer", "null"], "minimum": 0 },
+    "pluginContextChars": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Characters emitted by the plugin itself for this run, if measurable. null otherwise."
+    },
+    "exitCode": { "type": "integer" },
+    "timedOut": { "type": "boolean" },
+    "excluded": { "type": "boolean" },
+    "exclusionReason": { "type": ["string", "null"] },
+    "success": {
+      "type": "boolean",
+      "description": "True only when every judge command passed and no judged exclusion applied."
+    },
+    "judgeResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "exitCode", "passed"],
+        "properties": {
+          "command": { "type": "string" },
+          "exitCode": { "type": ["integer", "null"] },
+          "passed": { "type": "boolean" },
+          "stdout": { "type": "string" },
+          "stderr": { "type": "string" },
+          "error": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "transcriptPath": { "type": ["string", "null"] },
+    "patchPath": { "type": ["string", "null"] },
+    "notes": { "type": "string" }
+  }
+}

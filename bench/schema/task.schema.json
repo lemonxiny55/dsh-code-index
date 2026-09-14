@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lemonxiny55/dsh-code-index/bench/schema/task.schema.json",
+  "title": "BenchmarkTask",
+  "description": "One benchmark task definition. Frozen by .omo/plans/dsh-code-index-0.6-p0-1-design.md section 5. A task is instantiated per seed to form a matched task-seed block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "category", "repo", "prompt", "budget", "judge"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$",
+      "description": "Stable task id, unique across bench/tasks/**."
+    },
+    "category": {
+      "enum": ["narrow-lookup", "broad-change-impact"],
+      "description": "Task family. The pilot must balance both so the benchmark is not structurally biased toward one tool."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "commit"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Cloneable git URL."
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Full 40-hex commit SHA. Immutable: the pilot never tracks a branch."
+        },
+        "subdir": {
+          "type": ["string", "null"],
+          "description": "Optional monorepo subdirectory that becomes the working root."
+        }
+      }
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Task instruction handed to the agent, verbatim."
+    },
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional preparation applied after checkout and before the agent runs.",
+      "properties": {
+        "patch": {
+          "type": ["string", "null"],
+          "description": "Path (relative to the task file) or inline unified diff applied with `git apply`."
+        },
+        "commands": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Shell commands run in the workdir after checkout."
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxTurns", "maxToolCalls", "timeoutMs"],
+      "properties": {
+        "maxTurns": { "type": "integer", "minimum": 1 },
+        "maxToolCalls": { "type": "integer", "minimum": 1 },
+        "timeoutMs": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "judge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commands"],
+      "description": "Deterministic pass/fail judging. Every command must exit 0 for the run to succeed.",
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Shell commands executed in the workdir via `sh -c`. Exit 0 = pass."
+        },
+        "requiredFiles": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Repo-relative paths that must exist after the run."
+        },
+        "forbiddenFiles": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Repo-relative paths that must NOT exist after the run."
+        },
+        "expectedSymbols": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Symbols the task is about; recorded for reporting, not scored."
+        },
+        "expectedTests": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Test files a correct impact analysis must surface; recorded, not scored directly."
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Documented reasons a run of this task may be excluded from aggregation (e.g. flaky network)."
+    }
+  }
+}

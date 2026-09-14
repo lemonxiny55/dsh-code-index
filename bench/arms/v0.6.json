@@ -1,0 +1,27 @@
+{
+  "id": "v0.6",
+  "label": "dsh + dsh-code-index 0.6 (local build)",
+  "description": "Treatment arm. dsh with the local dsh-code-index 0.6 build (this repository) loaded, providing code_change_context on top of the 0.5.0 tools.",
+  "dsh": {
+    "command": "dsh",
+    "version": "0.1.0-rc.8",
+    "versionNote": "Same dsh pin as every arm; only the plugin differs."
+  },
+  "plugins": [
+    {
+      "name": "dsh-code-index",
+      "version": "0.6.0-local",
+      "specifier": "file:../..",
+      "source": "local",
+      "pathRelativeToBench": "..",
+      "build": "pnpm build",
+      "sha256": null,
+      "sha256Note": "Record the built dist/ tree hash before a campaign so the treatment build is identified."
+    }
+  ],
+  "env": {
+    "DSH_BENCH_ARM": "v0.6"
+  },
+  "args": [],
+  "notes": "pathRelativeToBench is resolved by the wrapper, not by the cloned workdir: the local plugin lives in the bench author's checkout, never inside the target repo."
+}

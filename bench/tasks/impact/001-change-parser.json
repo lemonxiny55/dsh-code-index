@@ -1,0 +1,32 @@
+{
+  "id": "impact-001-change-parser",
+  "category": "broad-change-impact",
+  "title": "Reject duplicate object keys in the JSON5 parser",
+  "repo": {
+    "url": "https://github.com/json5/json5.git",
+    "commit": "b935d4a280eafa8835e6182551b63809e61243b0",
+    "subdir": null
+  },
+  "prompt": "Work only inside this repository (JSON5, a small JavaScript JSON5 parser).\n\nToday `JSON5.parse` silently accepts duplicate keys inside an object literal; the last value wins. Change the parser so that a duplicate key inside the same object is a hard parse error.\n\nRequirements:\n- A duplicate key (same object, same key string) must make `JSON5.parse` throw a `SyntaxError`.\n- The error message must mention the duplicated key.\n- This must also apply to nested objects, not only the top level.\n- All behavior for valid input must stay byte-for-byte the same, and `JSON5.stringify` must be untouched.\n- Implement the check in lib/parse.js and update the test suite so it covers the new error.\n\nYou do not need to write any answer file. The repository's test runner requires devDependencies; the grading checks exercise `require('./lib')` directly.",
+  "budget": {
+    "maxTurns": 25,
+    "maxToolCalls": 80,
+    "timeoutMs": 900000
+  },
+  "judge": {
+    "commands": [
+      "node -e \"const J=require('./lib');let ok=false;try{J.parse('{a:1,a:2}')}catch(e){ok=(e instanceof SyntaxError&&/a/.test(e.message))}if(!ok){process.exit(1)}\"",
+      "node -e \"const J=require('./lib');let ok=false;try{J.parse('{a:{b:1,b:2}}')}catch(e){ok=(e instanceof SyntaxError&&/b/.test(e.message))}if(!ok){process.exit(1)}\"",
+      "node -e \"const J=require('./lib');const o=J.parse('{a:1,b:[2,3],c:{d:4},e:true,f:null}');if(o.a!==1||o.b[1]!==3||o.c.d!==4||o.e!==true||o.f!==null){process.exit(1)}\"",
+      "node -e \"const J=require('./lib');if(J.stringify({a:1,b:[2,3]})!=='{a:1,b:[2,3]}'){process.exit(1)}\""
+    ],
+    "requiredFiles": ["lib/parse.js"],
+    "forbiddenFiles": [],
+    "expectedSymbols": ["parse", "pop", "push"],
+    "expectedTests": ["test/parse.js", "test/errors.js"]
+  },
+  "exclusions": [
+    "Network failure while fetching the pinned commit (record as excluded, do not judge).",
+    "The wrapper never wrote a result JSON and produced no transcript (infrastructure failure, not a model failure)."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "narrow-001-find-definition",
+  "category": "narrow-lookup",
+  "title": "Locate and rename an internal parser helper",
+  "repo": {
+    "url": "https://github.com/json5/json5.git",
+    "commit": "b935d4a280eafa8835e6182551b63809e61243b0",
+    "subdir": null
+  },
+  "prompt": "Work only inside this repository (JSON5, a small JavaScript JSON5 parser).\n\nIn lib/parse.js there is an internal function named `internalize`. It is the helper that applies the optional reviver argument of the exported `parse` function. It has exactly one definition and one call site.\n\nTask: rename that function from `internalize` to `applyReviver`, updating both its declaration and its call site so the file keeps working. Change nothing else: do not change the public API, do not change behavior, and do not touch other files.\n\nWhen you are done, `JSON5.parse(text, reviver)` in lib/index.js must still apply the reviver exactly as before. You do not need to write any answer file.",
+  "budget": {
+    "maxTurns": 12,
+    "maxToolCalls": 30,
+    "timeoutMs": 300000
+  },
+  "judge": {
+    "commands": [
+      "git grep -q \"function applyReviver\" -- lib/parse.js",
+      "if git grep -q \"internalize\" -- lib/parse.js; then echo 'old symbol name still present' 1>&2; exit 1; fi",
+      "node -e \"const J=require('./lib');const o=J.parse('{a:1,b:[2,3],c:{d:4}}');if(o.a!==1||o.b[1]!==3||o.c.d!==4){process.exit(1)}\"",
+      "node -e \"const J=require('./lib');const r=J.parse('{\\\"a\\\":1,\\\"b\\\":2}',(k,v)=>k==='b'?v*10:v);if(r.a!==1||r.b!==20){process.exit(1)}\""
+    ],
+    "requiredFiles": ["lib/parse.js"],
+    "forbiddenFiles": [],
+    "expectedSymbols": ["parse", "internalize"],
+    "expectedTests": ["test/parse.js", "test/errors.js"]
+  },
+  "exclusions": [
+    "Network failure while fetching the pinned commit (record as excluded, do not judge).",
+    "The wrapper never wrote a result JSON and produced no transcript (infrastructure failure, not a model failure)."
+  ]
+}

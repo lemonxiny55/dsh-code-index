@@ -1,0 +1,16 @@
+{
+  "id": "stock",
+  "label": "Stock dsh (no code-index plugin)",
+  "description": "Control arm. dsh alone, using only its built-in tools (glob/grep/read/LSP if the host provides it). No dsh-code-index plugin loaded.",
+  "dsh": {
+    "command": "dsh",
+    "version": "0.1.0-rc.8",
+    "versionNote": "Pinned to the @deepseek-ai/dsh-tools version declared in dsh-code-index devDependencies. Re-pin and re-verify before a campaign; write the observed `dsh --version` into every run record."
+  },
+  "plugins": [],
+  "env": {
+    "DSH_BENCH_ARM": "stock"
+  },
+  "args": [],
+  "notes": "args is intentionally empty: run.mjs passes the prompt/system/result paths through DSH_BENCH_* environment variables so any dsh wrapper can consume them without the bench inventing CLI flags."
+}

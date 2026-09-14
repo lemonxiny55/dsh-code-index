@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "description": "Pinned repository revisions used by bench tasks. A task repeats its repo pin inline; this file is the single source of truth consumed by scripts/prepare.mjs. Commits are immutable full SHAs, never branches.",
+  "repos": {
+    "json5": {
+      "url": "https://github.com/json5/json5.git",
+      "commit": "b935d4a280eafa8835e6182551b63809e61243b0",
+      "defaultBranch": "main",
+      "subdir": null,
+      "language": "javascript",
+      "license": "MIT (see LICENSE.md in the repo)",
+      "sizeOnDisk": "~1 MB",
+      "archiveUrl": "https://codeload.github.com/json5/json5/tar.gz/b935d4a280eafa8835e6182551b63809e61243b0",
+      "verifiedAt": "2026-09-14",
+      "verifiedHow": "commit SHA resolved via GitHub REST API /commits?per_page=1 on 2026-09-14; tarball downloaded and lib/ symbol lines inspected.",
+      "runtimeDependencies": "none (lib/*.js is CommonJS, requires only node built-ins and sibling files)",
+      "notes": "Small parser-focused JS repo. lib/index.js -> lib/parse.js, lib/stringify.js. The repo's own test suite needs devDependencies (tap, sinon); bench judges therefore use self-contained `node -e` checks against ./lib instead of the repo's test runner."
+    }
+  }
+}

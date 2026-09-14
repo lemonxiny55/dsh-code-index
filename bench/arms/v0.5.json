@@ -1,0 +1,25 @@
+{
+  "id": "v0.5",
+  "label": "dsh + dsh-code-index 0.5.0",
+  "description": "Published-baseline arm. dsh with dsh-code-index 0.5.0 loaded from the npm registry (exact version, no range).",
+  "dsh": {
+    "command": "dsh",
+    "version": "0.1.0-rc.8",
+    "versionNote": "Same dsh pin as every arm; only the plugin differs."
+  },
+  "plugins": [
+    {
+      "name": "dsh-code-index",
+      "version": "0.5.0",
+      "specifier": "dsh-code-index@0.5.0",
+      "source": "npm",
+      "sha256": null,
+      "sha256Note": "Record the registry tarball sha before a campaign so the arm is byte-reproducible."
+    }
+  ],
+  "env": {
+    "DSH_BENCH_ARM": "v0.5"
+  },
+  "args": [],
+  "notes": "0.5.0 has no code_change_context; arms are distinguished only by which plugin build the wrapper loads."
+}
