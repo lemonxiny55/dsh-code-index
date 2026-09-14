@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-语义仓库索引 —— 一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`)插件,为 agent 提供**代码库地图**:基于 tree-sitter 的符号索引、带排名的符号搜索,以及注入到系统提示词里的限量自动更新仓库地图。
+结构化仓库索引 —— 一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`)插件,为 agent 提供**代码库地图**:基于 tree-sitter 的符号索引、带排名的词法符号搜索,以及注入到系统提示词里的限量自动更新仓库地图。
 
 在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**零外部依赖**——纯进程内 tree-sitter WASM,把 aider repo-map / Cursor `@Codebase` 的同类能力带给 dsh agent。
 

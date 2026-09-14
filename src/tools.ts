@@ -173,7 +173,7 @@ export const tools = [
   defineTool({
     name: 'code_index',
     description:
-      'Manage the semantic repo index: status or (re)build it for the current workspace. Auto-builds the first time it is queried. Returns file/symbol counts and the index location.',
+      'Manage the code index: status or (re)build it for the current workspace. Auto-builds the first time it is queried. Returns file/symbol counts and the index location.',
     parameters: {
       action: {
         type: 'string',

@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-Semantic repo index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked symbol search, and a bounded auto-updating repo map in the system prompt.
+Structural code index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked lexical symbol search, and a bounded auto-updating repo map in the system prompt.
 
 Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **dependency-free** — pure in-process tree-sitter over WASM, the aider repo-map / Cursor `@Codebase` style for dsh agents.
 
