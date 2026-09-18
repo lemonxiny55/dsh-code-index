@@ -27,7 +27,43 @@ function run(command, args, cwd) {
   })
 }
 
-const packed = JSON.parse(run(npm, ['pack', '--ignore-scripts', '--json'], root))
+function parseJsonArrayOutput(output, command) {
+  const text = output.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, '')
+  for (let start = 0; start < text.length; start += 1) {
+    if (text[start] !== '[') continue
+    let depth = 0
+    let inString = false
+    let escaped = false
+    for (let index = start; index < text.length; index += 1) {
+      const char = text[index]
+      if (inString) {
+        if (escaped) escaped = false
+        else if (char === '\\') escaped = true
+        else if (char === '"') inString = false
+        continue
+      }
+      if (char === '"') {
+        inString = true
+        continue
+      }
+      if (char === '[') depth += 1
+      else if (char === ']') {
+        depth -= 1
+        if (depth === 0) {
+          try {
+            const parsed = JSON.parse(text.slice(start, index + 1))
+            if (Array.isArray(parsed)) return parsed
+          } catch {
+            break
+          }
+        }
+      }
+    }
+  }
+  throw new Error(`${command} did not return a JSON array`)
+}
+
+const packed = parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
 assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
 const tarball = path.resolve(root, packed[0].filename)
 const listed = new Set(packed[0].files.map((file) => file.path))
