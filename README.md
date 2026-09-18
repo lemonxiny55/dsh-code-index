@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-Structural code index — a [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) plugin that gives the agent a **codebase map**: a tree-sitter symbol index, ranked lexical symbol search, and a bounded auto-updating repo map in the system prompt.
+Structural context engine for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`): a local, no-service, no-API-key tree-sitter index with ranked symbol search, repo map, call graph, and change-aware context.
 
 Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **dependency-free** — pure in-process tree-sitter over WASM, the aider repo-map / Cursor `@Codebase` style for dsh agents.
 
@@ -18,6 +18,7 @@ Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/mem
 | `code_search` | Ranked lookup: exact > prefix > substring > subsequence-fuzzy, exports first, relevance score + file:line |
 | `code_map` | Bounded ranked repo map (top files by symbol density + import-graph PageRank, key symbols + lines) |
 | `code_refs` | Trace a symbol through the call graph: callers (who calls it) and callees (what it calls), resolved to file:line |
+| `code_change_context` | Start from the working-tree or an explicit diff and return changed symbols, callers, import dependents, bounded impact paths, and likely tests |
 | `code_health` | Opt-in (`codeHealth: true`): circular dependencies (import cycles) and orphan modules |
 
 Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed on a TTL (`mapTtlMs`, default 60s). Set `autoInject: false` to disable and rely on the `code_map` tool only.
@@ -52,6 +53,7 @@ In a workspace session, ask the agent:
 - "Find every function whose name contains `parse` and where it lives."
 - "List the exported symbols in src/core."
 - "Rebuild the code index."
+- "What changed in the working tree, who calls it, and which tests are likely affected?"
 
 No API key is needed to *index*; the model must of course be configured to call the tools.
 
@@ -82,6 +84,10 @@ The index builds lazily on first use; later calls are served from the on-disk ca
 `code_refs` traces a symbol through the call graph — the run below is on this repo itself (`getIndex` is defined at `src/tools.ts:105`, called from 7 sites, and its callee resolves to `src/tools.ts:74`):
 
 ![code_refs on dsh-code-index: definitions, 7 callers with their enclosing function, and callees resolved to file:line](assets/code-refs-demo.png)
+
+### Change-aware context
+
+`code_change_context` defaults to the current Git working tree against `HEAD`. It also accepts an inline unified diff, repo-relative `files`, or stable `symbols` IDs. Results are bounded and each inferred relationship carries a provenance label: `exact`, `import-scoped`, or `name-only`. Deletions and renames use the baseline ref when available; untracked non-ignored files are included in working-tree mode.
 
 ## Configuration
 
@@ -116,6 +122,7 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - **Search** (`src/search.ts`): pure scoring — exact `1` / prefix `0.8` / substring `0.5`, export boost, name order tiebreak.
 - **Repo map** (`src/repomap.ts`): personalized PageRank over the import graph (teleport = per-file density share, so hub files that are themselves imported by other hubs rise above flat in-degree counting), seeded by the density-aware file score (class/interface/function weighted, test paths damped), top-N files, per-file symbol cap, hard char truncation.
 - **Call graph** (`src/refgraph.ts`): call sites extracted per file (per language, with their enclosing function) are resolved by name into callers and callees — `code_refs` exposes this directly, and `code_search` uses call fan-in as a ranking tie-break.
+- **Change context** (`src/change-context.ts`): maps Git hunks to stable symbols, then follows bounded provenance-labeled callers, import dependents, entry paths, impact, and likely affected tests without returning the whole repository.
 - **Health** (`src/health.ts`): Tarjan SCC over the import graph yields circular dependencies; orphan-module detection lists symbol-bearing files with no inbound or outbound imports (entry points and tests excluded).
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).
 
@@ -133,7 +140,10 @@ pnpm install
 pnpm test        # vitest — extractor, scan, cache, search, repo map, call graph, health
 pnpm typecheck
 pnpm build       # tsup → dist/index.js (ESM, external deps)
+pnpm build && pnpm release:smoke # pack, clean-install the tarball, boot the plugin, and exercise core tools
 ```
+
+The benchmark harness under `bench/` compares stock DSH, the published 0.5 baseline, and the local 0.6 treatment. It records task completion, input tokens, tool calls, turns, and wall time; it does not invent missing provider usage. The repository contains infrastructure and sample tasks, not measured performance claims.
 
 **WSL → Windows checkouts:** running `pnpm install` from WSL against a checkout on `/mnt/c` leaves Linux-style symlinks that Windows Node cannot traverse (`Cannot find package 'web-tree-sitter'`, `EACCES`). Repair without a reinstall from the Windows side:
 

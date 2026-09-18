@@ -1,8 +1,8 @@
 /**
  * dsh-code-index — DeepSeek Harness bundle entry.
  *
- * Registers five model-visible tools (code_index / code_symbols /
- * code_search / code_map / code_refs) plus an opt-in code_health
+ * Registers model-visible tools (code_index / code_symbols / code_search /
+ * code_map / code_refs / code_change_context) plus an opt-in code_health
  * (config.codeHealth) backed by a tree-sitter symbol + call-graph index,
  * and injects a bounded auto-updating repo map for the default workspace
  * into the system prompt.

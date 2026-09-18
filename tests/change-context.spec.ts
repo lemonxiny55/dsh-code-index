@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { execFileSync } from 'node:child_process'
-import { mkdtemp, mkdir, rm, unlink, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, rename, rm, unlink, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import {
@@ -561,6 +561,7 @@ describe.skipIf(!gitAvailable)('code_change_context — git mode end to end', ()
         '\n',
       ),
     )
+    git(root, ['add', 'src/core.ts'])
     await unlink(path.join(root, 'src', 'old.ts'))
 
     const tool = tools.find((entry) => entry.name === 'code_change_context')!
@@ -572,5 +573,46 @@ describe.skipIf(!gitAvailable)('code_change_context — git mode end to end', ()
     expect(output).toContain('gone')
     expect(output).toContain('deleted base')
     expect(output).not.toContain('base-content-unavailable')
+  })
+
+  it('maps a pure rename to current and baseline symbols', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-cix-rename-'))
+    tempDirs.push(root)
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await writeFile(path.join(root, 'src', 'old.ts'), 'export function renamed() { return 1 }\n')
+
+    git(root, ['init', '-q'])
+    git(root, ['config', 'user.email', 'test@example.com'])
+    git(root, ['config', 'user.name', 'Test'])
+    git(root, ['add', '.'])
+    git(root, ['commit', '-qm', 'init'])
+    await rename(path.join(root, 'src', 'old.ts'), path.join(root, 'src', 'new.ts'))
+
+    const tool = tools.find((entry) => entry.name === 'code_change_context')!
+    const output = (await tool.execute({ repoRoot: root, baseRef: 'HEAD' }, execAt(root))) as string
+
+    expect(output).toContain('renamed function renamed() src/new.ts:1 [exact]')
+    expect(output).toContain('renamed base function renamed() src/old.ts:1 [exact]')
+    expect(output).toContain('renamed with no content change')
+  })
+
+  it('includes an untracked source file in default git mode', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-cix-untracked-'))
+    tempDirs.push(root)
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await writeFile(path.join(root, 'README.md'), '# fixture\n')
+
+    git(root, ['init', '-q'])
+    git(root, ['config', 'user.email', 'test@example.com'])
+    git(root, ['config', 'user.name', 'Test'])
+    git(root, ['add', '.'])
+    git(root, ['commit', '-qm', 'init'])
+    await writeFile(path.join(root, 'src', 'new.ts'), 'export function newFeature() { return 1 }\n')
+
+    const tool = tools.find((entry) => entry.name === 'code_change_context')!
+    const output = (await tool.execute({ repoRoot: root, baseRef: 'HEAD' }, execAt(root))) as string
+
+    expect(output).toContain('added function newFeature() src/new.ts:1 [exact]')
+    expect(output).not.toContain('excludes untracked files')
   })
 })

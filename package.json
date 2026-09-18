@@ -1,7 +1,7 @@
 {
   "name": "dsh-code-index",
-  "version": "0.5.0",
-  "description": "Structural code index for DeepSeek Harness — tree-sitter symbol index, ranked symbol search, a bounded auto-injected repo map, and call-graph tracing.",
+  "version": "0.6.1",
+  "description": "Structural context engine for DSH — tree-sitter symbol index, ranked search, repo map, call graph, and change-aware context.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,8 @@
   "files": [
     "dist",
     "scripts",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup && tsup --config tsup.client.config.ts",
@@ -26,6 +27,7 @@
     "dev:client": "tsup --config tsup.client.config.ts --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "release:smoke": "node scripts/release-smoke.mjs",
     "fix:wsl-links": "node scripts/fix-wsl-links.mjs",
     "prepare": "tsup && tsup --config tsup.client.config.ts",
     "prepublishOnly": "tsup && tsup --config tsup.client.config.ts"

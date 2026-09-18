@@ -7,6 +7,8 @@
  */
 
 import { execFile } from 'node:child_process'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 
 /** One `@@` hunk header; a missing count means 1 (git omits `,1`). */
 export interface DiffHunk {
@@ -290,10 +292,88 @@ function runGit(args: readonly string[], cwd: string): Promise<string> {
  */
 export async function readWorkingTreeDiff(root: string, baseRef: string): Promise<string> {
   requireSafeRef(baseRef, 'baseRef')
-  return runGit(
+  const tracked = await runGit(
     ['diff', '--no-ext-diff', '--find-renames', '--unified=0', baseRef, '--', '.'],
     root,
   )
+  const untracked = await runGit(['ls-files', '--others', '--exclude-standard', '-z', '--'], root)
+  const changes = parseUnifiedDiff(tracked)
+  const untrackedFiles: Array<{ path: string; content: string; lines: number }> = []
+  for (const rawPath of untracked.split('\0')) {
+    if (rawPath.length === 0) continue
+    const normalized = rawPath.replace(/\\/g, '/')
+    // The index cache is intentionally local state, even when the host repo
+    // has no .gitignore yet. It must not appear as a source change.
+    if (normalized === '.dsh-code-index' || normalized.startsWith('.dsh-code-index/')) continue
+    try {
+      const content = await readFile(path.resolve(root, normalized), 'utf8')
+      const lines = content.length === 0 ? 0 : content.split(/\r?\n/).length - (content.endsWith('\n') ? 1 : 0)
+      untrackedFiles.push({ path: normalized, content, lines })
+    } catch {
+      // A file can disappear between ls-files and readFile. Git would also
+      // omit that race, so leave it out rather than failing the whole diff.
+    }
+  }
+
+  // Git cannot detect an unstaged rename because its destination is still
+  // untracked. Pair exact-content deleted/base files with untracked files so
+  // the change-context layer receives the same rename signal as a staged diff.
+  const paired = new Set<string>()
+  for (const change of changes) {
+    if (change.status !== 'deleted' || change.oldPath === null) continue
+    let oldContent: string
+    try {
+      oldContent = await runGit(['show', `${baseRef}:${change.oldPath}`], root)
+    } catch {
+      continue
+    }
+    const match = untrackedFiles.find((file) => !paired.has(file.path) && file.content === oldContent)
+    if (!match) continue
+    change.newPath = match.path
+    change.status = 'renamed'
+    change.hunks = []
+    paired.add(match.path)
+  }
+
+  for (const file of untrackedFiles) {
+    if (paired.has(file.path)) continue
+    changes.push({
+      oldPath: null,
+      newPath: file.path,
+      status: 'added',
+      hunks: file.lines > 0 ? [{ oldStart: 0, oldLines: 0, newStart: 1, newLines: file.lines }] : [],
+    })
+  }
+  return renderNormalizedDiff(changes)
+}
+
+/** Re-render only the structural part consumed by parseUnifiedDiff. */
+function renderNormalizedDiff(changes: readonly FileChange[]): string {
+  return changes
+    .map((change) => {
+      const oldPath = change.oldPath ?? change.newPath!
+      const newPath = change.newPath ?? change.oldPath!
+      const lines = [`diff --git ${diffToken(`a/${oldPath}`)} ${diffToken(`b/${newPath}`)}`]
+      if (change.status === 'added') lines.push('new file mode 100644')
+      if (change.status === 'deleted') lines.push('deleted file mode 100644')
+      if (change.status === 'renamed') {
+        lines.push('similarity index 100%', `rename from ${diffToken(change.oldPath!)}`, `rename to ${diffToken(change.newPath!)}`)
+      } else {
+        lines.push(`--- ${change.oldPath === null ? '/dev/null' : diffToken(`a/${change.oldPath}`)}`)
+        lines.push(`+++ ${change.newPath === null ? '/dev/null' : diffToken(`b/${change.newPath}`)}`)
+      }
+      for (const hunk of change.hunks) {
+        const oldCount = hunk.oldLines === 1 ? '' : `,${hunk.oldLines}`
+        const newCount = hunk.newLines === 1 ? '' : `,${hunk.newLines}`
+        lines.push(`@@ -${hunk.oldStart}${oldCount} +${hunk.newStart}${newCount} @@`)
+      }
+      return `${lines.join('\n')}\n`
+    })
+    .join('')
+}
+
+function diffToken(value: string): string {
+  return /[\s"]/.test(value) ? `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"` : value
 }
 
 /** Read one repo-relative file at a ref; null when the path/ref is absent. */

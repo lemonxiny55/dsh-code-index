@@ -271,9 +271,6 @@ export async function buildChangeContext(
     if (input.kind === 'git') {
       baseRef = input.baseRef
       text = await readWorkingTreeDiff(input.root, input.baseRef)
-      warnings.push(
-        'git diff excludes untracked files; stage them or pass an explicit diff to include them',
-      )
     } else {
       text = input.text
       baseRef = input.baseRef
@@ -491,6 +488,21 @@ async function mapDiffChanges(
       } else if (currentRanges.length > 0) {
         // Changed file is absent from the cached index.
         addUnmapped(newPath, 'current', currentRanges, 'outside-symbol')
+      }
+
+      // A pure rename has no hunks, but it is still a structural change. Map
+      // both sides so callers can see the old identity and the current file's
+      // identity instead of receiving an empty context with only a warning.
+      if (change.status === 'renamed' && hunks.length === 0) {
+        for (const symbol of currentSymbols ?? []) addChanged(symbol, 'renamed', 'current')
+        if (oldPath !== null) {
+          const oldSymbols = await readBaseSymbols(oldPath)
+          if (oldSymbols === null) {
+            warnings.push(`rename baseline unavailable: ${oldPath}`)
+          } else {
+            for (const symbol of oldSymbols) addChanged(symbol, 'renamed', 'base')
+          }
+        }
       }
     }
 

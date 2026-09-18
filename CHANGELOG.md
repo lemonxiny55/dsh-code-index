@@ -2,6 +2,22 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.6.1 — 2026-09-18
+
+- **fix(change-context):** map pure renames to both current and baseline symbols instead of returning only a warning.
+- **fix(git):** include non-ignored untracked source files in working-tree change context while retaining bounded synthetic hunks.
+- **chore(compat):** keep the conservative `@deepseek-ai/dsh-tools` peer range and verify the rc.8 registration surface with a packaged smoke test.
+- **ci:** verify Node 22 and Node 24, including a clean install and plugin/tool boot from the packed tarball.
+- **docs:** document the release smoke command and the measured-vs-unmeasured benchmark policy.
+
+## 0.6.0 — 2026-09-18
+
+- **feat(change-context):** add `code_change_context` for changed symbols, direct callers, import dependents, bounded transitive impact, entry paths, and likely affected tests.
+- **feat(ids):** add stable file-qualified symbol IDs with lexical scope and duplicate-name ordinals.
+- **feat(refs):** label graph provenance as `exact`, `import-scoped`, or `name-only` so weak matches are explicit.
+- **feat(git):** map working-tree, staged, added, deleted, renamed, and explicit unified diffs onto indexed symbols with baseline reads for deletions.
+- **bench:** add reproducible stock vs 0.5 vs local 0.6 benchmark infrastructure with honest null token accounting and completion-rate gates.
+
 ## 0.5.0 — 2026-09-13
 
 - **feat(refs):** new `code_refs` tool — a function-level call graph built from the cache. For any symbol it returns in-repo definitions, callers (every call site invoking it, with the enclosing function) and callees (what the definition itself calls, resolved to `file:line`). Name-based resolution, so like-named symbols surface as candidate definitions rather than being guessed apart.

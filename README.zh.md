@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-结构化仓库索引 —— 一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`)插件,为 agent 提供**代码库地图**:基于 tree-sitter 的符号索引、带排名的词法符号搜索,以及注入到系统提示词里的限量自动更新仓库地图。
+面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) 的结构化上下文引擎:本地运行、无需外部服务和 API key,基于 tree-sitter 提供符号索引、排名搜索、仓库地图、调用图和变更感知上下文。
 
 在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**零外部依赖**——纯进程内 tree-sitter WASM,把 aider repo-map / Cursor `@Codebase` 的同类能力带给 dsh agent。
 
@@ -15,6 +15,7 @@
 | `code_search` | 排名检索:精确 > 前缀 > 子串 > 子序列模糊,导出优先,带相关度分数与 file:line |
 | `code_map` | 限量排名仓库地图(按符号密度 + import 图 PageRank 取核心文件 + 关键符号与行号) |
 | `code_refs` | 沿调用图追踪符号:callers(谁调用了它)与 callees(它调用了谁),解析到 file:line |
+| `code_change_context` | 从工作区或显式 diff 出发,返回变更符号、调用者、import 依赖、有限影响路径和可能受影响的测试 |
 | `code_health` | 可选开启(`codeHealth: true`):环依赖(import 环)与孤儿模块 |
 
 外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,按 TTL 自动刷新(`mapTtlMs`,默认 60 秒)。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
@@ -49,6 +50,7 @@ npx @deepseek-ai/dsh plugin --profile web add ./dsh-code-index
 - "找出所有名字含 `parse` 的函数及其位置。"
 - "列出 src/core 里的导出符号。"
 - "重建代码索引。"
+- "工作区改了什么、谁调用了它、哪些测试可能受影响?"
 
 *索引*本身不需要 API key;模型当然要配置好才能调用这些工具。
 
@@ -79,6 +81,10 @@ export function extractSymbols(code, id) — src/extract.ts:121
 `code_refs` 沿调用图追踪符号——下例直接跑在本仓库自身(`getIndex` 定义于 `src/tools.ts:105`,有 7 个调用点,其 callee 解析到 `src/tools.ts:74`):
 
 ![在本仓库上运行 code_refs:定义、7 个带所属函数的调用点,以及解析到 file:line 的 callees](assets/code-refs-demo.png)
+
+### 变更感知上下文
+
+`code_change_context` 默认分析相对于 `HEAD` 的当前 Git 工作区,也支持内联 unified diff、仓库相对 `files` 或稳定的 `symbols` ID。结果有数量和字符预算,每条推导关系都会标注 `exact`、`import-scoped` 或 `name-only` 来源。删除和重命名在可用时读取 baseline;工作区模式也会包含未被忽略的未跟踪源码文件。
 
 ## 配置
 
@@ -113,6 +119,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - **搜索**(`src/search.ts`):纯打分——精确 `1` / 前缀 `0.8` / 子串 `0.5`,导出加权,名称序平局裁决。
 - **仓库地图**(`src/repomap.ts`):import 图上的个性化 PageRank(传送向量 = 各文件密度份额,被其他枢纽文件引用的枢纽会比平铺入度统计排得更靠前),以密度感知的文件打分为底(class/interface/function 加权,测试路径衰减),取 Top-N 文件,每文件符号上限,硬截断。
 - **调用图**(`src/refgraph.ts`):逐文件提取调用点(按语言,并记录其所属函数),按名称解析成 callers 与 callees——`code_refs` 直接暴露,`code_search` 也把调用热度作为排名平局裁决。
+- **变更上下文**(`src/change-context.ts`):把 Git hunk 映射到稳定符号,再在有限深度内追踪带来源标签的调用者、import 依赖、入口路径、影响范围和可能受影响的测试,避免返回整个仓库。
 - **健康检查**(`src/health.ts`):对 import 图跑 Tarjan SCC 得到环依赖;孤儿模块检测列出既不被 import、也不 import 任何文件的含符号文件(排除入口与测试)。
 - **工作区解析**:每个工具解析会话 cwd(`agent.session.header.cwd`)并向上查找最近的 `.git`(有界——没有仓库标记的目录绝不会被索引)。
 
@@ -130,7 +137,10 @@ pnpm install
 pnpm test        # vitest —— 提取器、扫描、缓存、搜索、仓库地图、调用图、健康检查
 pnpm typecheck
 pnpm build       # tsup → dist/index.js(ESM,外部依赖)
+pnpm build && pnpm release:smoke # 打包、干净安装 tarball、启动插件并调用核心工具
 ```
+
+`bench/` 下的 benchmark 对比 stock DSH、已发布的 0.5 基线和本地 0.6 处理组,记录任务完成、输入 token、工具调用、轮次和墙钟时间; provider 未提供的 usage 会保留为 null,不会伪造性能数据。当前仓库提供基础设施和示例任务,不宣称已测得性能提升。
 
 **WSL → Windows 检出**:从 WSL 对 `/mnt/c` 下的检出跑 `pnpm install`,会留下 Windows 侧 Node 无法穿透的 Linux 风格符号链接(`Cannot find package 'web-tree-sitter'`、`EACCES`)。无需重装,在 Windows 侧跑一次修复:
 
