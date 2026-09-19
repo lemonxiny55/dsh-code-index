@@ -32,7 +32,7 @@ Options:
   --seed <n>           PRNG seed (default 42). Recorded and printed.
   --alpha <n>          Two-sided alpha (default 0.05 -> 2.5/97.5 percentiles).
   --baseline <arm>     Baseline arm (default stock).
-  --treatments <list>  Comma-separated treatment arms (default v0.5,v0.6).
+  --treatments <list>  Comma-separated treatment arms (default v0.5,v0.6,v0.7).
   --json               Print the result object as JSON.
   --help               Show this help and exit.
 
@@ -115,7 +115,7 @@ export function pairedBootstrap(pairs, iterations, rng, estimator) {
   return { point, dist }
 }
 
-export function runBootstrap({ summary, baseline = 'stock', treatments = ['v0.5', 'v0.6'], iterations = 10000, seed = 42, alpha = 0.05 }) {
+export function runBootstrap({ summary, baseline = 'stock', treatments = ['v0.5', 'v0.6', 'v0.7'], iterations = 10000, seed = 42, alpha = 0.05 }) {
   if (!summary || !Array.isArray(summary.blocks)) throw new Error('summary JSON has no blocks array')
   const matched = summary.blocks.filter((b) => b.matched && b.arms && b.arms[baseline])
   const rng = mulberry32(seed)
@@ -234,7 +234,7 @@ async function main(argv) {
       return 2
     }
     const summary = JSON.parse(readFileSync(input, 'utf8'))
-    const treatments = opts.treatments ? String(opts.treatments).split(',').map((s) => s.trim()).filter(Boolean) : ['v0.5', 'v0.6']
+    const treatments = opts.treatments ? String(opts.treatments).split(',').map((s) => s.trim()).filter(Boolean) : ['v0.5', 'v0.6', 'v0.7']
     const out = runBootstrap({
       summary,
       baseline: opts.baseline || 'stock',

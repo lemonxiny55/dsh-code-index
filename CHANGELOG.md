@@ -2,6 +2,15 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.7.0 — 2026-09-19
+
+- **feat(context):** add deterministic task-aware `code_context` routing for change, symbol, architecture, test, exploration, and ambiguous tasks.
+- **feat(context):** unify existing search, repo-map, call/import graph, change-aware context, affected tests, provenance, and structural signals behind one ranked context package.
+- **feat(context):** add hard character budgeting, deterministic ordering, candidate deduplication, and low-priority trimming.
+- **feat(surface):** add optional `toolSurface: compact` experiment while keeping the full v0.6 tool surface as the default.
+- **bench:** add the v0.7 treatment arm to the context-economy benchmark without inventing model or token results.
+- **compatibility:** retain all v0.6 tools and their existing argument/output behavior.
+
 ## 0.6.1 — 2026-09-18
 
 - **fix(change-context):** map pure renames to both current and baseline symbols instead of returning only a warning.

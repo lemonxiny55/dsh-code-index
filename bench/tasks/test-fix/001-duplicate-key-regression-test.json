@@ -1,0 +1,33 @@
+{
+  "id": "test-fix-001-duplicate-key-regression-test",
+  "category": "test-fix",
+  "title": "Add regression coverage for duplicate object keys",
+  "repo": {
+    "url": "https://github.com/json5/json5.git",
+    "commit": "b935d4a280eafa8835e6182551b63809e61243b0",
+    "subdir": null
+  },
+  "prompt": "Work only inside this repository (JSON5, a small JavaScript JSON5 parser). Add exactly one regression test file at test/duplicate-keys.test.js. The test must document the intended bug-fix contract for duplicate object keys: a duplicate at the top level and a duplicate in a nested object should throw SyntaxError and mention the duplicated key, while a valid object with distinct keys should still parse. Use the repository's existing test conventions and require the local library. Do not modify lib/, package metadata, or other tests; this task is about making the missing regression contract explicit for a later implementation task.",
+  "budget": {
+    "maxTurns": 15,
+    "maxToolCalls": 45,
+    "timeoutMs": 300000
+  },
+  "judge": {
+    "commands": [
+      "test -f test/duplicate-keys.test.js",
+      "grep -qi 'duplicate' test/duplicate-keys.test.js",
+      "grep -q 'SyntaxError' test/duplicate-keys.test.js",
+      "grep -qi 'nested' test/duplicate-keys.test.js",
+      "test \"$(git diff --name-only)\" = 'test/duplicate-keys.test.js'"
+    ],
+    "requiredFiles": ["test/duplicate-keys.test.js"],
+    "forbiddenFiles": [],
+    "expectedSymbols": ["parse"],
+    "expectedTests": ["test/duplicate-keys.test.js", "test/parse.js"]
+  },
+  "exclusions": [
+    "Network failure while fetching the pinned commit (record as excluded, do not judge).",
+    "The wrapper never wrote a result JSON and produced no transcript (infrastructure failure, not a model failure)."
+  ]
+}

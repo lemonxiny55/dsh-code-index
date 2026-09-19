@@ -121,6 +121,7 @@ try {
     'code_map',
     'code_refs',
     'code_change_context',
+    'code_context',
     'code_health',
   ])
 
@@ -137,9 +138,38 @@ try {
     await invoke('code_change_context', { files: ['src/index.ts'], repoRoot: root }),
     /CHANGED:/,
   )
+  assert.match(
+    await invoke('code_context', {
+      task: 'How does plugin loading work?',
+      repoRoot: root,
+      budgetChars: 5_000,
+    }),
+    /Task context|Primary symbols:/,
+  )
   assert.match(await invoke('code_health', { repoRoot: root }), /repo health/)
 
   for (const dispose of disposers.reverse()) dispose()
+
+  const compactRegistered = []
+  const compactDisposers = []
+  plugin.apply(
+    {
+      effect(effect) {
+        const disposer = effect()
+        if (typeof disposer === 'function') compactDisposers.push(disposer)
+      },
+      tools: {
+        register(tool) {
+          compactRegistered.push(tool.name)
+          return () => {}
+        },
+      },
+      systemPrompt: { section: () => () => {} },
+    },
+    { autoInject: false, codeHealth: true, toolSurface: 'compact' },
+  )
+  assert.deepEqual(compactRegistered, ['code_index', 'code_context', 'code_health'])
+  for (const dispose of compactDisposers.reverse()) dispose()
   console.log(`release smoke passed for ${packageJson.name}@${packageJson.version}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true })

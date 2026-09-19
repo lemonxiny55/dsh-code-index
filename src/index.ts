@@ -2,7 +2,7 @@
  * dsh-code-index — DeepSeek Harness bundle entry.
  *
  * Registers model-visible tools (code_index / code_symbols / code_search /
- * code_map / code_refs / code_change_context) plus an opt-in code_health
+ * code_map / code_refs / code_change_context / code_context) plus an opt-in code_health
  * (config.codeHealth) backed by a tree-sitter symbol + call-graph index,
  * and injects a bounded auto-updating repo map for the default workspace
  * into the system prompt.
@@ -40,6 +40,20 @@ export { rankRepoMap, renderRepoMap, scoreFile } from './repomap.js'
 export { symbolRefs, buildSymbolTable, callerCounts } from './refgraph.js'
 export { findCycles, findOrphanModules, buildModuleGraph } from './health.js'
 export { parseUnifiedDiff, readWorkingTreeDiff, readGitFileAtRef } from './git-diff.js'
+export {
+  buildTaskContext,
+  renderTaskContext,
+  routeTask,
+} from './context.js'
+export type {
+  ContextFile,
+  ContextOptions,
+  ContextRelationship,
+  ContextRoute,
+  ContextSymbol,
+  ContextTaskKind,
+  TaskContextResult,
+} from './context.js'
 export type { DiffHunk, FileChange } from './git-diff.js'
 export {
   buildChangeContext,
@@ -92,7 +106,11 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
       })
     }
 
-    for (const tool of tools) {
+    const visibleTools =
+      getConfig().toolSurface === 'compact'
+        ? tools.filter((tool) => ['code_index', 'code_context', 'code_health'].includes(tool.name))
+        : tools
+    for (const tool of visibleTools) {
       if (tool.name === 'code_health' && !getConfig().codeHealth) continue
       disposers.push(ctx.tools.register(tool))
       console.log(`[dsh-code-index] registered tool: ${tool.name}`)

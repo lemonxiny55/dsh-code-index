@@ -1,9 +1,9 @@
-# dsh-code-index context-economy benchmark (skeleton)
+# dsh-code-index context-economy benchmark (infrastructure)
 
 > **Status: skeleton, not a result.** Nothing in this directory has been run
 > against a model. No token-savings percentage may be claimed from it yet.
 
-This is the dependency-light, reproducible 3-arm benchmark for the
+This is the dependency-light, reproducible multi-arm benchmark for the
 `dsh-code-index` 0.6 context-economy plan. It exists to answer one question
 honestly:
 
@@ -34,11 +34,12 @@ bench/
   scripts/prepare.mjs             clone/checkout pinned commit into a temp workdir
   scripts/run.mjs                 run one task x one arm -> BenchmarkRun + transcript + patch
   scripts/judge.mjs               run the task's deterministic judge.commands, pass/fail
-  scripts/summarize.mjs           aggregate paired diffs per task-seed block across the 3 arms
+  scripts/summarize.mjs           aggregate paired diffs per task-seed block across the arms
   scripts/bootstrap.mjs           seeded paired bootstrap, 95% percentile CI, records resample count
   arms/stock.json                 stock dsh (no plugin)
   arms/v0.5.json                  dsh + dsh-code-index 0.5.0
-  arms/v0.6.json                  dsh + dsh-code-index 0.6 (local)
+  arms/v0.6.json                  dsh + dsh-code-index 0.6.1 (local)
+  arms/v0.7.json                  dsh + dsh-code-index 0.7.0 (local)
   artifacts/.gitkeep              generated work dirs, caches, runs, patches, transcripts
 ```
 
@@ -48,7 +49,7 @@ tree exactly as specified, so no extra `.gitignore` is shipped.
 
 ---
 
-## 2. The three arms
+## 2. The arms
 
 Every arm pins the same harness and differs only in the plugin under test. The
 pins live in `arms/*.json` and are copied into every run record, so a record can
@@ -58,7 +59,8 @@ never be silently attributed to a different build.
 |---|---|---|---|
 | `stock` | dsh `0.1.0-rc.8` | none | control: built-in glob/grep/read/LSP only |
 | `v0.5` | dsh `0.1.0-rc.8` | `dsh-code-index@0.5.0` (npm, exact) | published baseline |
-| `v0.6` | dsh `0.1.0-rc.8` | local `dsh-code-index` 0.6 build (`file:../..`) | treatment |
+| `v0.6` | dsh `0.1.0-rc.8` | local `dsh-code-index` 0.6.1 build (`file:../..`) | change-aware treatment |
+| `v0.7` | dsh `0.1.0-rc.8` | local `dsh-code-index` 0.7.0 build (`file:../..`) | task-aware treatment |
 
 Placeholders you must resolve before a real campaign:
 
@@ -122,6 +124,17 @@ a real SHA, not a placeholder.
   checks against `require('./lib')` (duplicate at top level, duplicate nested,
   valid nested input unchanged, `stringify` untouched).
 
+- `tasks/architecture/001-parser-flow-notes.json` -- **architecture**: trace the
+  public parse entry point, lexer/tokenizer, parser, and reviver traversal into a
+  constrained maintainer note.
+- `tasks/test-fix/001-duplicate-key-regression-test.json` -- **test-fix**: add a
+  focused regression contract for duplicate keys without changing runtime code.
+
+The shipped set now covers narrow lookup, broad change/feature work, repository
+architecture understanding, and test-fix work. The deterministic judges are
+task-specific; no model completion or token result is inferred from task
+definitions alone.
+
 Neither sample ships `setup`; both rely only on the pinned checkout. The judge
 commands deliberately do **not** use the target repo's test runner because the
 repo's devDependencies (`tap`, `sinon`) are not installed and the bench does not
@@ -133,8 +146,8 @@ suite passed.
 ## 4. Methodology
 
 **Unit of comparison: the matched task-seed block.** A block is one task run at
-one seed. The same block is executed by all three arms. A block is **matched
-(comparable)** only when all three arms are present *and* no present arm was
+one seed. The same block is executed by all configured arms. A block is **matched
+(comparable)** only when all configured arms are present *and* no present arm was
 excluded, timed out, or hit a harness error; only matched blocks enter the
 aggregates and the block-count gate. Arm comparisons are only ever made *within*
 a block; across-block variation is absorbed by pairing.
@@ -161,25 +174,27 @@ Rules that keep the arms comparable:
 7. Completion rate is **always** reported next to tokens. Saving tokens while
    completing fewer tasks is a failed treatment.
 
-### Pilot size: >= 30 matched task-seed blocks x 3 arms = 90 runs
+### Pilot size: >= 30 matched task-seed blocks across all configured arms
 
 The pilot decision threshold is **>= 30 matched blocks** (strategy P0-2). With
-3 seeds that means **>= 10 tasks x 3 seeds**, balanced across categories:
+3 seeds that means **>= 10 tasks x 3 seeds**, balanced across categories and
+run for every configured arm:
 
 | Slot | Category | Task | Status |
 |---|---|---|---|
 | 1 | narrow-lookup | `narrow-001-find-definition` (json5) | shipped |
 | 2 | broad-change-impact | `impact-001-change-parser` (json5) | shipped |
-| 3 | narrow-lookup | to add | planned |
-| 4 | broad-change-impact | to add | planned |
-| 5 | narrow-lookup | to add | planned |
+| 3 | architecture | `architecture-001-parser-flow-notes` | shipped |
+| 4 | test-fix | `test-fix-001-duplicate-key-regression-test` | shipped |
+| 5 | feature-implementation | to add | planned |
 | 6 | broad-change-impact | to add | planned |
 | 7 | narrow-lookup | to add | planned |
 | 8 | broad-change-impact | to add | planned |
-| 9 | narrow-lookup | to add | planned |
-| 10 | broad-change-impact | to add | planned |
+| 9 | feature-implementation | to add | planned |
+| 10 | test-fix | to add | planned |
 
-That is 10 tasks x 3 seeds = **30 matched blocks**, x 3 arms = **90 runs**.
+That is 10 tasks x 3 seeds = **30 matched blocks**. With the four configured
+arms this is **120 runs**.
 Additional tasks and/or more seeds are added until the publishing gate (60
 matched blocks) is met; more repos go into `repos.json` with full-SHA pins.
 
@@ -224,7 +239,7 @@ needs from the environment:
 
 | Variable | Meaning |
 |---|---|
-| `DSH_BENCH_ARM` | arm id (`stock` / `v0.5` / `v0.6`) |
+| `DSH_BENCH_ARM` | arm id (`stock` / `v0.5` / `v0.6` / `v0.7`) |
 | `DSH_BENCH_TASK` | task id |
 | `DSH_BENCH_BLOCK_ID` | `<taskId>::seed=<seed>` |
 | `DSH_BENCH_RUN_ID` | `<taskId>::<armId>::seed=<seed>` |
@@ -261,11 +276,11 @@ records `null` and adds a note. `argv` for the wrapper can be supplied with
 node scripts/prepare.mjs --task tasks/narrow/001-find-definition.json --json
 
 # 2. dry-run: print the resolved invocation and paths, run nothing, write nothing
-node scripts/run.mjs --task tasks/narrow/001-find-definition.json --arm v0.6 --seed 1 --dry-run
+node scripts/run.mjs --task tasks/narrow/001-find-definition.json --arm v0.7 --seed 1 --dry-run
 
 # 3. real run (requires a working wrapper)
 DSH_CMD=/path/to/dsh-wrapper node scripts/run.mjs \
-  --task tasks/narrow/001-find-definition.json --arm v0.6 --seed 1
+  --task tasks/narrow/001-find-definition.json --arm v0.7 --seed 1
 
 # 4. judge a prepared workdir on its own
 node scripts/judge.mjs --task tasks/narrow/001-find-definition.json --workdir artifacts/work/<task>/repo --json
@@ -277,7 +292,7 @@ node scripts/summarize.mjs --json
 node scripts/bootstrap.mjs --iterations 10000 --seed 42
 ```
 
-Run all three arms per block (loop `--arm stock`, `--arm v0.5`, `--arm v0.6`) to
+Run all configured arms per block (loop `--arm stock`, `--arm v0.5`, `--arm v0.6`, `--arm v0.7`) to
 form a matched block. Each arm is reset to the pinned commit before it starts, so
 no arm inherits edits from the previous one. Only matched blocks enter the
 comparison; a block whose arm was excluded, timed out, or errored is reported
@@ -306,12 +321,12 @@ separately and does not count toward the gate.
   workdir (exit 0 = pass), then checks `requiredFiles` / `forbiddenFiles`.
   First failure short-circuits. Exports `runJudge()` for reuse.
 - **`summarize.mjs`** -- reads `*.run.json`, groups by `blockId`, and marks a
-  block matched only when all three arms are present **and** no present arm was
+  block matched only when all configured arms are present **and** no present arm was
   excluded, timed out, or a harness error. Excluded blocks are reported
   separately with their reasons and kept out of the token/success aggregates and
   the block-count gate; incomplete blocks (missing arms) are likewise reported.
   Computes per-arm medians and success rates over matched blocks and paired
-  diffs (`v0.5-stock`, `v0.6-stock`, `v0.6-v0.5`) for input tokens and success.
+  diffs for each configured treatment/baseline pair for input tokens and success.
   Writes `artifacts/summary.json` and encodes the gates.
 - **`bootstrap.mjs`** -- consumes `summary.json` and runs the paired bootstrap
   described below.
@@ -353,7 +368,8 @@ Placeholders / to resolve before a campaign:
 
 - `dsh` version `0.1.0-rc.8` is taken from this repo's devDependencies, not from
   an observed `dsh --version`. Confirm and update per arm.
-- `v0.5` npm tarball `sha256` and `v0.6` local `dist/` hash are `null`.
+- `v0.5` npm tarball and local `dist/` hashes are `null` until a campaign records
+  the exact artifacts.
 - The wrapper CLI is a documented contract, not a verified dsh flag surface.
 - Only 2 of the >= 10 tasks exist; upload the remaining 8 (section 4) before
   claiming a pilot, and add their repos to `repos.json` with full-SHA pins.

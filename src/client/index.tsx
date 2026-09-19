@@ -40,6 +40,7 @@ interface CodeIndexSettings {
   mapTtlMs?: number
   autoInject?: boolean
   codeHealth?: boolean
+  toolSurface?: 'full' | 'compact'
 }
 
 interface ToolCallHead {
@@ -103,7 +104,7 @@ function parseArgs(raw: string | undefined): Record<string, unknown> {
 
 function summarizeArgs(args: Record<string, unknown>): string {
   const parts: string[] = []
-  for (const key of ['query', 'symbol', 'action', 'direction', 'kind']) {
+  for (const key of ['task', 'query', 'symbol', 'action', 'direction', 'kind', 'budgetChars']) {
     const value = args[key]
     if (typeof value === 'string' && value) parts.push(`${key}=${value}`)
   }
@@ -329,6 +330,7 @@ const TOOLVIEW_KEYS = [
   'code_map',
   'code_refs',
   'code_change_context',
+  'code_context',
   'code_health',
 ]
 

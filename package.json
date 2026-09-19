@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Structural context engine for DSH — tree-sitter symbol index, ranked search, repo map, call graph, and change-aware context.",
   "type": "module",
   "main": "./dist/index.js",

@@ -12,6 +12,7 @@ import {
   changeContextInputFromArgs,
   renderChangeContext,
 } from './change-context.js'
+import { buildTaskContext, renderTaskContext } from './context.js'
 import { getConfig, indexOptions } from './config.js'
 import { cacheKeyForRoot } from './store.js'
 import type { RepoIndex } from './types.js'
@@ -526,6 +527,71 @@ export const tools = [
         return renderChangeContext(result)
       } catch (error) {
         return `code_change_context: ${(error as Error).message ?? String(error)}`
+      }
+    },
+  }),
+
+  defineTool({
+    name: 'code_context',
+    description:
+      'Return the smallest useful structural context for a code task. Pass the task in plain language; the deterministic router combines ranked symbols, relevant files, call/import relationships, repository structure, current Git changes, affected tests, provenance, and a hard character budget. Existing specialized tools remain available for focused follow-up queries.',
+    parameters: {
+      task: {
+        type: 'string',
+        required: true,
+        description: 'The code task or question the agent is currently trying to complete.',
+      },
+      budgetChars: {
+        type: 'number',
+        description: 'Hard output budget in characters (default 5000).',
+      },
+      maxFiles: {
+        type: 'number',
+        description: 'Maximum relevant files to include (default 12).',
+      },
+      maxSymbols: {
+        type: 'number',
+        description: 'Maximum primary symbols to include (default 10).',
+      },
+      repoRoot: {
+        type: 'string',
+        description: 'Optional absolute repo path; defaults to the session workspace root.',
+      },
+    },
+    output: {
+      schema: { type: 'string' },
+      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+    },
+    presentCall: (args) => ({
+      card: 'generic',
+      title: 'Task context',
+      kind: 'search',
+      rawInput: { task: args.task, budgetChars: args.budgetChars },
+    }),
+    async execute(
+      args: {
+        task: string
+        budgetChars?: number
+        maxFiles?: number
+        maxSymbols?: number
+        repoRoot?: string
+      },
+      exec: ToolRunExec,
+    ): Promise<string> {
+      try {
+        if (typeof args.task !== 'string' || args.task.trim().length === 0) {
+          throw new Error('task must be a non-empty string')
+        }
+        const root = await resolveRoot(args.repoRoot, exec)
+        const index = await getIndex(root)
+        const result = await buildTaskContext(index, args.task, {
+          budgetChars: args.budgetChars,
+          maxFiles: args.maxFiles,
+          maxSymbols: args.maxSymbols,
+        })
+        return renderTaskContext(result)
+      } catch (error) {
+        return `code_context: ${(error as Error).message ?? String(error)}`
       }
     },
   }),

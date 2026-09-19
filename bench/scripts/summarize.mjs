@@ -20,11 +20,14 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 export const BENCH_ROOT = path.resolve(HERE, '..')
 
-export const ARMS = ['stock', 'v0.5', 'v0.6']
+export const ARMS = ['stock', 'v0.5', 'v0.6', 'v0.7']
 export const PAIRS = [
   ['v0.5', 'stock'],
   ['v0.6', 'stock'],
   ['v0.6', 'v0.5'],
+  ['v0.7', 'stock'],
+  ['v0.7', 'v0.6'],
+  ['v0.7', 'v0.5'],
 ]
 export const DECISION_BLOCKS = 30
 export const PUBLISH_BLOCKS = 60

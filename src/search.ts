@@ -43,6 +43,7 @@ export function searchSymbols(
   index: RepoIndex,
   filter: SymbolFilter,
   limit = 50,
+  refs: Map<string, number> = callerCounts(index),
 ): RankedHit[] {
   const q = (filter.query ?? '').trim()
   const filePat = filter.file?.trim().toLowerCase()
@@ -60,7 +61,6 @@ export function searchSymbols(
   }
 
   // Export boost, then relevance, then call fan-in, then stable name order.
-  const refs = callerCounts(index)
   hits.sort((a, b) => {
     const ab =
       Number(b.exported) - Number(a.exported) ||

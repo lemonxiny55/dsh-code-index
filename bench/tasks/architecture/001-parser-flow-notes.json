@@ -1,0 +1,33 @@
+{
+  "id": "architecture-001-parser-flow-notes",
+  "category": "architecture",
+  "title": "Document the parser entry flow",
+  "repo": {
+    "url": "https://github.com/json5/json5.git",
+    "commit": "b935d4a280eafa8835e6182551b63809e61243b0",
+    "subdir": null
+  },
+  "prompt": "Work only inside this repository (JSON5, a small JavaScript JSON5 parser). Add exactly one maintainer note at ARCHITECTURE_NOTES.md. Explain the request flow from the public JSON5.parse entry point through lib/parse.js, including tokenization/lexing and the optional reviver traversal. Mention the relevant files and the order in which the stages run. Do not change runtime code or tests, and do not claim behavior that is not visible in the repository.",
+  "budget": {
+    "maxTurns": 12,
+    "maxToolCalls": 35,
+    "timeoutMs": 300000
+  },
+  "judge": {
+    "commands": [
+      "test -f ARCHITECTURE_NOTES.md",
+      "grep -q 'JSON5.parse' ARCHITECTURE_NOTES.md",
+      "grep -qi 'reviver' ARCHITECTURE_NOTES.md",
+      "grep -Eqi 'lex|token' ARCHITECTURE_NOTES.md",
+      "test \"$(git diff --name-only)\" = 'ARCHITECTURE_NOTES.md'"
+    ],
+    "requiredFiles": ["ARCHITECTURE_NOTES.md"],
+    "forbiddenFiles": [],
+    "expectedSymbols": ["parse", "internalize"],
+    "expectedTests": ["test/parse.js"]
+  },
+  "exclusions": [
+    "Network failure while fetching the pinned commit (record as excluded, do not judge).",
+    "The wrapper never wrote a result JSON and produced no transcript (infrastructure failure, not a model failure)."
+  ]
+}

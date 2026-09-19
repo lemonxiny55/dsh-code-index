@@ -15,6 +15,8 @@ export interface PluginConfig {
   autoInject?: boolean
   /** Register the code_health tool (circles / orphans). Off by default. */
   codeHealth?: boolean
+  /** Experimental tool surface; full preserves the complete v0.6 API. */
+  toolSurface?: 'full' | 'compact'
 }
 
 interface EffectiveConfig {
@@ -24,6 +26,7 @@ interface EffectiveConfig {
   mapTtlMs: number
   autoInject: boolean
   codeHealth: boolean
+  toolSurface: 'full' | 'compact'
 }
 
 const DEFAULTS: EffectiveConfig = {
@@ -33,6 +36,7 @@ const DEFAULTS: EffectiveConfig = {
   mapTtlMs: 60_000,
   autoInject: true,
   codeHealth: false,
+  toolSurface: 'full',
 }
 
 const state: { current: EffectiveConfig } = { current: { ...DEFAULTS } }
@@ -53,6 +57,9 @@ export function applyConfig(partial?: PluginConfig): void {
   }
   if (!Number.isFinite(state.current.mapTtlMs) || state.current.mapTtlMs < 1_000) {
     state.current.mapTtlMs = DEFAULTS.mapTtlMs
+  }
+  if (state.current.toolSurface !== 'full' && state.current.toolSurface !== 'compact') {
+    state.current.toolSurface = DEFAULTS.toolSurface
   }
 }
 

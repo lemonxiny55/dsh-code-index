@@ -29,7 +29,7 @@ Usage:
 
 Options:
   --task <path>       BenchmarkTask JSON (required).
-  --arm <id|path>     Arm id under arms/ (stock, v0.5, v0.6) or a path to an arm JSON (required).
+  --arm <id|path>     Arm id under arms/ (stock, v0.5, v0.6, v0.7) or a path to an arm JSON (required).
   --seed <n>          Seed for this matched block (default 1).
   --workdir <dir>     Reuse an already-prepared workdir instead of preparing one.
   --out <dir>         Run output root (default bench/artifacts/runs).

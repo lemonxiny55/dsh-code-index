@@ -13,8 +13,8 @@
       "description": "Stable task id, unique across bench/tasks/**."
     },
     "category": {
-      "enum": ["narrow-lookup", "broad-change-impact"],
-      "description": "Task family. The pilot must balance both so the benchmark is not structurally biased toward one tool."
+      "enum": ["narrow-lookup", "broad-change-impact", "architecture", "test-fix", "feature-implementation"],
+      "description": "Task family. The pilot should balance lookup, architecture, test, bug-fix, and feature work so it is not structurally biased toward one tool."
     },
     "title": {
       "type": "string",

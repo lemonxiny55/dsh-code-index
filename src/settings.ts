@@ -11,6 +11,7 @@ export const settingsSchema = Schema.object({
   mapTtlMs: Schema.number().default(60_000),
   autoInject: Schema.boolean().default(true),
   codeHealth: Schema.boolean().default(false),
+  toolSurface: Schema.string().default('full'),
 })
 
 interface SettingsScopeLike<T> {
