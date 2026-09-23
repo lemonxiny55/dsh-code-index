@@ -3,12 +3,13 @@
  * plus a settings card for the `code-index` namespace.
  *
  * Deliberately imports no harness client package: this bundle only needs
- * `react` (a shell platform module) plus the slot registry and settings scope
- * services reached through the plugin context. Keeping the surface local avoids
- * a dependency on a synchronized client-package version.
+ * `react` (a shell platform module) plus the slot registry, settings scope and
+ * (optional) locale services reached through the plugin context. Keeping the
+ * surface local avoids a dependency on a synchronized client-package version.
  */
 
 import { useEffect, useState, type ReactNode } from 'react'
+import { en, zh, type LocaleKey } from './locales.js'
 
 /** Minimal structural view of the client plugin context this bundle uses. */
 interface ClientContextLike {
@@ -17,7 +18,15 @@ interface ClientContextLike {
     register(entry: Record<string, unknown>, component: (props: never) => ReactNode): () => void
   }
   inject(deps: string[], run: (ctx: ClientContextLike) => void): unknown
+  effect?(run: () => () => void, label?: string): void
   settingsScope?: { bind(spec: { namespace: string }): SettingsScopeLike<CodeIndexSettings> }
+  locale?: LocaleServiceLike
+}
+
+/** The host locale service: registers per-locale dictionaries and binds a lookup. */
+interface LocaleServiceLike {
+  register(namespace: string, dictionaries: Record<string, Record<string, string>>): () => void
+  bind(namespace: string): (key: string) => string
 }
 
 interface SettingsSnapshot<T> {
@@ -169,6 +178,17 @@ function CodeToolCard(props: ToolViewProps): ReactNode {
 /** The scope is captured at apply() time; the card reads it through React state. */
 let activeScope: SettingsScopeLike<CodeIndexSettings> | null = null
 
+const LOCALE_NS = 'code-index'
+
+/** Bound locale lookup, set once the host locale service is available. */
+let activeLookup: ((key: string) => string) | null = null
+
+/** Localized UI string; falls back to Chinese when no locale service is present. */
+function t(key: LocaleKey): string {
+  const value = activeLookup?.(key)
+  return value && value !== key ? value : zh[key]
+}
+
 /** Mirrors the first-party plugin card + field CSS modules, under our own class names. */
 const CARD_CSS = `
 .dci-card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:12px;list-style:none;transition:border-color .16s,background .16s}
@@ -249,12 +269,12 @@ function CodeIndexSettingsCard(): ReactNode {
         type="button"
         className="dci-header"
         aria-expanded={open}
-        aria-label={`${open ? '收起设置' : '展开设置'}: dsh-code-index`}
+        aria-label={`${open ? t('collapse') : t('expand')}: dsh-code-index`}
         onClick={() => { setOpen(!open) }}
       >
         <span className="dci-headText">
           <span className="dci-name">dsh-code-index</span>
-          <span className="dci-description">结构化仓库索引：符号搜索、仓库地图与调用图。</span>
+          <span className="dci-description">{t('description')}</span>
         </span>
         <svg className={open ? 'dci-chevron dci-chevronOpen' : 'dci-chevron'} width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d={CHEVRON_PATH} fill="currentColor" />
@@ -264,7 +284,7 @@ function CodeIndexSettingsCard(): ReactNode {
         <div className="dci-body">
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-auto-inject">自动注入仓库地图</label>
+              <label className="dci-label" htmlFor="dci-auto-inject">{t('autoInjectLabel')}</label>
               <input
                 id="dci-auto-inject"
                 className="dci-check"
@@ -274,11 +294,11 @@ function CodeIndexSettingsCard(): ReactNode {
                 onChange={(event) => { edit('autoInject', event.target.checked) }}
               />
             </div>
-            <p className="dci-hint">把精简的排名仓库地图注入系统提示词。</p>
+            <p className="dci-hint">{t('autoInjectHint')}</p>
           </div>
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-code-health">代码健康工具</label>
+              <label className="dci-label" htmlFor="dci-code-health">{t('codeHealthLabel')}</label>
               <input
                 id="dci-code-health"
                 className="dci-check"
@@ -288,11 +308,11 @@ function CodeIndexSettingsCard(): ReactNode {
                 onChange={(event) => { edit('codeHealth', event.target.checked) }}
               />
             </div>
-            <p className="dci-hint">注册 code_health 工具，报告环依赖与孤儿模块（重启后生效）。</p>
+            <p className="dci-hint">{t('codeHealthHint')}</p>
           </div>
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-map-files">地图文件数</label>
+              <label className="dci-label" htmlFor="dci-map-files">{t('mapFilesLabel')}</label>
             </div>
             <input
               id="dci-map-files"
@@ -303,17 +323,17 @@ function CodeIndexSettingsCard(): ReactNode {
               disabled={!writable}
               onChange={(event) => { edit('mapTopFiles', Number(event.target.value)) }}
             />
-            <p className="dci-hint">仓库地图中最多展示的文件数。</p>
+            <p className="dci-hint">{t('mapFilesHint')}</p>
           </div>
           <div className="dci-footer">
             <button type="button" className="dci-discard" disabled={!dirty || !writable} onClick={() => { setDraft(null) }}>
-              放弃修改
+              {t('discard')}
             </button>
-            <button type="button" className="dci-save" disabled={!dirty || !writable} onClick={save}>保存</button>
+            <button type="button" className="dci-save" disabled={!dirty || !writable} onClick={save}>{t('save')}</button>
           </div>
         </div>
       ) : null}
-      {scope ? null : <p className="dci-hint" style={{ padding: '0 16px 12px' }}>设置服务不可用。</p>}
+      {scope ? null : <p className="dci-hint" style={{ padding: '0 16px 12px' }}>{t('settingsUnavailable')}</p>}
     </li>
   )
 }
@@ -342,11 +362,25 @@ export function apply(ctx: ClientContextLike): void {
     }
   })
 
+  // Optional, like settingsScope: without a locale service the card stays Chinese.
+  ctx.inject(['locale'], (scoped: ClientContextLike) => {
+    const locale = scoped.locale
+    if (!locale) return
+    activeLookup = locale.bind(LOCALE_NS)
+    scoped.effect?.(() => {
+      const unregister = locale.register(LOCALE_NS, { zh, en })
+      return () => {
+        unregister()
+        activeLookup = null
+      }
+    }, 'code-index: dictionaries')
+  })
+
   ctx.inject(['settingsScope'], (scoped: ClientContextLike) => {
     activeScope = scoped.settingsScope?.bind({ namespace: 'code-index' }) ?? null
     ctx.slots.inject('settings.plugin.item', function* () {
       yield ctx.slots.register(
-        { name: 'settings.plugin.item', key: 'code-index' },
+        { name: 'settings.plugin.item', key: 'code-index', locale: LOCALE_NS },
         CodeIndexSettingsCard as unknown as (props: never) => ReactNode,
       )
     })
