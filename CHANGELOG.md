@@ -2,6 +2,10 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## Unreleased
+
+- **feat(ui):** localize the settings card. Strings move to `zh`/`en` dictionaries registered with the host locale service when it is available; English-locale users now see the card in English. Without a locale service the card stays Chinese, as before.
+
 ## 0.7.0 — 2026-09-19
 
 - **feat(context):** add deterministic task-aware `code_context` routing for change, symbol, architecture, test, exploration, and ambiguous tasks.
