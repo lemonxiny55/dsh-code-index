@@ -1,6 +1,6 @@
 /** Model-visible tools: code_index, code_symbols, code_search. */
 
-import { defineTool, type JsonValue } from '@deepseek-ai/dsh-tools'
+import { defineTool } from '@deepseek-ai/dsh-tools'
 import path from 'node:path'
 import { buildIndexWithCache, findRepoRoot } from './buildIndex.js'
 import { renderHit, searchSymbols } from './search.js'
@@ -14,7 +14,7 @@ import {
 } from './change-context.js'
 import { buildTaskContext, renderTaskContext } from './context.js'
 import { getConfig, indexOptions } from './config.js'
-import { cacheKeyForRoot } from './store.js'
+import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
 
 /** Minimal structural types for the harness surfaces we touch. */
@@ -22,6 +22,8 @@ interface ToolCwdContext {
   agent?: {
     session?: { header?: { cwd?: string } }
   }
+  session?: { header?: { cwd?: string } }
+  cwd?: string
 }
 type ToolRunExec = ToolCwdContext & { signal?: AbortSignal }
 
@@ -30,94 +32,30 @@ interface TextBlock {
   text: string
 }
 
-export interface IndexCache {
-  get(root: string, force?: boolean): Promise<RepoIndex>
-  invalidate(): void
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue }
+
+let activeRepoContexts: RepoContextManager | null = null
+
+export function activateRepoContextManager(manager: RepoContextManager | null): void {
+  activeRepoContexts = manager
 }
 
-/** Retain completed indexes briefly while still coalescing concurrent refreshes. */
-export function createIndexCache(
-  load: (root: string) => Promise<RepoIndex>,
-  ttlMs = 60_000,
-  now: () => number = Date.now,
-): IndexCache {
-  interface CompletedEntry {
-    index: RepoIndex
-    at: number
-    epoch: number
-  }
-  interface LoadEntry {
-    promise: Promise<RepoIndex>
-    epoch: number
-  }
-
-  const completed = new Map<string, CompletedEntry>()
-  const inFlight = new Map<string, LoadEntry>()
-  let epoch = 0
-
-  function startLoad(key: string, root: string, previous?: Promise<RepoIndex>): Promise<RepoIndex> {
-    const loadEpoch = epoch
-    const begin = previous
-      ? previous.catch(() => undefined).then(() => load(root))
-      : load(root)
-    const promise = begin
-      .then((index) => {
-        if (loadEpoch === epoch) {
-          completed.delete(key)
-          completed.set(key, { index, at: now(), epoch: loadEpoch })
-          while (completed.size > 16) completed.delete(completed.keys().next().value!)
-        }
-        return index
-      })
-      .finally(() => {
-        if (inFlight.get(key)?.promise === promise) inFlight.delete(key)
-      })
-    inFlight.set(key, { promise, epoch: loadEpoch })
-    return promise
-  }
-
-  return {
-    get(root, force = false) {
-      const resolvedRoot = path.resolve(root)
-      const key = cacheKeyForRoot(resolvedRoot)
-      const running = inFlight.get(key)
-      if (running) {
-        if (running.epoch === epoch && !force) return running.promise
-        return startLoad(key, resolvedRoot, running.promise)
-      }
-
-      if (!force) {
-        const cached = completed.get(key)
-        if (cached && cached.epoch === epoch && now() - cached.at < ttlMs) {
-          completed.delete(key)
-          completed.set(key, cached)
-          return Promise.resolve(cached.index)
-        }
-        if (cached) completed.delete(key)
-      } else {
-        completed.delete(key)
-      }
-      return startLoad(key, resolvedRoot)
-    },
-    invalidate() {
-      epoch++
-      completed.clear()
-    },
-  }
+export function clearRepoContextManager(manager: RepoContextManager): void {
+  if (activeRepoContexts === manager) activeRepoContexts = null
 }
-
-const indexCache = createIndexCache((root) => buildIndexWithCache(root, indexOptions()))
 
 export function getIndex(root: string, force = false): Promise<RepoIndex> {
-  return indexCache.get(root, force)
+  return activeRepoContexts
+    ? activeRepoContexts.get(root, force)
+    : buildIndexWithCache(root, indexOptions(), undefined, force ? new Set(['*']) : undefined)
 }
 
 export function invalidateIndexCache(): void {
-  indexCache.invalidate()
+  // Context ownership is scoped to plugin apply/dispose; no global snapshot survives reload.
 }
 
 async function resolveRoot(arg: string | undefined, exec: ToolRunExec): Promise<string> {
-  const cwd = exec.agent?.session?.header?.cwd
+  const cwd = exec.agent?.session?.header?.cwd ?? exec.session?.header?.cwd ?? exec.cwd
   const base = arg ?? cwd ?? process.cwd()
   const root = await findRepoRoot(base)
   if (!root) throw new Error(`no git repository found from ${path.resolve(base)}`)

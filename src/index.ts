@@ -17,6 +17,8 @@ interface MinimalContext {
   tools: { register(t: unknown): () => void }
   get?(name: string): unknown
   inject?(deps: string[], run: (ctx: MinimalContext) => void): unknown
+  on?(event: string, listener: () => void): () => void
+  fiber?: unknown
   systemPrompt: {
     section(section: {
       name: string
@@ -24,6 +26,11 @@ interface MinimalContext {
       text: string | ((context: unknown) => string)
     }): () => void
   }
+}
+
+interface PromptContext {
+  agent?: { session?: { header?: { cwd?: string } } }
+  session?: { header?: { cwd?: string } }
 }
 
 export const name = 'dsh-code-index'
@@ -75,13 +82,16 @@ export type {
   ChangeContextResult,
 } from './change-context.js'
 export { tools } from './tools.js'
+export { Config } from './config.js'
 
-import { getIndex, invalidateIndexCache, tools } from './tools.js'
+import { activateRepoContextManager, clearRepoContextManager, getIndex, invalidateIndexCache, tools } from './tools.js'
 import { findRepoRoot } from './buildIndex.js'
 import { rankRepoMap, renderRepoMap } from './repomap.js'
 import { symbolCount } from './types.js'
-import { applyConfig, getConfig, type PluginConfig } from './config.js'
+import { applyConfig, getConfig, indexOptions, type PluginConfig } from './config.js'
 import { registerSettings } from './settings.js'
+import { RepoContextManager } from './repo-context.js'
+import { cacheKeyForRoot } from './store.js'
 
 export const inject = ['tools', 'systemPrompt'] as const
 
@@ -90,6 +100,16 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
   invalidateIndexCache()
   ctx.effect(() => {
     const disposers: Array<() => void> = []
+    const repoContexts = new RepoContextManager({
+      indexOptions,
+      watch: getConfig().externalWatch,
+      debounceMs: getConfig().watchDebounceMs,
+    })
+    activateRepoContextManager(repoContexts)
+    const updateConfig = (next?: PluginConfig): void => {
+      applyConfig(next)
+      repoContexts.reconfigure({ watch: getConfig().externalWatch, debounceMs: getConfig().watchDebounceMs })
+    }
     console.log('[dsh-code-index] plugin loaded')
 
     // User-editable settings resolve over the composed plugin row; when a
@@ -97,14 +117,19 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
     // The provider initializes asynchronously, so wait for the service rather
     // than reading it once at load (which can precede its availability).
     if (ctx.inject) {
-      ctx.inject(['settings'], (settingsCtx) => {
-        registerSettings(
+      const injected = ctx.inject(['settings'], (settingsCtx) => {
+        const dispose = registerSettings(
           (name) => settingsCtx.get!(name),
           pluginConfig,
-          (resolved) => applyConfig(resolved),
+          (resolved) => updateConfig(resolved),
+          settingsCtx.fiber,
         )
+        if (dispose) disposers.push(dispose)
       })
+      if (typeof injected === 'function') disposers.push(injected as () => void)
     }
+    const removeVolatileListener = ctx.on?.('loader/volatile-update', () => updateConfig(pluginConfig))
+    if (removeVolatileListener) disposers.push(removeVolatileListener)
 
     const visibleTools =
       getConfig().toolSurface === 'compact'
@@ -116,18 +141,22 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
       console.log(`[dsh-code-index] registered tool: ${tool.name}`)
     }
 
-    // Auto-inject a bounded repo map for the DEFAULT workspace (the dsh
-    // launch directory, per the harness docs). Multi-workspace web sessions
-    // should rely on the `code_map` tool, which resolves the per-session cwd.
-    let cached: { root: string; at: number; text: string } | null = null
+    // Resolve a distinct map from each DSH agent's current session context.
+    const cachedMaps = new Map<string, { root: string; at: number; text: string }>()
+    const saveMap = (key: string, value: { root: string; at: number; text: string }): void => {
+      cachedMaps.delete(key)
+      cachedMaps.set(key, value)
+      while (cachedMaps.size > 4) cachedMaps.delete(cachedMaps.keys().next().value!)
+    }
 
-    async function warmMap(): Promise<void> {
+    async function warmMap(base: string): Promise<void> {
       const now = Date.now()
       const cfg = getConfig()
+      const key = cacheKeyForRoot(base)
       try {
-        const root = await findRepoRoot(process.cwd())
+        const root = await findRepoRoot(base)
         if (!root) {
-          cached = { root: '', at: now, text: '' }
+          saveMap(key, { root: '', at: now, text: '' })
           return
         }
         const index = await getIndex(root)
@@ -136,27 +165,31 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
           { maxChars: cfg.mapMaxChars },
         )
         const stats = symbolCount(index)
-        cached = {
+        saveMap(key, {
           root: index.root,
           at: Date.now(),
-          text: text ? `${text}\n\n(summary: ${index.files.length} files, ${stats} symbols)` : '',
-        }
+          text: text ? `Project: ${index.root}\n${text}\n\n(summary: ${index.files.length} files, ${stats} symbols)` : '',
+        })
       } catch {
-        cached = { root: '', at: now, text: '' } // never let injection fail the boot
+        saveMap(key, { root: '', at: now, text: '' }) // never let injection fail the boot
       }
     }
-
-    // Warm eagerly at load so the first assembly already has the map.
-    void warmMap()
 
     if (getConfig().autoInject) {
       disposers.push(ctx.systemPrompt.section({
         name: 'code-index:repo-map',
         order: 60, // before tool guidance (100–199), after persona (0)
-        text: () => {
+        text: (rawContext) => {
+          const context = rawContext as PromptContext
+          const base = context.agent?.session?.header?.cwd ?? context.session?.header?.cwd ?? process.cwd()
+          const key = cacheKeyForRoot(base)
           const now = Date.now()
-          if (cached && now - cached.at < getConfig().mapTtlMs) return cached.text
-          void warmMap()
+          const cached = cachedMaps.get(key)
+          if (cached && now - cached.at < getConfig().mapTtlMs) {
+            saveMap(key, cached)
+            return cached.text
+          }
+          void warmMap(base)
           return cached?.text ?? ''
         },
       }))
@@ -171,6 +204,9 @@ export function apply(ctx: MinimalContext, pluginConfig?: PluginConfig) {
           errors.push(error)
         }
       }
+      clearRepoContextManager(repoContexts)
+      void repoContexts.dispose()
+      cachedMaps.clear()
       console.log('[dsh-code-index] plugin unloaded')
       if (errors.length > 0) throw new AggregateError(errors, 'failed to unload dsh-code-index')
     }

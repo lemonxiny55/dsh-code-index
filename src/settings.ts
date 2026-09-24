@@ -12,6 +12,8 @@ export const settingsSchema = Schema.object({
   autoInject: Schema.boolean().default(true),
   codeHealth: Schema.boolean().default(false),
   toolSurface: Schema.string().default('full'),
+  externalWatch: Schema.boolean().default(true),
+  watchDebounceMs: Schema.number().default(120),
 })
 
 interface SettingsScopeLike<T> {
@@ -21,6 +23,7 @@ interface SettingsScopeLike<T> {
 
 interface SettingsServiceLike {
   register<T>(ns: string, schema: unknown, options?: { base?: Partial<T> }): SettingsScopeLike<T>
+  configure?(options: { auto: boolean }, fiber?: unknown): void | (() => void)
 }
 
 /**
@@ -32,14 +35,23 @@ export function registerSettings(
   getService: (name: string) => unknown,
   pluginConfig: PluginConfig | undefined,
   onResolved: (config: PluginConfig) => void,
-): void {
+  fiber?: unknown,
+): (() => void) | undefined {
   const service = getService('settings') as SettingsServiceLike | undefined
-  if (!service) return
+  if (!service) return undefined
+  // Current DSH renders volatile plugin fields as config forms. Configure the
+  // legacy provider only to disable its automatic schema editor; the config
+  // callback is fed by loader/volatile-update in the bundle entry.
+  if (service.configure) {
+    const dispose = service.configure({ auto: false }, fiber)
+    onResolved(pluginConfig ?? {})
+    return typeof dispose === 'function' ? dispose : undefined
+  }
   const scope = service.register<PluginConfig>(SETTINGS_NAMESPACE, settingsSchema, {
     base: pluginConfig ?? {},
   })
   onResolved(scope.get())
-  scope.watch((next) => {
+  return scope.watch((next) => {
     onResolved(next)
   })
 }

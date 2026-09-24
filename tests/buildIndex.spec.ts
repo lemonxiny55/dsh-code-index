@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { buildIndex, findRepoRoot } from '../src/buildIndex.js'
+import { scanRepo } from '../src/scan.js'
 import { renderHit, searchSymbols } from '../src/search.js'
 
 describe('buildIndex', () => {
@@ -99,5 +100,23 @@ describe('buildIndex', () => {
 
     expect(await findRepoRoot(path.join(regular, 'src'))).toBe(regular)
     expect(await findRepoRoot(path.join(worktree, 'src'))).toBe(worktree)
+  })
+
+  it('applies root and nested .gitignore rules, including a file-level negation', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-ignore-'))
+    try {
+      await mkdir(path.join(root, 'src', 'local'), { recursive: true })
+      await mkdir(path.join(root, 'secrets'), { recursive: true })
+      await writeFile(path.join(root, '.gitignore'), 'secrets/\n*.generated.ts\n!src/keep.generated.ts\n')
+      await writeFile(path.join(root, 'src', '.gitignore'), 'local/\n')
+      await writeFile(path.join(root, 'src', 'keep.generated.ts'), 'export function kept() {}\n')
+      await writeFile(path.join(root, 'src', 'drop.generated.ts'), 'export function dropped() {}\n')
+      await writeFile(path.join(root, 'src', 'local', 'hidden.ts'), 'export function hidden() {}\n')
+      await writeFile(path.join(root, 'secrets', 'token.ts'), 'export function secret() {}\n')
+
+      expect((await scanRepo(root)).map((file) => file.rel)).toEqual(['src/keep.generated.ts'])
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
   })
 })

@@ -1,13 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, stat, utimes, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { createIndexCache, tools } from '../src/tools.js'
-import { REPO_INDEX_SCHEMA_VERSION, type RepoIndex } from '../src/types.js'
-
-function index(root: string, generatedAt: number): RepoIndex {
-  return { schemaVersion: REPO_INDEX_SCHEMA_VERSION, root, generatedAt, files: [], excludedDirs: [] }
-}
+import { activateRepoContextManager, clearRepoContextManager, tools } from '../src/tools.js'
+import { RepoContextManager } from '../src/repo-context.js'
 
 const tempDirs: string[] = []
 
@@ -15,103 +11,90 @@ afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
 })
 
-describe('createIndexCache', () => {
-  it('retains completed indexes until the ttl expires', async () => {
-    let loads = 0
-    let now = 1_000
-    const cache = createIndexCache(async (root) => index(root, ++loads), 60_000, () => now)
+describe('RepoContextManager', () => {
+  it('keeps A and B isolated across A → B → A and refreshes external edits', async () => {
+    const a = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-a-'))
+    const b = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-b-'))
+    tempDirs.push(a, b)
+    for (const root of [a, b]) await mkdir(path.join(root, '.git'))
+    await mkdir(path.join(a, 'src'))
+    await mkdir(path.join(b, 'src'))
+    await writeFile(path.join(a, 'src/a.ts'), 'export function onlyA() { return 1 }\n')
+    await writeFile(path.join(b, 'src/b.ts'), 'export function onlyB() { return 2 }\n')
+    const fixedTimestamp = new Date('2020-01-01T00:00:00.000Z')
+    await utimes(path.join(a, 'src/a.ts'), fixedTimestamp, fixedTimestamp)
+    const manager = new RepoContextManager({ indexOptions: () => ({}), watch: false })
+    try {
+      const firstA = await manager.get(a)
+      const firstB = await manager.get(b)
+      expect(firstA.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).toContain('onlyA')
+      expect(firstA.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).not.toContain('onlyB')
+      expect(firstB.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).toContain('onlyB')
+      expect(firstB.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).not.toContain('onlyA')
+      await writeFile(path.join(b, 'src/b.ts'), 'export function changedB() { return 3 }\n')
+      const secondA = await manager.get(a)
+      const secondB = await manager.get(b)
+      expect(secondA.root).toBe(firstA.root)
+      expect(secondB.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).toContain('changedB')
+      expect(secondB.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).not.toContain('onlyB')
 
-    const first = await cache.get('C:\\repo')
-    const second = await cache.get('C:\\repo')
-    expect(second).toBe(first)
-    expect(loads).toBe(1)
-
-    now += 60_001
-    const refreshed = await cache.get('C:\\repo')
-    expect(refreshed).not.toBe(first)
-    expect(loads).toBe(2)
+      const source = path.join(a, 'src/a.ts')
+      const sourceStat = await stat(source)
+      await writeFile(source, 'export function sameMtimeReplacement() { return 4 }\n')
+      await utimes(source, sourceStat.atime, sourceStat.mtime)
+      const ordinaryRefresh = await manager.get(a)
+      expect(ordinaryRefresh.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).toContain('onlyA')
+      const forcedRefresh = await manager.get(a, true)
+      expect(forcedRefresh.files.flatMap((file) => file.symbols.map((symbol) => symbol.name))).toContain('sameMtimeReplacement')
+    } finally {
+      await manager.dispose()
+    }
   })
 
-  it('coalesces concurrent loads and supports forced refresh', async () => {
-    let loads = 0
-    const releases: Array<() => void> = []
-    const cache = createIndexCache(async (root) => {
-      loads++
-      await new Promise<void>((resolve) => { releases.push(resolve) })
-      return index(root, loads)
-    })
-    const first = cache.get('C:\\repo')
-    const second = cache.get('C:\\repo')
-    const forced = cache.get('C:\\repo', true)
-    expect(loads).toBe(1)
-    releases.shift()!()
-    expect(await second).toBe(await first)
-    await vi.waitFor(() => expect(loads).toBe(2))
-    releases.shift()!()
-    expect(await forced).not.toBe(await first)
+  it('routes code_context and change context through the active session project', async () => {
+    const a = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-tool-a-'))
+    const b = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-tool-b-'))
+    tempDirs.push(a, b)
+    for (const root of [a, b]) {
+      await mkdir(path.join(root, '.git'))
+      await mkdir(path.join(root, 'src'))
+    }
+    await writeFile(path.join(a, 'src/a.ts'), 'export function uniqueAlphaTaskMarker() { return 1 }\n')
+    await writeFile(path.join(b, 'src/b.ts'), 'export function uniqueBetaTaskMarker() { return 2 }\n')
+
+    const manager = new RepoContextManager({ indexOptions: () => ({}), watch: false })
+    activateRepoContextManager(manager)
+    try {
+      const contextTool = tools.find((tool) => tool.name === 'code_context')!
+      const changeTool = tools.find((tool) => tool.name === 'code_change_context')!
+      const execAt = (cwd: string) => ({ agent: { session: { header: { cwd } } } }) as Parameters<typeof contextTool.execute>[1]
+      const resultA = await contextTool.execute({ task: 'Explain uniqueAlphaTaskMarker.' }, execAt(a))
+      const resultB = await contextTool.execute({ task: 'Explain uniqueBetaTaskMarker.' }, execAt(b))
+      const resultA2 = await contextTool.execute({ task: 'Explain uniqueAlphaTaskMarker.' }, execAt(a))
+      expect(resultA).toContain('uniqueAlphaTaskMarker')
+      expect(resultB).toContain('uniqueBetaTaskMarker')
+      expect(resultB).not.toContain('uniqueAlphaTaskMarker')
+      expect(resultA2).toContain('uniqueAlphaTaskMarker')
+      const changeB = await changeTool.execute({ files: ['src/b.ts'] }, execAt(b))
+      expect(changeB).toContain('uniqueBetaTaskMarker')
+      expect(changeB).not.toContain('uniqueAlphaTaskMarker')
+    } finally {
+      clearRepoContextManager(manager)
+      await manager.dispose()
+    }
   })
 
-  // Same win32-only branch as cacheKeyForRoot — see store.spec.ts.
-  it.skipIf(process.platform !== 'win32')('canonicalizes Windows path casing', async () => {
-    let loads = 0
-    const cache = createIndexCache(async (root) => index(root, ++loads))
-    const first = await cache.get('C:\\Repo')
-    const second = await cache.get('c:\\repo')
-    expect(second).toBe(first)
-    expect(loads).toBe(1)
-  })
-
-  it('queues a fresh load after invalidation during an in-flight load', async () => {
-    let loads = 0
-    const releases: Array<() => void> = []
-    const cache = createIndexCache(async (root) => {
-      loads++
-      await new Promise<void>((resolve) => { releases.push(resolve) })
-      return index(root, loads)
-    })
-    const oldLoad = cache.get('C:\\repo')
-    cache.invalidate()
-    const newLoad = cache.get('C:\\repo')
-    releases.shift()!()
-    await oldLoad
-    await vi.waitFor(() => expect(loads).toBe(2))
-    releases.shift()!()
-    expect((await newLoad).generatedAt).toBe(2)
-  })
-
-  it('queues every forced refresh behind an in-flight refresh', async () => {
-    let loads = 0
-    const releases: Array<() => void> = []
-    const cache = createIndexCache(async (root) => {
-      loads++
-      await new Promise<void>((resolve) => { releases.push(resolve) })
-      return index(root, loads)
-    })
-    const first = cache.get('C:\\repo', true)
-    const second = cache.get('C:\\repo', true)
-    releases.shift()!()
-    await first
-    await vi.waitFor(() => expect(loads).toBe(2))
-    releases.shift()!()
-    expect((await second).generatedAt).toBe(2)
-  })
-
-  it('serves a queued refresh instead of the completed stale load', async () => {
-    let loads = 0
-    const releases: Array<() => void> = []
-    const cache = createIndexCache(async (root) => {
-      loads++
-      await new Promise<void>((resolve) => { releases.push(resolve) })
-      return index(root, loads)
-    })
-    const stale = cache.get('C:\\repo')
-    const refresh = cache.get('C:\\repo', true)
-    releases.shift()!()
-    await stale
-    await vi.waitFor(() => expect(loads).toBe(2))
-    const reader = cache.get('C:\\repo')
-    releases.shift()!()
-    expect(await reader).toBe(await refresh)
+  it('bounds contexts and closes evicted watchers', async () => {
+    const roots = await Promise.all([1, 2, 3].map(() => mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-evict-'))))
+    tempDirs.push(...roots)
+    for (const root of roots) await mkdir(path.join(root, '.git'))
+    const manager = new RepoContextManager({ indexOptions: () => ({}), watch: false, maxContexts: 2 })
+    try {
+      for (const root of roots) await manager.get(root)
+      expect((manager as unknown as { contexts: Map<string, unknown> }).contexts.size).toBe(2)
+    } finally {
+      await manager.dispose()
+    }
   })
 })
 

@@ -23,6 +23,7 @@ export async function buildIndex(
   root: string,
   options: IndexOptions = {},
   previous: RepoIndex | null = null,
+  forcePaths: ReadonlySet<string> = new Set(),
 ): Promise<RepoIndex> {
   const scanned = await scanRepo(root, options)
 
@@ -38,7 +39,7 @@ export async function buildIndex(
       batch.map(async (f) => {
         const lang = languageForFile(f.abs)
         if (!lang) return null
-        if (prevMtime.get(f.rel) === f.mtimeMs) {
+        if (prevMtime.get(f.rel) === f.mtimeMs && !forcePaths.has(f.rel) && !forcePaths.has('*')) {
           const cached = prevByPath.get(f.rel)!
           return {
             ...cached,
@@ -85,6 +86,7 @@ export async function buildIndexWithCache(
   root: string,
   options: IndexOptions = {},
   cacheDir?: string,
+  forcePaths: ReadonlySet<string> = new Set(),
 ): Promise<RepoIndex> {
   const cachePath = defaultCachePath(root, cacheDir)
   let prev = await loadIndex(cachePath)
@@ -97,7 +99,7 @@ export async function buildIndexWithCache(
     }
   }
   const reusable = prev && cacheKeyForRoot(prev.root) === cacheKeyForRoot(root) ? prev : null
-  const fresh = await buildIndex(root, options, reusable)
+  const fresh = await buildIndex(root, options, reusable, forcePaths)
   if (prev && indexesEqual(prev, fresh)) {
     if (loadedLegacy) await saveIndex(cachePath, fresh)
     return loadedLegacy ? fresh : prev
