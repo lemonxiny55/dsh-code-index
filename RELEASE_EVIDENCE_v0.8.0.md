@@ -35,3 +35,10 @@ The release-closeout commands were run after the evidence and release-note updat
 | `git diff --check` | PASS |
 | `pnpm dlx --package=npm@10.9.3 npm pack` | PASS — `dsh-code-index-0.8.0.tgz`. The tarball was consumed and removed by release-smoke cleanup. |
 | `pnpm dlx --package=npm@10.9.3 node scripts/release-smoke.mjs` | PASS — temporary tarball install, full and compact tool surfaces, core tool calls, and plugin dispose checks. |
+
+## Post-publish registry verification
+
+| Check | Result |
+| --- | --- |
+| npm registry metadata for `dsh-code-index@0.8.0` | PASS — version and tarball metadata are available from the public registry. |
+| Fresh install from npm registry | PASS — package installed in a disposable directory, loaded as `dsh-code-index@0.8.0`, registered all 8 full-surface tools, and disposed cleanly. |
