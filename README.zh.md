@@ -2,11 +2,56 @@
 
 [English](README.md) | 中文
 
-面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) 的项目感知实时结构化上下文引擎。它具备**任务感知、项目感知、实时更新**能力:本地 tree-sitter 索引,无需 API key 或外部服务。
+让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) Agent 始终拿到**新鲜、隔离的当前仓库代码上下文**。在多个仓库间切换时,符号和 Git 变更各自独立;从 DSH 外部新增、修改或删除文件后,后续查询会自动看到变化,无需手动重建。
 
-在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**本地优先**——进程内 tree-sitter WASM 与本地文件观察,不连接远程服务、embedding API 或向量数据库。
+索引通过 tree-sitter 在本地运行,不依赖 embedding 服务、向量数据库或额外的索引 API key。
 
-## 模型能得到什么
+## 本页导航
+
+- [🚀 快速开始](#快速开始)
+- [🧭 项目隔离与实时更新](#项目隔离与实时更新)
+- [👀 实际效果](#实际效果)
+- [🧰 工具一览](#工具一览)
+- [配置](#配置)
+- [支持的语言](#支持的语言)
+- [工作原理](#工作原理)
+- [已知限制](#已知限制)
+
+## 快速开始
+
+需要 `dsh` 和 Node ≥ 22。在 Web profile 中安装已发布的插件:
+
+```sh
+npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+```
+
+运行 `npx @deepseek-ai/dsh web` 重启 Web UI。本地检出安装、兼容信息和启动检查见[安装说明](#安装)。
+
+## 项目隔离与实时更新
+
+```text
+打开仓库 A → 搜索到 A 的符号
+切换到仓库 B → 搜索到 B 的符号,不会混入 A
+从 DSH 外部修改文件 → 下一次查询看到变化
+切回 A → A 的上下文仍然独立
+```
+
+每个 Git worktree 都有独立索引和变更状态。插件会监听会话访问过的项目,并在工具调用时检查文件元数据,因此新增、修改和删除都会自动反映到后续查询,无需手动重建。
+
+## 实际效果
+
+提问:“我们现在在哪个仓库?先跑 `code_map`,再找出 `extractSymbols` 定义在哪。”
+
+```text
+code_map → 排名靠前的文件与关键符号
+code_search("extractSymbols") → src/extract.ts:121
+```
+
+同一索引还能追踪 callers 和 callees:
+
+![在 dsh-code-index 上运行 code_refs:定义、调用者与被调用者均解析到 file:line](assets/code-refs-demo.png)
+
+## 工具一览
 
 | 工具 | 用途 |
 |---|---|
@@ -21,22 +66,11 @@
 
 外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):自动选择当前 DSH 会话工作区的精简排名地图。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
 
-## 项目感知实时上下文
-
-```text
-打开仓库 A → code_context 使用 A
-切换到仓库 B → code_context 自动改用 B
-从 VS Code 修改仓库 B → 下一次 code_context 看到最新状态
-切回仓库 A → A 的符号与 Git 变更仍然独立
-```
-
-每个 Git worktree 都有独立索引和变更状态。插件最多保留最近使用的四个项目上下文,只监听会话访问过的项目。文件事件会合并处理;工具调用也会扫描当前文件元数据,并在返回上下文前重解析已变更文件。
-
 ## 安装
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-当前开发兼容目标为 `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2`(CI 覆盖 Node 22 和 24)。Harness 仍属于预览 API;发布前还需在对应 DSH 构建中确认真实 Web 安装与插件生命周期。
+当前开发兼容目标为 `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2`(CI 覆盖 Node 22 和 24)。DSH 插件接口仍属于预览 API,上游变化可能需要更新兼容适配。
 
 ```sh
 # 从 npm(预编译)
@@ -69,25 +103,7 @@ npx @deepseek-ai/dsh plugin --profile web add ./dsh-code-index
 
 *索引*本身不需要 API key;模型当然要配置好才能调用这些工具。
 
-## 示例(输入 → 输出)
-
-用户提示:
-
-> 我们现在在哪个仓库?先跑 `code_map`,然后找出 `extractSymbols` 定义在哪。
-
-agent 依次调用工具:
-
-```
-code_map
-# repo map
-## src/extract.ts (14)
-  function extractSymbols(code, id) :121
-  function languageForFile(filePath) :37
-  ...
-
-code_search { query: "extractSymbols" }
-export function extractSymbols(code, id) — src/extract.ts:121
-```
+## 更多能力
 
 索引在首次使用时惰性构建;后续调用由磁盘缓存提供,并按 mtime 增量刷新。
 
@@ -95,7 +111,7 @@ export function extractSymbols(code, id) — src/extract.ts:121
 
 `code_refs` 沿调用图追踪符号——下例直接跑在本仓库自身(`getIndex` 定义于 `src/tools.ts:105`,有 7 个调用点,其 callee 解析到 `src/tools.ts:74`):
 
-![在本仓库上运行 code_refs:定义、7 个带所属函数的调用点,以及解析到 file:line 的 callees](assets/code-refs-demo.png)
+上方截图展示了定义、调用者和被调用者如何解析到 file:line。
 
 ### 变更感知上下文
 
@@ -155,9 +171,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - 自动注入地图使用 DSH system prompt assembly 提供的当前会话上下文。没有 Agent 的 prompt assembly 会回退到 DSH 进程工作目录。新访问的项目第一次注入可能暂时为空,待索引完成后后续 assembly 会使用项目地图。
 - Watcher 只为工具实际访问的项目启动,并随插件卸载清理。设置 `externalWatch: false` 后,每次工具调用仍会扫描元数据以发现常规 mtime 变化。
 - 大型 monorepo 每次工具调用仍需要扫描目录元数据。文件解析是增量的,但扫描耗时取决于仓库规模和磁盘速度。
-- 当前已通过预览版 DSH API 的类型检查、包级生命周期模拟;真实 DSH Web 安装/启停仍是发布前验证项。
 - 局部变量也会被索引——召回优先于精确;`code_search` 的排名会压低它们。
-- 开发者预览版 harness:上游 harness/插件 API 大概率有破坏性变更。
 
 ## 开发
 
@@ -187,3 +201,4 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 ## 许可证
 
 MIT。与 DeepSeek 无关;基于公开的 `dsh` 插件接口构建。
+
