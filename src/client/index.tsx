@@ -12,12 +12,15 @@ import { useEffect, useState, type ReactNode } from 'react'
 
 /** Minimal structural view of the client plugin context this bundle uses. */
 interface ClientContextLike {
+  effect(fn: () => (() => void) | void): void
   slots: {
     inject(name: string, run: () => Iterable<unknown>): void
     register(entry: Record<string, unknown>, component: (props: never) => ReactNode): () => void
   }
-  inject(deps: string[], run: (ctx: ClientContextLike) => void): unknown
+  inject?(deps: string[], run: (ctx: ClientContextLike) => void): unknown
   settingsScope?: { bind(spec: { namespace: string }): SettingsScopeLike<CodeIndexSettings> }
+  configForms?: { get(id: string): SettingsScopeLike<CodeIndexSettings> | undefined }
+  locale?: { register(namespace: string, dictionaries: { zh: Record<string, string>; en: Record<string, string> }): () => void }
 }
 
 interface SettingsSnapshot<T> {
@@ -166,9 +169,6 @@ function CodeToolCard(props: ToolViewProps): ReactNode {
   )
 }
 
-/** The scope is captured at apply() time; the card reads it through React state. */
-let activeScope: SettingsScopeLike<CodeIndexSettings> | null = null
-
 /** Mirrors the first-party plugin card + field CSS modules, under our own class names. */
 const CARD_CSS = `
 .dci-card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:12px;list-style:none;transition:border-color .16s,background .16s}
@@ -206,8 +206,26 @@ const SETTINGS_DEFAULTS = { autoInject: true, codeHealth: false, mapTopFiles: 24
 const SETTINGS_FIELDS = ['autoInject', 'codeHealth', 'mapTopFiles'] as const
 
 /** Settings card for `code-index`, laid out like the first-party plugin cards. */
-function CodeIndexSettingsCard(): ReactNode {
-  const scope = activeScope
+export const SETTINGS_EN = {
+  collapse: 'Collapse settings', expand: 'Expand settings',
+  description: 'Project-aware live structural context: symbol search, repo map, and call graph.',
+  autoInject: 'Inject repo map', autoInjectHint: 'Add a compact ranked map of the current project to the system prompt.',
+  codeHealth: 'Code health tool', codeHealthHint: 'Register code_health for dependency cycles and orphan modules (restart required).',
+  mapFiles: 'Map files', mapFilesHint: 'Maximum number of files shown in each repo map.',
+  discard: 'Discard changes', save: 'Save', unavailable: 'Settings service unavailable.',
+}
+export const SETTINGS_ZH = {
+  collapse: '收起设置', expand: '展开设置',
+  description: '项目感知的实时结构化上下文：符号搜索、仓库地图与调用图。',
+  autoInject: '自动注入仓库地图', autoInjectHint: '把当前项目的精简排名地图注入系统提示词。',
+  codeHealth: '代码健康工具', codeHealthHint: '注册 code_health 工具，报告环依赖与孤儿模块（重启后生效）。',
+  mapFiles: '地图文件数', mapFilesHint: '仓库地图中最多展示的文件数。',
+  discard: '放弃修改', save: '保存', unavailable: '设置服务不可用。',
+}
+
+function CodeIndexSettingsCard(props: { scope?: SettingsScopeLike<CodeIndexSettings>; t?: (key: string) => string }): ReactNode {
+  const scope = props.scope ?? null
+  const t = props.t ?? ((key: string) => SETTINGS_EN[key as keyof typeof SETTINGS_EN] ?? key)
   const [open, setOpen] = useState(false)
   const [snapshot, setSnapshot] = useState<SettingsSnapshot<CodeIndexSettings> | null>(
     scope ? scope.getSnapshot() : null,
@@ -249,12 +267,12 @@ function CodeIndexSettingsCard(): ReactNode {
         type="button"
         className="dci-header"
         aria-expanded={open}
-        aria-label={`${open ? '收起设置' : '展开设置'}: dsh-code-index`}
+        aria-label={`${t(open ? 'collapse' : 'expand')}: dsh-code-index`}
         onClick={() => { setOpen(!open) }}
       >
         <span className="dci-headText">
           <span className="dci-name">dsh-code-index</span>
-          <span className="dci-description">结构化仓库索引：符号搜索、仓库地图与调用图。</span>
+          <span className="dci-description">{t('description')}</span>
         </span>
         <svg className={open ? 'dci-chevron dci-chevronOpen' : 'dci-chevron'} width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d={CHEVRON_PATH} fill="currentColor" />
@@ -264,7 +282,7 @@ function CodeIndexSettingsCard(): ReactNode {
         <div className="dci-body">
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-auto-inject">自动注入仓库地图</label>
+            <label className="dci-label" htmlFor="dci-auto-inject">{t('autoInject')}</label>
               <input
                 id="dci-auto-inject"
                 className="dci-check"
@@ -274,11 +292,11 @@ function CodeIndexSettingsCard(): ReactNode {
                 onChange={(event) => { edit('autoInject', event.target.checked) }}
               />
             </div>
-            <p className="dci-hint">把精简的排名仓库地图注入系统提示词。</p>
+            <p className="dci-hint">{t('autoInjectHint')}</p>
           </div>
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-code-health">代码健康工具</label>
+            <label className="dci-label" htmlFor="dci-code-health">{t('codeHealth')}</label>
               <input
                 id="dci-code-health"
                 className="dci-check"
@@ -288,11 +306,11 @@ function CodeIndexSettingsCard(): ReactNode {
                 onChange={(event) => { edit('codeHealth', event.target.checked) }}
               />
             </div>
-            <p className="dci-hint">注册 code_health 工具，报告环依赖与孤儿模块（重启后生效）。</p>
+            <p className="dci-hint">{t('codeHealthHint')}</p>
           </div>
           <div className="dci-field">
             <div className="dci-head">
-              <label className="dci-label" htmlFor="dci-map-files">地图文件数</label>
+              <label className="dci-label" htmlFor="dci-map-files">{t('mapFiles')}</label>
             </div>
             <input
               id="dci-map-files"
@@ -303,24 +321,24 @@ function CodeIndexSettingsCard(): ReactNode {
               disabled={!writable}
               onChange={(event) => { edit('mapTopFiles', Number(event.target.value)) }}
             />
-            <p className="dci-hint">仓库地图中最多展示的文件数。</p>
+            <p className="dci-hint">{t('mapFilesHint')}</p>
           </div>
           <div className="dci-footer">
             <button type="button" className="dci-discard" disabled={!dirty || !writable} onClick={() => { setDraft(null) }}>
-              放弃修改
+              {t('discard')}
             </button>
-            <button type="button" className="dci-save" disabled={!dirty || !writable} onClick={save}>保存</button>
+            <button type="button" className="dci-save" disabled={!dirty || !writable} onClick={save}>{t('save')}</button>
           </div>
         </div>
       ) : null}
-      {scope ? null : <p className="dci-hint" style={{ padding: '0 16px 12px' }}>设置服务不可用。</p>}
+      {scope ? null : <p className="dci-hint" style={{ padding: '0 16px 12px' }}>{t('unavailable')}</p>}
     </li>
   )
 }
 
 export const name = 'dsh-code-index'
 
-/** `slots` is required for direct access; `settingsScope` binds lazily below. */
+/** `slots` is required; config and locale services are injected optionally. */
 export const inject = ['slots']
 
 const TOOLVIEW_KEYS = [
@@ -336,17 +354,44 @@ const TOOLVIEW_KEYS = [
 
 export function apply(ctx: ClientContextLike): void {
   const card = CodeToolCard as unknown as (props: never) => ReactNode
+  ctx.inject?.(['locale'], (localized) => {
+    if (localized.locale) localized.effect(() => localized.locale!.register('settings.codeIndex', { zh: SETTINGS_ZH, en: SETTINGS_EN }))
+  })
   ctx.slots.inject('tool.call.toolview', function* () {
     for (const key of TOOLVIEW_KEYS) {
       yield ctx.slots.register({ name: 'tool.call.toolview', key }, card)
     }
   })
 
-  ctx.inject(['settingsScope'], (scoped: ClientContextLike) => {
-    activeScope = scoped.settingsScope?.bind({ namespace: 'code-index' }) ?? null
-    ctx.slots.inject('settings.plugin.item', function* () {
-      yield ctx.slots.register(
-        { name: 'settings.plugin.item', key: 'code-index' },
+  // New DSH exposes per-plugin volatile config forms and the plugin settings
+  // tab. Keep the prior settingsScope slot for clients that still provide it.
+  ctx.inject?.(['configForms'], (configured) => {
+    const form = configured.configForms?.get('dsh-code-index') ?? configured.configForms?.get('code-index')
+    if (!form) return
+    configured.slots.inject('settings.plugins.tab', function* () {
+      yield configured.slots.register(
+        {
+          name: 'settings.plugins.tab',
+          id: 'code-index',
+          order: 60,
+          label: 'Code Index',
+          locale: 'settings.codeIndex',
+          inject: () => ({ scope: form }),
+        },
+        CodeIndexSettingsCard as unknown as (props: never) => ReactNode,
+      )
+    })
+  })
+  ctx.inject?.(['settingsScope'], (legacy) => {
+    const settingsScope = legacy.settingsScope?.bind({ namespace: 'code-index' })
+    legacy.slots.inject('settings.plugin.item', function* () {
+      yield legacy.slots.register(
+        {
+          name: 'settings.plugin.item',
+          key: 'code-index',
+          locale: 'settings.codeIndex',
+          inject: () => ({ scope: settingsScope }),
+        },
         CodeIndexSettingsCard as unknown as (props: never) => ReactNode,
       )
     })
