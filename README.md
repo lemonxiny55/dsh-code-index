@@ -5,11 +5,56 @@
 
 English | [中文](README.zh.md)
 
-Project-aware live structural context engine for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`). It is **task-aware**, **project-aware**, and **live**: local tree-sitter indexing, no API key, and no external service.
+Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) agent **fresh, project-aware code context** for the repository it is working in. Switch between repositories without mixing symbols or Git changes; edit files outside DSH and the next query picks up additions, changes, and deletions without a manual rebuild.
 
-Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **local-first** — in-process tree-sitter over WASM and local file observation, with no remote service, embedding API, or vector database.
+Indexing runs locally with tree-sitter. There is no embedding service, vector database, or extra indexing API key to configure.
 
-## What the model gets
+## On this page
+
+- [🚀 Quick start](#quick-start)
+- [🧭 Project isolation and live updates](#project-isolation-and-live-updates)
+- [👀 See it in action](#see-it-in-action)
+- [🧰 Tools](#tools)
+- [Configuration](#configuration)
+- [Supported languages](#supported-languages)
+- [How it works](#how-it-works)
+- [Known limitations](#known-limitations)
+
+## Quick start
+
+Requires `dsh` and Node ≥ 22. Install the published plugin in your Web profile:
+
+```sh
+npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+```
+
+Restart the Web UI with `npx @deepseek-ai/dsh web`. For local checkout installation, compatibility details, and startup checks, see [Install](#install).
+
+## Project isolation and live updates
+
+```text
+Open repo A → search finds A's symbols
+Switch to repo B → search finds B's symbols, not A's
+Edit files outside DSH → the next query sees the change
+Switch back to A → A's context is still isolated
+```
+
+Each Git worktree gets its own index and change state. The plugin watches projects accessed by the session and checks file metadata on tool calls, so additions, edits, and deletions become visible without a manual rebuild.
+
+## See it in action
+
+Ask: “Which repo are we in? Run `code_map`, then find where `extractSymbols` is defined.”
+
+```text
+code_map → ranked files and key symbols
+code_search("extractSymbols") → src/extract.ts:121
+```
+
+The same index can trace callers and callees:
+
+![code_refs on dsh-code-index: definitions, callers, and callees resolved to file:line](assets/code-refs-demo.png)
+
+## Tools
 
 | Tool | Purpose |
 |---|---|
@@ -24,22 +69,11 @@ Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/mem
 
 Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map selected from the active DSH session workspace. Set `autoInject: false` to disable and rely on the `code_map` tool only.
 
-## Project-aware live context
-
-```text
-Open repo A → code_context uses A
-Switch to repo B → code_context automatically uses B
-Edit repo B from VS Code → the next code_context sees the new state
-Switch back to repo A → A's symbols and Git changes remain isolated
-```
-
-Each Git worktree gets its own index and change state. The plugin keeps contexts for up to four recently used projects and watches only projects a session has accessed. Filesystem events are coalesced; tool calls also scan current file metadata and reparse changed files before returning context.
-
 ## Install
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The development compatibility target is `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2` (Node 22 and 24 CI matrix). The harness is still a preview API; confirm the actual Web install and lifecycle against the target DSH build before release.
+The development compatibility target is `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2` (Node 22 and 24 CI matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
 
 ```sh
 # from npm (prebuilt)
@@ -72,25 +106,7 @@ In a workspace session, ask the agent:
 
 No API key is needed to *index*; the model must of course be configured to call the tools.
 
-## Example (input → output)
-
-User prompt:
-
-> Which repo are we in? Run `code_map` first, then find where `extractSymbols` is defined.
-
-The agent calls the tools in turn:
-
-```
-code_map
-# repo map
-## src/extract.ts (14)
-  function extractSymbols(code, id) :121
-  function languageForFile(filePath) :37
-  ...
-
-code_search { query: "extractSymbols" }
-export function extractSymbols(code, id) — src/extract.ts:121
-```
+## More capabilities
 
 The index builds lazily on first use; later calls are served from the on-disk cache with mtime-incremental refresh.
 
@@ -98,7 +114,7 @@ The index builds lazily on first use; later calls are served from the on-disk ca
 
 `code_refs` traces a symbol through the call graph — the run below is on this repo itself (`getIndex` is defined at `src/tools.ts:105`, called from 7 sites, and its callee resolves to `src/tools.ts:74`):
 
-![code_refs on dsh-code-index: definitions, 7 callers with their enclosing function, and callees resolved to file:line](assets/code-refs-demo.png)
+The screenshot above shows definitions, callers, and callees resolved to file:line.
 
 ### Change-aware context
 
@@ -177,10 +193,8 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - **web-tree-sitter pinned to `^0.25` (ESM)** — the 0.25 line uses ESM named exports (`Language`/`Query`); this pairing with `tree-sitter-wasms` static builds is verified working under Node ≥ 22/24.
 - Auto-injected maps use DSH's system-prompt assembly context for the active session. Agentless assembly falls back to the DSH process working directory. A newly accessed project may have an empty map on its first prompt while indexing completes; following assemblies receive its map.
 - The watcher starts only for projects accessed by a tool and is disposed with the plugin. With `externalWatch: false`, per-call metadata scans still detect ordinary mtime changes.
-- The preview DSH API is typechecked and exercised through package-level lifecycle fakes; a real DSH Web install/enable/disable run is a separate release gate.
 - Large monorepos still require a directory metadata scan on each tool call. File parsing is incremental, but scan latency depends on repository size and storage speed.
 - Local variables are indexed too — recall over precision; `code_search` ranking keeps them low.
-- Developer-preview harness: expect breaking harness/plugin API changes upstream.
 
 ## Development
 
@@ -210,3 +224,4 @@ Found a bug, or the map ranks something badly? Please [open an issue](https://gi
 ## License
 
 MIT. Not affiliated with DeepSeek; built on the public `dsh` plugin surface.
+
