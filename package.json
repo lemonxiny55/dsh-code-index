@@ -1,7 +1,7 @@
 {
   "name": "dsh-code-index",
-  "version": "0.7.0",
-  "description": "Structural context engine for DSH — tree-sitter symbol index, ranked search, repo map, call graph, and change-aware context.",
+  "version": "0.8.0",
+  "description": "Project-aware live structural context engine for DSH agents — isolated workspace indexes, task-aware context, and fresh repo maps.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -50,7 +50,7 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.1 <0.2.0-0"
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -58,7 +58,8 @@
     }
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-tools": "0.1.0-rc.8",
+    "@deepseek-ai/cordis": "4.0.4",
+    "@deepseek-ai/dsh-tools": "0.1.7-alpha.2",
     "@types/node": "^26.2.0",
     "@types/react": "^18.3.31",
     "react": "^18.3.1",
@@ -79,7 +80,9 @@
     "url": "https://github.com/lemonxiny55/dsh-code-index/issues"
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "^3.18.2",
+    "@deepseek-ai/schemastery": "^3.18.4",
+    "chokidar": "4.0.3",
+    "ignore": "7.0.5",
     "tree-sitter-wasms": "^0.1.13",
     "web-tree-sitter": "^0.25.10"
   }

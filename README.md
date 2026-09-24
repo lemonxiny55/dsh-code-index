@@ -5,9 +5,9 @@
 
 English | [中文](README.zh.md)
 
-Structural context engine for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`): a local, no-service, no-API-key tree-sitter index that gives agents the smallest useful structural context for the task at hand.
+Project-aware live structural context engine for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`). It is **task-aware**, **project-aware**, and **live**: local tree-sitter indexing, no API key, and no external service.
 
-Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **dependency-free** — pure in-process tree-sitter over WASM, the aider repo-map / Cursor `@Codebase` style for dsh agents.
+Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/memory plugins, several code-intelligence plugins have appeared (graph-based, embedding-based), while this one stays deliberately **local-first** — in-process tree-sitter over WASM and local file observation, with no remote service, embedding API, or vector database.
 
 ## What the model gets
 
@@ -22,11 +22,24 @@ Fits a niche the ecosystem took a while to fill: alongside git/voice/browser/mem
 | `code_context` | Task-aware unified entry point: routes a plain-language task across search, repo map, call/import graph, change context, tests, and a hard character budget |
 | `code_health` | Opt-in (`codeHealth: true`): circular dependencies (import cycles) and orphan modules |
 
-Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map of the default workspace, refreshed on a TTL (`mapTtlMs`, default 60s). Set `autoInject: false` to disable and rely on the `code_map` tool only.
+Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map selected from the active DSH session workspace. Set `autoInject: false` to disable and rely on the `code_map` tool only.
+
+## Project-aware live context
+
+```text
+Open repo A → code_context uses A
+Switch to repo B → code_context automatically uses B
+Edit repo B from VS Code → the next code_context sees the new state
+Switch back to repo A → A's symbols and Git changes remain isolated
+```
+
+Each Git worktree gets its own index and change state. The plugin keeps contexts for up to four recently used projects and watches only projects a session has accessed. Filesystem events are coalesced; tool calls also scan current file metadata and reparse changed files before returning context.
 
 ## Install
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
+
+The development compatibility target is `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2` (Node 22 and 24 CI matrix). The harness is still a preview API; confirm the actual Web install and lifecycle against the target DSH build before release.
 
 ```sh
 # from npm (prebuilt)
@@ -132,13 +145,15 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 
 | Key | Default | Meaning |
 |---|---|---|
-| `excludeDirs` | `[]` | Extra dirs appended to the built-in excludes (`node_modules`, `.git`, `dist`, `build`, `out`, `coverage`, `.next`, `.nuxt`, `.cache`, `target`, `vendor`, …) |
+| `excludeDirs` | `[]` | Extra directory names appended to built-in excludes. Matching is by exact path component; glob patterns such as `secrets/**` are not supported. |
 | `mapTopFiles` | `24` | Max files in a ranked map |
 | `mapMaxChars` | `3200` | Hard cap on rendered map characters |
 | `mapTtlMs` | `60000` | Refresh interval for the auto-injected map (ms, min 1000) |
 | `autoInject` | `true` | Register the system prompt section |
 | `codeHealth` | `false` | Register the `code_health` tool (cycles / orphan modules) |
 | `toolSurface` | `full` | Experimental `compact` mode exposes `code_index`, `code_context`, and enabled `code_health`; `full` preserves all tools |
+| `externalWatch` | `true` | Watch source files in active project contexts for external edits |
+| `watchDebounceMs` | `120` | Coalesce watcher events before refreshing affected files (minimum 20 ms) |
 
 ## Supported languages
 
@@ -154,11 +169,16 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - **Task-aware context** (`src/context.ts`): deterministically routes a task across the existing search, map, call graph, change context, and test signals, then deduplicates and trims them to a hard character budget.
 - **Health** (`src/health.ts`): Tarjan SCC over the import graph yields circular dependencies; orphan-module detection lists symbol-bearing files with no inbound or outbound imports (entry points and tests excluded).
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).
+- **Project contexts** (`src/repo-context.ts`): canonical real paths identify separate worktrees; up to four contexts are retained. Each tool call scans current metadata and reparses only changed files, while the watcher refreshes dirty files after a bounded debounce.
+- **Ignore handling**: Git ignore rules from root and nested `.gitignore` files are applied to indexing. `excludeDirs` remains a list of exact directory names, not glob patterns.
 
 ## Known limitations
 
 - **web-tree-sitter pinned to `^0.25` (ESM)** — the 0.25 line uses ESM named exports (`Language`/`Query`); this pairing with `tree-sitter-wasms` static builds is verified working under Node ≥ 22/24.
-- Auto-injected section targets the **default workspace** (launch directory, matching headless/CLI mode). Multi-workspace Web UI sessions should use `code_map`/`code_symbols` (they resolve per-session cwd).
+- Auto-injected maps use DSH's system-prompt assembly context for the active session. Agentless assembly falls back to the DSH process working directory. A newly accessed project may have an empty map on its first prompt while indexing completes; following assemblies receive its map.
+- The watcher starts only for projects accessed by a tool and is disposed with the plugin. With `externalWatch: false`, per-call metadata scans still detect ordinary mtime changes.
+- The preview DSH API is typechecked and exercised through package-level lifecycle fakes; a real DSH Web install/enable/disable run is a separate release gate.
+- Large monorepos still require a directory metadata scan on each tool call. File parsing is incremental, but scan latency depends on repository size and storage speed.
 - Local variables are indexed too — recall over precision; `code_search` ranking keeps them low.
 - Developer-preview harness: expect breaking harness/plugin API changes upstream.
 

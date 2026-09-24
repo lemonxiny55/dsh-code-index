@@ -2,9 +2,9 @@
 
 [English](README.md) | 中文
 
-面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) 的结构化上下文引擎:本地运行、无需外部服务和 API key,为当前代码任务自动选择最少但足够有用的结构化上下文。
+面向 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) 的项目感知实时结构化上下文引擎。它具备**任务感知、项目感知、实时更新**能力:本地 tree-sitter 索引,无需 API key 或外部服务。
 
-在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**零外部依赖**——纯进程内 tree-sitter WASM,把 aider repo-map / Cursor `@Codebase` 的同类能力带给 dsh agent。
+在一个生态姗姗来迟的细分领域占位:git/语音/浏览器/记忆类插件之外,代码智能方向的插件已陆续出现(图谱路线、向量嵌入路线),而本插件刻意保持**本地优先**——进程内 tree-sitter WASM 与本地文件观察,不连接远程服务、embedding API 或向量数据库。
 
 ## 模型能得到什么
 
@@ -19,11 +19,24 @@
 | `code_context` | 任务感知的统一入口:根据自然语言任务组合搜索、仓库地图、调用/import 图、变更上下文、测试和字符预算 |
 | `code_health` | 可选开启(`codeHealth: true`):环依赖(import 环)与孤儿模块 |
 
-外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):默认工作区的精简排名地图,按 TTL 自动刷新(`mapTtlMs`,默认 60 秒)。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
+外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):自动选择当前 DSH 会话工作区的精简排名地图。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
+
+## 项目感知实时上下文
+
+```text
+打开仓库 A → code_context 使用 A
+切换到仓库 B → code_context 自动改用 B
+从 VS Code 修改仓库 B → 下一次 code_context 看到最新状态
+切回仓库 A → A 的符号与 Git 变更仍然独立
+```
+
+每个 Git worktree 都有独立索引和变更状态。插件最多保留最近使用的四个项目上下文,只监听会话访问过的项目。文件事件会合并处理;工具调用也会扫描当前文件元数据,并在返回上下文前重解析已变更文件。
 
 ## 安装
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
+
+当前开发兼容目标为 `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2`(CI 覆盖 Node 22 和 24)。Harness 仍属于预览 API;发布前还需在对应 DSH 构建中确认真实 Web 安装与插件生命周期。
 
 ```sh
 # 从 npm(预编译)
@@ -109,13 +122,15 @@ export function extractSymbols(code, id) — src/extract.ts:121
 
 | 键 | 默认 | 含义 |
 |---|---|---|
-| `excludeDirs` | `[]` | 追加到内置排除列表(`node_modules`、`.git`、`dist`、`build`、`out`、`coverage`、`.next`、`.nuxt`、`.cache`、`target`、`vendor`……)之外的额外目录 |
+| `excludeDirs` | `[]` | 追加到内置排除列表的目录名,按路径组件精确匹配;不支持 `secrets/**` 这类 glob |
 | `mapTopFiles` | `24` | 排名地图中的最大文件数 |
 | `mapMaxChars` | `3200` | 渲染地图的硬性字符上限 |
 | `mapTtlMs` | `60000` | 自动注入地图的刷新间隔(毫秒,最小 1000) |
 | `autoInject` | `true` | 是否注册系统提示词段 |
 | `codeHealth` | `false` | 是否注册 `code_health` 工具(环/孤儿模块) |
 | `toolSurface` | `full` | 实验性的 `compact` 模式只暴露 `code_index`、`code_context` 和已启用的 `code_health`; `full` 保持全部工具 |
+| `externalWatch` | `true` | 监听当前活动项目的外部源码变更 |
+| `watchDebounceMs` | `120` | 合并文件事件后再刷新受影响文件(最小 20 毫秒) |
 
 ## 支持的语言
 
@@ -131,11 +146,16 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - **任务感知上下文**(`src/context.ts`):确定性地把任务路由到已有的搜索、地图、调用图、变更上下文和测试信号,再按统一优先级去重并限制字符预算。
 - **健康检查**(`src/health.ts`):对 import 图跑 Tarjan SCC 得到环依赖;孤儿模块检测列出既不被 import、也不 import 任何文件的含符号文件(排除入口与测试)。
 - **工作区解析**:每个工具解析会话 cwd(`agent.session.header.cwd`)并向上查找最近的 `.git`(有界——没有仓库标记的目录绝不会被索引)。
+- **项目上下文**(`src/repo-context.ts`):用真实规范路径区分各 worktree,最多保留四个上下文。每次工具调用扫描文件元数据并只重解析变化文件;watcher 会在有限 debounce 后刷新脏文件。
+- **忽略规则**:索引遵守仓库根目录及嵌套 `.gitignore`;`excludeDirs` 仍是精确目录名列表,不支持 glob。
 
 ## 已知限制
 
 - **web-tree-sitter 固定为 `^0.25`(ESM)** —— 0.25 采用 ESM 具名导出(`Language`/`Query`);与 `tree-sitter-wasms` 静态构建的组合在 Node ≥ 22/24 下验证可用。
-- 自动注入段针对**默认工作区**(启动目录,与 headless/CLI 模式一致)。多工作区 Web UI 会话应使用 `code_map`/`code_symbols`(它们按会话 cwd 解析)。
+- 自动注入地图使用 DSH system prompt assembly 提供的当前会话上下文。没有 Agent 的 prompt assembly 会回退到 DSH 进程工作目录。新访问的项目第一次注入可能暂时为空,待索引完成后后续 assembly 会使用项目地图。
+- Watcher 只为工具实际访问的项目启动,并随插件卸载清理。设置 `externalWatch: false` 后,每次工具调用仍会扫描元数据以发现常规 mtime 变化。
+- 大型 monorepo 每次工具调用仍需要扫描目录元数据。文件解析是增量的,但扫描耗时取决于仓库规模和磁盘速度。
+- 当前已通过预览版 DSH API 的类型检查、包级生命周期模拟;真实 DSH Web 安装/启停仍是发布前验证项。
 - 局部变量也会被索引——召回优先于精确;`code_search` 的排名会压低它们。
 - 开发者预览版 harness:上游 harness/插件 API 大概率有破坏性变更。
 

@@ -2,6 +2,25 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.8.0 — 2026-09-23
+
+### Added
+- Project-aware `RepoContextManager` keyed by canonical worktree root, with bounded inactive-context eviction and per-project index/cache isolation.
+- External filesystem observation for active projects, debounced event batching, and dirty-file incremental reparsing for add/change/delete/rename events.
+- Per-session dynamic repo-map selection through DSH system-prompt assembly context.
+- Chinese and English dictionaries for the Web settings card.
+
+### Improved
+- `code_context`, `code_change_context`, and existing tools resolve the current session cwd and perform a freshness scan before returning context.
+- Repo roots are canonicalized through the filesystem; Git worktrees keep separate roots and change state.
+- Plugin disposal closes watchers, timers, settings observers, and in-flight context ownership.
+- Development API target is `@deepseek-ai/dsh-tools@0.1.7-alpha.2`; package smoke retains the existing full tool surface by default. Real DSH Web lifecycle verification remains a release gate.
+
+### Compatibility
+- Existing v0.7 tools remain available; `toolSurface: full` remains the default.
+- `excludeDirs` continues to mean directory names matched as exact path components; glob patterns are not accepted.
+- No embeddings, remote services, or API keys are used.
+
 ## 0.7.0 — 2026-09-19
 
 - **feat(context):** add deterministic task-aware `code_context` routing for change, symbol, architecture, test, exploration, and ambiguous tasks.
