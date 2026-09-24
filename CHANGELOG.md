@@ -14,7 +14,11 @@ All notable changes to dsh-code-index are documented here.
 - `code_context`, `code_change_context`, and existing tools resolve the current session cwd and perform a freshness scan before returning context.
 - Repo roots are canonicalized through the filesystem; Git worktrees keep separate roots and change state.
 - Plugin disposal closes watchers, timers, settings observers, and in-flight context ownership.
-- Development API target is `@deepseek-ai/dsh-tools@0.1.7-alpha.2`; package smoke retains the existing full tool surface by default. Real DSH Web lifecycle verification remains a release gate.
+- Development API target is `@deepseek-ai/dsh-tools@0.1.7-alpha.2`; package smoke retains the existing full tool surface by default.
+
+### Release verification
+- Real DSH Web verification passed: separate repo-A/repo-B contexts, A→B→A isolation, external add/delete freshness without manual rebuild, `code_change_context`, and call-relationship results; no cross-project contamination was observed.
+- Settings-card Chinese and English localization is adapted to the current DSH UI. Thanks to @garyschulte for the related localization contribution in [PR #1](https://github.com/lemonxiny55/dsh-code-index/pull/1).
 
 ### Compatibility
 - Existing v0.7 tools remain available; `toolSurface: full` remains the default.
