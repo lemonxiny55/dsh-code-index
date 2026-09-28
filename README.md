@@ -5,9 +5,12 @@
 
 English | [中文](README.zh.md)
 
-Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) agent **fresh, project-aware code context** for the repository it is working in. Switch between repositories without mixing symbols or Git changes; edit files outside DSH and the next query picks up additions, changes, and deletions without a manual rebuild.
+Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) agent **the right code context for the task and the repository it is working in**. `code_context` turns a plain-language task into a compact set of relevant symbols, files, relationships, changes, and likely tests. `code_change_context` starts from the current Git changes and shows what changed and what may be affected.
 
-Indexing runs locally with tree-sitter. There is no embedding service, vector database, or extra indexing API key to configure.
+- **Stay on the right project:** repository and worktree context follows the active DSH session, so switching projects does not mix symbols or Git changes.
+- **Stay up to date:** files added, changed, or deleted outside DSH appear in later queries without a manual rebuild.
+- **Choose the tool surface:** `full` (default) keeps every tool available; `compact` focuses on `code_index` and `code_context`, with optional `code_health`.
+- **Keep indexing local:** no embedding service, vector database, or extra indexing API key.
 
 ## On this page
 
@@ -19,6 +22,7 @@ Indexing runs locally with tree-sitter. There is no embedding service, vector da
 - [Supported languages](#supported-languages)
 - [How it works](#how-it-works)
 - [Known limitations](#known-limitations)
+- [Feedback](#feedback)
 
 ## Quick start
 
@@ -219,7 +223,9 @@ It re-points every dead link at its real `.pnpm` store entry as a junction; safe
 
 ## Feedback
 
-Found a bug, or the map ranks something badly? Please [open an issue](https://github.com/lemonxiny55/dsh-code-index/issues) — real-world usage reports (repos where the ranking misbehaves, languages you want next) directly drive the roadmap.
+Used dsh-code-index? Tell me what helped, what broke, or what context it missed. Reply in the [official DSH plugin discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/5623), or use the [feedback issue form](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml) if issue submissions are enabled for the repository.
+
+To make a report actionable, include the approximate repository size and languages, the task you tried, the context you expected, and what the agent actually received. Mention whether project switching, a worktree, or an external file edit was involved. Please do not include private source code, credentials, or API keys.
 
 ## License
 

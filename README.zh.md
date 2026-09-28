@@ -2,9 +2,12 @@
 
 [English](README.md) | 中文
 
-让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) Agent 始终拿到**新鲜、隔离的当前仓库代码上下文**。在多个仓库间切换时,符号和 Git 变更各自独立;从 DSH 外部新增、修改或删除文件后,后续查询会自动看到变化,无需手动重建。
+让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) Agent **根据任务拿到当前项目真正相关的代码上下文**。`code_context` 会把自然语言任务整理成精简的相关符号、文件、关系、变更和可能受影响的测试。`code_change_context` 从当前 Git 变更出发，说明改了什么以及可能影响哪里。
 
-索引通过 tree-sitter 在本地运行,不依赖 embedding 服务、向量数据库或额外的索引 API key。
+- **项目各自独立：**上下文跟随当前 DSH 会话所在的仓库与 worktree，切换项目时不会混入其他项目的符号或 Git 变更。
+- **外部修改自动刷新：**在 DSH 外新增、修改或删除文件，后续查询无需手动重建就能反映变化。
+- **按需选择工具：**默认 `full` 保留全部工具；`compact` 聚焦 `code_index` 和 `code_context`，也可选启用 `code_health`。
+- **索引在本地运行：**不依赖 embedding 服务、向量数据库或额外的索引 API key。
 
 ## 本页导航
 
@@ -16,6 +19,7 @@
 - [支持的语言](#支持的语言)
 - [工作原理](#工作原理)
 - [已知限制](#已知限制)
+- [反馈](#反馈)
 
 ## 快速开始
 
@@ -196,7 +200,9 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 
 ## 反馈
 
-发现 bug,或者地图排名不合理?请[提 issue](https://github.com/lemonxiny55/dsh-code-index/issues)——真实使用报告(排名失准的仓库、想支持的语言)直接决定路线图。
+用过 dsh-code-index？欢迎告诉我哪些地方有帮助、哪里出错，或缺少了什么上下文。可以回复[DSH 官方插件介绍讨论](https://github.com/deepseek-ai/deepseek-harness/discussions/5623)；如果仓库允许创建 Issue，也可以使用[反馈 Issue 表单](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml)。
+
+为了方便复现，请尽量说明仓库的大致规模和语言、执行的任务、预期上下文与 Agent 实际收到的内容，以及是否涉及项目切换、worktree 或外部文件修改。请勿粘贴私有源码、凭据或 API key。
 
 ## 许可证
 

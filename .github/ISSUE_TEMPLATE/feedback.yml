@@ -1,0 +1,62 @@
+name: Usage feedback or bug report
+description: Share what helped, what broke, or what context the agent missed.
+title: "[feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying dsh-code-index. Approximate details are enough; do not include private source code, credentials, or API keys.
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DSH version
+      placeholder: "0.1.7-rc.1"
+    validations:
+      required: true
+  - type: input
+    id: plugin-version
+    attributes:
+      label: dsh-code-index version
+      placeholder: "0.8.0"
+    validations:
+      required: true
+  - type: input
+    id: repo-profile
+    attributes:
+      label: Approximate repository size and languages
+      description: "For example: about 200k LOC; TypeScript and Python."
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: Task performed
+      description: What did you ask the agent to do?
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected-context
+    attributes:
+      label: Expected context
+      description: What code or relationships should the agent have found?
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: actual-context
+    attributes:
+      label: Actual context
+      description: What did it find, miss, or include that was irrelevant?
+      render: text
+    validations:
+      required: true
+  - type: checkboxes
+    id: scenario
+    attributes:
+      label: Related scenario
+      description: Select all that apply.
+      options:
+        - label: Switching between multiple projects
+        - label: Git worktree
+        - label: External file add, edit, or delete freshness
