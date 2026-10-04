@@ -26,7 +26,7 @@ import type { IndexedFile, RepoIndex, SymbolId, SymbolInfo, SymbolKind } from '.
 /* Types (design §3)                                                          */
 /* -------------------------------------------------------------------------- */
 
-export type ChangeKind = 'added' | 'modified' | 'deleted' | 'renamed'
+export type ChangeKind = 'added' | 'modified' | 'deleted' | 'renamed' | 'unclassified'
 
 export interface ChangedSymbol {
   symbol: SymbolInfo
@@ -465,7 +465,14 @@ async function mapDiffChanges(
     if (newPath) changedFiles.add(newPath)
     if (oldPath) changedFiles.add(oldPath)
 
-    // Current side: hunk ranges that touch the new file.
+    // Identity is structural, never a guessed symbol rename. Duplicate names
+    // in the same scope cannot be paired reliably after an insertion.
+    const identity = (symbol: SymbolInfo): string => JSON.stringify([
+      symbol.kind, symbol.name, symbol.scope.map(owner => [owner.kind, owner.name]),
+    ])
+    const oldSymbols = oldPath === null ? [] : await readBaseSymbols(oldPath)
+    const count = (symbols: readonly SymbolInfo[], symbol: SymbolInfo): number =>
+      symbols.filter(candidate => identity(candidate) === identity(symbol)).length
     const currentSymbols =
       newPath !== null && change.status !== 'deleted' ? symbolsByPath.get(newPath) : undefined
     if (newPath !== null && change.status !== 'deleted') {
@@ -478,7 +485,14 @@ async function mapDiffChanges(
       if (currentRanges.length > 0 && currentSymbols) {
         for (const range of currentRanges) {
           for (const symbol of currentSymbols) {
-            if (intersects(symbol, range)) addChanged(symbol, change.status, 'current')
+            if (!intersects(symbol, range)) continue
+            let classification: ChangeKind = 'unclassified'
+            if (change.status === 'added') classification = 'added'
+            else if (oldSymbols !== null && count(currentSymbols, symbol) === 1) {
+              const matches = count(oldSymbols, symbol)
+              classification = matches === 0 ? 'added' : matches === 1 ? 'modified' : 'unclassified'
+            }
+            addChanged(symbol, classification, 'current')
           }
         }
         const missed = currentRanges.filter(
@@ -506,22 +520,28 @@ async function mapDiffChanges(
       }
     }
 
-    // Base side: deletion-only hunks (newLines === 0) are mapped against the
-    // transiently extracted old file; the baseline is never persisted.
-    const deletionHunks = hunks.filter((hunk) => hunk.newLines === 0)
+    // Include replacement hunks too: removal of one declaration and addition
+    // of another on the same line is a deletion plus an addition.
+    const deletionHunks = hunks.filter((hunk) => hunk.oldLines > 0)
     if (deletionHunks.length > 0 && oldPath !== null) {
       const oldRanges = deletionHunks.map((hunk) => ({
         startLine: hunk.oldStart,
         endLine: hunk.oldStart + Math.max(hunk.oldLines, 1) - 1,
       }))
-      const oldSymbols = await readBaseSymbols(oldPath)
       if (oldSymbols === null) {
         addUnmapped(oldPath, 'base', oldRanges, 'base-content-unavailable')
       } else {
-        const baseChange: ChangeKind = change.status === 'deleted' ? 'deleted' : 'modified'
         for (const range of oldRanges) {
           for (const symbol of oldSymbols) {
-            if (intersects(symbol, range)) addChanged(symbol, baseChange, 'base')
+            if (!intersects(symbol, range)) continue
+            const matches = count(currentSymbols ?? [], symbol)
+            if (change.status === 'deleted' || (matches === 0 && count(oldSymbols, symbol) === 1)) {
+              addChanged(symbol, 'deleted', 'base')
+            } else if (matches > 1 || count(oldSymbols, symbol) > 1) {
+              addChanged(symbol, 'unclassified', 'base')
+            } else if (hunks.some(hunk => hunk.newLines === 0 && intersects(symbol, {
+              startLine: hunk.oldStart, endLine: hunk.oldStart + hunk.oldLines - 1,
+            }))) addChanged(symbol, 'modified', 'base')
           }
         }
         const missed = oldRanges.filter(

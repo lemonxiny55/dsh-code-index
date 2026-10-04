@@ -345,6 +345,12 @@ describe('buildChangeContext — diff mapping and graph', () => {
     expect(result.unmapped).toEqual([
       {
         file: CORE,
+        side: 'base',
+        ranges: [{ startLine: 20, endLine: 22 }],
+        reason: 'base-content-unavailable',
+      },
+      {
+        file: CORE,
         side: 'current',
         ranges: [{ startLine: 20, endLine: 22 }],
         reason: 'outside-symbol',
@@ -536,6 +542,35 @@ const execAt = (cwd: string) =>
   >[1]
 
 describe.skipIf(!gitAvailable)('code_change_context — git mode end to end', () => {
+  it('classifies betaCaller additions and mixed-hunk removals against a reliable baseline', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-cix-classify-'))
+    tempDirs.push(root)
+    const source = path.join(root, 'core.ts')
+    await writeFile(source, 'export function alpha() { return 1 }\nexport function removed() { return 0 }\n')
+    git(root, ['init', '-q'])
+    git(root, ['config', 'user.email', 'test@example.com'])
+    git(root, ['config', 'user.name', 'Test'])
+    git(root, ['add', '.'])
+    git(root, ['commit', '-qm', 'baseline'])
+    await writeFile(source, 'export function alpha() { return 2 }\nexport function betaCaller() { return alpha() }\n')
+    const tool = tools.find(entry => entry.name === 'code_change_context')!
+    const output = await tool.execute({ repoRoot: root }, execAt(root)) as string
+    expect(output).toContain('added function betaCaller()')
+    expect(output).toContain('modified function alpha()')
+    expect(output).toContain('deleted base function removed()')
+    expect(output).not.toContain('modified function betaCaller()')
+    expect(output).not.toContain('renamed function')
+  })
+
+  it('does not guess classification for supplied diffs without a baseline', async () => {
+    const result = await buildChangeContext(fixture, { kind: 'diff', root: '/repo', text: [
+      'diff --git a/src/core.ts b/src/core.ts', '--- a/src/core.ts', '+++ b/src/core.ts',
+      '@@ -2 +2 @@', '-  return 1', '+  return 2', '',
+    ].join('\n') })
+    expect(result.changed.find(entry => entry.symbol.name === 'helper')?.change).toBe('unclassified')
+    expect(result.unmapped.some(entry => entry.reason === 'base-content-unavailable')).toBe(true)
+  })
+
   it('maps a committed modification and a deletion against HEAD', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-cix-change-'))
     tempDirs.push(root)
