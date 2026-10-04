@@ -102,9 +102,13 @@ describe('tool repository boundary', () => {
   it('refuses to index a workspace without a git marker', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-boundary-'))
     tempDirs.push(root)
+    // Keep the bounded root walk inside the fixture, even if the user's home
+    // or temporary-directory ancestors are themselves Git repositories.
+    const workspace = path.join(root, ...Array.from({ length: 13 }, (_, i) => `level${i}`))
+    await mkdir(workspace, { recursive: true })
     const codeIndex = tools.find((tool) => tool.name === 'code_index')!
     const unusedContext = {} as Parameters<typeof codeIndex.execute>[1]
-    const result = await codeIndex.execute({ action: 'status', repoRoot: root }, unusedContext)
+    const result = await codeIndex.execute({ action: 'status', repoRoot: workspace }, unusedContext)
     expect(result).toContain('no git repository found')
     await expect(stat(path.join(root, '.dsh-code-index'))).rejects.toMatchObject({ code: 'ENOENT' })
   })
