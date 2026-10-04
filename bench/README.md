@@ -3,6 +3,13 @@
 > **Status: skeleton, not a result.** Nothing in this directory has been run
 > against a model. No token-savings percentage may be claimed from it yet.
 
+> **Historical fixture set:** the v0.5–v0.7 arms retain their original DSH
+> `0.1.0-rc.8` pins. These are not the v0.9 development target. Do not run a
+> new campaign using these pins by default; create reviewed arms for the
+> verified matching `0.2.0-rc.2` group and record the actual runtime version.
+> v0.9 quality contracts live in `tests/context-quality.spec.ts`, and are
+> deterministic retrieval tests rather than model/performance benchmarks.
+
 This is the dependency-light, reproducible multi-arm benchmark for the
 `dsh-code-index` 0.6 context-economy plan. It exists to answer one question
 honestly:
@@ -14,8 +21,9 @@ honestly:
 Everything here is Node built-ins plus JSON. There is no framework, no npm
 dependency, and `bench/` never modifies `package.json`.
 
-- Design source: `.omo/plans/dsh-code-index-0.6-p0-1-design.md` section 5.
-- Methodology source: `.omo/plans/dsh-code-index-0.6-strategy.md` sections 4 (P0-2) and 7.
+- Historical design notes were kept outside this public checkout. This README
+  documents the available reproducible infrastructure; those missing internal
+  plan paths are not prerequisites for running it.
 
 ---
 
@@ -64,8 +72,8 @@ never be silently attributed to a different build.
 
 Placeholders you must resolve before a real campaign:
 
-- **dsh version** is pinned to the `@deepseek-ai/dsh-tools` version in this
-  repository's `devDependencies` (`0.1.0-rc.8`). Confirm with `dsh --version` and
+- **dsh version** in these historical arms is `0.1.0-rc.8`, which no longer
+  matches this repository's development dependencies. Confirm a new arm with `dsh --version` and
   record the observed value; the run record stores the pin, not a guess.
 - **`v0.5` tarball sha256** and **`v0.6` built `dist/` hash** are `null` in the
   arm files. Record them before you trust cross-machine reproducibility.

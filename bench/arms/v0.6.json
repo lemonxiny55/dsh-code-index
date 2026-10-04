@@ -5,7 +5,7 @@
   "dsh": {
     "command": "dsh",
     "version": "0.1.0-rc.8",
-    "versionNote": "Same dsh pin as every arm; only the plugin differs."
+    "versionNote": "Historical fixture pin; not the v0.9 development baseline. Create reviewed arms using the matching current RC group and record the observed dsh --version before a campaign."
   },
   "plugins": [
     {

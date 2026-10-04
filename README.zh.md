@@ -2,12 +2,16 @@
 
 [English](README.md) | 中文
 
-让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)(`dsh`) Agent **根据任务拿到当前项目真正相关的代码上下文**。`code_context` 会把自然语言任务整理成精简的相关符号、文件、关系、变更和可能受影响的测试。`code_change_context` 从当前 Git 变更出发，说明改了什么以及可能影响哪里。
+**v0.9.0 — Edit-ready Context Packs**
 
-- **项目各自独立：**上下文跟随当前 DSH 会话所在的仓库与 worktree，切换项目时不会混入其他项目的符号或 Git 变更。
-- **外部修改自动刷新：**在 DSH 外新增、修改或删除文件，后续查询无需手动重建就能反映变化。
-- **按需选择工具：**默认 `full` 保留全部工具；`compact` 聚焦 `code_index` 和 `code_context`，也可选启用 `code_health`。
-- **索引在本地运行：**不依赖 embedding 服务、向量数据库或额外的索引 API key。
+让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
+
+- **预算内直接给源码：**完整声明 → 整行窗口 → 明确的 signature-only 降级。重叠源码行去重，current/base 分开。
+- **唯一最终 pack：**文本与显式 structured output 都基于预算选择后的 ContextPack；默认硬上限 5000 字符。
+- **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
+- **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
+
+当前 checkout 是 v0.9 发布候选，尚未发布；npm 安装得到的仍是最新已发布版本。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.0.md)。
 
 ## 本页导航
 
@@ -23,13 +27,16 @@
 
 ## 快速开始
 
-需要 `dsh` 和 Node ≥ 22。在 Web profile 中安装已发布的插件:
+需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。当前版本尚未发布，在仓库根目录构建并本地安装：
 
 ```sh
-npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+pnpm install
+pnpm build
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add .
+npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 
-运行 `npx @deepseek-ai/dsh web` 重启 Web UI。本地检出安装、兼容信息和启动检查见[安装说明](#安装)。
+只有想安装 registry 已发布版本时，才使用[安装说明](#安装)中的 npm 包命令，并匹配该版本的宿主。
 
 ## 项目隔离与实时更新
 
@@ -44,16 +51,22 @@ npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
 
 ## 实际效果
 
-提问:“我们现在在哪个仓库?先跑 `code_map`,再找出 `extractSymbols` 定义在哪。”
+[30 秒真实调用回放](assets/context-pack-demo.html) · [终端录制](assets/context-pack-demo.cast)
+
+下载 HTML 后本地打开，或使用兼容 asciinema 的播放器。复现方式：`pnpm build`，再运行 `node scripts/context-pack-demo.mjs`。录制内容是在小型 Git 仓库中的实际本地工具调用，不代表 Agent 任务成功率或性能 benchmark。
+
+`code_context({ task: "Explain loadConfig", budgetChars: 5000 })` 直接返回源码。以下摘自实际录制输出：
 
 ```text
-code_map → 排名靠前的文件与关键符号
-code_search("extractSymbols") → src/extract.ts:121
+primary: loadConfig src/config.ts:1-3 [current]
+Reason: task names this symbol
+Source (complete):
+export function loadConfig(input: string) {
+  return input.trim()
+}
 ```
 
-同一索引还能追踪 callers 和 callees:
-
-![在 dsh-code-index 上运行 code_refs:定义、调用者与被调用者均解析到 file:line](assets/code-refs-demo.png)
+随后 demo 从外部修改文件，展示 added/modified/deleted 及独立的 current/base 源码，再请求 500 字符预算。Web Context Card 延期，等待匹配 RC 上真实 Agent 调用、replay 和文件跳转验证；既有文本展示继续可用。
 
 ## 工具一览
 
@@ -65,7 +78,7 @@ code_search("extractSymbols") → src/extract.ts:121
 | `code_map` | 限量排名仓库地图(按符号密度 + import 图 PageRank 取核心文件 + 关键符号与行号) |
 | `code_refs` | 沿调用图追踪符号:callers(谁调用了它)与 callees(它调用了谁),解析到 file:line |
 | `code_change_context` | 从工作区或显式 diff 出发,返回变更符号、调用者、import 依赖、有限影响路径和可能受影响的测试 |
-| `code_context` | 任务感知的统一入口:根据自然语言任务组合搜索、仓库地图、调用/import 图、变更上下文、测试和字符预算 |
+| `code_context` | Edit-ready ContextPack：有界源码、理由、关系、变化/测试、缺口和硬预算，默认文本返回 |
 | `code_health` | 可选开启(`codeHealth: true`):环依赖(import 环)与孤儿模块 |
 
 外加一个可选的**自动注入系统提示词段**(`code-index:repo-map`,序 60):自动选择当前 DSH 会话工作区的精简排名地图。将 `autoInject: false` 可关闭,只依赖 `code_map` 工具。
@@ -74,7 +87,9 @@ code_search("extractSymbols") → src/extract.ts:121
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-当前开发兼容目标为 `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2`(CI 覆盖 Node 22 和 24)。DSH 插件接口仍属于预览 API,上游变化可能需要更新兼容适配。
+当前开发兼容目标为 `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2`(CI 覆盖 Node 22 和 24)。DSH 插件接口仍属于预览 API,上游变化可能需要更新兼容适配。
+
+v0.9 要求匹配的 `0.2.0-rc.2` tools runtime；精确 peer pin 防止 npm 新安装选到 registry 中旧的 `latest` 标签。宿主版本组需一起升级；文本、配置、工具 surface 的兼容承诺不等于支持旧 DSH API。
 
 ```sh
 # 从 npm(预编译)
@@ -113,17 +128,23 @@ npx @deepseek-ai/dsh plugin --profile web add ./dsh-code-index
 
 ### 调用图
 
-`code_refs` 沿调用图追踪符号——下例直接跑在本仓库自身(`getIndex` 定义于 `src/tools.ts:105`,有 7 个调用点,其 callee 解析到 `src/tools.ts:74`):
+`code_refs` 追踪定义、调用者和被调用者。以下是既有工具的较早真实示例，不是 v0.9 Context Card：
 
-上方截图展示了定义、调用者和被调用者如何解析到 file:line。
+![较早的 code_refs 输出](assets/code-refs-demo.png)
 
 ### 变更感知上下文
 
 `code_change_context` 默认分析相对于 `HEAD` 的当前 Git 工作区,也支持内联 unified diff、仓库相对 `files` 或稳定的 `symbols` ID。结果有数量和字符预算,每条推导关系都会标注 `exact`、`import-scoped` 或 `name-only` 来源。删除和重命名在可用时读取 baseline;工作区模式也会包含未被忽略的未跟踪源码文件。
 
-### 任务感知上下文
+### Edit-ready Context Packs
 
-`code_context` 是 Agent 面对“代码任务”而不是单个符号时的高级入口。确定性的路由器识别修改、符号、架构、测试、探索和模糊任务,然后把已有能力合并、排序、去重并限制在字符预算内。只传 `task` 即可,也可以覆盖 `budgetChars`、`maxFiles`、`maxSymbols`。它不调用外部模型/API,推导关系的 `exact`、`import-scoped`、`name-only` provenance 会继续保留。
+`code_context` 识别修改、符号、架构、测试、探索和模糊任务。用 camel/snake 分词及文件名、路径、签名 terms 做确定性候选排序，保留 exact symbol；从强 primary seed 找 clean-tree likely tests，图邻域有界。不使用 BM25。
+
+`budgetChars` 默认 5000，规范化到 300–20000；`maxFiles` 默认 12，`maxSymbols` 默认 10。预算按 JavaScript 字符串字符计，不是 token 或 UTF-8 字节。文本和最终 pack 的 JSON 都必须满足上限，不切断代码行。小预算可能只剩签名或缺口；仓库身份本身无法放入预算时返回明确错误。展示任务摘要最多 120 字符，不影响路由。
+
+默认 canonical return 保持 **string**。显式传 `outputFormat: "pack"` 才返回导出的 `ContextPack` DTO。`items` 已经过预算选择，源码字段为 `file/startLine/endLine/side/ref/mode/code`，同时有 `reason` 及适用的独立关系 `resolution/provenance`。`budget.usedChars` 对应文本，`budget.packChars` 对应 JSON；用 `renderContextPack` 渲染，不暴露隐藏候选列表。
+
+Git 变化使用固定的 baseline commit 判定 added/modified/deleted，保留可靠文件 rename。结构身份不明确或 baseline 缺失时为 `unclassified`，不猜 symbol rename。`code_change_context` 的显式 `files`/`symbols` 仍是选择模式，不构成 Git modified 的证据。
 
 ## 配置
 
@@ -163,7 +184,7 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - **仓库地图**(`src/repomap.ts`):import 图上的个性化 PageRank(传送向量 = 各文件密度份额,被其他枢纽文件引用的枢纽会比平铺入度统计排得更靠前),以密度感知的文件打分为底(class/interface/function 加权,测试路径衰减),取 Top-N 文件,每文件符号上限,硬截断。
 - **调用图**(`src/refgraph.ts`):逐文件提取调用点(按语言,并记录其所属函数),按名称解析成 callers 与 callees——`code_refs` 直接暴露,`code_search` 也把调用热度作为排名平局裁决。
 - **变更上下文**(`src/change-context.ts`):把 Git hunk 映射到稳定符号,再在有限深度内追踪带来源标签的调用者、import 依赖、入口路径、影响范围和可能受影响的测试,避免返回整个仓库。
-- **任务感知上下文**(`src/context.ts`):确定性地把任务路由到已有的搜索、地图、调用图、变更上下文和测试信号,再按统一优先级去重并限制字符预算。
+- **ContextPack**(`src/context.ts`、`src/context-pack.ts`、`src/source-excerpts.ts`)：候选排序、临时读取源码证据、按文本/JSON 预算选择唯一 DTO，再渲染入选项。
 - **健康检查**(`src/health.ts`):对 import 图跑 Tarjan SCC 得到环依赖;孤儿模块检测列出既不被 import、也不 import 任何文件的含符号文件(排除入口与测试)。
 - **工作区解析**:每个工具解析会话 cwd(`agent.session.header.cwd`)并向上查找最近的 `.git`(有界——没有仓库标记的目录绝不会被索引)。
 - **项目上下文**(`src/repo-context.ts`):用真实规范路径区分各 worktree,最多保留四个上下文。每次工具调用扫描文件元数据并只重解析变化文件;watcher 会在有限 debounce 后刷新脏文件。
@@ -175,7 +196,8 @@ TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .ct
 - 自动注入地图使用 DSH system prompt assembly 提供的当前会话上下文。没有 Agent 的 prompt assembly 会回退到 DSH 进程工作目录。新访问的项目第一次注入可能暂时为空,待索引完成后后续 assembly 会使用项目地图。
 - Watcher 只为工具实际访问的项目启动,并随插件卸载清理。设置 `externalWatch: false` 后,每次工具调用仍会扫描元数据以发现常规 mtime 变化。
 - 大型 monorepo 每次工具调用仍需要扫描目录元数据。文件解析是增量的,但扫描耗时取决于仓库规模和磁盘速度。
-- 局部变量也会被索引——召回优先于精确;`code_search` 的排名会压低它们。
+- 不索引函数局部变量；索引模块声明和类成员，parser/graph 不等同于 type checker。
+- current 源码读取会拒绝索引快照后发生变化、真实路径越出 root 或超过 1 MB 的文件；signature-only 和 gaps 标明缺失证据。Likely tests 是线索，不保证覆盖。
 
 ## 开发
 

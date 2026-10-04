@@ -5,12 +5,16 @@
 
 English | [中文](README.zh.md)
 
-Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) agent **the right code context for the task and the repository it is working in**. `code_context` turns a plain-language task into a compact set of relevant symbols, files, relationships, changes, and likely tests. `code_change_context` starts from the current Git changes and shows what changed and what may be affected.
+**v0.9.0 — Edit-ready Context Packs**
 
-- **Stay on the right project:** repository and worktree context follows the active DSH session, so switching projects does not mix symbols or Git changes.
-- **Stay up to date:** files added, changed, or deleted outside DSH appear in later queries without a manual rebuild.
-- **Choose the tool surface:** `full` (default) keeps every tool available; `compact` focuses on `code_index` and `code_context`, with optional `code_health`.
-- **Keep indexing local:** no embedding service, vector database, or extra indexing API key.
+Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
+
+- **Source within budget:** complete declarations, then whole-line windows, then explicit signature-only fallback. Overlapping source lines are deduplicated; current and baseline excerpts stay separate.
+- **One selected pack:** text and opt-in structured output consume the same final ContextPack. Both stay within the default 5000-character cap.
+- **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
+- **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
+
+This checkout contains the v0.9 release candidate. It has not been published; an npm install still receives the latest published version. See [release evidence](RELEASE_EVIDENCE_v0.9.0.md).
 
 ## On this page
 
@@ -26,13 +30,16 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`
 
 ## Quick start
 
-Requires `dsh` and Node ≥ 22. Install the published plugin in your Web profile:
+Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. For this unreleased checkout, build and install locally from the repository root:
 
 ```sh
-npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+pnpm install
+pnpm build
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add .
+npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 
-Restart the Web UI with `npx @deepseek-ai/dsh web`. For local checkout installation, compatibility details, and startup checks, see [Install](#install).
+Use the published-package command in [Install](#install) only when you intend to install the registry version, with its matching host.
 
 ## Project isolation and live updates
 
@@ -47,16 +54,22 @@ Each Git worktree gets its own index and change state. The plugin watches projec
 
 ## See it in action
 
-Ask: “Which repo are we in? Run `code_map`, then find where `extractSymbols` is defined.”
+[30-second recorded demo](assets/context-pack-demo.html) · [terminal recording](assets/context-pack-demo.cast)
+
+Download the HTML replay and open it locally, or play the cast with an asciinema-compatible player. Reproduce with `pnpm build`, then `node scripts/context-pack-demo.mjs`. The recording uses actual local tool calls in a tiny Git repository; it does not claim an Agent task-success or performance benchmark.
+
+`code_context({ task: "Explain loadConfig", budgetChars: 5000 })` returns source immediately. An excerpt from the recorded call:
 
 ```text
-code_map → ranked files and key symbols
-code_search("extractSymbols") → src/extract.ts:121
+primary: loadConfig src/config.ts:1-3 [current]
+Reason: task names this symbol
+Source (complete):
+export function loadConfig(input: string) {
+  return input.trim()
+}
 ```
 
-The same index can trace callers and callees:
-
-![code_refs on dsh-code-index: definitions, callers, and callees resolved to file:line](assets/code-refs-demo.png)
+The demo then makes an external edit, shows added/modified/deleted declarations with separate current/base source, and requests a 500-character pack. Web Context Card is deferred until real Agent execution, replay, and file navigation can be verified on the matching RC. The existing text presentation remains usable.
 
 ## Tools
 
@@ -68,7 +81,7 @@ The same index can trace callers and callees:
 | `code_map` | Bounded ranked repo map (top files by symbol density + import-graph PageRank, key symbols + lines) |
 | `code_refs` | Trace a symbol through the call graph: callers (who calls it) and callees (what it calls), resolved to file:line |
 | `code_change_context` | Start from the working-tree or an explicit diff and return changed symbols, callers, import dependents, bounded impact paths, and likely tests |
-| `code_context` | Task-aware unified entry point: routes a plain-language task across search, repo map, call/import graph, change context, tests, and a hard character budget |
+| `code_context` | Edit-ready ContextPack: bounded source, reasons, relationships, changes/tests, gaps, and a hard budget; text by default |
 | `code_health` | Opt-in (`codeHealth: true`): circular dependencies (import cycles) and orphan modules |
 
 Plus an optional **auto-injected system prompt section** (`code-index:repo-map`, order 60): a compact ranked map selected from the active DSH session workspace. Set `autoInject: false` to disable and rely on the `code_map` tool only.
@@ -77,7 +90,9 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The development compatibility target is `@deepseek-ai/dsh@0.1.7-alpha.2` / `@deepseek-ai/dsh-tools@0.1.7-alpha.2` (Node 22 and 24 CI matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
+The development compatibility target is `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2` (Node 22 and 24 CI matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
+
+v0.9 requires the matching `0.2.0-rc.2` tool runtime; the peer pin prevents fresh npm installs from selecting the older registry `latest` tag. Upgrade the host group together. The text/config/tool-surface compatibility above does not promise support for older DSH APIs.
 
 ```sh
 # from npm (prebuilt)
@@ -116,37 +131,23 @@ The index builds lazily on first use; later calls are served from the on-disk ca
 
 ### Call graph
 
-`code_refs` traces a symbol through the call graph — the run below is on this repo itself (`getIndex` is defined at `src/tools.ts:105`, called from 7 sites, and its callee resolves to `src/tools.ts:74`):
+`code_refs` traces definitions, callers, and callees. The following is an earlier real example of that existing tool, not a v0.9 Context Card:
 
-The screenshot above shows definitions, callers, and callees resolved to file:line.
+![Earlier code_refs output](assets/code-refs-demo.png)
 
 ### Change-aware context
 
 `code_change_context` defaults to the current Git working tree against `HEAD`. It also accepts an inline unified diff, repo-relative `files`, or stable `symbols` IDs. Results are bounded and each inferred relationship carries a provenance label: `exact`, `import-scoped`, or `name-only`. Deletions and renames use the baseline ref when available; untracked non-ignored files are included in working-tree mode.
 
-### Task-aware context
+### Edit-ready Context Packs
 
-`code_context` is the high-level entry point for agents that have a task rather than a symbol query. The deterministic router recognizes change, symbol, architecture, test, exploration, and ambiguous tasks, then ranks existing primitives into one bounded package:
+`code_context` routes change, symbol, architecture, test, exploration, and ambiguous tasks. Deterministic camel/snake terms plus file/path/signature terms rank candidates; exact named symbols are retained before selection. Strong primary seeds find likely tests even on a clean tree. Graph neighborhoods are bounded. BM25 is not used.
 
-```text
-code_context { task: "Fix duplicate configuration loading during startup" }
+`budgetChars` defaults to 5000 and is normalized to 300–20000; `maxFiles` defaults to 12 and `maxSymbols` to 10. Budget units are JavaScript string characters, not tokens or UTF-8 bytes. Both rendered text and serialized final pack must fit. Code is never cut mid-line to fill the cap. Very small budgets can leave only signatures or gaps; a repository identity that cannot fit produces an explicit error. Task display is summarized to 120 characters without affecting routing.
 
-Task context — change
-Primary symbols:
-- [exact] function loadConfig() — src/config.ts:42
-Relevant files:
-- src/config.ts (current change)
-- src/bootstrap.ts (entry path)
-Relationships:
-- bootstrap → loadConfig at src/bootstrap.ts:18 [exact; explicit-import-binding]
-Current changes:
-- modified function loadConfig() src/config.ts:42 [exact]
-Likely affected tests:
-- tests/config.spec.ts
-Budget: 3720 / 5000 chars
-```
+The default canonical return remains a **string**. Request `outputFormat: "pack"` explicitly for the exported `ContextPack` DTO. Its `items` are already selected, with source `file/startLine/endLine/side/ref/mode/code`, `reason`, and separate relationship `resolution/provenance` where relevant. `budget.usedChars` accounts for text; `budget.packChars` accounts for serialized JSON. Render with `renderContextPack`; no hidden candidate list is exposed through the result.
 
-The `budgetChars`, `maxFiles`, and `maxSymbols` arguments are optional. `code_context` does not call an external model or API; `exact`, `import-scoped`, and `name-only` provenance remains explicit for inferred relationships.
+Git changes with a readable, frozen baseline commit classify declarations as added/modified/deleted. Reliable file renames remain supported. Unknown or ambiguous structural identity is `unclassified`; symbol renames are not guessed. Explicit `files`/`symbols` in `code_change_context` remain selection modes, not a proof of a Git modification.
 
 ## Configuration
 
@@ -186,7 +187,7 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - **Repo map** (`src/repomap.ts`): personalized PageRank over the import graph (teleport = per-file density share, so hub files that are themselves imported by other hubs rise above flat in-degree counting), seeded by the density-aware file score (class/interface/function weighted, test paths damped), top-N files, per-file symbol cap, hard char truncation.
 - **Call graph** (`src/refgraph.ts`): call sites extracted per file (per language, with their enclosing function) are resolved by name into callers and callees — `code_refs` exposes this directly, and `code_search` uses call fan-in as a ranking tie-break.
 - **Change context** (`src/change-context.ts`): maps Git hunks to stable symbols, then follows bounded provenance-labeled callers, import dependents, entry paths, impact, and likely affected tests without returning the whole repository.
-- **Task-aware context** (`src/context.ts`): deterministically routes a task across the existing search, map, call graph, change context, and test signals, then deduplicates and trims them to a hard character budget.
+- **ContextPack** (`src/context.ts`, `src/context-pack.ts`, `src/source-excerpts.ts`): ranks task candidates, reads ephemeral source evidence, selects a final DTO under text/JSON budgets, then renders only selected items.
 - **Health** (`src/health.ts`): Tarjan SCC over the import graph yields circular dependencies; orphan-module detection lists symbol-bearing files with no inbound or outbound imports (entry points and tests excluded).
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).
 - **Project contexts** (`src/repo-context.ts`): canonical real paths identify separate worktrees; up to four contexts are retained. Each tool call scans current metadata and reparses only changed files, while the watcher refreshes dirty files after a bounded debounce.
@@ -198,7 +199,8 @@ TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .
 - Auto-injected maps use DSH's system-prompt assembly context for the active session. Agentless assembly falls back to the DSH process working directory. A newly accessed project may have an empty map on its first prompt while indexing completes; following assemblies receive its map.
 - The watcher starts only for projects accessed by a tool and is disposed with the plugin. With `externalWatch: false`, per-call metadata scans still detect ordinary mtime changes.
 - Large monorepos still require a directory metadata scan on each tool call. File parsing is incremental, but scan latency depends on repository size and storage speed.
-- Local variables are indexed too — recall over precision; `code_search` ranking keeps them low.
+- Function-local variables are excluded. Module declarations and class members are indexed; a parser/graph is not a type checker.
+- Source reads reject files changed after the index snapshot, paths resolving outside the root, and current files over 1 MB. Signature-only fallbacks and gaps identify missing evidence; likely tests are leads, not proof of coverage.
 
 ## Development
 

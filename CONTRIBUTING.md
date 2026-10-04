@@ -23,12 +23,12 @@ Requires Node ≥ 22 and pnpm.
   npx @deepseek-ai/dsh web
   ```
 
-  Restart the server to pick up new builds; logs confirm the four tools register.
+  Restart the server to pick up new builds; logs confirm seven full-surface tools (plus opt-in `code_health`) register. The verified development target is the matching DSH / dsh-tools `0.2.0-rc.2` group.
 
 ## Conventions
 
 - New symbols/languages plug into `src/extract.ts` (provider seam) — follow the existing query/capture pattern and add a vitest case per language.
-- Keep tool `output.render` thin: canonical JSON from `execute`, text conversion in render.
+- Keep tool `output.render` thin. `code_context` defaults to a canonical string; only explicit `outputFormat: pack` returns the selected ContextPack DTO.
 - Every behavior change ships with a test (regressions are how this project caught its own bugs).
 - `SymbolInfo.file` is always the repo-relative path (forward slashes) — the store self-heals stale `""` values on load.
 
@@ -36,5 +36,7 @@ Requires Node ≥ 22 and pnpm.
 
 1. Bump `version` in package.json + add a CHANGELOG entry.
 2. `pnpm typecheck && pnpm test && pnpm build`.
-3. Publish: `npm publish --registry=https://registry.npmjs.org/ --otp <code>`.
-4. Tag + GitHub Release at the bumped version.
+3. Run `pnpm release:smoke`: pack, install in a disposable directory, exercise both tool surfaces and text/pack output, then dispose.
+4. Review `tests/context-quality.spec.ts` contracts: must include, forbidden noise, reasons/provenance, exact source evidence, budget. Run Node 22 and 24 checks.
+5. Record current RC runtime evidence separately from real Agent/Web evidence. Follow `AGENTS.md` stop conditions; do not investigate unrelated extensions.
+6. Review release evidence and obtain operator authorization before publishing, tagging, creating a GitHub Release, or pushing main. RC readiness alone authorizes none of these actions.
