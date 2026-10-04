@@ -361,8 +361,10 @@ function collectRelationships(
     })
   }
   for (const candidate of primary) {
-    for (const edge of (graph.incoming.get(candidate.symbol.id) ?? []).slice(0, 8)) add(edge, 'caller', 100)
-    for (const edge of (graph.outgoing.get(candidate.symbol.id) ?? []).slice(0, 8)) add(edge, 'callee', 90)
+    const bounded = (edges: readonly ReferenceEdge[]): ReferenceEdge[] => [...edges]
+      .sort((a, b) => a.resolution.localeCompare(b.resolution) || a.callSite.file.localeCompare(b.callSite.file) || a.callSite.line - b.callSite.line).slice(0, 8)
+    for (const edge of bounded(graph.incoming.get(candidate.symbol.id) ?? [])) add(edge, 'caller', 100)
+    for (const edge of bounded(graph.outgoing.get(candidate.symbol.id) ?? [])) add(edge, 'callee', 90)
   }
   return rows.sort(
     (a, b) =>

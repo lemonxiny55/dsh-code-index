@@ -173,4 +173,12 @@ describe('Context Pack quality contracts', () => {
       contract({ mustInclude: ['privateTarget'], forbiddenNoise: ['privateTarget0', 'FORBIDDEN_WIDGET'],
         expectedSource: [{ file: 'src/many.ts', side: 'current', text: 'return 777' }], requiredProvenance: [] }))
   })
+
+  it('keeps strong graph neighbors ahead of a name-only fan-in crowd', async () => {
+    const root = await repo()
+    for (let i = 0; i < 12; i++) await writeFile(path.join(root, `src/a-weak-${i}.ts`), `export function weak${i}() { return loadConfig('WEAK_BODY') }\n`)
+    const result = await buildTaskContext(await buildIndex(root), 'Explain loadConfig')
+    await check(result.pack, contract({ mustInclude: ['startup'], forbiddenNoise: ['WEAK_BODY', 'FORBIDDEN_WIDGET'],
+      requiredProvenance: ['exact'], expectedSource: [{ file: 'src/startup.ts', side: 'current', text: "return loadConfig('input')" }] }))
+  })
 })

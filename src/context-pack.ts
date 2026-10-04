@@ -100,8 +100,9 @@ export async function selectContextPack(
   for (const primary of context.primarySymbols.slice(0, 4)) {
     for (const direction of ['caller', 'callee'] as const) {
       const edges = direction === 'caller' ? graph.incoming.get(primary.symbol.id) : graph.outgoing.get(primary.symbol.id)
-      for (const edge of (edges ?? []).slice(0, 4)) {
-        if (edge.resolution === 'name-only') continue
+      const strongEdges = (edges ?? []).filter(edge => edge.resolution !== 'name-only')
+        .sort((a, b) => a.resolution.localeCompare(b.resolution) || a.callSite.file.localeCompare(b.callSite.file) || a.callSite.line - b.callSite.line)
+      for (const edge of strongEdges.slice(0, 4)) {
         const symbol = graph.symbolsById.get(direction === 'caller' ? edge.sourceId ?? '' : edge.targetId)
         if (symbol && !context.primarySymbols.some(seed => seed.symbol.id === symbol.id)) {
           await source(symbol, direction, `direct ${direction} of ${primary.symbol.name}`,
