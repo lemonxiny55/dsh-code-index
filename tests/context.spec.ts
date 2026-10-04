@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { buildIndex } from '../src/buildIndex.js'
-import { buildTaskContext, renderTaskContext, routeTask } from '../src/context.js'
+import { buildTaskContext, contextTerms, renderTaskContext, routeTask } from '../src/context.js'
 import { tools } from '../src/tools.js'
 
 const roots: string[] = []
@@ -43,6 +43,14 @@ async function fixtureRepo(): Promise<string> {
 }
 
 describe('task-aware router', () => {
+  it('matches camel/snake, path and signature terms for natural-language tasks', async () => {
+    const root = await fixtureRepo()
+    expect(contextTerms('loadConfig parse_config loading configs')).toEqual(expect.arrayContaining(['load', 'config', 'parse']))
+    await writeFile(path.join(root, 'src', 'noise.ts'), 'export function unrelatedWidget() { return 0 }\n')
+    const result = await buildTaskContext(await buildIndex(root), 'Fix config loading bug')
+    expect(result.primarySymbols.some(seed => seed.symbol.name === 'loadConfig')).toBe(true)
+    expect(result.pack.items.some(item => item.file === 'src/noise.ts')).toBe(false)
+  })
   it('classifies exact symbol, change, architecture, test, exploration, and ambiguous tasks', async () => {
     const root = await fixtureRepo()
     const index = await buildIndex(root)

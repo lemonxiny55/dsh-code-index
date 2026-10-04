@@ -167,6 +167,15 @@ function fileMentionMatches(file: string, mentions: readonly string[]): boolean 
   })
 }
 
+/** Small deterministic term normalization; no statistical search model. */
+export function contextTerms(text: string): string[] {
+  return unique(text.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/)
+    .filter(term => term.length >= 3 && !STOP_WORDS.has(term))
+    .flatMap(term => [term, ...(term.length > 5 && term.endsWith('ing') ? [term.slice(0, -3)] : []),
+      ...(term.length > 4 && term.endsWith('s') ? [term.slice(0, -1)] : [])]), term => term)
+}
+
 /** Classify a task and decide which existing primitives should be composed. */
 export function routeTask(task: string, index?: RepoIndex): ContextRoute {
   const text = task.trim()
@@ -190,7 +199,7 @@ export function routeTask(task: string, index?: RepoIndex): ContextRoute {
     (token) => token.toLowerCase(),
   )
   const queries = unique(
-    [...exactSymbolNames, ...codeTokens.filter((token) => !exactSymbolNames.includes(token))],
+    [...exactSymbolNames, ...contextTerms(text), ...codeTokens.filter((token) => !exactSymbolNames.includes(token))],
     (value) => value.toLowerCase(),
   ).slice(0, 12)
 
@@ -207,7 +216,7 @@ export function routeTask(task: string, index?: RepoIndex): ContextRoute {
             : 'ambiguous'
 
   const includeChangeContext = kind === 'change' || kind === 'test'
-  const includeRelationships = kind === 'change' || kind === 'test' || kind === 'symbol'
+  const includeRelationships = kind !== 'ambiguous'
   const sources = new Set<string>()
   if (kind === 'change' || kind === 'test') sources.add('change context')
   if (kind === 'architecture' || kind === 'exploration' || kind === 'ambiguous') {
@@ -248,6 +257,14 @@ function gatherPrimarySymbols(
   refs: Map<string, number>,
 ): ContextSymbol[] {
   const hits: RankedHit[] = []
+  const queryTerms = new Set(route.queries.flatMap(contextTerms))
+  for (const file of index.files) for (const symbol of file.symbols) {
+    const terms = contextTerms(`${symbol.name} ${symbol.signature} ${file.path}`)
+    const matched = terms.filter(term => queryTerms.has(term)).length
+    if (route.exactSymbolNames.includes(symbol.name) || matched > 0 || fileMentionMatches(file.path, route.mentionedFiles)) {
+      hits.push({ ...symbol, score: route.exactSymbolNames.includes(symbol.name) ? 1 : Math.min(0.8, matched * 0.2) })
+    }
+  }
   for (const query of route.queries) {
     hits.push(...searchSymbols(index, { query }, Math.max(maxSymbols * 3, 20), refs))
   }
@@ -264,10 +281,20 @@ function gatherPrimarySymbols(
     if (!previous || candidate.score > previous.score) byId.set(hit.id, candidate)
   }
 
+  if (!byId.size && (route.kind === 'architecture' || route.kind === 'exploration')) {
+    for (const entry of rankRepoMap(index, { topFiles: 2, symbolsPerFile: 2 })) {
+      for (const symbol of index.files.find(file => file.path === entry.path)?.symbols.slice(0, 2) ?? []) {
+        byId.set(symbol.id, { symbol, score: 5, provenance: 'lexical', reason: 'bounded architecture entry lead' })
+      }
+    }
+  }
+
   // A changed file may contain symbols that were not named in the task. They
   // are important enough to enter the primary set for change-aware tasks.
   if (route.includeChangeContext) {
+    const matchedFiles = new Set([...byId.values()].map(candidate => candidate.symbol.file))
     for (const file of index.files) {
+      if (matchedFiles.size && !matchedFiles.has(file.path)) continue
       for (const symbol of file.symbols) {
         if (!changedIds.has(symbol.id)) continue
         if (byId.has(symbol.id)) continue
@@ -373,7 +400,7 @@ function gatherFiles(
       addFile(files, pathRow.changed.file, 90, 'changed path')
     }
   }
-  for (const entry of rankRepoMap(index, { topFiles: maxFiles * 2, symbolsPerFile: 8 })) {
+  if (!primary.length) for (const entry of rankRepoMap(index, { topFiles: maxFiles * 2, symbolsPerFile: 8 })) {
     addFile(files, entry.path, Math.min(35, entry.score + 10), 'repo map')
   }
   return [...files.values()]
@@ -433,6 +460,18 @@ export async function buildTaskContext(
     changedFiles,
     callerCounts(index),
   )
+  const taskFiles = new Set(primarySymbols.filter(seed => seed.reason !== 'declaration intersects current change')
+    .map(seed => seed.symbol.file))
+  if (changeContext && taskFiles.size) {
+    const changed = changeContext.changed.filter(row => taskFiles.has(row.symbol.file))
+    const changedIds = new Set(changed.map(row => row.symbol.id))
+    changeContext = { ...changeContext, changed,
+      directCallers: changeContext.directCallers.filter(row => changedIds.has(row.via.toId)),
+      tests: collectSeedTests(index, changed.map(row => row.symbol)),
+      importDependents: changeContext.importDependents.filter(row => taskFiles.has(row.changedFile)),
+      paths: changeContext.paths.filter(row => changedIds.has(row.changed.id)),
+    }
+  }
   const graph = route.includeRelationships ? buildReferenceGraph(index) : null
   const relationships = graph ? collectRelationships(graph, primarySymbols) : []
   if (changeContext) {
