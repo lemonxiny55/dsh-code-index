@@ -535,7 +535,9 @@ export const tools = [
         })
         return args.outputFormat === 'pack' ? JSON.parse(JSON.stringify(result.pack)) as Record<string, JsonValue> : renderTaskContext(result)
       } catch (error) {
-        return `code_context: ${(error as Error).message ?? String(error)}`
+        // Error diagnostics also fit the smallest normalized budget (300).
+        // This bounds prose only; source bodies are never sliced.
+        return `code_context: ${((error as Error).message ?? String(error)).slice(0, 240)}`
       }
     },
   }),

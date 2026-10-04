@@ -173,4 +173,14 @@ describe('task-aware router', () => {
       code: 'export function loadConfig() { return parseConfig() }', side: 'current',
     }))
   })
+
+  it('keeps failed root-resolution diagnostics within the hard budget', async () => {
+    const root = await fixtureRepo()
+    const invalid = path.join(root, ...Array.from({ length: 14 }, () => 'missing'), 'z'.repeat(1000))
+    const tool = tools.find(tool => tool.name === 'code_context')!
+    const result = await tool.execute({ task: 'Explain target', repoRoot: invalid, budgetChars: 300 }, {} as never)
+    expect(typeof result).toBe('string')
+    expect(result as string).toMatch(/^code_context:/)
+    expect((result as string).length).toBeLessThanOrEqual(300)
+  })
 })
