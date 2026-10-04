@@ -73,13 +73,13 @@ export async function selectContextPack(
   }
   for (const primary of context.primarySymbols) {
     const changed = context.changeContext?.changed.find(row => row.side === 'current' && row.symbol.id === primary.symbol.id)
-    await source(primary.symbol, 'primary', primary.reason, changed ? { change: changed.change } : {})
+    await source(primary.symbol, 'primary', primary.reason, changed ? { change: changed.change } : {}, changed?.focusLine)
   }
   for (const changed of context.changeContext?.changed ?? []) {
     if (changed.side === 'current' && context.primarySymbols.some(seed => seed.symbol.id === changed.symbol.id)) continue
     await source(changed.symbol, 'change', 'declaration intersects Git change', {
       side: changed.side, ...(changed.side === 'base' ? { ref: context.changeContext!.baseRef } : {}), change: changed.change,
-    })
+    }, changed.focusLine)
   }
   for (const test of context.testEvidence) {
     const file = index.files.find(row => row.path === test.file)!

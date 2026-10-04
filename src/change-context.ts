@@ -18,6 +18,7 @@ import {
   parseUnifiedDiff,
   readGitFileAtRef,
   readWorkingTreeDiff,
+  resolveGitRef,
   type FileChange,
 } from './git-diff.js'
 import type { IndexedFile, RepoIndex, SymbolId, SymbolInfo, SymbolKind } from './types.js'
@@ -34,6 +35,8 @@ export interface ChangedSymbol {
   side: 'current' | 'base'
   /** A hunk range intersecting the declaration is structural, not inferred. */
   resolution: 'exact'
+  /** First intersecting changed line, used for large-declaration windows. */
+  focusLine?: number
 }
 
 export interface UnmappedChange {
@@ -229,9 +232,11 @@ export async function buildChangeContext(
     symbol: SymbolInfo,
     change: ChangeKind,
     side: ChangedSymbol['side'],
+    focusLine?: number,
   ): void => {
     const key = `${side}:${symbol.id}`
-    if (!changedByKey.has(key)) changedByKey.set(key, { symbol, change, side, resolution: 'exact' })
+    if (!changedByKey.has(key)) changedByKey.set(key, { symbol, change, side, resolution: 'exact',
+      ...(focusLine === undefined ? {} : { focusLine }) })
   }
 
   const addUnmapped = (
@@ -269,11 +274,14 @@ export async function buildChangeContext(
   } else {
     let text: string
     if (input.kind === 'git') {
-      baseRef = input.baseRef
-      text = await readWorkingTreeDiff(input.root, input.baseRef)
+      baseRef = await resolveGitRef(input.root, input.baseRef)
+      text = await readWorkingTreeDiff(input.root, baseRef)
     } else {
       text = input.text
-      baseRef = input.baseRef
+      if (input.baseRef !== undefined) {
+        try { baseRef = await resolveGitRef(input.root, input.baseRef) }
+        catch { warnings.push(`baseline unavailable: ${input.baseRef}`) }
+      }
     }
 
     const changes = parseUnifiedDiff(text).map((change) => ({
@@ -449,7 +457,7 @@ function hopOf(edge: {
 async function mapDiffChanges(
   changes: readonly FileChange[],
   symbolsByPath: Map<string, SymbolInfo[]>,
-  addChanged: (symbol: SymbolInfo, change: ChangeKind, side: ChangedSymbol['side']) => void,
+  addChanged: (symbol: SymbolInfo, change: ChangeKind, side: ChangedSymbol['side'], focusLine?: number) => void,
   addUnmapped: (
     file: string,
     side: UnmappedChange['side'],
@@ -492,7 +500,7 @@ async function mapDiffChanges(
               const matches = count(oldSymbols, symbol)
               classification = matches === 0 ? 'added' : matches === 1 ? 'modified' : 'unclassified'
             }
-            addChanged(symbol, classification, 'current')
+            addChanged(symbol, classification, 'current', Math.max(symbol.line, range.startLine))
           }
         }
         const missed = currentRanges.filter(
@@ -536,7 +544,7 @@ async function mapDiffChanges(
             if (!intersects(symbol, range)) continue
             const matches = count(currentSymbols ?? [], symbol)
             if (change.status === 'deleted' || (matches === 0 && count(oldSymbols, symbol) === 1)) {
-              addChanged(symbol, 'deleted', 'base')
+              addChanged(symbol, 'deleted', 'base', Math.max(symbol.line, range.startLine))
             } else if (matches > 1 || count(oldSymbols, symbol) > 1) {
               addChanged(symbol, 'unclassified', 'base')
             } else if (hunks.some(hunk => hunk.newLines === 0 && intersects(symbol, {

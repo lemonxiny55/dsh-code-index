@@ -85,6 +85,11 @@ describe('Context Pack quality contracts', () => {
       requiredReason: ['declaration intersects'], budget: 8000,
       expectedSource: [{ file: 'src/config.ts', side: 'current', text: 'toUpperCase()' }, { file: 'src/config.ts', side: 'base', text: "return 'old'" }] }))
     expect(result.pack.items.find(item => item.name === 'betaCaller')?.change).toBe('added')
+    expect(result.pack.items.find(item => item.side === 'base')?.ref).toMatch(/^[a-f0-9]{40}$/)
+    // Later HEAD movement must not change the selected pack's baseline.
+    git(root, 'add', '.'); git(root, 'commit', '-qm', 'move HEAD')
+    const base = result.pack.items.find(item => item.side === 'base')!
+    expect(await sourceReader(await buildIndex(root))(base.file!, 'base', base.ref)).toContain("export function removed() { return 'old' }")
   })
 
   it('A → B → A isolation and external add/change/delete freshness', async () => {
@@ -139,5 +144,16 @@ describe('Context Pack quality contracts', () => {
     const index = await buildIndex(root)
     await writeFile(path.join(root, 'src/config.ts'), 'export function replacement() { return 99 }\n')
     expect(await sourceReader(index)('src/config.ts', 'current')).toBeNull()
+  })
+
+  it('large modified functions include the changed line in a bounded window', async () => {
+    const root = await repo()
+    const before = ['export function largeFunction() {', ...Array.from({ length: 150 }, (_, i) => `  consume(${i})`), '}'].join('\n')
+    await writeFile(path.join(root, 'src/large.ts'), before)
+    git(root, 'add', '.'); git(root, 'commit', '-qm', 'large baseline')
+    await writeFile(path.join(root, 'src/large.ts'), before.replace('consume(100)', 'consume(99999)'))
+    await check((await buildTaskContext(await buildIndex(root), 'Fix current largeFunction', { budgetChars: 3000 })).pack,
+      contract({ mustInclude: ['largeFunction', 'modified'], requiredReason: ['task names this symbol'], budget: 3000,
+        expectedSource: [{ file: 'src/large.ts', side: 'current', text: 'consume(99999)' }] }))
   })
 })

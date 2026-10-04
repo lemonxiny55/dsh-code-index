@@ -286,9 +286,17 @@ function runGit(args: readonly string[], cwd: string): Promise<string> {
   })
 }
 
+/** Freeze moving refs once, so diff mapping and source reads use one baseline. */
+export async function resolveGitRef(root: string, ref: string): Promise<string> {
+  requireSafeRef(ref, 'baseRef')
+  const commit = (await runGit(['rev-parse', '--verify', `${ref}^{commit}`], root)).trim()
+  if (!/^[a-f0-9]{40,64}$/i.test(commit)) throw new Error('invalid baseline commit')
+  return commit
+}
+
 /**
  * Working-tree diff against `baseRef`, rename-aware and hunk-minimal.
- * Excludes untracked files (git semantics) — callers should say so.
+ * Includes non-ignored untracked files and reliable exact-content renames.
  */
 export async function readWorkingTreeDiff(root: string, baseRef: string): Promise<string> {
   requireSafeRef(baseRef, 'baseRef')
