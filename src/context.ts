@@ -312,7 +312,12 @@ function gatherPrimarySymbols(
     }
   }
 
+  const definitionMatch = (candidate: ContextSymbol): boolean => contextTerms(`${candidate.symbol.name} ${candidate.symbol.signature}`)
+    .some(term => queryTerms.has(term))
+  const hasDefinitionMatch = [...byId.values()].some(definitionMatch)
   return [...byId.values()]
+    .filter(candidate => !hasDefinitionMatch || definitionMatch(candidate) ||
+      candidate.reason === 'declaration intersects current change' || fileMentionMatches(candidate.symbol.file, route.mentionedFiles))
     .sort(
       (a, b) =>
         b.score - a.score ||

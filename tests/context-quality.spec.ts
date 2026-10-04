@@ -61,7 +61,7 @@ const contract = (overrides: Partial<QualityContract> = {}): QualityContract => 
 
 describe('Context Pack quality contracts', () => {
   for (const fixture of [
-    { name: 'exact symbol', task: 'Explain loadConfig', contract: contract({ requiredProvenance: ['exact'] }) },
+    { name: 'exact symbol', task: 'Explain loadConfig', contract: contract({ forbiddenNoise: ['FORBIDDEN_WIDGET', 'removed'], requiredProvenance: ['exact'] }) },
     { name: 'natural-language bug', task: 'Fix config loading whitespace bug', contract: contract({ requiredReason: ['matches task terms'] }) },
     { name: 'clean-tree likely test', task: 'Explain loadConfig', contract: contract({ mustInclude: ['loadConfig', 'tests/config.spec.ts'], requiredProvenance: ['import-scoped'], expectedSource: [{ file: 'tests/config.spec.ts', side: 'current', text: "test('config whitespace'" }] }) },
     { name: 'signature/path terms', task: 'Locate config_path processing in src/config.ts', contract: contract({ requiredReason: ['matches task terms'] }) },

@@ -59,6 +59,7 @@ export async function selectContextPack(
   const candidates: ContextPackItem[][] = []
   const seen = new Set<string>()
   const gaps: string[] = []
+  const unavailable = new Set<string>()
   const source = async (symbol: SymbolInfo, kind: ContextPackItem['kind'], reason: string,
     extra: Partial<ContextPackItem> = {}, focus?: number): Promise<void> => {
     const side = extra.side ?? 'current'
@@ -66,7 +67,7 @@ export async function selectContextPack(
     if (seen.has(key)) return
     seen.add(key)
     const lines = await read(symbol.file, side, extra.ref)
-    if (!lines) gaps.push(`source unavailable or changed after indexing: ${symbol.file} (${side})`)
+    if (!lines) unavailable.add(`${side}:${symbol.file}`)
     candidates.push(excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
       ...excerpt, kind, name: symbol.name, reason, ...extra,
     })))
@@ -144,6 +145,9 @@ export async function selectContextPack(
     if (!added) pack.budget.truncated = true
   }
   if (!pack.budget.truncated) pack.gaps = []
+  for (const item of pack.items) if (item.file && unavailable.has(`${item.side}:${item.file}`)) {
+    gaps.push(`source unavailable or changed after indexing: ${item.file} (${item.side})`)
+  }
   for (const gap of [...new Set(gaps)].slice(0, 4)) {
     pack.gaps.push(gap.slice(0, 140))
     if (!fits()) pack.gaps.pop()
