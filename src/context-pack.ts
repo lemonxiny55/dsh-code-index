@@ -52,7 +52,7 @@ function account(pack: ContextPack): void {
 }
 
 export async function selectContextPack(
-  index: RepoIndex, context: Omit<TaskContextResult, 'budget' | 'pack'>, budgetChars: number,
+  index: RepoIndex, context: Omit<TaskContextResult, 'budget' | 'pack'>, budgetChars: number, maxFiles = 12,
 ): Promise<ContextPack> {
   const read = sourceReader(index)
   const graph = buildReferenceGraph(index)
@@ -127,6 +127,7 @@ export async function selectContextPack(
   }
   const fits = (): boolean => { account(pack); return Math.max(pack.budget.usedChars, pack.budget.packChars) <= budgetChars }
   if (!fits()) { pack.task = ''; pack.gaps = []; fits() }
+  if (!fits()) throw new Error('budget too small for repository identity')
   for (const variants of candidates) {
     let added = false
     for (const candidate of variants) {
@@ -134,9 +135,10 @@ export async function selectContextPack(
         ? subtractExcerpt(candidate as SourceExcerpt, pack.items.filter(item => item.code !== undefined) as SourceExcerpt[])
           .map(fragment => ({ ...candidate, ...fragment }))
         : [candidate]
-      if (!fragments.length) { added = true; break }
+      if (!fragments.length) continue // retain reason/role via signature fallback
       pack.items.push(...fragments)
-      if (fits()) { added = true; if (candidate.mode === 'signature') pack.budget.truncated = true; break }
+      const fileCount = new Set(pack.items.flatMap(item => item.file ? [item.file] : [])).size
+      if (fits() && fileCount <= maxFiles) { added = true; if (candidate.mode === 'signature') pack.budget.truncated = true; break }
       pack.items.splice(pack.items.length - fragments.length)
     }
     if (!added) pack.budget.truncated = true

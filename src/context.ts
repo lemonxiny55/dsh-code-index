@@ -119,6 +119,8 @@ const STOP_WORDS = new Set(
     'where',
     'why',
     'with',
+    'src', 'lib', 'test', 'tests', 'spec', 'fix', 'explain', 'please', 'help',
+    'current', 'change', 'changes', 'code',
   ],
 )
 
@@ -271,6 +273,8 @@ function gatherPrimarySymbols(
   const byId = new Map<string, ContextSymbol>()
   for (const hit of hits) {
     const exact = route.exactSymbolNames.includes(hit.name)
+    const overlap = contextTerms(`${hit.name} ${hit.signature} ${hit.file}`).filter(term => queryTerms.has(term)).length
+    if (!exact && route.kind === 'ambiguous' && queryTerms.size > 1 && overlap < 2) continue
     let score = routeScore(route, hit)
     if (changedIds.has(hit.id)) score += 80
     else if (changedFiles.has(hit.file)) score += 55
@@ -510,7 +514,7 @@ export async function buildTaskContext(
     confidence,
     warnings,
   }
-  const pack = await selectContextPack(index, partial, budgetChars)
+  const pack = await selectContextPack(index, partial, budgetChars, maxFiles)
   const selected = (file: string, name?: string, kind?: string): boolean => pack.items.some(item =>
     item.file === file && (!name || item.name === name) && (!kind || item.kind === kind))
   const selectedRelationships = relationships.filter(row => pack.items.some(item => item.text === row.text))
@@ -524,6 +528,10 @@ export async function buildTaskContext(
   } : null
   return {
     ...partial, pack,
+    route: { ...route,
+      exactSymbolNames: route.exactSymbolNames.filter(name => pack.items.some(item => item.name === name)),
+      mentionedFiles: route.mentionedFiles.filter(file => pack.items.some(item => item.file && fileMentionMatches(item.file, [file]))),
+    },
     primarySymbols: primarySymbols.filter(seed => selected(seed.symbol.file, seed.symbol.name, 'primary')),
     relevantFiles: relevantFiles.filter(file => selected(file.path)),
     relationships: selectedRelationships,
