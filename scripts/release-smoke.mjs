@@ -75,6 +75,7 @@ const expectedFiles = [
   'LICENSE',
   'cordis.patch.yml',
   'dist/index.js',
+  'dist/index.d.ts',
   'dist/client.js',
   'scripts/fix-wsl-links.mjs',
   'scripts/release-smoke.mjs',
@@ -146,6 +147,13 @@ try {
     }),
     /Task context|Primary symbols:/,
   )
+  const contextPack = await invoke('code_context', {
+    task: 'Explain buildIndex', repoRoot: root, budgetChars: 5000, outputFormat: 'pack',
+  })
+  assert.equal(contextPack.version, 1)
+  assert.ok(contextPack.items.some(item => item.kind === 'primary' && item.name === 'buildIndex'))
+  assert.ok(contextPack.items.some(item => item.code !== undefined))
+  assert.ok(JSON.stringify(contextPack).length <= 5000)
   assert.match(await invoke('code_health', { repoRoot: root }), /repo health/)
 
   for (const dispose of disposers.reverse()) dispose()
