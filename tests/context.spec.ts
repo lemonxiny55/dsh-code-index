@@ -134,6 +134,12 @@ describe('task-aware router', () => {
     expect(result).toContain('Task context')
     expect(result).toContain('loadConfig')
     expect(result.length).toBeLessThanOrEqual(2_000)
+    const structured = await codeContext!.execute(
+      { task: 'How does loadConfig work?', repoRoot: root, budgetChars: 2_000, outputFormat: 'pack' }, {} as never,
+    )
+    expect(typeof structured).toBe('object')
+    expect(JSON.stringify(structured).length).toBeLessThanOrEqual(2_000)
+    expect(structured).toMatchObject({ version: 1, route: 'symbol' })
   })
 
   it('selects one final pack for both source text and DTO under a hard budget', async () => {

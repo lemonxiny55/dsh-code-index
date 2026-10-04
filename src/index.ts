@@ -62,6 +62,8 @@ export type {
   TaskContextResult,
 } from './context.js'
 export type { DiffHunk, FileChange } from './git-diff.js'
+export { renderContextPack } from './context-pack.js'
+export type { ContextPack, ContextPackItem } from './context-pack.js'
 export {
   buildChangeContext,
   changeContextInputFromArgs,

@@ -13,6 +13,7 @@ import {
   renderChangeContext,
 } from './change-context.js'
 import { buildTaskContext, renderTaskContext } from './context.js'
+import { renderContextPack, type ContextPack } from './context-pack.js'
 import { getConfig, indexOptions } from './config.js'
 import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
@@ -474,6 +475,10 @@ export const tools = [
     description:
       'Return the smallest useful structural context for a code task. Pass the task in plain language; the deterministic router combines ranked symbols, relevant files, call/import relationships, repository structure, current Git changes, affected tests, provenance, and a hard character budget. Existing specialized tools remain available for focused follow-up queries.',
     parameters: {
+      outputFormat: {
+        type: 'string', enum: ['text', 'pack'],
+        description: 'Default text preserves the canonical string return; pack explicitly requests the selected ContextPack DTO.',
+      },
       task: {
         type: 'string',
         required: true,
@@ -497,8 +502,8 @@ export const tools = [
       },
     },
     output: {
-      schema: { type: 'string' },
-      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+      schema: { oneOf: [{ type: 'string' }, { type: 'object', additionalProperties: true }] },
+      render: (_args, value: JsonValue): TextBlock[] => [{ type: 'text', text: typeof value === 'string' ? value : renderContextPack(value as unknown as ContextPack) }],
     },
     presentCall: (args) => ({
       card: 'generic',
@@ -508,6 +513,7 @@ export const tools = [
     }),
     async execute(
       args: {
+        outputFormat?: 'text' | 'pack'
         task: string
         budgetChars?: number
         maxFiles?: number
@@ -515,7 +521,7 @@ export const tools = [
         repoRoot?: string
       },
       exec: ToolRunExec,
-    ): Promise<string> {
+    ): Promise<string | Record<string, JsonValue>> {
       try {
         if (typeof args.task !== 'string' || args.task.trim().length === 0) {
           throw new Error('task must be a non-empty string')
@@ -527,7 +533,7 @@ export const tools = [
           maxFiles: args.maxFiles,
           maxSymbols: args.maxSymbols,
         })
-        return renderTaskContext(result)
+        return args.outputFormat === 'pack' ? JSON.parse(JSON.stringify(result.pack)) as Record<string, JsonValue> : renderTaskContext(result)
       } catch (error) {
         return `code_context: ${(error as Error).message ?? String(error)}`
       }
