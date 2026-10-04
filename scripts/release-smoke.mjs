@@ -95,6 +95,8 @@ try {
   assert.equal(installedPackage.exports['.'].default, './dist/index.js')
   assert.match(installedPackage.engines.node, />=22/)
   assert.equal(installedPackage.license, 'MIT')
+  const installedTools = JSON.parse(readFileSync(path.join(smokeDir, 'node_modules', '@deepseek-ai', 'dsh-tools', 'package.json'), 'utf8'))
+  assert.equal(installedTools.version, '0.2.0-rc.2', 'fresh consumers must resolve the verified matching RC')
 
   const plugin = await import(
     pathToFileURL(path.join(smokeDir, 'node_modules', packageJson.name, 'dist', 'index.js')).href,
