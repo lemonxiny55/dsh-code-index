@@ -732,6 +732,12 @@ const TEST_RANK: Record<AffectedTest['reason'], number> = {
   'path-convention': 4,
 }
 
+/** Also usable on a clean tree: primary declarations are the test seeds. */
+export function collectSeedTests(index: RepoIndex, seeds: readonly SymbolInfo[]): AffectedTest[] {
+  return collectAffectedTests(index, buildModuleGraph(index), new Set(seeds.map(seed => seed.file)),
+    seeds.map(symbol => ({ symbol, side: 'current', change: 'unclassified', resolution: 'exact' })), [])
+}
+
 function collectAffectedTests(
   index: RepoIndex,
   moduleGraph: ReturnType<typeof buildModuleGraph>,

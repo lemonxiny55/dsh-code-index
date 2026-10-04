@@ -59,12 +59,23 @@ describe('task-aware router', () => {
     const index = await buildIndex(root)
     const result = await buildTaskContext(index, 'Fix parseConfig', { maxSymbols: 4 })
     expect(result.primarySymbols[0]).toMatchObject({
+      reason: 'task names this symbol',
       provenance: 'exact',
       symbol: { name: 'parseConfig', file: 'src/config.ts' },
     })
     expect(result.primarySymbols.find((item) => item.symbol.name === 'parseConfig')?.score).toBeGreaterThan(
       result.primarySymbols.find((item) => item.symbol.name === 'loadConfig')?.score ?? 0,
     )
+  })
+
+  it('finds tests from strong primary seeds on a clean tree and separates evidence', async () => {
+    const root = await fixtureRepo()
+    const result = await buildTaskContext(await buildIndex(root), 'Explain loadConfig')
+    expect(result.tests).toContain('tests/config.spec.ts')
+    expect(result.testEvidence).toContainEqual(expect.objectContaining({
+      file: 'tests/config.spec.ts', reason: 'imports-changed-file', resolution: 'import-scoped',
+    }))
+    expect(result.relationships.some(row => row.provenance && row.resolution === 'exact')).toBe(true)
   })
 
   it('uses a real working-tree change and preserves relationship provenance', async () => {
@@ -84,7 +95,8 @@ describe('task-aware router', () => {
     expect(result.route.kind).toBe('change')
     expect(result.changeContext?.changed.some((entry) => entry.symbol.name === 'parseConfig')).toBe(true)
     expect(result.relevantFiles[0]?.path).toBe('src/config.ts')
-    expect(result.relationships.some((row) => row.resolution === 'exact')).toBe(true)
+    // The same-file sibling call is name-only under the structural resolver.
+    expect(result.relationships.some((row) => row.resolution === 'name-only')).toBe(true)
     expect(renderTaskContext(result).length).toBeLessThanOrEqual(5_000)
   })
 

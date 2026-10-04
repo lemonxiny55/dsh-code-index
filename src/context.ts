@@ -6,7 +6,7 @@
  * package that answers the question: which code matters for this task?
  */
 
-import { buildChangeContext, type ChangeContextResult } from './change-context.js'
+import { buildChangeContext, collectSeedTests, type AffectedTest, type ChangeContextResult } from './change-context.js'
 import { rankRepoMap, scoreFile } from './repomap.js'
 import {
   buildReferenceGraph,
@@ -45,6 +45,7 @@ export interface ContextSymbol {
   symbol: SymbolInfo
   score: number
   provenance: 'exact' | 'lexical'
+  reason: string
 }
 
 export interface ContextFile {
@@ -58,6 +59,7 @@ export interface ContextRelationship {
   resolution: ResolutionLabel
   priority: number
   key: string
+  provenance: string
 }
 
 export interface ContextConfidence {
@@ -75,6 +77,7 @@ export interface TaskContextResult {
   relationships: ContextRelationship[]
   changeContext: ChangeContextResult | null
   tests: string[]
+  testEvidence: AffectedTest[]
   confidence: ContextConfidence
   warnings: string[]
   budget: {
@@ -253,7 +256,8 @@ function gatherPrimarySymbols(
     if (changedIds.has(hit.id)) score += 80
     else if (changedFiles.has(hit.file)) score += 55
     if (route.kind === 'test' && isTestFile(hit.file)) score += 35
-    const candidate: ContextSymbol = { symbol: hit, score, provenance: exact ? 'exact' : 'lexical' }
+    const candidate: ContextSymbol = { symbol: hit, score, provenance: exact ? 'exact' : 'lexical',
+      reason: exact ? 'task names this symbol' : 'matches task terms' }
     const previous = byId.get(hit.id)
     if (!previous || candidate.score > previous.score) byId.set(hit.id, candidate)
   }
@@ -262,13 +266,14 @@ function gatherPrimarySymbols(
   // are important enough to enter the primary set for change-aware tasks.
   if (route.includeChangeContext) {
     for (const file of index.files) {
-      if (!changedFiles.has(file.path)) continue
       for (const symbol of file.symbols) {
+        if (!changedIds.has(symbol.id)) continue
         if (byId.has(symbol.id)) continue
         byId.set(symbol.id, {
           symbol,
           score: 70,
           provenance: 'lexical',
+          reason: 'declaration intersects current change',
         })
       }
     }
@@ -313,12 +318,13 @@ function collectRelationships(
       key,
       text: edgeText(graph, edge, direction),
       resolution: edge.resolution,
+      provenance: edge.provenance,
       priority,
     })
   }
   for (const candidate of primary) {
-    for (const edge of graph.incoming.get(candidate.symbol.id) ?? []) add(edge, 'caller', 100)
-    for (const edge of graph.outgoing.get(candidate.symbol.id) ?? []) add(edge, 'callee', 90)
+    for (const edge of (graph.incoming.get(candidate.symbol.id) ?? []).slice(0, 8)) add(edge, 'caller', 100)
+    for (const edge of (graph.outgoing.get(candidate.symbol.id) ?? []).slice(0, 8)) add(edge, 'callee', 90)
   }
   return rows.sort(
     (a, b) =>
@@ -562,13 +568,18 @@ export async function buildTaskContext(
         key,
         text: `${row.symbol.name} (${row.symbol.file}:${row.symbol.line}) → changed symbol at ${row.via.callSite.file}:${row.via.callSite.line} [${row.resolution}; ${row.via.reason}]`,
         resolution: row.resolution,
+        provenance: row.via.reason,
         priority: 110,
       })
     }
     relationships.sort((a, b) => b.priority - a.priority || a.text.localeCompare(b.text))
   }
   const relevantFiles = gatherFiles(index, route, primarySymbols, changeContext, maxFiles)
-  const tests = unique(changeContext?.tests.map((test) => test.file) ?? [], (file) => file)
+  const testEvidence = unique([
+    ...collectSeedTests(index, primarySymbols.filter(seed => seed.provenance === 'exact' || seed.score >= 20).map(seed => seed.symbol)),
+    ...(changeContext?.tests ?? []),
+  ], test => test.file).slice(0, 8)
+  const tests = testEvidence.map(test => test.file)
   const confidence = confidenceOf(primarySymbols, relationships, changeContext)
   const partial: Omit<TaskContextResult, 'budget'> = {
     root: index.root,
@@ -579,6 +590,7 @@ export async function buildTaskContext(
     relationships,
     changeContext,
     tests,
+    testEvidence,
     confidence,
     warnings,
   }
