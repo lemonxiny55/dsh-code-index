@@ -33,8 +33,11 @@ export function renderContextPack(pack: ContextPack): string {
     rows.push(`Reason: ${item.reason}`)
     if (item.change) rows.push(`Change: ${item.change}`)
     if (item.resolution) rows.push(`Relationship provenance: ${item.resolution}${item.provenance ? `; ${item.provenance}` : ''}`)
-    if (item.code !== undefined) rows.push(`Source (${item.mode}):\n${item.code}`)
-    else if (item.signature) rows.push(`Signature only: ${item.signature}`)
+    if (item.code !== undefined) {
+      if (item.signature) rows.push(`Declaration: ${item.signature}`)
+      rows.push(`Source (${item.mode}):\n${item.code}`)
+    }
+    else if (item.mode === 'signature') rows.push(`Signature only: ${item.signature || '(source unavailable within budget)'}`)
   }
   if (pack.gaps.length) rows.push(`\nGaps: ${pack.gaps.join('; ')}`)
   rows.push(`Budget: ${pack.budget.usedChars} / ${pack.budget.budgetChars} chars${pack.budget.truncated ? ' (trimmed low-priority context)' : ''}`)
@@ -69,7 +72,8 @@ export async function selectContextPack(
     const lines = await read(symbol.file, side, extra.ref)
     if (!lines) unavailable.add(`${side}:${symbol.file}`)
     candidates.push(excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
-      ...excerpt, kind, name: symbol.name, reason, ...extra,
+      ...excerpt, ...(symbol.id === '' && excerpt.mode === 'complete' ? { mode: 'window' as const } : {}),
+      kind, name: symbol.name, reason, ...extra,
     })))
   }
   for (const primary of context.primarySymbols) {
@@ -86,9 +90,10 @@ export async function selectContextPack(
     const file = index.files.find(row => row.path === test.file)!
     const seedNames = new Set(context.primarySymbols.map(seed => seed.symbol.name))
     const call = file.calls?.find(call => seedNames.has(call.name))
+    const lines = await read(file.path, 'current')
     const symbol = file.symbols.find(symbol => call && symbol.line <= call.line && symbol.endLine >= call.line)
-    await source(symbol ?? { id: '', name: test.file, file: test.file, line: Math.max(1, (call?.line ?? 1) - 1),
-      endLine: call?.line ?? 1, signature: '', scope: [], ordinal: 1, kind: 'function', exported: false },
+    await source(symbol ?? { id: '', name: test.file, file: test.file, line: Math.max(1, (call?.line ?? 1) - 3),
+      endLine: Math.min(lines?.length ?? 1, (call?.line ?? 1) + 5), signature: '', scope: [], ordinal: 1, kind: 'function', exported: false },
       'test', test.reason === 'imports-changed-file' ? 'test imports primary seed file' : test.reason,
       { resolution: test.resolution, provenance: test.reason }, call?.line)
   }
@@ -105,9 +110,18 @@ export async function selectContextPack(
       }
     }
     const file = index.files.find(file => file.path === primary.symbol.file)!
-    for (const imported of (file.importDetails ?? []).slice(0, 3)) {
-      await source({ ...primary.symbol, name: imported.specifier, line: imported.line, endLine: imported.line, signature: '' },
-        'import', `import in primary file ${primary.symbol.file}`, { resolution: 'import-scoped', provenance: 'import statement' })
+    const lines = await read(file.path, 'current')
+    const body = lines?.slice(primary.symbol.line - 1, primary.symbol.endLine).join('\n') ?? primary.symbol.signature
+    const relevantImports = (file.importDetails ?? []).filter(imported => imported.bindings.some(binding => {
+      const escaped = binding.local.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      return new RegExp(`(^|[^A-Za-z0-9_$])${escaped}(?=$|[^A-Za-z0-9_$])`).test(body)
+    }))
+    for (const imported of relevantImports.slice(0, 3)) {
+      const offset = lines?.slice(imported.line - 1, imported.line + 11).findIndex(line => line.includes(imported.specifier)) ?? -1
+      const endLine = offset < 0 ? imported.line : imported.line + offset
+      await source({ ...primary.symbol, ...(offset < 0 ? { id: '' } : {}), name: imported.specifier,
+        line: imported.line, endLine, signature: '' },
+        'import', `import binding referenced in primary source ${primary.symbol.file}`, { resolution: 'import-scoped', provenance: 'import statement' })
     }
   }
   for (const relation of context.relationships) candidates.push([{

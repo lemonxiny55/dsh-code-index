@@ -156,4 +156,21 @@ describe('Context Pack quality contracts', () => {
       contract({ mustInclude: ['largeFunction', 'modified'], requiredReason: ['task names this symbol'], budget: 3000,
         expectedSource: [{ file: 'src/large.ts', side: 'current', text: 'consume(99999)' }] }))
   })
+
+  it('includes used imports and strong callees, excluding unused import noise', async () => {
+    const root = await repo()
+    await writeFile(path.join(root, 'src/value.ts'), 'export function cleanValue(input: string) { return input.trim() }\n')
+    await writeFile(path.join(root, 'src/config.ts'), "import {\n  unrelatedWidget\n} from './noise'\nimport {\n  cleanValue\n} from './value'\nexport function loadConfig(input: string) { return cleanValue(input) }\n")
+    const result = await buildTaskContext(await buildIndex(root), 'Explain loadConfig')
+    await check(result.pack, contract({ mustInclude: ['cleanValue'], forbiddenNoise: ['unrelatedWidget', './noise'],
+      requiredProvenance: ['exact', 'import-scoped'], expectedSource: [{ file: 'src/config.ts', side: 'current', text: "import {\n  cleanValue\n} from './value'" }] }))
+  })
+
+  it('retains a non-exported exact symbol among many prefix matches', async () => {
+    const root = await repo()
+    await writeFile(path.join(root, 'src/many.ts'), Array.from({ length: 60 }, (_, i) => `export function privateTarget${i}() { return ${i} }`).join('\n') + '\nfunction privateTarget() { return 777 }\n')
+    await check((await buildTaskContext(await buildIndex(root), 'Explain privateTarget', { maxSymbols: 1 })).pack,
+      contract({ mustInclude: ['privateTarget'], forbiddenNoise: ['privateTarget0', 'FORBIDDEN_WIDGET'],
+        expectedSource: [{ file: 'src/many.ts', side: 'current', text: 'return 777' }], requiredProvenance: [] }))
+  })
 })

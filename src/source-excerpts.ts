@@ -67,7 +67,8 @@ export function excerptVariants(
     seen.add(key)
     const code = lines.slice(range.start - 1, range.end).join('\n')
     if (code.length > 1600 || range.end - range.start >= 80) continue
-    variants.push({ ...base, startLine: range.start, endLine: range.end, mode: range.mode, code })
+    variants.push({ ...base, startLine: range.start, endLine: range.end, mode: range.mode, code,
+      ...(range.mode === 'window' ? { signature: symbol.signature } : {}) })
   }
   return [...variants, signature]
 }
