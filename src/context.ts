@@ -16,6 +16,7 @@ import {
 } from './refgraph.js'
 import { searchSymbols, type RankedHit } from './search.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
+import { selectContextPack, renderContextPack, type ContextPack } from './context-pack.js'
 
 export type ContextTaskKind =
   | 'change'
@@ -69,6 +70,7 @@ export interface ContextConfidence {
 }
 
 export interface TaskContextResult {
+  pack: ContextPack
   root: string
   task: string
   route: ContextRoute
@@ -395,131 +397,6 @@ function confidenceOf(
   return out
 }
 
-function renderRows(
-  result: Omit<TaskContextResult, 'budget'>,
-  budgetChars: number,
-): { text: string; usedChars: number; truncated: boolean } {
-  const lines = [
-    `Task context — ${result.route.kind}`,
-    `Task: ${result.task}`,
-    `Sources: ${result.route.sources.join(', ')}`,
-    '',
-    'Primary symbols:',
-  ]
-  if (result.primarySymbols.length === 0) lines.push('- (none found)')
-
-  const optional: Array<{ priority: number; key: string; line: string; section: string }> = []
-  for (const candidate of result.primarySymbols) {
-    optional.push({
-      priority: 1000 + candidate.score,
-      key: `symbol:${candidate.symbol.id}`,
-      section: 'primary',
-      line: `- [${candidate.provenance}] ${symbolLabel(candidate.symbol)}`,
-    })
-  }
-  optional.push({ priority: 700, key: 'files-header', section: 'files', line: '\nRelevant files:' })
-  for (const file of result.relevantFiles) {
-    optional.push({ priority: 500 + file.score, key: `file:${file.path}`, section: 'files', line: `- ${file.path} (${file.reason})` })
-  }
-  optional.push({ priority: 400, key: 'relationships-header', section: 'relationships', line: '\nRelationships:' })
-  for (const relation of result.relationships) {
-    optional.push({ priority: relation.priority, key: `relation:${relation.key}`, section: 'relationships', line: `- ${relation.text}` })
-  }
-  if (result.changeContext) {
-    optional.push({ priority: 850, key: 'changes-header', section: 'changes', line: '\nCurrent changes:' })
-    for (const changed of result.changeContext.changed) {
-      optional.push({
-        priority: 840,
-        key: `changed:${changed.side}:${changed.symbol.id}`,
-        section: 'changes',
-        line: `- ${changed.change} ${symbolLabel(changed.symbol)} [${changed.resolution}]`,
-      })
-    }
-    if (result.changeContext.unmapped.length > 0) {
-      optional.push({
-        priority: 830,
-        key: 'changes-unmapped',
-        section: 'changes',
-        line: `- unmapped: ${result.changeContext.unmapped.map((entry) => entry.file).join(', ')}`,
-      })
-    }
-  }
-  if (result.tests.length > 0) {
-    optional.push({ priority: 350, key: 'tests-header', section: 'tests', line: '\nLikely affected tests:' })
-    for (const test of result.tests) optional.push({ priority: 340, key: `test:${test}`, section: 'tests', line: `- ${test}` })
-  }
-  if (result.warnings.length > 0) {
-    optional.push({ priority: 200, key: 'warnings-header', section: 'warnings', line: '\nWarnings:' })
-    for (const warning of result.warnings) optional.push({ priority: 190, key: `warning:${warning}`, section: 'warnings', line: `- ${warning}` })
-  }
-
-  // Keep core sections ahead of weak candidates while preserving deterministic
-  // order inside each priority band. Reserve room for the accounting footer.
-  const ordered = optional
-    .map((item, index) => ({ ...item, index }))
-    .sort((a, b) => b.priority - a.priority || a.index - b.index || a.key.localeCompare(b.key))
-  const footerReserve = 100
-  let truncated = false
-  const seen = new Set<string>()
-  for (const item of ordered) {
-    if (seen.has(item.key)) continue
-    const next = lines.join('\n') + `\n${item.line}`
-    if (next.length + footerReserve > budgetChars) {
-      truncated = true
-      continue
-    }
-    seen.add(item.key)
-    lines.push(item.line)
-  }
-  lines.push(
-    '',
-    `Confidence: exact ${result.confidence.exact}; import-scoped ${result.confidence['import-scoped']}; name-only ${result.confidence['name-only']}`,
-  )
-  const body = lines.join('\n')
-  const withFooter = (bodyText: string, wasTruncated: boolean): { text: string; usedChars: number } => {
-    let usedChars = bodyText.length + 1
-    for (let iteration = 0; iteration < 10; iteration++) {
-      const footer = `Budget: ${usedChars} / ${budgetChars} chars${wasTruncated ? ' (trimmed low-priority context)' : ''}`
-      const text = `${bodyText}\n${footer}`
-      const nextUsedChars = text.length
-      if (nextUsedChars === usedChars) return { text, usedChars: nextUsedChars }
-      usedChars = nextUsedChars
-    }
-    const footer = `Budget: ${usedChars} / ${budgetChars} chars${wasTruncated ? ' (trimmed low-priority context)' : ''}`
-    const text = `${bodyText}\n${footer}`
-    return { text, usedChars: text.length }
-  }
-
-  const complete = withFooter(body, truncated)
-  if (complete.usedChars <= budgetChars) {
-    return { text: complete.text, usedChars: complete.usedChars, truncated }
-  }
-
-  // The optional-row reserve above is intentionally conservative, but the
-  // task and confidence lines are user-controlled/derived text. If they still
-  // push the result over budget, truncate the body and recompute the footer so
-  // both the bytes and the accounting remain truthful.
-  truncated = true
-  const candidate = (prefixLength: number): { text: string; usedChars: number } => {
-    const prefix = `${body.slice(0, prefixLength).trimEnd()}…`
-    return withFooter(prefix, true)
-  }
-  let low = 0
-  let high = body.length
-  let best = candidate(0)
-  while (low <= high) {
-    const middle = Math.floor((low + high) / 2)
-    const current = candidate(middle)
-    if (current.usedChars <= budgetChars) {
-      best = current
-      low = middle + 1
-    } else {
-      high = middle - 1
-    }
-  }
-  return { text: best.text, usedChars: best.usedChars, truncated }
-}
-
 /** Build a deterministic, bounded context package from the current task. */
 export async function buildTaskContext(
   index: RepoIndex,
@@ -581,7 +458,7 @@ export async function buildTaskContext(
   ], test => test.file).slice(0, 8)
   const tests = testEvidence.map(test => test.file)
   const confidence = confidenceOf(primarySymbols, relationships, changeContext)
-  const partial: Omit<TaskContextResult, 'budget'> = {
+  const partial: Omit<TaskContextResult, 'budget' | 'pack'> = {
     root: index.root,
     task,
     route,
@@ -594,19 +471,33 @@ export async function buildTaskContext(
     confidence,
     warnings,
   }
-  const rendered = renderRows(partial, budgetChars)
+  const pack = await selectContextPack(index, partial, budgetChars)
+  const selected = (file: string, name?: string, kind?: string): boolean => pack.items.some(item =>
+    item.file === file && (!name || item.name === name) && (!kind || item.kind === kind))
+  const selectedRelationships = relationships.filter(row => pack.items.some(item => item.text === row.text))
+  const selectedChange = changeContext ? {
+    ...changeContext,
+    changed: changeContext.changed.filter(row => pack.items.some(item => item.file === row.symbol.file &&
+      item.name === row.symbol.name && item.side === row.side && item.change === row.change)),
+    unmapped: [], directCallers: [], importDependents: [], paths: [], impact: [],
+    tests: changeContext.tests.filter(test => selected(test.file, undefined, 'test')),
+    warnings: pack.gaps,
+  } : null
   return {
-    ...partial,
-    budget: {
-      usedChars: rendered.usedChars,
-      budgetChars,
-      truncated: rendered.truncated,
-    },
+    ...partial, pack,
+    primarySymbols: primarySymbols.filter(seed => selected(seed.symbol.file, seed.symbol.name, 'primary')),
+    relevantFiles: relevantFiles.filter(file => selected(file.path)),
+    relationships: selectedRelationships,
+    changeContext: selectedChange,
+    tests: tests.filter(file => selected(file, undefined, 'test')),
+    testEvidence: testEvidence.filter(test => selected(test.file, undefined, 'test')),
+    confidence: confidenceOf([], selectedRelationships, null),
+    warnings: pack.gaps,
+    budget: { usedChars: pack.budget.usedChars, budgetChars, truncated: pack.budget.truncated },
   }
 }
 
-/** Render the result using the same compact text surface as the existing tools. */
+/** Text always renders the final selected pack. */
 export function renderTaskContext(result: TaskContextResult): string {
-  const rendered = renderRows(result, result.budget.budgetChars)
-  return rendered.text
+  return renderContextPack(result.pack)
 }

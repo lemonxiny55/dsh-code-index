@@ -135,4 +135,28 @@ describe('task-aware router', () => {
     expect(result).toContain('loadConfig')
     expect(result.length).toBeLessThanOrEqual(2_000)
   })
+
+  it('selects one final pack for both source text and DTO under a hard budget', async () => {
+    const root = await fixtureRepo()
+    const index = await buildIndex(root)
+    for (const budget of [300, 500, 2000, 5000]) {
+      const result = await buildTaskContext(index, 'Explain loadConfig', { budgetChars: budget })
+      expect(renderTaskContext(result).length).toBeLessThanOrEqual(budget)
+      expect(JSON.stringify(result.pack).length).toBeLessThanOrEqual(budget)
+      expect(result.pack.budget.packChars).toBe(JSON.stringify(result.pack).length)
+      for (const item of result.pack.items) {
+        expect(item.reason).toBeTruthy()
+        if (item.code !== undefined) {
+          expect(item.endLine! - item.startLine! + 1).toBe(item.code.split('\n').length)
+          expect(renderTaskContext(result)).toContain(item.code)
+        }
+      }
+      for (const seed of result.primarySymbols) expect(result.pack.items.some(item => item.name === seed.symbol.name)).toBe(true)
+    }
+    const result = await buildTaskContext(index, 'Explain loadConfig')
+    expect(result.pack.items).toContainEqual(expect.objectContaining({
+      kind: 'primary', file: 'src/config.ts', startLine: 1, endLine: 1,
+      code: 'export function loadConfig() { return parseConfig() }', side: 'current',
+    }))
+  })
 })
