@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.9.0 — Edit-ready Context Packs (unreleased)
+## 0.9.0 — Edit-ready Context Packs (2026-10-05)
 
 - `code_context` now includes bounded, whole-line source excerpts for primary declarations, strong callers/callees, imports, likely tests and changes. Overlapping current/base ranges are deduplicated independently. Large declarations degrade to changed-line windows, then signature-only metadata.
 - One final ContextPack DTO selects candidates before presentation; both text and serialized pack respect the normalized hard character budget. Default canonical output stays a string; explicit `outputFormat: pack` enables structured output.
@@ -11,7 +11,8 @@ All notable changes to dsh-code-index are documented here.
 - Deterministic camel/snake, filename/path/signature terms, bounded graph neighborhoods, and clean-tree test seeds improve task selection. No BM25 or architecture rewrite.
 - Added executable context-quality contracts for task recall, source evidence, noise exclusion, budget, isolation, worktrees, freshness, overlap and classification.
 - Development target moves to matching DSH/dsh-tools `0.2.0-rc.2`. Full/compact surfaces, v0.8 configuration, Node 22/24, local-first behavior, and text calls remain supported. Public declaration files are now included in the package.
-- Synced English/Chinese product docs and added a reproducible 30-second recording of real local tool calls. Web Context Card is deferred pending real Agent/replay/navigation validation; no Card screenshot or benchmark claim is made.
+- Synced English/Chinese product docs and added a reproducible 30-second recording of real local tool calls. Web Context Card is deferred; Card replay/navigation remain unverified. No Card screenshot or benchmark claim is made.
+- Final DSH Desktop `0.2.0-rc.2` real Agent verification passed: default text and explicit pack calls, bounded source/reasons/provenance, related tests, change classification and external freshness. The npm package was published manually on 2026-10-05.
 
 See `RELEASE_EVIDENCE_v0.9.0.md` for verified checks and release boundaries.
 

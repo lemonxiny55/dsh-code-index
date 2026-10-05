@@ -11,7 +11,7 @@
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-当前 checkout 是 v0.9 发布候选，尚未发布；npm 安装得到的仍是最新已发布版本。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.0.md)。
+v0.9.0 已发布到 npm，并通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.0.md)。
 
 ## 本页导航
 
@@ -27,16 +27,14 @@
 
 ## 快速开始
 
-需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。当前版本尚未发布，在仓库根目录构建并本地安装：
+需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。将已发布版本安装到 Web profile：
 
 ```sh
-pnpm install
-pnpm build
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add .
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 
-只有想安装 registry 已发布版本时，才使用[安装说明](#安装)中的 npm 包命令，并匹配该版本的宿主。
+本地开发时，在仓库根目录运行 `pnpm install`、`pnpm build`，然后使用 `plugin --profile web add .`。其他 profile 选项见[安装说明](#安装)。
 
 ## 项目隔离与实时更新
 
@@ -66,7 +64,7 @@ export function loadConfig(input: string) {
 }
 ```
 
-随后 demo 从外部修改文件，展示 added/modified/deleted 及独立的 current/base 源码，再请求 500 字符预算。Web Context Card 延期，等待匹配 RC 上真实 Agent 调用、replay 和文件跳转验证；既有文本展示继续可用。
+随后 demo 从外部修改文件，展示 added/modified/deleted 及独立的 current/base 源码，再请求 500 字符预算。文本/pack 工作流已通过真实 Desktop Agent 验证。Web Context Card 继续延期，Card replay 和文件跳转尚未验证；既有文本展示继续可用。
 
 ## 工具一览
 

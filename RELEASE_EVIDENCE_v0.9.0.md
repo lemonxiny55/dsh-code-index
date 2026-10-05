@@ -1,12 +1,34 @@
 # v0.9.0 — Edit-ready Context Packs
 
-**STATUS: RELEASE READY — unpublished**
+**STATUS: RELEASE READY — npm published on 2026-10-05**
 
 Automated/native verification on 2026-10-04; real Desktop Agent verification
 on 2026-10-05. Implementation branch: `codex/v0.9-context-packs`.
 Starting main: `15d515368e438b726a0cc0a5fbff063600712641` (local main and
-GitHub main matched at the start). No publish, tag, GitHub Release, or push was
-performed. The pre-existing untracked `HANDOFF_PROMPT.md` was preserved.
+GitHub main matched at the start). At validation closeout, no publish, tag,
+GitHub Release, or push had been performed. The pre-existing untracked
+`HANDOFF_PROMPT.md` was preserved.
+
+## Publication follow-up — 2026-10-05
+
+The user manually published `dsh-code-index@0.9.0`. The public npm registry
+returns version `0.9.0` with shasum
+`ca6294d5497d3add709162604892dfd97c5874ac` and integrity
+`sha512-X+2Uf4z8C9XG6UQraCfMTmLeP0FMI/hnndlz1PWAHYHaoRz09VIytcZu959f1X/x7b5UcsE8vGgq7yDQByjnkQ==`,
+matching the exact tarball verified in the Desktop gate below. No second npm
+publication or version overwrite was attempted. The final publication follow-up
+updates only README/CHANGELOG/release-state documentation; the implementation
+remains the verified candidate `5dc939b7805a2b46c569fa6eca75cc4153e94be9`.
+The immutable npm tarball retains the documentation captured before publication;
+the repository documentation now reflects the published state.
+
+Fresh local verification before integration: **22 files / 215 tests PASS**,
+**typecheck PASS**, and **build/pack/disposable-install smoke PASS**. The published
+tarball's 14-file inventory and compiled runtime checksum were also checked.
+The remote main remained at the starting commit. Main/CI/tag
+and GitHub Release are separate release operations; their final result is
+reported after the CI gate. GitHub repository description was updated and read
+back successfully with the exact user-approved wording.
 
 ## Minimal success conditions and scope
 
@@ -207,17 +229,17 @@ The Desktop gate is complete; no ecosystem diagnosis is needed.
 - `code_context` returns a canonical string by default. Only explicit
   `outputFormat: pack` returns an object; Native rendering remains text.
 - Reliable file rename and explicit change selection modes remain available.
-- Package metadata and bilingual docs are ready. GitHub description update was
-  attempted and returned **HTTP 401 Requires authentication**; the intended
-  text is the package description. No remote update was falsely claimed.
+- Package metadata and bilingual docs are ready. The initial GitHub description
+  attempt returned HTTP 401; authentication now works and the publication
+  follow-up successfully applied the user-approved description.
 - No implementation/test/build/pack/Desktop blocker remains. **RELEASE READY**
   is supported by the separate automated, Native ToolRuntime and real v0.9
-  Desktop Agent evidence. The authenticated remote description update remains
-  an administrative follow-up outside this Desktop validation gate; publication
-  remains unperformed. Previous v0.8 manual evidence is not substituted for v0.9.
+  Desktop Agent evidence. npm publication was performed manually by the user
+  and verified in the publication follow-up. Previous v0.8 manual evidence is
+  not substituted for v0.9.
 
-Publication, tagging, GitHub Release creation, and pushing main remain outside
-this completed implementation turn and require the user's confirmation.
+The user subsequently authorized safe main integration/push, tagging and GitHub
+Release creation after CI; npm publication remained the user's manual action.
 
 ## Commits and working tree
 
@@ -242,10 +264,10 @@ fd14d28 build: verify RC canonical outputs and ship public declarations
 f66f349 docs: present edit-ready packs with a real 30-second local demo
 ```
 
-The implementation closeout was `bc1e83b`; the new Desktop evidence commit is
-the follow-up HEAD in `git log main..HEAD`.
+The implementation closeout was `bc1e83b`; the Desktop validation candidate was
+`5dc939b`. A subsequent release-documentation commit records publication state.
 Working tree at closeout: only the pre-existing untracked `HANDOFF_PROMPT.md`;
 no implementation modifications left uncommitted.
-main stays at the starting commit. The local Desktop-validation tarball is
+At validation closeout, main stayed at the starting commit. The local Desktop-validation tarball is
 retained under the workspace temporary evidence directory; no public release
-artifact was created. No publish, tag, GitHub Release or push was performed.
+artifact was created during validation. Publication is recorded separately above.

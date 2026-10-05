@@ -14,7 +14,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-This checkout contains the v0.9 release candidate. It has not been published; an npm install still receives the latest published version. See [release evidence](RELEASE_EVIDENCE_v0.9.0.md).
+v0.9.0 is published on npm and passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.0.md).
 
 ## On this page
 
@@ -30,16 +30,14 @@ This checkout contains the v0.9 release candidate. It has not been published; an
 
 ## Quick start
 
-Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. For this unreleased checkout, build and install locally from the repository root:
+Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. Install the published version into a Web profile:
 
 ```sh
-pnpm install
-pnpm build
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add .
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 
-Use the published-package command in [Install](#install) only when you intend to install the registry version, with its matching host.
+For local development, run `pnpm install` and `pnpm build` at the repository root, then use `plugin --profile web add .`. See [Install](#install) for profile options.
 
 ## Project isolation and live updates
 
@@ -69,7 +67,7 @@ export function loadConfig(input: string) {
 }
 ```
 
-The demo then makes an external edit, shows added/modified/deleted declarations with separate current/base source, and requests a 500-character pack. Web Context Card is deferred until real Agent execution, replay, and file navigation can be verified on the matching RC. The existing text presentation remains usable.
+The demo then makes an external edit, shows added/modified/deleted declarations with separate current/base source, and requests a 500-character pack. The text/pack workflow passed real Desktop Agent verification. Web Context Card remains deferred; Card replay and file navigation have not been verified. The existing text presentation remains usable.
 
 ## Tools
 
