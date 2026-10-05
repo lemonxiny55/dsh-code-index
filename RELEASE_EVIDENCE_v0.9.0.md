@@ -1,8 +1,9 @@
 # v0.9.0 — Edit-ready Context Packs
 
-**STATUS: RC READY — unpublished**
+**STATUS: RELEASE READY — unpublished**
 
-Verified on 2026-10-04. Implementation branch: `codex/v0.9-context-packs`.
+Automated/native verification on 2026-10-04; real Desktop Agent verification
+on 2026-10-05. Implementation branch: `codex/v0.9-context-packs`.
 Starting main: `15d515368e438b726a0cc0a5fbff063600712641` (local main and
 GitHub main matched at the start). No publish, tag, GitHub Release, or push was
 performed. The pre-existing untracked `HANDOFF_PROMPT.md` was preserved.
@@ -122,6 +123,81 @@ vectors/remote embeddings, LSP, new tool families, many new languages and large
 graph visualization (explicit non-goals). No architecture rewrite or
 third-party plugin fix was attempted.
 
+## Real DSH Desktop Agent gate — 2026-10-05
+
+**PASS.** This was a model-backed Agent session in the installed Windows DSH
+Desktop, operated through its UI. It was not a unit test, a direct plugin
+`execute()` call, or a mock. The session contains seven actual `tool/call`
+events, each followed by a successful `tool/result`; every tool was
+`code_context`. The Agent used the returned source to explain the tasks
+without additional grep/read/terminal calls.
+
+Session: `session-f4742e58-bc3f-4769-8362-95169f581a0e`.
+Tested implementation HEAD: `bc1e83bc76ac636ae7ca385db1bd59f7c2c1bd53`.
+The follow-up evidence commit changes documentation/artifacts only.
+
+### Installation and actual runtime
+
+- Real profile: `C:\Users\18439\.dsh\profiles\desktop`.
+- The user confirmed installation was already complete and instructed us to
+  validate only. Reinstallation was cancelled; the existing junction to the
+  current branch was retained. No bundle enable states or model credentials
+  were changed, and no host/third-party code was modified.
+- Current branch `npm pack` rebuilt the ESM, declarations and browser client
+  successfully. The newly packed `dist/index.js`, workspace build and installed
+  junction target all have SHA256
+  `FF84985D32E97B864B5B9E424E498AD72FFFEF1CE17AAEFFC192EA73AFFCBDC8`.
+  Tarball SHA256:
+  `EA01423BF6D8D295FBB68D16EC14B9B2AFEE54835C6A79DA5C51AF1C5B7F82B0`.
+  This is verification of the existing branch installation, not a claim that
+  the tarball was reinstalled into Desktop. The earlier disposable consumer
+  install/smoke remains the separate packaged-install evidence.
+- Desktop's own bundled CLI reports `0.2.0-rc.2`; read-only inspection through
+  Electron's Node mode confirms its bundled `dsh-desktop-host` and `dsh-tools`
+  are both `0.2.0-rc.2`. An old conversation's `0.1.7-alpha.2` installation
+  description was stale and is not used as runtime evidence.
+- A fresh typecheck also passed on 2026-10-05. The 215-test Node 22/24 suites,
+  Native ToolRuntime and smoke results above are dated 2026-10-04; they were
+  not rerun or presented as Desktop Agent verification.
+
+### Representative task results
+
+| Real Agent task | Observed result |
+| --- | --- |
+| `Explain selectContextPack budget selection`, no format/root/budget override | Default text succeeded. Session root was the actual dsh-code-index checkout. Primary source at `src/context-pack.ts:57-62`, reasons and related test leads were returned. **4026/5000** chars. Large-function evidence was a bounded opening window, with an explicit budget gap; the Agent acknowledged that further implementation detail would require a focused follow-up. |
+| `Fix whitespace config loading bug`, explicit pack, clean tiny Git fixture | No function name supplied. Returned `loadConfig` complete source, `startup` caller source, related `tests/config.spec.ts` source, inclusion reasons and separate exact/import-scoped provenance. **1294/5000** chars. Git worked and correctly reported no changes. |
+| `Review current changes`, explicit pack, same fixture after external edit | `loadConfig`: **modified**, current lines 1–3; `betaCaller`: **added**, current line 4; `removed`: **deleted**, base line 4 at frozen SHA `f19bfebc85b5fdc9ea41a261842b14264b6fe914`. Current source included `.toUpperCase()` and **DESKTOP_FRESH_090**. Caller/tests remained; exact/import-scoped/name-only relationship labels were preserved. **2326/5000** chars; no gaps. |
+| `Explain loadConfig`, default text, 500 budget | **327/500** chars. Signature-only fallback with `budget omitted some evidence`; no arbitrarily sliced code body. |
+| Return to `Explain selectContextPack`, no root/format override | Default session root returned to dsh-code-index, **4009/5000** chars. No fixture `betaCaller` or freshness marker leaked. This checks default-root recovery after explicit root overrides, not a new full Desktop worktree/switching matrix. |
+
+The first temporary fixture was created by the sandbox account, so Desktop Git
+reported dubious ownership while source retrieval still worked. One replacement
+fixture was created as the desktop user; Git then worked. No global safe-directory
+setting, ACL change, unrelated plugin isolation or host investigation was needed.
+The two initial calls and their honest gap remain in the evidence.
+
+Freshness was tested by writing the fixture file from outside DSH **after** the
+clean-tree query. No plugin build, index rebuild command, app restart or manual
+refresh occurred between that write and the change query.
+
+Actual persisted tool records were audited afterward, independently of the
+Agent's prose: **7/7** successful results, **7/7** actual rendered lengths equal
+their reported usedChars and within budget, and **35/35** source ranges match
+the applicable current file or baseline. The clean pre-edit source was compared
+to the fixture baseline. The compact evidence contains only these tool records
+and audit metadata, not the complete session/system prompts:
+[Desktop tool evidence](assets/desktop-v0.9-tool-evidence.json).
+
+Desktop's records store rendered tool text, including when the call explicitly
+requests `outputFormat: "pack"`. This gate proves that pack calls execute and
+render useful selected evidence through the real Agent. Canonical object shape
+and serialized JSON hard-cap evidence remain the separately identified Native
+ToolRuntime/automated checks; they are not inferred from the Desktop text.
+
+No plugin release blocker was found. Web Context Card remains deferred and was
+not reopened. Worktree/full switching coverage remains in the automated gate.
+The Desktop gate is complete; no ecosystem diagnosis is needed.
+
 ## Backward compatibility and remaining work
 
 - Full surface remains seven normal tools plus opt-in health; compact remains
@@ -134,11 +210,11 @@ third-party plugin fix was attempted.
 - Package metadata and bilingual docs are ready. GitHub description update was
   attempted and returned **HTTP 401 Requires authentication**; the intended
   text is the package description. No remote update was falsely claimed.
-- No implementation/test/build/pack blocker remains for this RC. RELEASE READY
-  is not claimed: remote description remains pending and no v0.9 real-Agent
-  result was collected. A later operator sanity check can stay limited to the
-  shipped text workflow on the matching RC. This report does not substitute
-  the previous v0.8 manual evidence for v0.9.
+- No implementation/test/build/pack/Desktop blocker remains. **RELEASE READY**
+  is supported by the separate automated, Native ToolRuntime and real v0.9
+  Desktop Agent evidence. The authenticated remote description update remains
+  an administrative follow-up outside this Desktop validation gate; publication
+  remains unperformed. Previous v0.8 manual evidence is not substituted for v0.9.
 
 Publication, tagging, GitHub Release creation, and pushing main remain outside
 this completed implementation turn and require the user's confirmation.
@@ -166,8 +242,10 @@ fd14d28 build: verify RC canonical outputs and ship public declarations
 f66f349 docs: present edit-ready packs with a real 30-second local demo
 ```
 
-This final evidence commit is the closeout HEAD in `git log main..HEAD`.
+The implementation closeout was `bc1e83b`; the new Desktop evidence commit is
+the follow-up HEAD in `git log main..HEAD`.
 Working tree at closeout: only the pre-existing untracked `HANDOFF_PROMPT.md`;
 no implementation modifications left uncommitted.
-main stays at the starting commit. All generated tarballs are removed by smoke
-cleanup; no public release artifact was created.
+main stays at the starting commit. The local Desktop-validation tarball is
+retained under the workspace temporary evidence directory; no public release
+artifact was created. No publish, tag, GitHub Release or push was performed.

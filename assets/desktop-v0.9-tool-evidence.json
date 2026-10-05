@@ -1,0 +1,133 @@
+{
+  "method": "Real DSH Desktop Agent; UI submitted tasks, persisted tool/call and tool/result records audited afterward. No plugin execute() calls in this validation.",
+  "date": "2026-10-05",
+  "sessionId": "session-f4742e58-bc3f-4769-8362-95169f581a0e",
+  "testedHead": "bc1e83bc76ac636ae7ca385db1bd59f7c2c1bd53",
+  "desktopHost": "0.2.0-rc.2",
+  "desktopTools": "0.2.0-rc.2",
+  "installation": "Existing desktop profile junction; reinstall cancelled at user request; current branch rebuilt and target dist hash matched.",
+  "distSha256": "FF84985D32E97B864B5B9E424E498AD72FFFEF1CE17AAEFFC192EA73AFFCBDC8",
+  "canonicalPackObservation": "Desktop records persist rendered text, including for explicit pack calls. Canonical object shape/serialized cap are covered separately by Native ToolRuntime and automated tests.",
+  "audit": {
+    "calls": 7,
+    "successfulResults": 7,
+    "budgetsPassed": 7,
+    "sourceRangesPassed": 35,
+    "classifications": "added/modified/deleted passed",
+    "freshness": "External file edit seen without plugin rebuild",
+    "isolation": "Default session root A → explicit fixture roots → default A; no fixture markers leaked"
+  },
+  "runs": [
+    {
+      "turn": 1,
+      "callSeq": 17,
+      "resultSeq": 18,
+      "time": "2026-10-05T02:49:13.665Z",
+      "arguments": {
+        "task": "Explain selectContextPack budget selection"
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\dsh-code-index",
+      "actualTextChars": 4026,
+      "budgetChars": 5000,
+      "sourceChecks": 12,
+      "renderedText": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\dsh-code-index\nTask: Explain selectContextPack budget selection\n\nprimary: selectContextPack src/context-pack.ts:57-62 [current]\nReason: task names this symbol\nDeclaration: selectContextPack(index: RepoIndex, context: Omit<TaskContextResult, 'budget'...\nSource (window):\nexport async function selectContextPack(\n  index: RepoIndex, context: Omit<TaskContextResult, 'budget' | 'pack'>, budgetChars: number, maxFiles = 12,\n): Promise<ContextPack> {\n  const read = sourceReader(index)\n  const graph = buildReferenceGraph(index)\n  const candidates: ContextPackItem[][] = []\n\nprimary: ContextPackItem src/context-pack.ts:7-15 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextPackItem extends Partial<SourceExcerpt> {\n  kind: 'primary' | 'caller' | 'callee' | 'import' | 'test' | 'change' | 'file' | 'relationship'\n  name?: string\n  reason: string\n  resolution?: ResolutionLabel\n  provenance?: string\n  change?: string\n  text?: string\n}\n\nprimary: ContextPack src/context-pack.ts:18-26 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextPack {\n  version: 1\n  root: string\n  task: string\n  route: TaskContextResult['route']['kind']\n  items: ContextPackItem[]\n  gaps: string[]\n  budget: { budgetChars: number; usedChars: number; packChars: number; truncated: boolean }\n}\n\nprimary: ContextTaskKind src/context.ts:21-27 [current]\nReason: matches task terms\nSource (complete):\nexport type ContextTaskKind =\n  | 'change'\n  | 'symbol'\n  | 'architecture'\n  | 'test'\n  | 'exploration'\n  | 'ambiguous'\n\nprimary: ContextRoute src/context.ts:29-37 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextRoute {\n  kind: ContextTaskKind\n  queries: string[]\n  mentionedFiles: string[]\n  exactSymbolNames: string[]\n  sources: string[]\n  includeChangeContext: boolean\n  includeRelationships: boolean\n}\n\nprimary: ContextOptions src/context.ts:39-43 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextOptions {\n  budgetChars?: number\n  maxFiles?: number\n  maxSymbols?: number\n}\n\nprimary: ContextSymbol src/context.ts:45-50 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextSymbol {\n  symbol: SymbolInfo\n  score: number\n  provenance: 'exact' | 'lexical'\n  reason: string\n}\n\nprimary: ContextFile src/context.ts:52-56 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextFile {\n  path: string\n  score: number\n  reason: string\n}\n\nprimary: ContextRelationship src/context.ts:58-64 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextRelationship {\n  text: string\n  resolution: ResolutionLabel\n  priority: number\n  key: string\n  provenance: string\n}\n\nprimary: ContextConfidence src/context.ts:66-70 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextConfidence {\n  exact: number\n  'import-scoped': number\n  'name-only': number\n}\n\ntest: tests/context-quality.spec.ts tests/context-quality.spec.ts:1-6 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { afterEach, describe, expect, it } from 'vitest'\nimport { execFileSync } from 'node:child_process'\nimport { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'\nimport os from 'node:os'\nimport path from 'node:path'\nimport { buildIndex } from '../src/buildIndex.js'\n\ntest: tests/context.spec.ts tests/context.spec.ts:1-6 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { afterEach, describe, expect, it } from 'vitest'\nimport { execFileSync } from 'node:child_process'\nimport { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'\nimport os from 'node:os'\nimport path from 'node:path'\nimport { buildIndex } from '../src/buildIndex.js'\n\nGaps: budget omitted some evidence\nBudget: 4026 / 5000 chars (trimmed low-priority context)"
+    },
+    {
+      "turn": 2,
+      "callSeq": 32,
+      "resultSeq": 33,
+      "time": "2026-10-05T02:52:13.888Z",
+      "arguments": {
+        "task": "Fix whitespace config loading bug",
+        "repoRoot": "C:/Users/18439/Desktop/ChatGPT/.tmp/desktop-v09-validation",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-validation",
+      "actualTextChars": 1412,
+      "budgetChars": 5000,
+      "sourceChecks": 3,
+      "renderedText": "Task context — change\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-validation\nTask: Fix whitespace config loading bug\n\nprimary: loadConfig src/config.ts:1-3 [current]\nReason: matches task terms\nSource (complete):\nexport function loadConfig(input: string) {\n  return input.trim()\n}\n\ntest: tests/config.spec.ts tests/config.spec.ts:1-4 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { loadConfig } from '../src/config'\ntest('whitespace config loading', () => loadConfig(' input '))\n\n\n\ncaller: startup src/startup.ts:2-2 [current]\nReason: direct caller of loadConfig\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function startup() { return loadConfig(' input ') }\n\nrelationship: module → loadConfig (src/config.ts:1) at tests/config.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: startup (src/startup.ts:2) → loadConfig (src/config.ts:1) at src/startup.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nGaps: change context unavailable: Command failed: git rev-parse --verify HEAD^{commit}\nfatal: detected dubious ownership in repository at 'C:/User\nBudget: 1412 / 5000 chars"
+    },
+    {
+      "turn": 2,
+      "callSeq": 34,
+      "resultSeq": 35,
+      "time": "2026-10-05T02:52:14.792Z",
+      "arguments": {
+        "task": "Fix whitespace config loading bug",
+        "repoRoot": "C:/Users/18439/Desktop/ChatGPT/.tmp/desktop-v09-validation",
+        "budgetChars": 500
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-validation",
+      "actualTextChars": 344,
+      "budgetChars": 500,
+      "sourceChecks": 0,
+      "renderedText": "Task context — change\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-validation\nTask: Fix whitespace config loading bug\n\nprimary: loadConfig src/config.ts:1-1 [current]\nReason: matches task terms\nSignature only: loadConfig(input: string)\n\nGaps: budget omitted some evidence\nBudget: 344 / 500 chars (trimmed low-priority context)"
+    },
+    {
+      "turn": 3,
+      "callSeq": 47,
+      "resultSeq": 48,
+      "time": "2026-10-05T02:54:13.749Z",
+      "arguments": {
+        "budgetChars": 5000,
+        "outputFormat": "pack",
+        "repoRoot": "C:/Users/18439/Desktop/ChatGPT/.tmp/desktop-v09-live",
+        "task": "Fix whitespace config loading bug"
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live",
+      "actualTextChars": 1294,
+      "budgetChars": 5000,
+      "sourceChecks": 3,
+      "renderedText": "Task context — change\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live\nTask: Fix whitespace config loading bug\n\nprimary: loadConfig src/config.ts:1-3 [current]\nReason: matches task terms\nSource (complete):\nexport function loadConfig(input: string) {\n  return input.trim()\n}\n\ntest: tests/config.spec.ts tests/config.spec.ts:1-4 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { loadConfig } from '../src/config'\ntest('whitespace config loading', () => loadConfig(' input '))\n\n\n\ncaller: startup src/startup.ts:2-2 [current]\nReason: direct caller of loadConfig\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function startup() { return loadConfig(' input ') }\n\nrelationship: module → loadConfig (src/config.ts:1) at tests/config.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: startup (src/startup.ts:2) → loadConfig (src/config.ts:1) at src/startup.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nGaps: no changes found in the diff\nBudget: 1294 / 5000 chars"
+    },
+    {
+      "turn": 4,
+      "callSeq": 60,
+      "resultSeq": 61,
+      "time": "2026-10-05T02:55:58.680Z",
+      "arguments": {
+        "budgetChars": 5000,
+        "outputFormat": "pack",
+        "repoRoot": "C:/Users/18439/Desktop/ChatGPT/.tmp/desktop-v09-live",
+        "task": "Review current changes"
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live",
+      "actualTextChars": 2326,
+      "budgetChars": 5000,
+      "sourceChecks": 5,
+      "renderedText": "Task context — change\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live\nTask: Review current changes\n\nprimary: loadConfig src/config.ts:1-3 [current]\nReason: declaration intersects current change\nChange: modified\nSource (complete):\nexport function loadConfig(input: string) {\n  return input.trim().toUpperCase() // DESKTOP_FRESH_090\n}\n\nprimary: betaCaller src/config.ts:4-4 [current]\nReason: declaration intersects current change\nChange: added\nSource (complete):\nexport function betaCaller() { return loadConfig('beta') }\n\nchange: removed src/config.ts:4-4 [base @f19bfebc85b5fdc9ea41a261842b14264b6fe914]\nReason: declaration intersects Git change\nChange: deleted\nSource (complete):\nexport function removed() { return 0 }\n\ntest: tests/config.spec.ts tests/config.spec.ts:1-4 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { loadConfig } from '../src/config'\ntest('whitespace config loading', () => loadConfig(' input '))\n\n\n\ncaller: startup src/startup.ts:2-2 [current]\nReason: direct caller of loadConfig\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function startup() { return loadConfig(' input ') }\n\nrelationship: betaCaller (src/config.ts:4) → changed symbol at src/config.ts:4 [name-only; local-unique]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; local-unique\n\nrelationship: startup (src/startup.ts:2) → changed symbol at src/startup.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: betaCaller (src/config.ts:4) → loadConfig (src/config.ts:1) at src/config.ts:4 [name-only; local-unique]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; local-unique\n\nrelationship: module → loadConfig (src/config.ts:1) at tests/config.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: startup (src/startup.ts:2) → loadConfig (src/config.ts:1) at src/startup.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\nBudget: 2326 / 5000 chars"
+    },
+    {
+      "turn": 5,
+      "callSeq": 73,
+      "resultSeq": 74,
+      "time": "2026-10-05T02:57:55.988Z",
+      "arguments": {
+        "budgetChars": 500,
+        "repoRoot": "C:/Users/18439/Desktop/ChatGPT/.tmp/desktop-v09-live",
+        "task": "Explain loadConfig"
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live",
+      "actualTextChars": 327,
+      "budgetChars": 500,
+      "sourceChecks": 0,
+      "renderedText": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\.tmp\\desktop-v09-live\nTask: Explain loadConfig\n\nprimary: loadConfig src/config.ts:1-1 [current]\nReason: task names this symbol\nSignature only: loadConfig(input: string)\n\nGaps: budget omitted some evidence\nBudget: 327 / 500 chars (trimmed low-priority context)"
+    },
+    {
+      "turn": 5,
+      "callSeq": 75,
+      "resultSeq": 76,
+      "time": "2026-10-05T02:57:56.060Z",
+      "arguments": {
+        "task": "Explain selectContextPack"
+      },
+      "root": "C:\\Users\\18439\\Desktop\\ChatGPT\\dsh-code-index",
+      "actualTextChars": 4009,
+      "budgetChars": 5000,
+      "sourceChecks": 12,
+      "renderedText": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\Desktop\\ChatGPT\\dsh-code-index\nTask: Explain selectContextPack\n\nprimary: selectContextPack src/context-pack.ts:57-62 [current]\nReason: task names this symbol\nDeclaration: selectContextPack(index: RepoIndex, context: Omit<TaskContextResult, 'budget'...\nSource (window):\nexport async function selectContextPack(\n  index: RepoIndex, context: Omit<TaskContextResult, 'budget' | 'pack'>, budgetChars: number, maxFiles = 12,\n): Promise<ContextPack> {\n  const read = sourceReader(index)\n  const graph = buildReferenceGraph(index)\n  const candidates: ContextPackItem[][] = []\n\nprimary: ContextPackItem src/context-pack.ts:7-15 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextPackItem extends Partial<SourceExcerpt> {\n  kind: 'primary' | 'caller' | 'callee' | 'import' | 'test' | 'change' | 'file' | 'relationship'\n  name?: string\n  reason: string\n  resolution?: ResolutionLabel\n  provenance?: string\n  change?: string\n  text?: string\n}\n\nprimary: ContextPack src/context-pack.ts:18-26 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextPack {\n  version: 1\n  root: string\n  task: string\n  route: TaskContextResult['route']['kind']\n  items: ContextPackItem[]\n  gaps: string[]\n  budget: { budgetChars: number; usedChars: number; packChars: number; truncated: boolean }\n}\n\nprimary: ContextTaskKind src/context.ts:21-27 [current]\nReason: matches task terms\nSource (complete):\nexport type ContextTaskKind =\n  | 'change'\n  | 'symbol'\n  | 'architecture'\n  | 'test'\n  | 'exploration'\n  | 'ambiguous'\n\nprimary: ContextRoute src/context.ts:29-37 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextRoute {\n  kind: ContextTaskKind\n  queries: string[]\n  mentionedFiles: string[]\n  exactSymbolNames: string[]\n  sources: string[]\n  includeChangeContext: boolean\n  includeRelationships: boolean\n}\n\nprimary: ContextOptions src/context.ts:39-43 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextOptions {\n  budgetChars?: number\n  maxFiles?: number\n  maxSymbols?: number\n}\n\nprimary: ContextSymbol src/context.ts:45-50 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextSymbol {\n  symbol: SymbolInfo\n  score: number\n  provenance: 'exact' | 'lexical'\n  reason: string\n}\n\nprimary: ContextFile src/context.ts:52-56 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextFile {\n  path: string\n  score: number\n  reason: string\n}\n\nprimary: ContextRelationship src/context.ts:58-64 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextRelationship {\n  text: string\n  resolution: ResolutionLabel\n  priority: number\n  key: string\n  provenance: string\n}\n\nprimary: ContextConfidence src/context.ts:66-70 [current]\nReason: matches task terms\nSource (complete):\nexport interface ContextConfidence {\n  exact: number\n  'import-scoped': number\n  'name-only': number\n}\n\ntest: tests/context-quality.spec.ts tests/context-quality.spec.ts:1-6 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { afterEach, describe, expect, it } from 'vitest'\nimport { execFileSync } from 'node:child_process'\nimport { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'\nimport os from 'node:os'\nimport path from 'node:path'\nimport { buildIndex } from '../src/buildIndex.js'\n\ntest: tests/context.spec.ts tests/context.spec.ts:1-6 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (window):\nimport { afterEach, describe, expect, it } from 'vitest'\nimport { execFileSync } from 'node:child_process'\nimport { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'\nimport os from 'node:os'\nimport path from 'node:path'\nimport { buildIndex } from '../src/buildIndex.js'\n\nGaps: budget omitted some evidence\nBudget: 4009 / 5000 chars (trimmed low-priority context)"
+    }
+  ]
+}
