@@ -42,9 +42,13 @@ Used the dashboard's independent **Sync npm Plugin** form, which explicitly requ
 
 已通过不需要 GitHub 授权的 npm 同步入口提交公开包名，页面确认同步到 0.9.0。公开详情仍优先展示 GitHub 固定来源、旧摘要/README 快照及兼容栏 `*`，不能将同步成功说成展示字段已修正；未修改不可变版本/来源记录。
 
-Prepared a bilingual **Other** catalog metadata correction in the site's report form, with the published install command, Release, actual Desktop demo and evidence links; it explicitly states that this is not a security/copyright complaint. The optional email is blank. **Not submitted yet:** Cloudflare human verification keeps the submit button disabled. The filled browser tab is preserved for the user to complete verification. No CAPTCHA was solved or bypassed.
+Prepared a bilingual **Other** catalog metadata correction in the site's report form, with the published install command, Release, actual Desktop demo and evidence links; it explicitly states that this is not a security/copyright complaint. The user completed human verification, filled the optional contact field and clicked Submit. The UI reported submission failure; one assistant retry also failed. **Not successfully submitted.** Stopped retrying and preserved the filled tab. No CAPTCHA was solved or bypassed by the assistant; contact details are not recorded here.
 
-已在网站报告表单选择“其他”，填写双语资料修正、安装命令、Release、真实桌面演示和验证链接，明确不是安全/版权投诉；可选邮箱留空。**尚未提交**：Cloudflare 人机验证使提交按钮禁用。已保留填好的页面等待用户验证，未代做或绕过 CAPTCHA。
+已在网站报告表单选择“其他”，填写双语资料修正、安装命令、Release、真实桌面演示和验证链接，明确不是安全/版权投诉。用户完成人机验证、填写可选联系方式并点击提交后，页面显示失败；助手重试一次仍失败。**未成功提交**，已停止重试并保留表单。助手未代做或绕过 CAPTCHA，本文不记录联系方式。
+
+Also opened the live [dsh-market project detail](https://dshmarket.com/p/lemonxiny55/dsh-code-index/) in the browser: it displays the v0.9.0 source-pack capabilities and matching-host install instructions, but its README snapshot still has the earlier local tool-call demo, not the newly recorded Desktop GIF. The market documents automatic catalog/README refresh; the new top EN/zh description depends on upstream PR #6860 merging. Its separate comments area was not used, consistent with this round's single official Discussion reply.
+
+浏览器实时详情已展示 v0.9.0 Context Pack 能力与匹配宿主安装命令，但 README 快照仍用此前本地工具调用演示，尚未显示新桌面 GIF。市场有自动目录/README 刷新流程；顶部双语简介需要上游 PR #6860 合并。未在其独立评论区另发推广，保持本轮只更新官方原 Discussion 的范围。
 
 **EN:** dsh-code-index v0.9.0 is published on npm. One `code_context` call returns key source excerpts with accurate line ranges, inclusion reasons, relationship provenance, Git changes and likely tests within a hard character budget. Local repo/worktree indexes remain isolated and refresh after external edits. The text/pack workflow was verified with a real DSH Desktop 0.2.0-rc.2 Agent. Likely tests are leads, not coverage proof. Please refresh the description/version and show the matching host requirement; old-host checks do not prove v0.9 compatibility.
 
