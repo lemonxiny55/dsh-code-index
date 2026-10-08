@@ -52,13 +52,15 @@ Each Git worktree gets its own index and change state. The plugin watches projec
 
 ## See it in action
 
-**42 seconds: from a config-loading task to source the Agent can use.**
+**42 seconds in DSH Desktop: why did loading `' input '` produce `'INPUT'`?**
 
-![Bilingual terminal replay of real Desktop Agent records; not a desktop screen recording](assets/agent-context-demo.gif)
+![Actual DSH Desktop Agent calling code_context, with a bilingual task and explanation](assets/desktop-agent-v090.gif)
 
-The real Agent called `code_context` for “Fix whitespace config loading bug” without naming a function. It received `loadConfig`, its `startup` caller, and a likely test, with exact source ranges, inclusion reasons, and relationship provenance. A follow-up after an external edit shows Git additions/modifications/deletions; a 500-character request shows an explicit signature-only fallback.
+One real `code_context` call returned `loadConfig` at `src/config.ts:1–3`, its callers, Git additions/modifications/deletions, and a likely test, with inclusion reasons and relationship provenance: **2347/5000 characters**. The Agent used that context to identify `.toUpperCase()` as the cause.
 
-This is a terminal-style replay of audited DSH Desktop `0.2.0-rc.2` records from 2026-10-05, with English/Chinese captions and edited pacing. It is **not a desktop screen recording**, a latency measurement, or a claim that a fix/tests succeeded. [Demo provenance and reproduction](assets/agent-context-demo.md) · [raw Agent evidence](assets/desktop-v0.9-tool-evidence.json) · [terminal replay (.cast)](assets/agent-context-demo.cast).
+This is **actual desktop footage recorded on 2026-10-08**, using the installed v0.9.0 plugin and a tiny demonstration repository. Only DSH is shown; waiting was cut and audio removed. No files were edited or tests run. The clip is not a latency measurement or a claim that a fix/tests succeeded. [MP4](assets/desktop-agent-v090.mp4) · [Recording notes and provenance](assets/desktop-agent-v090.md) · [Actual tool-card evidence](assets/desktop-agent-v090.evidence.json).
+
+The earlier [bilingual terminal replay](assets/agent-context-demo.md) remains available as a separate, clearly labeled replay of audited 2026-10-05 Agent records. It also shows external-edit freshness and a 500-character signature-only fallback.
 
 Try asking: **“Use code_context to locate a config-loading bug, show the relevant source and callers, and identify likely tests.”** Tell us what helped or what context was missing in the [DSH discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/5623).
 

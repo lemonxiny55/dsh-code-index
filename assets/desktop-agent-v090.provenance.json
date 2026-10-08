@@ -1,0 +1,67 @@
+{
+  "method": "Actual DSH Desktop screen recording; Agent task submitted through UI",
+  "recordedDate": "2026-10-08",
+  "pluginVersion": "0.9.0 (visible installed/running in Desktop UI)",
+  "rawSha256": "fee64a5883668d53c9fa20330ef8deb728408c9b6fe33cc4e99cfd50c38e4214",
+  "durationSeconds": 42,
+  "segments": [
+    {
+      "start": 6,
+      "duration": 9
+    },
+    {
+      "start": 20,
+      "duration": 3
+    },
+    {
+      "start": 120,
+      "duration": 7
+    },
+    {
+      "start": 135,
+      "duration": 5
+    },
+    {
+      "start": 145,
+      "duration": 6
+    },
+    {
+      "start": 155,
+      "duration": 4
+    },
+    {
+      "start": 172,
+      "duration": 4
+    },
+    {
+      "start": 184,
+      "duration": 4
+    }
+  ],
+  "edits": [
+    "Chronological cuts remove setup, waiting and redundant holds",
+    "No UI, tool output or Agent response generated or replaced",
+    "Silent video resized to 1280 pixels wide, 15 fps; GIF sampled at 2 fps",
+    "Elapsed wall time is not represented by edited playback duration"
+  ],
+  "captureOperation": "User started/stopped Windows Snipping Tool; assistant operated DSH",
+  "toolResult": {
+    "usedChars": 2347,
+    "budgetChars": 5000
+  },
+  "outputs": {
+    "desktop-agent-v090.mp4": {
+      "sha256": "b54d99e23f27f2155c44751ee1410a3f7ab1708431c95a65b78ddc354970b78b",
+      "bytes": 711404
+    },
+    "desktop-agent-v090.gif": {
+      "sha256": "66299ed53de0ac24983bc3caddcf4e133085b9e04aca88585417b87011933cc8",
+      "bytes": 1390225
+    },
+    "desktop-agent-v090.png": {
+      "sha256": "f13827239f506cac28ad6a12f15e1dd2da839e5eae4bf0b72d5682c62761209c",
+      "bytes": 279951
+    }
+  },
+  "posterAt": 15
+}

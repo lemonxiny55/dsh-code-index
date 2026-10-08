@@ -49,13 +49,15 @@ npx @deepseek-ai/dsh@0.2.0-rc.2 web
 
 ## 实际效果
 
-**42 秒：从配置加载任务，到 Agent 可以使用的源码上下文。**
+**42 秒真实 DSH 桌面演示：加载 `' input '` 为什么变成了 `'INPUT'`？**
 
-![中英字幕的真实 Desktop Agent 记录终端回放，非桌面录屏](assets/agent-context-demo.gif)
+![真实 DSH Desktop Agent 调用 code_context，含中英文任务与解释](assets/desktop-agent-v090.gif)
 
-真实 Agent 针对“Fix whitespace config loading bug”调用 `code_context`，任务没有指定函数名。返回结果包含 `loadConfig`、其调用者 `startup` 和相关测试，带准确源码范围、入选理由和关系来源。外部编辑后的后续查询展示 Git 增改删；500 字符请求展示明确的 signature-only 降级。
+一次真实 `code_context` 调用返回 `src/config.ts:1–3` 的 `loadConfig`、调用方、Git 增改删和相关测试线索，附入选理由与关系来源，共 **2347/5000 字符**。Agent 据此定位到改变大小写的 `.toUpperCase()`。
 
-这是 2026-10-05 在 DSH Desktop `0.2.0-rc.2` 中取得并审计的真实记录，以中英字幕和剪辑节奏做成终端式回放。它**不是桌面录屏**，不代表运行耗时，也不宣称 Bug 已修复或测试已通过。[来源与复现说明](assets/agent-context-demo.md) · [Agent 原始证据](assets/desktop-v0.9-tool-evidence.json) · [终端回放（.cast）](assets/agent-context-demo.cast)。
+这是 **2026-10-08 新录制的真实桌面画面**，使用已安装的 v0.9.0 与一个小演示仓库。只展示 DSH，剪去等待并移除音轨；没有修改文件或运行测试，不代表实际耗时，也不宣称修复或测试成功。[MP4 视频](assets/desktop-agent-v090.mp4) · [录制与来源说明](assets/desktop-agent-v090.md) · [实际工具卡片证据](assets/desktop-agent-v090.evidence.json)。
+
+先前的[中英终端回放](assets/agent-context-demo.md)继续保留，单独标明来自 2026-10-05 的真实 Agent 记录，补充展示外部编辑刷新及 500 字符下的签名降级。
 
 可以先试一句：**“用 code_context 定位一个配置加载 Bug，给出相关源码、调用者和可能受影响的测试。”** 欢迎在 [DSH Discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/5623) 分享哪些上下文有帮助、哪些被漏掉。
 
