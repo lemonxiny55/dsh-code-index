@@ -81,7 +81,7 @@ for i in range(7):
 cast_frames = [[i*6, 'o', '\x1b[2J\x1b[H' + title + '\r\n' + subtitle + '\r\n\r\n' + body.replace('\n', '\r\n')] for i, (title, subtitle, body) in enumerate(scenes)]
 cast_frames.append([42, 'o', '\r\nReplay complete / 回放结束\r\n'])
 header = {'version': 2, 'width': 110, 'height': 30, 'title': 'Real Desktop Agent log replay (not screen capture)', 'duration': 42}
-(assets / 'agent-context-demo.cast').write_text('\n'.join(json.dumps(x, ensure_ascii=False) for x in [header, *cast_frames]) + '\n', encoding='utf-8')
+(assets / 'agent-context-demo.cast').write_bytes(('\n'.join(json.dumps(x, ensure_ascii=False) for x in [header, *cast_frames]) + '\n').encode('utf-8'))
 manifest = {'format': 'Terminal-style replay of actual persisted Agent records; not a screen capture', 'durationSeconds': 42, 'source': source.name, 'sourceSha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'callSeqs': [47, 60, 73], 'edits': ['7 panels with 6-second holds; timing is editorial, not measured latency', 'repoRoot omitted from displayed arguments', 'Verbatim source/reason/provenance excerpts; not all returned items shown', 'First/last panel commentary is authored narration, not Agent response'], 'sceneTitles': [s[0] for s in scenes]}
-(assets / 'agent-context-demo.provenance.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+(assets / 'agent-context-demo.provenance.json').write_bytes((json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
 print('Rendered 42-second bilingual replay from real Desktop callSeqs 47, 60, 73.')
