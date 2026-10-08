@@ -10,6 +10,10 @@ Published one EN/中文 update in the existing [Discussion #5623](https://github
 
 已在原帖发布一条中英文更新，附安装命令、Release、验证记录和演示，并邀请真实使用反馈。未创建重复帖子；使用浏览器和 GitHub GraphQL API 回读公开回复。
 
+After recording the real desktop interaction, updated this same comment (`DC_kwDOT3T1g84BHwBi`) in place. API readback matched the bilingual replacement exactly; the GIF's published Git blob SHA matched the local asset. The new footage/notes are pinned to commit `f1ea40ce2dcafeb2c320455ec010ec8532bad0cc`. No additional reply was posted; inline browser rendering was not rechecked.
+
+新桌面录屏完成后，就地更新同一条回复。API 回读与双语替换文案完全一致，公开 GIF 的 Git blob SHA 与本地一致；素材和说明固定引用 `f1ea40c`。没有再发回复，未重复检查浏览器内嵌渲染。
+
 ## Catalog audit / 插件目录检查
 
 | Directory / 目录 | Observed / 观察结果 | Action / 处理 |
@@ -36,16 +40,22 @@ npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 
-[Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.9.0) · [Demo / 演示](assets/agent-context-demo.gif) · [Evidence / 验证](RELEASE_EVIDENCE_v0.9.0.md)
+[Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.9.0) · [Demo / 演示](assets/desktop-agent-v090.gif) · [Evidence / 验证](RELEASE_EVIDENCE_v0.9.0.md)
 
 ## Demo and README / 演示与文档
 
-Delivered a 42-second 1280×900 GIF (373699 bytes), PNG preview, asciinema-compatible cast and provenance manifest. [Demo notes](assets/agent-context-demo.md) explain the source records and editorial pacing in both languages. It is a replay of actual Desktop Agent records from 2026-10-05, **not a newly recorded desktop interaction**. No native desktop capture API is exposed in this session. No fix/test success or speedup is claimed.
+Initially delivered the [42-second bilingual terminal replay](assets/agent-context-demo.md) of audited 2026-10-05 Agent records. After the user offered desktop access, the native control entry point became available. Recorded a new real DSH Desktop task on 2026-10-08 with the installed/running **v0.9.0** plugin. The user started/stopped Windows Snipping Tool in single-window mode; the assistant submitted the task and inspected the actual tool card. No reinstall or runtime changes were needed. The Agent made one `code_context` call returning **2347/5000 characters**, then explained the case conversion in Chinese and English.
 
-交付 42 秒 GIF、PNG、cast 和来源清单，使用 10 月 5 日真实 Desktop Agent 记录，**不是本轮新录制的桌面交互**。中英字幕及说明明确标注来源、剪辑节奏和验证边界。README 两种语言嵌入同一 GIF，增加可试用的任务与反馈入口，并把安装章节的宿主及插件版本固定到已验证组合。
+起初交付 10 月 5 日记录的中英终端回放；用户提供桌面操作时间后，原生控制入口已可用。本轮于 10 月 8 日新录制真实 DSH Desktop 交互，详情界面确认 **v0.9.0** 已安装、启用、运行。用户协助截图工具启动/停止单窗口录屏，助手提交任务并查看实际工具卡片。未重装或改变运行环境。Agent 一次 `code_context` 返回 **2347/5000 字符**，随后给出中英文大小写定位解释。
 
-Verification / 本轮检查: all seven panels visually inspected; GIF decoded to verify 42-second duration; source evidence SHA256 matched; selected recorded character counts checked; local README asset links checked; final whitespace checks run. These are artifact/document checks, not a rerun of the release gate. `HANDOFF_PROMPT.md` remains untracked and untouched.
+The new [desktop footage](assets/desktop-agent-v090.md) is a 42-second silent MP4 (711404 bytes) and GIF (1390225 bytes), both 1280×818, plus a poster, UI evidence and SHA256/edit manifest. Only chronological cuts, resizing, frame sampling and audio removal were applied. The 349.83-second raw recording remains locally preserved outside Git. The bilingual READMEs now show this actual desktop GIF first and retain the earlier terminal replay as supplementary evidence. The existing Discussion reply is updated in place to reference the desktop footage, with no duplicate reply. No fix/test pass, performance gain, or new release gate is claimed.
 
-Outstanding / 剩余: upstream catalog PR review and site-owner catalog edits; optional new desktop screen capture unavailable. This round does not claim new Stars, downloads or user feedback.
+新素材为 42 秒无声 MP4、GIF（均为 1280×818）、预览图、实际 UI 证据及哈希/选段清单。只做顺序剪切、缩放、帧采样和去音轨；349.83 秒原片在 Git 之外本地保留。两种 README 优先展示真实桌面 GIF，原终端回放作为补充。原 Discussion 回复就地更新引用，无重复回复。不宣称修复、测试通过、性能提升或重新完成发布门禁。
 
-待办仅为目录 PR 的外部审核、站点维护者的信息修正，以及环境未支持的新桌面录屏。本轮不宣称获得了新增 Stars、下载量或用户反馈。
+Verification / 检查: decoded MP4/GIF duration and dimensions; visually inspected all selected scenes; output SHA256 matched the manifest; actual UI text includes the tool, source ranges, provenance and budget; local README asset links and final whitespace checked. These are artifact/document checks. `HANDOFF_PROMPT.md` remains untracked and untouched.
+
+已检查视频/GIF 时长、尺寸、所有选段画面、输出哈希、实际工具卡片中的行号/来源/预算、README 素材链接及 whitespace。这些是展示素材和文档检查；`HANDOFF_PROMPT.md` 保持未跟踪且未改动。
+
+Outstanding / 剩余: upstream catalog PR review and site-owner catalog edits. New desktop screen capture is complete. This round does not claim new Stars, downloads or user feedback.
+
+待办仅为目录 PR 的外部审核和站点维护者的信息修正，真实桌面录屏已完成。本轮不宣称获得了新增 Stars、下载量或用户反馈。
