@@ -19,6 +19,7 @@ After recording the real desktop interaction, updated this same comment (`DC_kwD
 | Directory / 目录 | Observed / 观察结果 | Action / 处理 |
 | --- | --- | --- |
 | [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) | Existing YAML entry still emphasizes the older symbol/map/tool surface. / 已收录，双语介绍仍以旧工具表面为主。 | [PR #6860](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/6860) updates only the existing EN/zh description for v0.9.0. / 仅更新已有条目中英描述，等待维护者审核。 |
+| [dsh-market](https://github.com/dsh-market/dsh-market#submit-your-plugin) / [dshmarket.com](https://dshmarket.com/browse/) | Its documented catalog source is awesome-dsh-plugin.com/plugins.json. Live JSON contains the existing lemonxiny55/dsh-code-index entry, npm package and version 0.9.0, with the old EN/zh summary. / 市场共用 awesome 目录，实时 JSON 已收录本项目、npm 包及 0.9.0，双语摘要仍旧。 | The same PR #6860 updates this upstream source; it remains open/unmerged on this follow-up check. The market explicitly asks authors not to PR plugin entries into its app repository. No duplicate PR or separate promotional post. / 本轮上游简介 PR 同时覆盖该市场，仍待合并；遵守市场仓库规范，不重复提交条目或另发推广帖。 |
 | [bruc3van/awesome-dsh-plugin](https://github.com/bruc3van/awesome-dsh-plugin/blob/main/catalog/agents-workflows.md) | Already listed with task-aware source packs, relations, changes, tests and hard budgets. / 已收录，简介已涵盖核心能力。 | No redundant PR. Its CONTRIBUTING.md forbids hand edits to generated catalog/snapshot files. Automatic upstream refresh is the update path. Self-showcase requires more than 10 stars; no attempt to bypass it. / 不提交重复 PR，不修改自动生成文件，不绕过自荐门槛。 |
 | [DSH Plugin Hub](https://dshpluginhub.ai/plugins/dsh-code-index) | Search cache showed 0.8.0; **live browser page already shows 0.9.0**, updated 2026-10-08, and current README. Top EN/中文 summary is still old; DSH compatibility displays `*`; install currently selects a pinned GitHub source. / 实时页面已同步 0.9.0 与新版 README，但顶部摘要旧、兼容栏宽泛，默认安装为固定 GitHub 提交。 | No public catalog-data PR interface found. Use [owner claim/manage](https://dshpluginhub.ai/dashboard/publish/github?repository=lemonxiny55%2Fdsh-code-index&slug=dsh-code-index) after sign-in, or its [report form](https://dshpluginhub.ai/report?package=dsh-code-index). Record the matching 0.2.0-rc.2 runtime and npm command below; no account claim or profile publication performed. / 记录登录认领管理及报告入口，未认领账号或发布 Profile。 |
 | [dshbase](https://dshbase.com/plugins/dsh-code-index/) | Public page has stale early README and says not published on npm, with old 0.1.0-rc.6 test information. / 公开页面仍是早期内容，错误标注未发布 npm，验证记录属于旧宿主。 | [Contact page](https://dshbase.com/contact/) directs factual corrections to email with repo URL. No community data PR route found. Ready-to-use correction copy below; no unsolicited email sent. / 仅支持联系维护者纠正，交付可直接发送的双语文案，未发送邮件。 |
@@ -30,6 +31,20 @@ Catalog PR validation / 目录 PR 检查: followed `CONTRIBUTING.md`; `validateE
 遵守贡献规范，仅修改自身 YAML 条目；已通过条目校验和生成检查，不提交生成文件、不改其他插件。连接器创建上游 PR 权限不足，已通过登录浏览器完成提交。沙箱账号的认证问题未作为插件缺陷排查。
 
 ## Ready-to-use catalog correction / 可直接使用的目录修正文案
+
+### Plugin Hub signed-in follow-up / 登录后的处理
+
+The user signed in. The dashboard still lists zero claimed plugins and zero authorized repositories. Its GitHub connection link reaches `https://github.com/apps/pax-dsh-hub`, which visibly says the App is private and offers no install button. This blocks the normal owner-edit path; no permissions or credentials were created.
+
+用户已登录，但工作台仍显示认领 0 个插件、授权 0 个仓库。GitHub 连接入口实际跳到私有 App 页面，没有安装按钮，常规作者编辑路径受阻；未新建权限或凭证。
+
+Used the dashboard's independent **Sync npm Plugin** form, which explicitly requires no GitHub permission. Submitted only the existing public package name `dsh-code-index`; the UI confirmed **Plugin synced to 0.9.0**. The public detail page still prioritizes the existing GitHub-pinned installation, the earlier summary/README snapshot and compatibility `*`. A successful npm sync therefore does not prove that these presentation fields were corrected. Immutable release/source records were not edited.
+
+已通过不需要 GitHub 授权的 npm 同步入口提交公开包名，页面确认同步到 0.9.0。公开详情仍优先展示 GitHub 固定来源、旧摘要/README 快照及兼容栏 `*`，不能将同步成功说成展示字段已修正；未修改不可变版本/来源记录。
+
+Prepared a bilingual **Other** catalog metadata correction in the site's report form, with the published install command, Release, actual Desktop demo and evidence links; it explicitly states that this is not a security/copyright complaint. The optional email is blank. **Not submitted yet:** Cloudflare human verification keeps the submit button disabled. The filled browser tab is preserved for the user to complete verification. No CAPTCHA was solved or bypassed.
+
+已在网站报告表单选择“其他”，填写双语资料修正、安装命令、Release、真实桌面演示和验证链接，明确不是安全/版权投诉；可选邮箱留空。**尚未提交**：Cloudflare 人机验证使提交按钮禁用。已保留填好的页面等待用户验证，未代做或绕过 CAPTCHA。
 
 **EN:** dsh-code-index v0.9.0 is published on npm. One `code_context` call returns key source excerpts with accurate line ranges, inclusion reasons, relationship provenance, Git changes and likely tests within a hard character budget. Local repo/worktree indexes remain isolated and refresh after external edits. The text/pack workflow was verified with a real DSH Desktop 0.2.0-rc.2 Agent. Likely tests are leads, not coverage proof. Please refresh the description/version and show the matching host requirement; old-host checks do not prove v0.9 compatibility.
 
