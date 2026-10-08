@@ -1,0 +1,26 @@
+{
+  "format": "Terminal-style replay of actual persisted Agent records; not a screen capture",
+  "durationSeconds": 42,
+  "source": "desktop-v0.9-tool-evidence.json",
+  "sourceSha256": "7b8b50f15563edb28c73a7a5de841abf7df38d4bd989fa6d2d71926dcdf2d3be",
+  "callSeqs": [
+    47,
+    60,
+    73
+  ],
+  "edits": [
+    "7 panels with 6-second holds; timing is editorial, not measured latency",
+    "repoRoot omitted from displayed arguments",
+    "Verbatim source/reason/provenance excerpts; not all returned items shown",
+    "First/last panel commentary is authored narration, not Agent response"
+  ],
+  "sceneTitles": [
+    "01  Task -> actual Agent tool call",
+    "02  Primary source + inclusion reason",
+    "03  Caller + relationship provenance",
+    "04  Likely test + actual test source",
+    "05  External edit -> Git change context",
+    "06  Deleted source + honest budget fallback",
+    "07  Context ready for the next code step"
+  ]
+}

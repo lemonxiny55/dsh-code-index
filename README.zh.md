@@ -49,22 +49,17 @@ npx @deepseek-ai/dsh@0.2.0-rc.2 web
 
 ## 实际效果
 
-[30 秒真实调用回放](assets/context-pack-demo.html) · [终端录制](assets/context-pack-demo.cast)
+**42 秒：从配置加载任务，到 Agent 可以使用的源码上下文。**
 
-下载 HTML 后本地打开，或使用兼容 asciinema 的播放器。复现方式：`pnpm build`，再运行 `node scripts/context-pack-demo.mjs`。录制内容是在小型 Git 仓库中的实际本地工具调用，不代表 Agent 任务成功率或性能 benchmark。
+![中英字幕的真实 Desktop Agent 记录终端回放，非桌面录屏](assets/agent-context-demo.gif)
 
-`code_context({ task: "Explain loadConfig", budgetChars: 5000 })` 直接返回源码。以下摘自实际录制输出：
+真实 Agent 针对“Fix whitespace config loading bug”调用 `code_context`，任务没有指定函数名。返回结果包含 `loadConfig`、其调用者 `startup` 和相关测试，带准确源码范围、入选理由和关系来源。外部编辑后的后续查询展示 Git 增改删；500 字符请求展示明确的 signature-only 降级。
 
-```text
-primary: loadConfig src/config.ts:1-3 [current]
-Reason: task names this symbol
-Source (complete):
-export function loadConfig(input: string) {
-  return input.trim()
-}
-```
+这是 2026-10-05 在 DSH Desktop `0.2.0-rc.2` 中取得并审计的真实记录，以中英字幕和剪辑节奏做成终端式回放。它**不是桌面录屏**，不代表运行耗时，也不宣称 Bug 已修复或测试已通过。[来源与复现说明](assets/agent-context-demo.md) · [Agent 原始证据](assets/desktop-v0.9-tool-evidence.json) · [终端回放（.cast）](assets/agent-context-demo.cast)。
 
-随后 demo 从外部修改文件，展示 added/modified/deleted 及独立的 current/base 源码，再请求 500 字符预算。文本/pack 工作流已通过真实 Desktop Agent 验证。Web Context Card 继续延期，Card replay 和文件跳转尚未验证；既有文本展示继续可用。
+可以先试一句：**“用 code_context 定位一个配置加载 Bug，给出相关源码、调用者和可能受影响的测试。”** 欢迎在 [DSH Discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/5623) 分享哪些上下文有帮助、哪些被漏掉。
+
+早期的 [30 秒本地工具演示](assets/context-pack-demo.html) 仍然保留，可用 `pnpm build` 后运行 `node scripts/context-pack-demo.mjs` 复现。Web Context Card 继续延期，Card replay 和文件跳转尚未验证。
 
 ## 工具一览
 
@@ -91,13 +86,13 @@ v0.9 要求匹配的 `0.2.0-rc.2` tools runtime；精确 peer pin 防止 npm 新
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
 
 # 或从包含本仓库检查副本的目录
-npx @deepseek-ai/dsh plugin --profile web add ./dsh-code-index
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
 ```
 
-重启 Web UI(`npx @deepseek-ai/dsh web`)——启动日志会确认每个工具:
+重启 Web UI(`npx @deepseek-ai/dsh@0.2.0-rc.2 web`)——启动日志会确认每个工具:
 
 ```
 [dsh-code-index] plugin loaded

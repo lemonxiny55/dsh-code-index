@@ -52,22 +52,17 @@ Each Git worktree gets its own index and change state. The plugin watches projec
 
 ## See it in action
 
-[30-second recorded demo](assets/context-pack-demo.html) · [terminal recording](assets/context-pack-demo.cast)
+**42 seconds: from a config-loading task to source the Agent can use.**
 
-Download the HTML replay and open it locally, or play the cast with an asciinema-compatible player. Reproduce with `pnpm build`, then `node scripts/context-pack-demo.mjs`. The recording uses actual local tool calls in a tiny Git repository; it does not claim an Agent task-success or performance benchmark.
+![Bilingual terminal replay of real Desktop Agent records; not a desktop screen recording](assets/agent-context-demo.gif)
 
-`code_context({ task: "Explain loadConfig", budgetChars: 5000 })` returns source immediately. An excerpt from the recorded call:
+The real Agent called `code_context` for “Fix whitespace config loading bug” without naming a function. It received `loadConfig`, its `startup` caller, and a likely test, with exact source ranges, inclusion reasons, and relationship provenance. A follow-up after an external edit shows Git additions/modifications/deletions; a 500-character request shows an explicit signature-only fallback.
 
-```text
-primary: loadConfig src/config.ts:1-3 [current]
-Reason: task names this symbol
-Source (complete):
-export function loadConfig(input: string) {
-  return input.trim()
-}
-```
+This is a terminal-style replay of audited DSH Desktop `0.2.0-rc.2` records from 2026-10-05, with English/Chinese captions and edited pacing. It is **not a desktop screen recording**, a latency measurement, or a claim that a fix/tests succeeded. [Demo provenance and reproduction](assets/agent-context-demo.md) · [raw Agent evidence](assets/desktop-v0.9-tool-evidence.json) · [terminal replay (.cast)](assets/agent-context-demo.cast).
 
-The demo then makes an external edit, shows added/modified/deleted declarations with separate current/base source, and requests a 500-character pack. The text/pack workflow passed real Desktop Agent verification. Web Context Card remains deferred; Card replay and file navigation have not been verified. The existing text presentation remains usable.
+Try asking: **“Use code_context to locate a config-loading bug, show the relevant source and callers, and identify likely tests.”** Tell us what helped or what context was missing in the [DSH discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/5623).
+
+The earlier [30-second local tool demo](assets/context-pack-demo.html) remains available and can be reproduced with `pnpm build`, then `node scripts/context-pack-demo.mjs`. Web Context Card remains deferred; Card replay and file navigation have not been verified.
 
 ## Tools
 
@@ -94,13 +89,13 @@ v0.9 requires the matching `0.2.0-rc.2` tool runtime; the peer pin prevents fres
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh plugin --profile web add dsh-code-index
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
 
 # or from a directory containing this checkout
-npx @deepseek-ai/dsh plugin --profile web add ./dsh-code-index
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
 ```
 
-Restart the Web UI (`npx @deepseek-ai/dsh web`) — startup logs confirm each tool:
+Restart the Web UI (`npx @deepseek-ai/dsh@0.2.0-rc.2 web`) — startup logs confirm each tool:
 
 ```
 [dsh-code-index] plugin loaded
