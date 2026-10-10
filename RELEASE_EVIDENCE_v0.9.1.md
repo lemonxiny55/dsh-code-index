@@ -5,8 +5,9 @@ passed on 2026-10-10. This status authorizes no publication by itself.
 
 This candidate is based on current main `84412472b80c4d9a4edb00243e687df7731219bf`
 on branch `codex/fix-gitignore-v0.9.1`. No main push, npm publication, tag or GitHub
-Release was performed. Package version is `0.9.1`; CHANGELOG explicitly marks it
-as an unreleased candidate. The existing untracked `HANDOFF_PROMPT.md` is preserved.
+Release was performed. Package version is `0.9.1`; CHANGELOG now contains the
+prepared final-release wording. Publication still awaits user confirmation.
+The existing untracked `HANDOFF_PROMPT.md` is preserved.
 
 ## Minimal observable gate
 
@@ -178,6 +179,74 @@ expand the Issue #2 fix into UI changes.
 
 - [Issue #2 acknowledgement](https://github.com/lemonxiny55/dsh-code-index/issues/2#issuecomment-6095107574)
 - [PR #1 reply](https://github.com/lemonxiny55/dsh-code-index/pull/1#issuecomment-6095124815)
+
+## Final publication preflight — 2026-10-10
+
+**Product validation: RELEASE READY. Publication: pending user confirmation,
+remote CI and usable publishing credentials.** This is a preparation record,
+not a publication result. No main merge/push, tag, Release or Issue closure has
+been performed in this preflight.
+
+The scope audit against main found only the Issue #2 scanner/watcher fix,
+its five regressions and installed-package smoke, the 0.9.1 version bump,
+CHANGELOG and verification evidence. The preparation follow-up changes release
+documentation only. Runtime source, tests, scripts, package metadata and lockfile
+remain identical to the verified `c5bb3e6` tree; no ArkTS/v0.10 work was introduced.
+
+Fresh remote checks confirmed main at
+`84412472b80c4d9a4edb00243e687df7731219bf`, also the local branch's base. Main can
+fast-forward without a conflict. Its existing CI passed, but there are **zero
+remote workflow runs for `c5bb3e6`**; the old main result is not a release-commit
+CI result. The existing push-to-main workflow runs frozen install, typecheck,
+tests, both builds and consumer-install smoke on Node 22 and 24.
+
+The registry's `latest` remains 0.9.0; 0.9.1 is absent. The remote `v0.9.1` tag is
+absent. GitHub connector reads and repository admin permission work, but the
+local GitHub CLI API request returned HTTP 403. The npm credential check returned
+HTTP 401 even with a writable workspace cache. Publishing authentication must
+be available before actual publication; no credential changes or secrets were
+requested/read. The unrelated global-cache permission error was avoided by using
+the workspace cache; no wider investigation was performed.
+
+Prepared npm artifact (generated with `npm pack --ignore-scripts`, without
+rebuilding or repeating Desktop verification):
+
+- Path: `.dsh-code-index/maintenance/release-v091/dsh-code-index-0.9.1.tgz`
+- Name/version: `dsh-code-index@0.9.1`; 16 entries, 179445 bytes.
+- SHA256: `1C16B72F7F05A73CB71BC4A1864E16434306031279260A96087C9BF011F8A7AB`
+- SHA1: `c7c4bbd24a04dce54f2e11e4a1877b706db5f6dd`
+- Integrity: `sha512-0NnbKSKbahlJForgklLZDIWiJ2hMtdvVfaUaNlvLvsVid1RETlrsW8ZH/pz1P/O+AcdMr/jcV7iesSBmROXjNQ==`
+
+All 16 archive paths match the retained RC. **15 files are byte-identical; only
+CHANGELOG.md differs**, replacing RC wording with the prepared release entry.
+Compiled runtime, maps, declarations, client, package metadata, README files,
+patch and all scripts match the tested RC. Evidence, release-note drafts,
+`HANDOFF_PROMPT.md` and development dependencies are excluded. Archive contents,
+version, package manifest, SHA1/SHA512 and SHA256 were independently checked;
+the comparison inventory is retained beside the tarball as
+`package-comparison.json`. `npm publish <prepared-tarball> --dry-run
+--ignore-scripts --tag=latest --registry=https://registry.npmjs.org` passed and
+reported the same package/version/integrity. A dry-run does not establish usable
+publishing credentials. The original RC archive and HANDOFF hashes are unchanged.
+
+[RELEASE_NOTES_v0.9.1.md](RELEASE_NOTES_v0.9.1.md) is the prepared English/Chinese
+Release body. It thanks @bbskye5008 and retains @garyschulte's historical credit.
+
+After explicit user confirmation, execute these gates in order:
+
+1. Recheck the remote base and clean tracked tree, safely fast-forward main to
+   the prepared branch and push without force. If remote main moved, reassess
+   the merge before proceeding.
+2. Require successful Node 22/24 CI jobs on that exact main commit. Record the
+   run link in the Release body. Stop publication if CI fails.
+3. Recheck version availability and prepared archive hashes, then publish that
+   exact tarball with tag `latest` and scripts disabled. Read back npm version,
+   tag, SHA1/integrity and download the published artifact to verify its hash.
+4. Create `v0.9.1` on the CI-verified main commit and the GitHub Release using
+   the bilingual body. Verify both public links.
+5. Only after npm and Release verification, post the prepared English thanks
+   and resolution to Issue #2 and close it as completed. Record the reply link
+   and final commit/branch/status. Preserve `HANDOFF_PROMPT.md` throughout.
 
 ## Suggested release note (unpublished)
 

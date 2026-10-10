@@ -2,11 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.9.1 — Release candidate (unreleased)
+## 0.9.1 — Gitignore directory whitelist fix (2026-10-10)
 
 - Fix Gitignore directory whitelist rules (`!dir/`) silently excluding source trees: directory probes now retain their trailing slash in both the scanner and watcher. Thanks to @bbskye5008 for the detailed report and reproduction in [Issue #2](https://github.com/lemonxiny55/dsh-code-index/issues/2).
 - Apply nested `.gitignore` precedence consistently, while preserving Git's rule that files inside an ignored parent directory cannot be re-included. Add regressions for source/context retrieval, affected tests, and external add/change/delete freshness.
-- Release candidate only; not published. See `RELEASE_EVIDENCE_v0.9.1.md` for verification status and remaining gates.
+- Verified on Node 22/24 and with a real DSH Desktop Agent using the packaged candidate. See `RELEASE_EVIDENCE_v0.9.1.md` for methods, results and publication status.
 
 ## 0.9.0 — Edit-ready Context Packs (2026-10-05)
 
