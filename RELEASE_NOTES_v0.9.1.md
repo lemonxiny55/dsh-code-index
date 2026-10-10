@@ -33,3 +33,11 @@ Node 22/24 本地验证已通过：220 项测试、typecheck、服务端与客�
 感谢 @bbskye5008 提供详细报告和复现场景。@garyschulte 对中英文设置卡片的贡献署名继续保留在 v0.8.0 CHANGELOG 历史中。
 
 需要 Node >=22 及匹配的 DSH `0.2.0-rc.2` 宿主版本组。安装命令见上方。
+
+## Publication verification / 发布核验
+
+[GitHub Actions CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38038359520) passed on release commit `580dedcc4ee6d9a13ecf823d5e1ca096d2f202bb` for Node 22 and 24, including frozen install, typecheck, tests, builds and packaged-install smoke.
+
+The maintainer completed npm publication interactively. Registry version/latest, SHA1/SHA512 and the downloaded tarball were verified: the npm archive matches the prepared final package byte-for-byte (SHA256 `1C16B72F7F05A73CB71BC4A1864E16434306031279260A96087C9BF011F8A7AB`). Its runtime, declarations, client and scripts match the Desktop-verified RC; only CHANGELOG release wording changed.
+
+发布提交的 Node 22/24 远程 CI 全部通过。维护者已交互式完成 npm 发布；registry 版本、latest、校验值及下载包均已核验，发布包与准备产物字节一致。运行时代码、声明、客户端及脚本与 Desktop 验证的 RC 相同，仅更新了 CHANGELOG 发布文案。

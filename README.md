@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-**v0.9.0 — Edit-ready Context Packs**
+**v0.9.1 — Edit-ready Context Packs**
 
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
@@ -14,7 +14,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-v0.9.0 is published on npm and passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.0.md).
+v0.9.1 is published on npm and fixes Gitignore directory whitelist rules that silently omitted source trees. The packaged candidate passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.1.md).
 
 ## On this page
 
@@ -33,7 +33,7 @@ v0.9.0 is published on npm and passed real Agent verification in DSH Desktop `0.
 Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. Install the published version into a Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.1
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 

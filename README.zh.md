@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-**v0.9.0 — Edit-ready Context Packs**
+**v0.9.1 — Edit-ready Context Packs**
 
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
@@ -11,7 +11,7 @@
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-v0.9.0 已发布到 npm，并通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.0.md)。
+v0.9.1 已发布到 npm，修复了 Gitignore 目录白名单规则静默遗漏源码的问题。打包候选产物已通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.1.md)。
 
 ## 本页导航
 
@@ -30,7 +30,7 @@ v0.9.0 已发布到 npm，并通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证
 需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。将已发布版本安装到 Web profile：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.1
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 

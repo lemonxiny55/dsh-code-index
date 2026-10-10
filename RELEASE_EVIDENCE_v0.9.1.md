@@ -1,13 +1,47 @@
-# v0.9.1 release candidate evidence — 2026-10-10
+# v0.9.1 release evidence — 2026-10-10
 
-**RELEASE READY. Not published.** The final candidate-specific Desktop Agent gate
-passed on 2026-10-10. This status authorizes no publication by itself.
+**RELEASE READY — npm and GitHub Release published on 2026-10-10.** The final
+candidate-specific Desktop Agent gate passed before publication.
 
-This candidate is based on current main `84412472b80c4d9a4edb00243e687df7731219bf`
-on branch `codex/fix-gitignore-v0.9.1`. No main push, npm publication, tag or GitHub
-Release was performed. Package version is `0.9.1`; CHANGELOG now contains the
-prepared final-release wording. Publication still awaits user confirmation.
+This candidate was based on main `84412472b80c4d9a4edb00243e687df7731219bf`
+on branch `codex/fix-gitignore-v0.9.1`. At validation/preflight closeout, no main
+push, npm publication, tag or GitHub Release had been performed. The user then
+explicitly authorized the publication sequence. Package version is `0.9.1`.
 The existing untracked `HANDOFF_PROMPT.md` is preserved.
+
+## Publication follow-up — complete
+
+- Main was safely fast-forwarded and pushed to release commit
+  [`580dedcc4ee6d9a13ecf823d5e1ca096d2f202bb`](https://github.com/lemonxiny55/dsh-code-index/commit/580dedcc4ee6d9a13ecf823d5e1ca096d2f202bb).
+- [Release CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38038359520)
+  passed on that exact commit. Node 22 and 24 both completed frozen install,
+  typecheck, tests, builds and packaged consumer smoke successfully.
+- The first automated npm publication attempt was rejected with EOTP before
+  publication. The maintainer then completed npm publication interactively;
+  no second automated publish was performed.
+- [dsh-code-index@0.9.1 on npm](https://www.npmjs.com/package/dsh-code-index/v/0.9.1)
+  and registry `latest: 0.9.1` were read back. A first cached read returned 404;
+  one cache-bypassing public registry read confirmed publication. The downloaded
+  archive's SHA256, registry SHA1/SHA512, version and 16-file inventory match the
+  prepared final artifact below exactly.
+- Annotated tag `v0.9.1` points to the CI-verified release commit. The
+  [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.9.1)
+  was published at `2026-10-10T08:42:25Z`, with the prepared English/Chinese
+  release notes and actual CI/npm verification. It is neither a draft nor a
+  prerelease.
+- [Issue #2 resolution reply](https://github.com/lemonxiny55/dsh-code-index/issues/2#issuecomment-6095787661)
+  thanks @bbskye5008 and identifies 0.9.1. The Issue was then closed as
+  `completed`, after both npm and Release verification.
+
+GitHub/npm authentication succeeded with normal user permissions and existing
+secure credentials. The sandbox could not read the GitHub keyring; one normal-user
+check resolved that environment limitation. No token was requested from the user
+or authentication/2FA protection bypassed. The user handled npm's 2FA interaction.
+
+The repository publication follow-up changes documentation only. The immutable
+npm archive retains the README files captured during packaging; the repository
+now points new readers to 0.9.1. The tag and published tarball are unchanged.
+No ArkTS/v0.10 functionality was introduced, and no validation matrix was expanded.
 
 ## Minimal observable gate
 
@@ -154,7 +188,8 @@ checked. The candidate tarball and `HANDOFF_PROMPT.md` remain unchanged.
 The final required Desktop gap is closed. There is no remaining known blocker
 for this bounded v0.9.1 gate. Earlier Node 22/24, typecheck, build and consumer
 installation results above are retained; they were not rerun for this evidence-only
-update. No npm publish, main push, tag or GitHub Release was performed.
+update. At validation closeout, no npm publish, main push, tag or GitHub Release
+had been performed; the later publication results are recorded above.
 
 ## Independent PR #1 review
 
@@ -182,8 +217,8 @@ expand the Issue #2 fix into UI changes.
 
 ## Final publication preflight — 2026-10-10
 
-**Product validation: RELEASE READY. Publication: pending user confirmation,
-remote CI and usable publishing credentials.** This is a preparation record,
+**At preflight closeout: product validation RELEASE READY; publication pending
+user confirmation, remote CI and usable publishing credentials.** This is a preparation record,
 not a publication result. No main merge/push, tag, Release or Issue closure has
 been performed in this preflight.
 
@@ -248,7 +283,7 @@ After explicit user confirmation, execute these gates in order:
    and resolution to Issue #2 and close it as completed. Record the reply link
    and final commit/branch/status. Preserve `HANDOFF_PROMPT.md` throughout.
 
-## Suggested release note (unpublished)
+## Original release-note draft
 
 Fix Gitignore directory whitelist rules that silently omitted source trees and
 their related tests. Directory matching is now consistent across scanning and
