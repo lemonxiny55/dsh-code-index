@@ -1,6 +1,7 @@
 # v0.9.1 release candidate evidence — 2026-10-10
 
-**RC READY. Not published. RELEASE READY is not claimed.**
+**RELEASE READY. Not published.** The final candidate-specific Desktop Agent gate
+passed on 2026-10-10. This status authorizes no publication by itself.
 
 This candidate is based on current main `84412472b80c4d9a4edb00243e687df7731219bf`
 on branch `codex/fix-gitignore-v0.9.1`. No main push, npm publication, tag or GitHub
@@ -77,18 +78,82 @@ rename and `realpath` permissions). The same checks passed with normal filesyste
 access and workspace temporary/cache directories. These were execution-environment
 limitations, not DSH host or third-party extension failures.
 
-## Conditional Desktop gate
+## Real Desktop Agent gate — PASS
 
-**Not performed.** Computer Use app and window inventories returned no targetable
-DSH Desktop window. There were no new Agent requests or `tool/call` events. No host
-error, third-party defect or plugin Desktop success is inferred from that absence.
-No profile, credentials or extension enable states were changed; no ecosystem
-diagnosis was started. Prior v0.9.0 Desktop evidence is not substituted for v0.9.1.
+The initial attempt found no targetable window and left the candidate RC READY.
+The final check used the running **DeepSeek Harness Desktop**, real `desktop`
+profile, bundled CLI 0.2.0-rc.2 / Node 24.18.1, and its existing configured model
+`deepseek-ai/deepseek-v4.1-flash` through the NVIDIA provider. Windows UI automation
+submitted three bounded prompts; this was a model-backed Desktop conversation,
+not a manual human check or a direct invocation of plugin handlers.
 
-Remaining validation gap: run the same tiny whitelist fixture through a real DSH
-Desktop Agent, then add/delete a source externally and repeat search/context without
-manual rebuilding. Until that candidate-specific evidence exists, keep the status
-at RC READY. There is no known code, test, build or packaged-install blocker.
+Session: `session-2ec70e5b-da0c-455c-80eb-c57f79d466bf`. The persisted session
+records show **10 actual tool calls, 10 successful tool results and 3 completed
+turns**. Only `code_index`, `code_search` and `code_context` executed. The filtered,
+audited results are retained in
+[assets/desktop-v0.9.1-tool-evidence.json](assets/desktop-v0.9.1-tool-evidence.json);
+unrelated conversations and system prompts are excluded.
+
+The loaded plugin was a regular directory extracted from the retained candidate
+tarball above, not the workspace junction. Its `dist/index.js` hash matched the
+candidate hash. Only its dependency directory used a junction to the existing
+workspace dependencies. Desktop was quit and restarted before the conversation.
+
+The tiny Git fixture used the original Issue #2 rules:
+
+```gitignore
+/extensions/*
+!/extensions/keep/
+!/extensions/keep/**
+```
+
+It contained `KEPT_MARKER_fn`, its importing test and one control source, plus an
+ignored sibling `SKIPPED_fn` and a nested `*.generated.ts` exclusion containing
+`NESTED_IGNORED_fn`. Git independently confirmed the exclusions. The tracked
+baseline was `6a0f79f741a8253d034b107a207de8268387eb14` in the disposable fixture
+`.dsh-code-index/maintenance/desktop-v091/fixture`.
+
+| Observable result | Actual Desktop tool evidence |
+| --- | --- |
+| Whitelisted source indexed | Initial build: 3 files / 3 symbols; `KEPT_MARKER_fn` search: 1 hit in `extensions/keep/kept.ts:1` |
+| Exclusions honored | `SKIPPED_fn` and `NESTED_IGNORED_fn`: 0 hits each |
+| Original missing source accessible | `code_context` with `outputFormat: pack` returned complete baseline source and its importing test |
+| External add/edit freshness | After external writes, `FRESH_MARKER_fn`: 1 hit without rebuilding; change pack returned complete added/modified sources with `RC091_ADDED` / `RC091_EDIT`, no stale `RC091_BASE` |
+| External delete freshness | After external deletion, `FRESH_MARKER_fn`: 0 hits; status: 3 files / 3 symbols, index up to date |
+| Context Pack continuity | Related test and exact `explicit-import-binding` / import-scoped provenance present; added/modified classification correct; 7 complete source ranges independently matched source snapshots |
+| Rendered budgets/default text | Pack text lengths 1486/5000 and 1626/5000; omitted `outputFormat` returned default text, signature fallback and explicit budget gap at 366/500 |
+
+After the initial build, no rebuild, manual refresh, unrelated read/grep/terminal
+tool, source edit by the Agent or test execution occurred. The external edits were
+made between completed turns. The unchanged test's `=== 1` assertion after changing
+the fixture function to return 91 was deliberate; the gate checks affected-test
+retrieval, not test assertion repair.
+
+Desktop exposes pack results as rendered text. This check establishes source,
+provenance, change classification and rendered-budget behavior, not a canonical
+pack JSON shape or serialized-object cap. Those remain covered by the earlier
+Native ToolRuntime/unit/packaged checks. Budget gaps were explicitly reported;
+no broader Context Pack regression matrix is claimed.
+
+Compatibility observations are separate from plugin results:
+
+- The official CLI tarball installation hit Windows `EPERM` while creating a
+  peer dependency symlink. A single bounded fallback extracted the exact tarball
+  into the profile plugin directory and reused existing dependencies. No host or
+  third-party code, credentials or extension enable states were changed.
+- Two model transport connection errors were automatically retried and recovered.
+  All target tools succeeded and all turns completed; no ecosystem investigation
+  or extension isolation was needed.
+
+The temporary tarball installation was retained as a backup and the original
+workspace junction restored after validation. The CLI's partial lockfile change
+was restored from the pre-install backup; profile package/config hashes were
+checked. The candidate tarball and `HANDOFF_PROMPT.md` remain unchanged.
+
+The final required Desktop gap is closed. There is no remaining known blocker
+for this bounded v0.9.1 gate. Earlier Node 22/24, typecheck, build and consumer
+installation results above are retained; they were not rerun for this evidence-only
+update. No npm publish, main push, tag or GitHub Release was performed.
 
 ## Independent PR #1 review
 

@@ -1,0 +1,198 @@
+{
+  "sessionId": "session-2ec70e5b-da0c-455c-80eb-c57f79d466bf",
+  "method": "model-backed DSH Desktop UI conversation; persisted actual tool events audited",
+  "calls": 10,
+  "successfulResults": 10,
+  "sourceRangesMatched": 7,
+  "completedTurns": 3,
+  "modelTransportRetries": [
+    {
+      "turn": 1,
+      "code": "TRANSPORT",
+      "message": "Connection error."
+    },
+    {
+      "turn": 2,
+      "code": "TRANSPORT",
+      "message": "Connection error."
+    }
+  ],
+  "externalWrites": [
+    {
+      "phase": "external_add_edit",
+      "at": "2026-10-10T07:57:43.3908173Z",
+      "modified": "extensions/keep/kept.ts",
+      "added": "extensions/keep/fresh.ts"
+    },
+    {
+      "phase": "external_delete",
+      "at": "2026-10-10T08:00:42.1968198Z",
+      "deleted": "extensions/keep/fresh.ts"
+    }
+  ],
+  "audit": [
+    {
+      "turn": 1,
+      "name": "code_index",
+      "arguments": {
+        "action": "build",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 18,
+      "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\maintenance\\desktop-v091\\fixture\nfiles indexed: 3\nsymbols: 3\nlanguages: typescript\nindex up to date"
+    },
+    {
+      "turn": 1,
+      "name": "code_search",
+      "arguments": {
+        "query": "KEPT_MARKER_fn",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 23,
+      "text": "export function KEPT_MARKER_fn() — extensions/keep/kept.ts:1",
+      "total": 1
+    },
+    {
+      "turn": 1,
+      "name": "code_search",
+      "arguments": {
+        "query": "SKIPPED_fn",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 31,
+      "text": "",
+      "total": 0
+    },
+    {
+      "turn": 1,
+      "name": "code_search",
+      "arguments": {
+        "query": "NESTED_IGNORED_fn",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 36,
+      "text": "",
+      "total": 0
+    },
+    {
+      "turn": 1,
+      "name": "code_context",
+      "arguments": {
+        "task": "Explain KEPT_MARKER_fn",
+        "outputFormat": "pack",
+        "budgetChars": 5000,
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 41,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\maintenance\\desktop-v091\\fixture\nTask: Explain KEPT_MARKER_fn\n\nprimary: KEPT_MARKER_fn extensions/keep/kept.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function KEPT_MARKER_fn() { return 1 /* RC091_BASE */ }\n\nprimary: CONTROL_MARKER_fn src/control.ts:1-1 [current]\nReason: matches task terms\nSource (complete):\nexport function CONTROL_MARKER_fn() { return 3 }\n\nprimary: keptTest extensions/keep/tests/kept.spec.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function keptTest() { return KEPT_MARKER_fn() === 1 }\n\ntest: keptTest extensions/keep/tests/kept.spec.ts:2-2 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSignature only: keptTest()\n\nimport: ../kept extensions/keep/tests/kept.spec.ts:1-1 [current]\nReason: import binding referenced in primary source extensions/keep/tests/kept.spec.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { KEPT_MARKER_fn } from '../kept'\n\nrelationship: keptTest (extensions/keep/tests/kept.spec.ts:2) → KEPT_MARKER_fn (extensions/keep/kept.ts:1) at extensions/keep/tests/kept.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nGaps: budget omitted some evidence\nBudget: 1486 / 5000 chars (trimmed low-priority context)",
+      "usedChars": 1486,
+      "budgetChars": 5000,
+      "sourceAudit": [
+        {
+          "file": "extensions/keep/kept.ts",
+          "startLine": 1,
+          "endLine": 1,
+          "matches": true
+        },
+        {
+          "file": "src/control.ts",
+          "startLine": 1,
+          "endLine": 1,
+          "matches": true
+        },
+        {
+          "file": "extensions/keep/tests/kept.spec.ts",
+          "startLine": 2,
+          "endLine": 2,
+          "matches": true
+        },
+        {
+          "file": "extensions/keep/tests/kept.spec.ts",
+          "startLine": 1,
+          "endLine": 1,
+          "matches": true
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "name": "code_search",
+      "arguments": {
+        "query": "FRESH_MARKER_fn",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 54,
+      "text": "export function FRESH_MARKER_fn() — extensions/keep/fresh.ts:1",
+      "total": 1
+    },
+    {
+      "turn": 2,
+      "name": "code_context",
+      "arguments": {
+        "task": "Review current changes",
+        "outputFormat": "pack",
+        "budgetChars": 5000,
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 56,
+      "text": "Task context — change\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\maintenance\\desktop-v091\\fixture\nTask: Review current changes\n\nprimary: FRESH_MARKER_fn extensions/keep/fresh.ts:1-1 [current]\nReason: declaration intersects current change\nChange: added\nSource (complete):\nexport function FRESH_MARKER_fn() { return 7 /* RC091_ADDED */ }\n\nprimary: KEPT_MARKER_fn extensions/keep/kept.ts:1-1 [current]\nReason: declaration intersects current change\nChange: modified\nSource (complete):\nexport function KEPT_MARKER_fn() { return 91 /* RC091_EDIT */ }\n\ntest: keptTest extensions/keep/tests/kept.spec.ts:2-2 [current]\nReason: test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSource (complete):\nexport function keptTest() { return KEPT_MARKER_fn() === 1 }\n\ncaller: keptTest extensions/keep/tests/kept.spec.ts:2-2 [current]\nReason: direct caller of KEPT_MARKER_fn\nRelationship provenance: exact; explicit-import-binding\nSignature only: keptTest()\n\nrelationship: keptTest (extensions/keep/tests/kept.spec.ts:2) → changed symbol at extensions/keep/tests/kept.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: keptTest (extensions/keep/tests/kept.spec.ts:2) → KEPT_MARKER_fn (extensions/keep/kept.ts:1) at extensions/keep/tests/kept.spec.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nGaps: budget omitted some evidence\nBudget: 1626 / 5000 chars (trimmed low-priority context)",
+      "usedChars": 1626,
+      "budgetChars": 5000,
+      "sourceAudit": [
+        {
+          "file": "extensions/keep/fresh.ts",
+          "startLine": 1,
+          "endLine": 1,
+          "matches": true
+        },
+        {
+          "file": "extensions/keep/kept.ts",
+          "startLine": 1,
+          "endLine": 1,
+          "matches": true
+        },
+        {
+          "file": "extensions/keep/tests/kept.spec.ts",
+          "startLine": 2,
+          "endLine": 2,
+          "matches": true
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "name": "code_search",
+      "arguments": {
+        "query": "FRESH_MARKER_fn",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 73,
+      "text": "",
+      "total": 0
+    },
+    {
+      "turn": 3,
+      "name": "code_context",
+      "arguments": {
+        "task": "Explain KEPT_MARKER_fn",
+        "budgetChars": 500,
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 75,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\maintenance\\desktop-v091\\fixture\nTask: Explain KEPT_MARKER_fn\n\nprimary: KEPT_MARKER_fn extensions/keep/kept.ts:1-1 [current]\nReason: task names this symbol\nSignature only: KEPT_MARKER_fn()\n\nGaps: budget omitted some evidence\nBudget: 366 / 500 chars (trimmed low-priority context)",
+      "usedChars": 366,
+      "budgetChars": 500,
+      "sourceAudit": []
+    },
+    {
+      "turn": 3,
+      "name": "code_index",
+      "arguments": {
+        "action": "status",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/maintenance/desktop-v091/fixture"
+      },
+      "resultSeq": 77,
+      "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\maintenance\\desktop-v091\\fixture\nfiles indexed: 3\nsymbols: 3\nlanguages: typescript\nindex up to date"
+    }
+  ]
+}
