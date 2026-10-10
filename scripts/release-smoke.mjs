@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -157,6 +157,29 @@ try {
   assert.ok(contextPack.items.some(item => item.code !== undefined))
   assert.ok(JSON.stringify(contextPack).length <= 5000)
   assert.match(await invoke('code_health', { repoRoot: root }), /repo health/)
+
+  // Issue #2 must also be fixed in the installed tarball, not just TS sources.
+  const whitelistRoot = path.join(smokeDir, 'whitelist-repo')
+  for (const dir of ['.git', 'src', 'extensions/keep', 'extensions/other']) {
+    mkdirSync(path.join(whitelistRoot, dir), { recursive: true })
+  }
+  writeFileSync(path.join(whitelistRoot, '.gitignore'), '/extensions/*\n!/extensions/keep/\n!/extensions/keep/**\n')
+  writeFileSync(path.join(whitelistRoot, 'src/control.ts'), 'export function CONTROL_MARKER_fn() { return 3 }\n')
+  writeFileSync(path.join(whitelistRoot, 'extensions/keep/kept.ts'), 'export function KEPT_MARKER_fn() { return 1 }\n')
+  writeFileSync(path.join(whitelistRoot, 'extensions/other/skip.ts'), 'export function SKIPPED_fn() { return 2 }\n')
+  assert.match(await invoke('code_index', { action: 'build', repoRoot: whitelistRoot }), /files indexed: 2/)
+  const keptHits = await invoke('code_search', { query: 'KEPT_MARKER_fn', repoRoot: whitelistRoot })
+  assert.equal(keptHits[0]?.file, 'extensions/keep/kept.ts')
+  assert.deepEqual(await invoke('code_search', { query: 'SKIPPED_fn', repoRoot: whitelistRoot }), [])
+  const keptPack = await invoke('code_context', {
+    task: 'Explain KEPT_MARKER_fn', repoRoot: whitelistRoot, outputFormat: 'pack',
+  })
+  assert.ok(keptPack.items.some(item => item.name === 'KEPT_MARKER_fn' && item.code?.includes('return 1')))
+  const freshSource = path.join(whitelistRoot, 'extensions/keep/fresh.ts')
+  writeFileSync(freshSource, 'export function FRESH_MARKER_fn() { return 91 }\n')
+  assert.equal((await invoke('code_search', { query: 'FRESH_MARKER_fn', repoRoot: whitelistRoot }))[0]?.name, 'FRESH_MARKER_fn')
+  rmSync(freshSource)
+  assert.deepEqual(await invoke('code_search', { query: 'FRESH_MARKER_fn', repoRoot: whitelistRoot }), [])
 
   for (const dispose of disposers.reverse()) dispose()
 

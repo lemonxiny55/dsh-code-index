@@ -38,6 +38,38 @@ function indexedPaths(manager: RepoContextManager, root: string): string[] {
 }
 
 describe('live RepoContext freshness', () => {
+  it('watches whitelisted directories with nested rules and external add/change/delete freshness', async () => {
+    const root = await repo()
+    await mkdir(path.join(root, 'extensions/keep'), { recursive: true })
+    await mkdir(path.join(root, 'extensions/other'), { recursive: true })
+    await writeFile(path.join(root, '.gitignore'), '/extensions/*\n!/extensions/keep/\n!/extensions/keep/**\n*.generated.ts\n')
+    await writeFile(path.join(root, 'extensions/keep/.gitignore'), '!keep.generated.ts\n/local/\n')
+    await mkdir(path.join(root, 'extensions/keep/local'))
+    const manager = new RepoContextManager({ indexOptions: () => ({}), debounceMs: 40 })
+    try {
+      await manager.get(root)
+      await ready(manager, root)
+      const watched = manager.getContext(root)!.watcher!.getWatched()
+      const watchedDirs = Object.keys(watched).map((dir) => path.relative(root, dir).split(path.sep).join('/'))
+      expect(watchedDirs).toContain('extensions/keep')
+      expect(watchedDirs).not.toContain('extensions/other')
+      expect(watchedDirs).not.toContain('extensions/keep/local')
+      const source = path.join(root, 'extensions/keep/keep.generated.ts')
+      await writeFile(source, 'export function whitelistAdded() { return 1 }\n')
+      // Observe background refresh without masking missing watcher events via get().
+      await vi.waitFor(() => expect(names(manager, root)).toContain('whitelistAdded'), { timeout: 5_000 })
+      await writeFile(source, 'export function whitelistChanged() { return 2 }\n')
+      await vi.waitFor(() => {
+        expect(names(manager, root)).toContain('whitelistChanged')
+        expect(names(manager, root)).not.toContain('whitelistAdded')
+      }, { timeout: 5_000 })
+      await rm(source)
+      await vi.waitFor(() => expect(indexedPaths(manager, root)).not.toContain('extensions/keep/keep.generated.ts'), { timeout: 5_000 })
+    } finally {
+      await manager.dispose()
+    }
+  })
+
   it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {
     const root = await repo()
     const refreshed = vi.fn()

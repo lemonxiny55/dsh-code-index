@@ -1,4 +1,5 @@
 import { realpath } from 'node:fs/promises'
+import type { Stats } from 'node:fs'
 import path from 'node:path'
 import chokidar, { type FSWatcher } from 'chokidar'
 import { buildIndexWithCache } from './buildIndex.js'
@@ -153,11 +154,13 @@ export class RepoContextManager {
   private attachWatcher(context: RepoContext): void {
     if (!this.options.watch) return
     const options = this.options.indexOptions()
-    const ignored = (absolute: string): boolean => {
+    const ignored = (absolute: string, stats?: Stats): boolean => {
       const rel = path.relative(context.root, absolute)
       return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)
         || ignoredRelativePath(rel, options)
-        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)
+        // Chokidar probes once before stat and again with the entry type.
+        // Wait for that type so a !dir/ whitelist cannot be pruned as a file.
+        || (stats !== undefined && isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache, stats.isDirectory()))
     }
     const watcher = chokidar.watch(context.root, {
       ignored,

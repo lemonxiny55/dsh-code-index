@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Edit-ready Context Packs for DSH agents: bounded source excerpts, changes, related tests, and inclusion evidence — local-first.",
   "type": "module",
   "main": "./dist/index.js",

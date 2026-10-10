@@ -58,37 +58,50 @@ export type GitIgnoreMatcherCache = Map<string, {
   matcher: ReturnType<typeof ignore>
 }>
 
+type IgnoreLayer = { base: string; matcher: ReturnType<typeof ignore> }
+
+/** Deeper ignore files take precedence; a directory probe must retain its slash. */
+function ignoredByGitLayers(layers: IgnoreLayer[], relativePath: string, isDirectory: boolean): boolean {
+  let ignored = false
+  for (const { base, matcher } of layers) {
+    const scoped = base ? path.posix.relative(base, relativePath) : relativePath
+    if (!scoped || scoped === '..' || scoped.startsWith('../')) continue
+    const result = matcher.test(isDirectory ? `${scoped.replace(/\/$/, '')}/` : scoped)
+    if (result.ignored || result.unignored) ignored = result.ignored
+  }
+  return ignored
+}
+
 /** Check root and nested Git ignore rules for a repo-relative path. */
 export function isGitIgnoredPath(
   root: string,
   relativePath: string,
   cache: GitIgnoreMatcherCache = new Map(),
+  isDirectory = relativePath.endsWith('/'),
 ): boolean {
-  const rel = relativePath.replace(/\\/g, '/').replace(/^\.\//, '')
+  const rel = relativePath.replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/$/, '')
   if (!rel) return false
-  const parentParts = rel.split('/').slice(0, -1)
-  for (let depth = 0; depth <= parentParts.length; depth += 1) {
-    const base = parentParts.slice(0, depth).join('/')
+  const parts = rel.split('/')
+  const layers: IgnoreLayer[] = []
+  for (let depth = 0; depth < parts.length; depth += 1) {
+    const base = parts.slice(0, depth).join('/')
     const ignoreFile = path.join(root, base, '.gitignore')
-    let fileStat
     try {
-      fileStat = statSync(ignoreFile)
-    } catch {
-      continue
-    }
-    const previous = cache.get(ignoreFile)
-    let matcher = previous?.matcher
-    if (!previous || previous.mtimeMs !== fileStat.mtimeMs || previous.size !== fileStat.size) {
-      try {
+      const fileStat = statSync(ignoreFile)
+      const previous = cache.get(ignoreFile)
+      let matcher = previous?.matcher
+      if (!previous || previous.mtimeMs !== fileStat.mtimeMs || previous.size !== fileStat.size) {
         matcher = ignore().add(readFileSync(ignoreFile, 'utf8'))
         cache.set(ignoreFile, { mtimeMs: fileStat.mtimeMs, size: fileStat.size, matcher })
-      } catch {
-        cache.delete(ignoreFile)
-        continue
       }
+      if (matcher) layers.push({ base, matcher })
+    } catch {
+      cache.delete(ignoreFile)
     }
-    const scoped = base ? path.posix.relative(base, rel) : rel
-    if (matcher?.ignores(scoped)) return true
+    // Reject ignored ancestors before reading their nested rules: Git cannot
+    // re-include a child while its parent directory remains excluded.
+    const probe = parts.slice(0, depth + 1).join('/')
+    if (ignoredByGitLayers(layers, probe, depth < parts.length - 1 || isDirectory)) return true
   }
   return false
 }
@@ -112,7 +125,6 @@ export async function scanRepo(
 ): Promise<ScannedFile[]> {
   const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])
   const results: ScannedFile[] = []
-  type IgnoreLayer = { base: string; matcher: ReturnType<typeof ignore> }
   const queue: Array<[string, string, IgnoreLayer[]]> = [[root, '', []]] // [absDir, relDir, inherited ignore files]
 
   while (queue.length) {
@@ -124,10 +136,6 @@ export async function scanRepo(
     } catch {
       // Missing or unreadable ignore file does not prevent indexing.
     }
-    const ignoredByGit = (relativePath: string): boolean => layers.some(({ base, matcher }) => {
-      const scoped = base ? path.posix.relative(base, relativePath) : relativePath
-      return scoped !== '..' && !scoped.startsWith('../') && matcher.ignores(scoped)
-    })
     let entries
     try {
       entries = await readdir(absDir, { withFileTypes: true })
@@ -139,8 +147,8 @@ export async function scanRepo(
       const rel = relDir ? `${relDir}/${entry.name}` : entry.name
       if (entry.isDirectory()) {
         if (excluded.has(entry.name)) continue
-        if (!ignoredByGit(rel)) queue.push([abs, rel, layers])
-      } else if (entry.isFile() && !ignoredByGit(rel) && SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())) {
+        if (!ignoredByGitLayers(layers, rel, true)) queue.push([abs, rel, layers])
+      } else if (entry.isFile() && !ignoredByGitLayers(layers, rel, false) && SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())) {
         try {
           const st = await stat(abs)
           results.push({ abs, rel, mtimeMs: st.mtimeMs })
