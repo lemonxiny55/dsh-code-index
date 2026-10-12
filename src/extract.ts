@@ -4,14 +4,14 @@
  * Parses a source text with a per-language grammar (web-tree-sitter WASM,
  * static grammars from tree-sitter-wasms) and returns flat SymbolInfo rows.
  *
- * NOTE on the dependency pin: web-tree-sitter must stay at ^0.20.x — newer
- * releases expect dylinked grammar wasm, while tree-sitter-wasms ships
- * static builds. Verified working pair: web-tree-sitter@0.20.8 + tree-sitter-wasms@0.1.13.
+ * web-tree-sitter 0.25 loads the existing tree-sitter-wasms grammars and the
+ * pinned ArkTS ABI-14 asset. See grammars/README.md for provenance.
  */
 
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { type Node, Language, Parser, Query } from 'web-tree-sitter'
 import type {
   CallInfo,
@@ -21,6 +21,7 @@ import type {
   SymbolInfo,
   SymbolKind,
   SymbolScopePart,
+  ParseDiagnostic,
 } from './types.js'
 
 const require = createRequire(import.meta.url)
@@ -29,6 +30,7 @@ const require = createRequire(import.meta.url)
 // match the published ESM entry.
 
 export type LanguageId =
+  | 'arkts'
   | 'typescript'
   | 'javascript'
   | 'python'
@@ -41,6 +43,7 @@ export type LanguageId =
 const WASM_DIR = path.dirname(require.resolve('tree-sitter-wasms/out/tree-sitter-typescript.wasm'))
 
 const GRAMMAR_NAMES: Record<LanguageId, string> = {
+  arkts: 'tree-sitter-arkts',
   typescript: 'tree-sitter-typescript',
   javascript: 'tree-sitter-javascript',
   python: 'tree-sitter-python',
@@ -52,6 +55,7 @@ const GRAMMAR_NAMES: Record<LanguageId, string> = {
 }
 
 const EXT_TO_LANG: Record<string, LanguageId> = {
+  '.ets': 'arkts',
   '.ts': 'typescript',
   '.tsx': 'typescript',
   '.mts': 'typescript',
@@ -92,6 +96,19 @@ type CaptureDef = { kind: SymbolKind; exported?: boolean }
 // 0.20 query parser rejects a capture sitting directly after the node type
 // inside the parens). Names/signatures/export come from node fields.
 const QUERIES: Record<LanguageId, string> = {
+  arkts: `
+    (struct_declaration) @class
+    (function_declaration) @function
+    (generator_function_declaration) @function
+    (method_definition) @method
+    (class_declaration) @class
+    (abstract_class_declaration) @class
+    (interface_declaration) @interface
+    (type_alias_declaration) @type
+    (enum_declaration) @enum
+    (variable_declarator) @variable
+    (public_field_definition) @field
+  `,
   typescript: `
     (function_declaration) @function
     (generator_function_declaration) @function
@@ -179,6 +196,7 @@ const CAPTURE_KINDS: Record<string, CaptureDef> = {
 // relative vs URL-style syntax differ per grammar). CommonJS require() is out
 // of scope — the ES import surface covers the modern plugin ecosystem.
 const IMPORT_QUERIES: Record<LanguageId, string> = {
+  arkts: `(import_statement) @import (export_statement) @reexport`,
   typescript: `
     (import_statement) @import
     (export_statement) @reexport
@@ -215,6 +233,12 @@ const IMPORT_QUERIES: Record<LanguageId, string> = {
 // Member/selector calls capture the property/field tail, which is what a
 // definition lookup matches; `new X()` is a construction call.
 const CALL_QUERIES: Record<LanguageId, string> = {
+  arkts: `
+    (call_expression function: (identifier) @call)
+    (call_expression function: (member_expression property: (property_identifier) @call))
+    (arkui_component_expression function: (identifier) @call)
+    (new_expression constructor: (identifier) @call)
+  `,
   typescript: `
     (call_expression function: (identifier) @call)
     (call_expression function: (member_expression property: (property_identifier) @call))
@@ -256,6 +280,7 @@ const CALL_QUERIES: Record<LanguageId, string> = {
 // Ancestor node types that own a call body, per language. Walking up from a
 // call site to the nearest one yields the function whose callees they are.
 const CALLABLE_NODES: Record<LanguageId, Set<string>> = {
+  arkts: new Set(['function_declaration', 'generator_function_declaration', 'method_definition', 'function_expression', 'arrow_function']),
   typescript: new Set([
     'function_declaration',
     'generator_function_declaration',
@@ -298,7 +323,9 @@ function getLanguage(id: LanguageId): Promise<Language> {
   let entry = languageCache.get(id)
   if (!entry) {
     entry = getParser().then(async () => {
-      const grammarPath = path.join(WASM_DIR, `${GRAMMAR_NAMES[id]}.wasm`)
+      const grammarPath = id === 'arkts'
+        ? fileURLToPath(new URL('../grammars/tree-sitter-arkts.wasm', import.meta.url))
+        : path.join(WASM_DIR, `${GRAMMAR_NAMES[id]}.wasm`)
       const bytes = await readFile(grammarPath)
       const lang = await Language.load(bytes)
       // Precompile queries per language to catch authoring errors early.
@@ -334,6 +361,7 @@ export interface SymbolDraft {
 }
 
 export interface ExtractedFile {
+  diagnostic: ParseDiagnostic
   symbols: SymbolInfo[]
   /** Derived compatibility view of {@link importDetails} specifiers. */
   imports: string[]
@@ -354,6 +382,7 @@ export async function extractAll(
   const tree = parser.parse(code)
   if (!tree) throw new Error(`tree-sitter parse returned null for a ${id} source`)
   try {
+    const diagnostic = parseDiagnostic(tree.rootNode)
     const drafts: SymbolDraft[] = []
     const symbolQuery = new Query(lang, QUERIES[id])
     try {
@@ -362,6 +391,9 @@ export async function extractAll(
         const def = CAPTURE_KINDS[cap.name]
         if (!def) continue
         const node = cap.node
+        // Never advertise malformed declarations or give their children
+        // stable-looking ownerless identities. Other declarations can survive.
+        if (id === 'arkts' && !reliableArktsNode(node)) continue
         // tree-sitter queries match at any depth; without this check the
         // variable_declarator pattern would also capture function-body
         // locals — pure index noise.
@@ -372,10 +404,11 @@ export async function extractAll(
           symbol: {
             name,
             kind: kindFor(id, node, def.kind),
-            line: node.startPosition.row + 1,
+            line: id === 'arkts' ? arktsDeclarationStart(node) : node.startPosition.row + 1,
             endLine: node.endPosition.row + 1,
             exported: isExported(id, node),
             signature: signatureFor(id, node),
+            ...(id === 'arkts' ? { decorators: arktsDecorators(node) } : {}),
           },
           node,
         })
@@ -393,6 +426,7 @@ export async function extractAll(
     const importQuery = new Query(lang, IMPORT_QUERIES[id])
     try {
       for (const cap of importQuery.captures(tree.rootNode)) {
+        if (id === 'arkts' && !reliableArktsNode(cap.node)) continue
         for (const info of importInfoFor(id, cap.node)) importDetails.push(info)
       }
     } finally {
@@ -405,6 +439,7 @@ export async function extractAll(
     try {
       const seen = new Set<string>()
       for (const cap of callQuery.captures(tree.rootNode)) {
+        if (id === 'arkts' && (!reliableArktsNode(cap.node) || isArkuiModifier(cap.node) || isArktsMetadataCall(cap.node))) continue
         const name = cap.node.text.trim()
         if (!name) continue
         const line = cap.node.startPosition.row + 1
@@ -414,7 +449,9 @@ export async function extractAll(
         const key = `${from}|${name}|${line}`
         if (seen.has(key)) continue
         seen.add(key)
-        calls.push({ name, line, from, fromId, qualifier: qualifierOf(cap.node) })
+        calls.push({ name, line, from, fromId, qualifier: qualifierOf(cap.node),
+          ...(id === 'arkts' && isArkuiCall(cap.node) ? { context: 'arkui' as const } : {}),
+        })
       }
     } finally {
       callQuery.delete()
@@ -428,10 +465,97 @@ export async function extractAll(
         a.kind.localeCompare(b.kind) ||
         a.name.localeCompare(b.name),
     )
-    return { symbols, imports, importDetails, calls }
+    if (diagnostic.status === 'partial' && !symbols.length && !importDetails.length) diagnostic.status = 'failed'
+    return { symbols, imports, importDetails, calls, diagnostic }
   } finally {
     tree.delete()
   }
+}
+
+function parseDiagnostic(root: Node): ParseDiagnostic {
+  const diagnostic: ParseDiagnostic = { status: root.hasError ? 'partial' : 'parsed', errorCount: 0, missingCount: 0, issues: [] }
+  if (!root.hasError) return diagnostic
+  const stack = [root]
+  while (stack.length) {
+    const node = stack.pop()!
+    if (node.type === 'ERROR' || node.isMissing) {
+      if (node.isMissing) diagnostic.missingCount++
+      else diagnostic.errorCount++
+      if (diagnostic.issues.length < 3) diagnostic.issues.push({ kind: node.isMissing ? 'MISSING' : 'ERROR', line: node.startPosition.row + 1 })
+    }
+    // Reverse push preserves source order without recursively exhausting JS.
+    for (let i = node.childCount - 1; i >= 0; i--) { const child = node.child(i); if (child) stack.push(child) }
+  }
+  return diagnostic
+}
+
+function reliableArktsNode(node: Node): boolean {
+  if (node.hasError) return false
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'ERROR') return false
+    if (['struct_declaration', 'class_declaration', 'function_declaration', 'method_definition'].includes(parent.type) && parent.hasError) return false
+  }
+  return true
+}
+
+/** Method decorators are siblings in this grammar; field/struct decorators
+ * are children. Include both in source ranges without shifting stable IDs. */
+function arktsDecoratorNodes(node: Node): Node[] {
+  const nodes = node.namedChildren.filter((child): child is Node => child?.type === 'decorator')
+  for (let prev = node.previousNamedSibling; prev?.type === 'decorator'; prev = prev.previousNamedSibling) nodes.unshift(prev)
+  if (node.parent?.type === 'export_statement') {
+    nodes.unshift(...node.parent.namedChildren.filter((child): child is Node => child?.type === 'decorator'))
+  }
+  return [...new Map(nodes.map(decorator => [decorator.id, decorator])).values()]
+}
+
+function arktsDecorators(node: Node): string[] {
+  return arktsDecoratorNodes(node).map(decorator => collapseSpace(decorator.text))
+}
+
+function arktsDeclarationStart(node: Node): number {
+  return Math.min(node.startPosition.row, ...arktsDecoratorNodes(node).map(decorator => decorator.startPosition.row)) + 1
+}
+
+/** UI bodies have no repo-wide name fallback. Callback bodies are ordinary
+ * business logic; do not infer state updates or rerender edges. */
+function isArkuiCall(node: Node): boolean {
+  if (node.parent?.type === 'arkui_component_expression') return true
+  if (node.parent?.type !== 'call_expression') return false
+  if (!/^[A-Z]/.test(node.text)) return false
+  for (let parent: Node | null = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'arkui_children') return true
+    if (parent.type === 'arrow_function' || parent.type === 'function_expression') return false
+    if (parent.type === 'method_definition' || parent.type === 'function_declaration') {
+      return (parent.type === 'method_definition' && nameOf('arkts', parent) === 'build' && parent.parent?.type === 'struct_body')
+        || arktsDecorators(parent).some(text => /^@Builder\b/.test(text))
+    }
+  }
+  return false
+}
+
+/** Ignore chained UI attributes, including @Extend's leading-dot form. */
+function isArkuiModifier(node: Node): boolean {
+  if (node.parent?.type !== 'member_expression') return false
+  let receiver = node.parent.childForFieldName('object')
+  while (receiver?.type === 'call_expression') {
+    const callee = receiver.childForFieldName('function')
+    if (callee?.type === 'identifier') return isArkuiCall(callee)
+    if (callee?.type !== 'member_expression') return false
+    receiver = callee.childForFieldName('object')
+  }
+  return receiver?.type === 'arkui_component_expression' || receiver?.type === 'leading_dot_expression'
+}
+
+function isArktsMetadataCall(node: Node): boolean {
+  for (let parent = node.parent; parent; parent = parent.parent) {
+    if (parent.type === 'decorator') return true
+    // Only the leading-dot chain itself; preserve business calls in arguments.
+    if (parent.type === 'arguments') return false
+    if (parent.type === 'leading_dot_expression') return true
+    if (CALLABLE_NODES.arkts.has(parent.type)) return false
+  }
+  return false
 }
 
 /**
@@ -1129,6 +1253,10 @@ function signatureFor(id: LanguageId, node: Node): string {
 
 function rawSignature(id: LanguageId, node: Node): string {
   const name = nameOf(id, node)
+  if (id === 'arkts' && node.type === 'struct_declaration') return `struct ${name}`
+  if (id === 'arkts' && node.type === 'public_field_definition') {
+    return `${name}${collapseSpace(node.childForFieldName('type')?.text ?? '')}`
+  }
   // Field first (go method_declaration has both a receiver and a parameters
   // parameter_list — the field picks the right one), type fallback otherwise.
   const params =
@@ -1228,7 +1356,7 @@ function isExported(id: LanguageId, node: Node): boolean {
   }
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === 'export_statement') return true
-    if (parent.type === 'statement_block' || parent.type === 'class_body') return false
+    if (parent.type === 'statement_block' || parent.type === 'class_body' || parent.type === 'struct_body') return false
     if (parent.type === 'program') return false
   }
   return false

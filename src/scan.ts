@@ -25,6 +25,7 @@ export const DEFAULT_EXCLUDED_DIRS = [
 
 /** Language-agnostic source extensions we index. */
 export const SUPPORTED_EXTS = new Set([
+  '.ets',
   '.ts',
   '.tsx',
   '.mts',

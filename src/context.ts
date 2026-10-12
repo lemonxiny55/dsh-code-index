@@ -17,6 +17,7 @@ import {
 import { searchSymbols, type RankedHit } from './search.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import { selectContextPack, renderContextPack, type ContextPack } from './context-pack.js'
+import { indexIntegrityWarnings } from './integrity.js'
 
 export type ContextTaskKind =
   | 'change'
@@ -90,7 +91,7 @@ export interface TaskContextResult {
 }
 
 const TEST_PATH_RE =
-  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/i
+  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.(?:[cm]?[jt]sx?|ets)$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/i
 const FILE_TOKEN_RE = /[A-Za-z0-9_./\\-]+\.[A-Za-z0-9]+/g
 const CODE_TOKEN_RE = /[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)?/g
 const STOP_WORDS = new Set(
@@ -446,7 +447,7 @@ export async function buildTaskContext(
   const maxSymbols = clamp(options.maxSymbols, 1, 50, 10)
   const route = routeTask(task, index)
   let changeContext: ChangeContextResult | null = null
-  const warnings: string[] = []
+  const warnings: string[] = indexIntegrityWarnings(index)
 
   if (route.includeChangeContext) {
     try {

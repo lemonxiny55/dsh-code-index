@@ -71,14 +71,27 @@ export function symbolRefs(index: RepoIndex, symbol: string, limit = 200): Symbo
 
   const callers: CallerHit[] = []
   const calleeFirstLine = new Map<string, number>()
+  const arktsTargets = new Map<string, SymbolInfo[]>()
+  const graph = index.files.some(file => file.lang === 'arkts') ? buildReferenceGraph(index) : null
+  const arktsEdgesBySite = new Map<string, ReferenceEdge[]>()
+  if (graph) for (const edge of [...graph.outgoing.values()].flat().concat(graph.moduleLevelEdges)) {
+    const key = `${edge.callSite.file}\u0000${edge.callSite.line}\u0000${edge.name}\u0000${edge.sourceId}`
+    const rows = arktsEdgesBySite.get(key) ?? []
+    rows.push(edge); arktsEdgesBySite.set(key, rows)
+  }
   for (const file of index.files) {
     for (const call of file.calls ?? []) {
-      if (call.name === symbol) {
+      const resolved = file.lang === 'arkts' && graph
+        ? (arktsEdgesBySite.get(`${file.path}\u0000${call.line}\u0000${call.name}\u0000${call.fromId}`) ?? [])
+          .map(edge => graph.symbolsById.get(edge.targetId)!)
+        : null
+      if (resolved ? resolved.some(target => target.name === symbol) : call.name === symbol) {
         callers.push({ file: file.path, line: call.line, from: call.from })
       }
       if (call.from === symbol && !calleeFirstLine.has(call.name)) {
         calleeFirstLine.set(call.name, call.line)
       }
+      if (call.from === symbol) arktsTargets.set(call.name, dedupeSymbols([...(arktsTargets.get(call.name) ?? []), ...(resolved ?? table.get(call.name) ?? [])]))
     }
   }
 
@@ -87,7 +100,7 @@ export function symbolRefs(index: RepoIndex, symbol: string, limit = 200): Symbo
   )
 
   const callees: CalleeHit[] = [...calleeFirstLine.entries()]
-    .map(([name, line]) => ({ name, line, targets: table.get(name) ?? [] }))
+    .map(([name, line]) => ({ name, line, targets: arktsTargets.get(name) ?? table.get(name) ?? [] }))
     .sort((a, b) => a.line - b.line || a.name.localeCompare(b.name))
 
   return {
@@ -237,7 +250,8 @@ function resolveCallTargetsFor(
     // Tier 1 — a same-file symbol whose scope encloses this call site. `exact`
     // needs provable ownership: a parameter or local the index cannot see may
     // shadow any other name, including a module-level sibling.
-    const locals = named.filter((s) => s.file === file.path && lexicallyVisible(s, call))
+    const locals = named.filter((s) => s.file === file.path && lexicallyVisible(s, call)
+      && (call.context !== 'arkui' || s.signature.startsWith('struct ') || s.decorators?.some(text => /^@Builder\b/.test(text))))
     if (locals.length > 0) {
       const unique = locals.length === 1
       const owned = unique && isStructuralOwner(call, locals[0]!)
@@ -273,7 +287,7 @@ function resolveCallTargetsFor(
         }
         if (!isExplicitBinding(binding)) continue
         for (const def of symbolsByName.get(binding.imported) ?? []) {
-          if (def.file === target) bound.push(def)
+          if (def.file === target && (file.lang !== 'arkts' && !target.endsWith('.ets') || def.exported && def.scope.length === 0)) bound.push(def)
         }
       }
     }
@@ -282,6 +296,10 @@ function resolveCallTargetsFor(
         bound.length === 1 && directBinding && !defaultBinding ? 'exact' : 'import-scoped'
       return toEdges(bound, call, file.path, 'explicit-import-binding', label, maxCandidates)
     }
+
+    // Built-ins must not acquire same-named definitions through a module
+    // import or a repo-wide lookup when there is no local/explicit binding.
+    if (call.context === 'arkui') return []
 
     // Tier 4 — the name exists in a module this file imports, binding or not.
     const resolvedModules = new Set<string>()

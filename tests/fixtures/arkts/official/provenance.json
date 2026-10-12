@@ -1,0 +1,200 @@
+[
+  {
+    "file": "device/Browser/entry/src/main/ets/Application/AbilityStage.ts",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/Application/AbilityStage.ts",
+    "sha256": "78373b920039c3dab8065f13e33f3e432dc497215eaf38af3a33aff0fde6062d",
+    "lines": 8,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/common/PhoneLayout.ets",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/common/PhoneLayout.ets",
+    "sha256": "e27a69ce1ae38cb60f4859b1a831b213e294255cd09d3f56ce5d428b923f9fbe",
+    "lines": 179,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/common/TitleBar.ets",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/common/TitleBar.ets",
+    "sha256": "09051b660f1f654cb00d128b34f5e18d369a3ff23c22215317504bb304cb6c7a",
+    "lines": 278,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/MainAbility/MainAbility.ts",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/MainAbility/MainAbility.ts",
+    "sha256": "2c6dfe3938a39b497bc1afb675659202471cb6d607b199a4d089a45ab3410f2a",
+    "lines": 38,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/model/Browser.ets",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/model/Browser.ets",
+    "sha256": "bed0a7a252a92a91f16dcc9033fdcfc2fbba92b2de3c4775f6a692787f6fb9bc",
+    "lines": 130,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/model/Logger.ts",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/model/Logger.ts",
+    "sha256": "3e2e4d39be3ae96506c37c2af25e1f97d6e46cb181d314bab0e4d669366e1ae8",
+    "lines": 44,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "device/Browser/entry/src/main/ets/pages/Index.ets",
+    "url": "https://github.com/openharmony/app_samples/blob/508cda899cc6a6df9c0c6fb6aecec3c275337606/device/Browser/entry/src/main/ets/pages/Index.ets",
+    "sha256": "0e742fd1fe0aa2bf03dc812810290eab5b0a4495c66f43d00975aa1cb9a2f117",
+    "lines": 84,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-1.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "95f93a2cc3993111f9160df26cec3b0c670b0916a51ec829bad024a2e2c7485b",
+    "lines": 33,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-2.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "7ad0d34e5ab300296fa6aff41ec2833ae3818bb7e5a29df0cacad4a4c009e4e2",
+    "lines": 24,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-3.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "d5b1049a562954ca387b2d7d30971e0803a18b55b8bb37dc73d2f94cc6750944",
+    "lines": 44,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-4.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "af6d47d4f9a1d877e70d35de733e0cb2c7cc1f3fa52d28b87fe5e7e5af682906",
+    "lines": 29,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-5.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "6e45153b523a1ce0b6646a90cbe9dee4195304085f8e4481d1c58be92b1a0f21",
+    "lines": 61,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-6.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "b94555f8c2b1e723b8d021dc715590b40de68a3dd0b07bb39417075835e3584a",
+    "lines": 13,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-7.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "1e2b3447613750355e601004f2c91a75b0ec7c8f10a16fc1e62206163a057678",
+    "lines": 13,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-8.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "dd13b94ce9211e015e300dbc23f7c2a5c29af0afe7913247aeab495d63e5024c",
+    "lines": 37,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-9.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "79f05b3577c10dbd1d68eada3074958db55344ae30dbd6b9d3d13a94277a5565",
+    "lines": 56,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-10.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "583631cf825beb9318aeeead38cf2a2a648f235f4c422222b9b89ffa6e32b641",
+    "lines": 48,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-11.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "f66068b679ce3409a7c61a2453f8213d4bc20d5304f377955645f72525ac8935",
+    "lines": 55,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-12.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "7aa23de2be4d703f17f561864621175bf573cab0e03fdb6c882aa02556d4acd7",
+    "lines": 48,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-13.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "ba6dc47b0faccbb85bc245326b20d94070985b12b3f466976f607ec6bb9da3c1",
+    "lines": 30,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-14.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "44b3d9f663d80a522d48b64cc18379bd36b5dc72ee43243dd03fe8d4960a9054",
+    "lines": 34,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  },
+  {
+    "file": "local-example-15.ets",
+    "url": "https://raw.githubusercontent.com/openharmony/docs/f41b9345badd47c7ab0c263344cd7f4b5a549afb/en/application-dev/ui/state-management/arkts-new-local.md",
+    "sha256": "20f5e84a3600faf06c337e4d7639307d4fd46c259267a74458edb1c9f43aa836",
+    "lines": 38,
+    "errors": 0,
+    "missing": 0,
+    "issues": []
+  }
+]

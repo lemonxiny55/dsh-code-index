@@ -1,7 +1,7 @@
 /** Shared data model for dsh-code-index. */
 
 /** On-disk cache layout version. Bump when persisted graph/symbol shapes change. */
-export const REPO_INDEX_SCHEMA_VERSION = 2 as const
+export const REPO_INDEX_SCHEMA_VERSION = 3 as const
 
 export type SymbolKind =
   | 'function'
@@ -38,6 +38,8 @@ export interface SymbolScopePart {
 }
 
 export interface SymbolInfo {
+  /** ArkTS decorators as written; their source lines belong to the definition. */
+  decorators?: string[]
   /** Stable qualified id; unique within a RepoIndex. */
   id: SymbolId
   /** Symbol name (identifier / type id / member name). */
@@ -78,6 +80,8 @@ export interface ImportInfo {
 
 /** One call site: callee name, line, and enclosing function ('' = module level). */
 export interface CallInfo {
+  /** ArkUI syntax requires an explicit/local binding; no global name guessing. */
+  context?: 'arkui'
   /** Callee name as written (identifier, member/property, or qualified tail). */
   name: string
   /** 1-based line of the call expression. */
@@ -91,6 +95,8 @@ export interface CallInfo {
 }
 
 export interface IndexedFile {
+  /** Syntax/read completeness, not a typecheck or HarmonyOS runtime verdict. */
+  diagnostic?: ParseDiagnostic
   /** Repo-relative path (forward-slash). */
   path: string
   lang: string
@@ -104,6 +110,14 @@ export interface IndexedFile {
   /** Call sites found in this file (callee + line + enclosing function).
    *  Optional because caches written before call-graph support lack it. */
   calls?: CallInfo[]
+}
+
+export interface ParseDiagnostic {
+  status: 'parsed' | 'partial' | 'failed'
+  errorCount: number
+  missingCount: number
+  issues: Array<{ kind: 'ERROR' | 'MISSING'; line: number }>
+  reason?: 'source-unavailable' | 'parser-failed'
 }
 
 export interface RepoIndex {

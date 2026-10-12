@@ -72,7 +72,7 @@ export function findCycles(index: RepoIndex): string[][] {
 const ENTRY_RE =
   /(^|\/)(index|main|cli|app|server|mod|lib|__init__)\.[A-Za-z0-9]+$|(^|\/)(bin|cmd|scripts)\/|\.config\.[A-Za-z0-9]+$/
 const TEST_RE =
-  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
+  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.(?:[cm]?[jt]sx?|ets)$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
 
 /**
  * Symbol-bearing files that neither import nor are imported by any other file,

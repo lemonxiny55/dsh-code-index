@@ -42,7 +42,7 @@ export interface RepoMapEntry {
  * favours them (many small functions), so they need an explicit damper.
  */
 const TEST_PATH_RE =
-  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
+  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.(?:[cm]?[jt]sx?|ets)$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
 
 /** Density-aware file score: weighted symbols minus bloat; test paths damped. */
 export function scoreFile(file: IndexedFile): number {
@@ -211,6 +211,9 @@ export function resolveImportDetailed(
   fileSet: Set<string>,
 ): ImportResolution {
   if (!spec) return { target: null, suffixSkipped: false }
+  // HarmonyOS SDK namespaces are external; a same-named source file cannot
+  // make @ohos/@kit APIs into local modules.
+  if (/^@(ohos|kit)\./.test(spec)) return { target: null, suffixSkipped: false }
   if (spec.startsWith('./') || spec.startsWith('../')) {
     const base = path.posix.normalize(path.posix.join(path.posix.dirname(fromPath), spec))
     return { target: candidateFor(base, fileSet), suffixSkipped: false }
@@ -233,6 +236,9 @@ function candidateFor(base: string, fileSet: Set<string>): string | null {
   // Bare path first: C/C++ includes already carry their extension
   // ("net/socket.hpp"), and matching the exact file beats guessing.
   if (fileSet.has(base)) return base
+  // ArkTS/TS siblings need a build resolver. An explicit extension is safe;
+  // scan order must not manufacture an exact reference for an ambiguous stem.
+  if (fileSet.has(`${base}.ets`) && [...SUPPORTED_EXTS].some(ext => ext !== '.ets' && fileSet.has(`${base}${ext}`))) return null
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}${ext}`)) return `${base}${ext}`
   }
@@ -241,6 +247,7 @@ function candidateFor(base: string, fileSet: Set<string>): string | null {
   // back to its TypeScript source before falling through to directory indexes.
   const aliased = tsSourceForJsSpecifier(base, fileSet)
   if (aliased) return aliased
+  if (fileSet.has(`${base}/index.ets`) && [...SUPPORTED_EXTS].some(ext => ext !== '.ets' && fileSet.has(`${base}/index${ext}`))) return null
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}/index${ext}`)) return `${base}/index${ext}`
     if (fileSet.has(`${base}/__init__${ext}`)) return `${base}/__init__${ext}`

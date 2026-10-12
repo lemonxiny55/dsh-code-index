@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.9.1",
+  "version": "0.10.0-dev.0",
   "description": "Edit-ready Context Packs for DSH agents: bounded source excerpts, changes, related tests, and inclusion evidence — local-first.",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,6 +16,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "grammars",
     "dist",
     "scripts",
     "cordis.patch.yml",
