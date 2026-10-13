@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-**v0.10.0 stable candidate — ArkTS & Reliable Code Context**
+**v0.10.0 released — ArkTS & Reliable Code Context**
 
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
@@ -14,11 +14,9 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-v0.9.1 is published on npm and fixes Gitignore directory whitelist rules that silently omitted source trees. The packaged candidate passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.1.md).
+[v0.10.0 is released](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and npm `latest` is `0.10.0`. ArkTS `.ets` files use a dedicated, pinned parser: find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed stable package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
 
-This branch prepares the unpublished `0.10.0` stable candidate; npm `latest` remains v0.9.1.
-ArkTS `.ets` files now use a pinned, bundled MIT grammar rather than the TS
-parser. See [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [v0.10 evidence](RELEASE_EVIDENCE_v0.10.0.md).
+This supports syntax and static code context, without full HarmonyOS SDK semantics, HAR/module-alias resolution or state-update/UI rerender graphs. See [release evidence](RELEASE_EVIDENCE_v0.10.0.md), [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [the bilingual announcement](assets/v0.10.0-announcement.md). The v0.9.1 Gitignore directory whitelist fix remains included.
 
 ## On this page
 
@@ -37,7 +35,7 @@ parser. See [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [v0.10 evidence](RELEASE_EVIDE
 Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. Install the published version into a Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 

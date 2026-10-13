@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-**v0.10.0 稳定候选 — ArkTS & Reliable Code Context**
+**v0.10.0 已发布 — ArkTS & Reliable Code Context**
 
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
@@ -11,11 +11,9 @@
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-v0.9.1 已发布到 npm，修复了 Gitignore 目录白名单规则静默遗漏源码的问题。打包候选产物已通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.1.md)。
+[v0.10.0 已正式发布](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0)，npm `latest` 为 `0.10.0`。ArkTS `.ets` 使用独立、版本锁定的 parser：定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。稳定安装包已通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查；部分解析或解析失败会提供有限诊断。
 
-本分支准备尚未发布的 `0.10.0` 稳定候选，npm `latest` 仍是已发布的 v0.9.1。
-`.ets` 现在使用锁定版本、随包附带 MIT 许可证的 ArkTS grammar，独立于 TS parser。
-见 [ArkTS PoC](ARKTS_POC_v0.10.0.md) 和 [v0.10 验证证据](RELEASE_EVIDENCE_v0.10.0.md)。
+支持范围是语法和静态代码上下文，不包含完整 HarmonyOS SDK 语义、HAR/模块别名解析、状态更新或 UI 重渲染调用图。见[发布证据](RELEASE_EVIDENCE_v0.10.0.md)、[ArkTS PoC](ARKTS_POC_v0.10.0.md) 和[双语公告](assets/v0.10.0-announcement.md)。v0.9.1 的 Gitignore 目录白名单修复继续保留。
 
 ## 本页导航
 
@@ -34,7 +32,7 @@ v0.9.1 已发布到 npm，修复了 Gitignore 目录白名单规则静默遗漏�
 需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。将已发布版本安装到 Web profile：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
 npx @deepseek-ai/dsh@0.2.0-rc.2 web
 ```
 

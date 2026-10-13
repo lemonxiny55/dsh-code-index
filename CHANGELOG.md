@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.10.0 — ArkTS & Reliable Code Context (stable candidate, unreleased)
+## 0.10.0 — ArkTS & Reliable Code Context (2026-10-13)
 
 - Add dedicated `.ets` parsing using pinned harmony-contrib/tree-sitter-arkts
   0.3.0 / ABI-14 WASM bundled with MIT notices; no native grammar installation.
@@ -18,8 +18,10 @@ All notable changes to dsh-code-index are documented here.
   all 15 `@Local` documentation snippets). Node 22.23.3 and 24.19.0 each pass
   235 tests, typecheck, server/client builds and real package-consumer smoke.
   See `RELEASE_EVIDENCE_v0.10.0.md` for actual methods and Desktop results.
-- v0.9.1 remains the published stable version. No v0.10 tag, npm publication,
-  GitHub Release or main push has been performed.
+- Published as npm `latest` with tag `v0.10.0` and a bilingual
+  [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0).
+  The registry archive matches the verified stable candidate byte-for-byte;
+  post-merge Node 22/24 CI passed. Publication details are in Release Evidence.
 
 ## 0.9.1 — Gitignore directory whitelist fix (2026-10-10)
 

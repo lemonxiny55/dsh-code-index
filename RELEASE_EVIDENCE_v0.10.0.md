@@ -70,11 +70,28 @@ the runtime, grammar and dependencies remained unchanged.
   SDK/HAR/state-update/rerender limits and invites a real HarmonyOS project trial
   with SDK version and parsing/reference feedback.
 
-Only this evidence document is updated after publication; published files,
-runtime and grammar remain identical. `HANDOFF_PROMPT.md` remains untracked,
+The initial publication follow-up only updated this evidence document; the
+published archive, runtime and grammar remain unchanged. `HANDOFF_PROMPT.md` remains untracked,
 excluded and unchanged (SHA256
 `05D2BE1390A73D588EF6461DF8BA583ABFB86F771581009DA647FCA3244D5034`).
 No DSH Host or third-party extension was modified. No remaining release blocker.
+
+### Post-release announcement and documentation
+
+On 2026-10-13 the maintainer requested release promotion. A separate bilingual
+[v0.10.0 announcement](https://github.com/deepseek-ai/deepseek-harness/discussions/5623#discussioncomment-18897096)
+was posted in the existing DSH Discussion #5623 at **08:43:34 UTC** (16:43:34
+Asia/Shanghai), author `lemonxiny55`, as a top-level comment. It includes verified
+ETS capabilities, installation of `0.10.0`, a sample Agent task, actual verification
+methods, the SDK/HAR/state/rerender limits and a real-project feedback invitation.
+[The submitted bilingual text](assets/v0.10.0-announcement.md) is retained locally
+in the repository. This is additional to the targeted ArkTS-user reply above.
+
+Repository READMEs, CHANGELOG and Release Notes were synchronized from historical
+candidate wording to the released status; both quick-start commands now select
+`dsh-code-index@0.10.0`. These are documentation-only updates after publication.
+The already published npm archive and release tag remain immutable; no new package,
+runtime change, grammar change or repeat Desktop validation is introduced.
 
 ## Historical stable candidate preflight (superseded by publication above)
 

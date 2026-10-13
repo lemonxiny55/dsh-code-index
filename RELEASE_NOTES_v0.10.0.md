@@ -1,6 +1,6 @@
 # v0.10.0 — ArkTS & Reliable Code Context
 
-**Prepared stable candidate for maintainer review. Unreleased; package: `0.10.0`.**
+**Released 2026-10-13 · npm `dsh-code-index@0.10.0` · [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0)**
 
 ## English
 
