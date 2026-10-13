@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-**v0.10.0 开发版 — ArkTS & Reliable Code Context**
+**v0.10.0 稳定候选 — ArkTS & Reliable Code Context**
 
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
@@ -13,7 +13,7 @@
 
 v0.9.1 已发布到 npm，修复了 Gitignore 目录白名单规则静默遗漏源码的问题。打包候选产物已通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.1.md)。
 
-本分支开发版本为 `0.10.0-dev.0`，npm `latest` 仍是已发布的 v0.9.1。
+本分支准备尚未发布的 `0.10.0` 稳定候选，npm `latest` 仍是已发布的 v0.9.1。
 `.ets` 现在使用锁定版本、随包附带 MIT 许可证的 ArkTS grammar，独立于 TS parser。
 见 [ArkTS PoC](ARKTS_POC_v0.10.0.md) 和 [v0.10 验证证据](RELEASE_EVIDENCE_v0.10.0.md)。
 

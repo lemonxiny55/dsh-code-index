@@ -63,10 +63,14 @@ function parseJsonArrayOutput(output, command) {
   throw new Error(`${command} did not return a JSON array`)
 }
 
-const packed = parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
-assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
-const tarball = path.resolve(root, packed[0].filename)
-const listed = new Set(packed[0].files.map((file) => file.path))
+// A release gate can reuse one immutable candidate across Node versions.
+const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
+const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
+if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
+const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
+const listed = suppliedTarball
+  ? new Set(run('tar', ['-tzf', tarball], root).trim().split(/\r?\n/).map(file => file.replace(/^package\//, '')))
+  : new Set(packed[0].files.map((file) => file.path))
 const expectedFiles = [
   'package.json',
   'README.md',
@@ -235,5 +239,5 @@ try {
   console.log(`release smoke passed for ${packageJson.name}@${packageJson.version}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true })
-  rmSync(tarball, { force: true })
+  if (!suppliedTarball) rmSync(tarball, { force: true })
 }

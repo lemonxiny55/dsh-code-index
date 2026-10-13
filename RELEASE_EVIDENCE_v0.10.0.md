@@ -1,4 +1,98 @@
-# v0.10.0 development evidence — 2026-10-13
+# v0.10.0 release evidence — 2026-10-13
+
+## Stable candidate preflight
+
+**RELEASE READY — final local stable-candidate gate passed; remote CI and public
+publication pending separate authorization.** Current package is **0.10.0**.
+There are no runtime/grammar/dependency changes from implementation `1158f54`;
+this follow-up changes release metadata, documentation and the smoke script's
+optional tarball input so both Node versions test the same immutable archive.
+No public or remote write is authorized or performed in this preflight.
+
+- Candidate: `.dsh-code-index/release-v010/dsh-code-index-0.10.0.tgz`.
+- Version **0.10.0**, **19 files**, **413482 bytes** (3140227 unpacked).
+- SHA256: `0EA5E02E577F347CBD4437782BE4CAF160716BB8D77C3B6518E59EBE107C06A2`.
+- SHA1: `6799616b61e8146cd90c2b184dcf16febbade70e`.
+- Integrity: `sha512-xde+T4IFDXx3HbcE0z4VEbqAF47VXgRedpiupVafbfHRzjnK5IEcXh3oHpwlKVzkfOpUv8pbQxMcCedXej6dTA==`.
+- [Full inventory/per-file hashes](assets/package-v0.10.0-preflight.json).
+  All archive paths/sizes/hashes match the retained genuine npm consumer install.
+  Manifest, both READMEs, current CHANGELOG entry and smoke contain no dev-version
+  marker. Historical development versions below are retained as dated evidence.
+
+Node **22.23.3** and **24.19.0** each freshly passed **25 files / 235 tests /
+0 failures**, typecheck, server/declaration build and client build. The installed
+stable archive passed `release-smoke.mjs <same tarball>` on both: `.ets` parsing,
+mixed index, actual decorated component source and imported callee in the pack,
+JSON budget, external add/edit/delete, diagnostics, Issue #2 whitelist and existing
+tool/registration/full/compact/disposal checks. The script did not rebuild or
+delete the supplied candidate. Reports/logs are retained under the candidate
+directory. No old test result is treated as a stable-version run.
+
+`npm publish <same tarball> --dry-run --ignore-scripts --tag latest
+--registry https://registry.npmjs.org` returned exit **0** and identified
+`dsh-code-index@0.10.0`, 19 files and the same SHA1/integrity. This was explicitly
+a **dry-run**, not npm publication or authentication/2FA verification.
+The runtime SHA256 is still `5B7B9225E094929B059AC0B438AAF1D37F898FD0F3E78FCD98105E6BB1D89754`.
+
+Desktop uses a regular target-plugin directory copied from a real npm install of
+this archive, with all 19 files matched. Only its dependency directory points to
+the isolated consumer installation. After validation the original workspace
+junction was restored, and the tested install retained separately. Profile
+`cordis.yml`, `package.json` and `pnpm-lock.yaml` SHA256 values matched the
+pre-install snapshot. No DSH Host/third-party code or enable states were changed.
+
+### Installed stable-package Desktop Agent gate — PASS
+
+Session **`session-2c22a624-2208-4b37-817d-48f3030bfe21`**, 2026-10-13, existing
+Desktop `desktop` profile/model NVIDIA `deepseek-ai/deepseek-v4.1-flash`.
+The app was quit before replacing only the target plugin, then launched after
+the genuine stable npm installation was copied in. This was Windows Computer Use
+submitting a real model-backed turn, not a manual human check or direct handler
+invocation. Persisted events establish **5 calls / 5 successful results / 1
+completed turn**: code_index, code_symbols, code_refs and two code_context calls.
+No read/grep/terminal/edit/other tool executed.
+
+The bounded fixture has two files: V2/Local/Builder component `Counter.ets` and
+business helper `logic.ts`, local Git baseline
+`30a7a9097f77d488919d2238f133bcf4096dafab`. It is a minimal synthetic fixture,
+not presented as an official HarmonyOS project or accuracy benchmark.
+
+| Required result | Actual stable-package Desktop evidence |
+| --- | --- |
+| ETS indexing/location | 2 files / 5 symbols; arkts and typescript; `StableCounter` at `Counter.ets:3` |
+| Accurate component source | Complete `Counter.ets:3–18` includes ComponentV2, Local, Builder and nested UI |
+| Basic mixed references | `stableLabel` definition `logic.ts:1`; callers `Counter.ets:9 in heading`, `Counter.ets:15 in build` |
+| Honest provenance | Two exact `explicit-import-binding` edges; import statement is import-scoped; `this.heading()` stays name-only/global-name |
+| Source evidence | 3 returned ranges independently matched actual fixture lines: full component, full TS helper and import statement |
+| Strict rendered budgets | **2021/5000** and **359/500** characters; small pack explicitly signature-only with budget gap |
+
+[Filtered stable Desktop events and source audit](assets/desktop-v0.10.0-stable-tool-evidence.json)
+retain the exact candidate SHA256, model, calls, results, fixture snapshot and
+per-range checks. Unrelated conversations, system prompts and request schemas
+are excluded. Final model prose is not used as verification evidence.
+Desktop exposes rendered pack text; serialized JSON caps are verified separately
+by actual installed-consumer smoke on both Node versions. No extra Desktop
+freshness matrix or HarmonyOS compiler/device run is claimed.
+
+No target-plugin blocker, host/runtime failure or third-party failure was observed
+in this final gate, so extension isolation/framework investigation was unnecessary.
+The prior dependency-link sandbox restriction was avoided using normal filesystem
+access for Node verification. Dry-run does not verify future publication auth/2FA.
+
+### Release boundary
+
+Local verification **RELEASE READY**. The same stable archive is retained for the
+authorized next phase. It is suitable for remote **development-branch push and
+Node 22/24 CI**. The existing workflow runs on PRs or main pushes, so a development
+branch push alone does not trigger it; opening a PR is a later authorized action.
+The exact release commit must pass remote CI before main/tag/npm/
+GitHub Release actions are authorized and executed. No remote write, main push,
+tag, npm publication, GitHub Release or Discussion promise occurred here.
+No new functionality or refactor was introduced. `HANDOFF_PROMPT.md` remains
+untracked and unchanged. The original target-plugin junction/configuration is
+restored after the gate; the tested installation is retained separately.
+
+## Historical development gate (superseded by the stable preflight above)
 
 **RC READY for maintainer review; publication is pending.** Package version is
 `0.10.0-dev.0`. This is a development candidate, not a published v0.10.0 release.
@@ -164,7 +258,7 @@ Desktop provenance proof is claimed. There was no new Desktop add/edit/delete
 round, HarmonyOS compilation or device execution. No host/third-party runtime
 failure occurred; ecosystem isolation/debugging was unnecessary.
 
-## Release decision and remaining work
+## Historical development decision and remaining work
 
 No known ArkTS implementation blocker was observed in this bounded gate.
 Known language/resolution limits are documented in both READMEs. No performance

@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-**v0.10.0 development — ArkTS & Reliable Code Context**
+**v0.10.0 stable candidate — ArkTS & Reliable Code Context**
 
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
@@ -16,7 +16,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 
 v0.9.1 is published on npm and fixes Gitignore directory whitelist rules that silently omitted source trees. The packaged candidate passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.1.md).
 
-This branch develops `0.10.0-dev.0`; npm `latest` remains the released v0.9.1.
+This branch prepares the unpublished `0.10.0` stable candidate; npm `latest` remains v0.9.1.
 ArkTS `.ets` files now use a pinned, bundled MIT grammar rather than the TS
 parser. See [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [v0.10 evidence](RELEASE_EVIDENCE_v0.10.0.md).
 
@@ -89,7 +89,7 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The development compatibility target is `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2` (Node 22 and 24 CI matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
+The verified compatibility target is `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2` (Node 22 and 24 verification matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
 
 v0.9 requires the matching `0.2.0-rc.2` tool runtime; the peer pin prevents fresh npm installs from selecting the older registry `latest` tag. Upgrade the host group together. The text/config/tool-surface compatibility above does not promise support for older DSH APIs.
 

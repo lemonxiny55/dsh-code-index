@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.10.0-dev.0 — ArkTS & Reliable Code Context (unreleased)
+## 0.10.0 — ArkTS & Reliable Code Context (stable candidate, unreleased)
 
 - Add dedicated `.ets` parsing using pinned harmony-contrib/tree-sitter-arkts
   0.3.0 / ABI-14 WASM bundled with MIT notices; no native grammar installation.

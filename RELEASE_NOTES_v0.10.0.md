@@ -1,6 +1,6 @@
 # v0.10.0 — ArkTS & Reliable Code Context
 
-**Draft for maintainer review. Unreleased; current package: `0.10.0-dev.0`.**
+**Prepared stable candidate for maintainer review. Unreleased; package: `0.10.0`.**
 
 ## English
 
@@ -20,9 +20,11 @@ index gaps. Unreliable ArkTS declarations are omitted. Older caches rebuild;
 source evidence and text/JSON character budgets continue to apply.
 
 Verification: Node 22.23.3/24.19.0 each passed 235 tests, typecheck, builds and
-real package-consumer smoke. A real Desktop Agent retrieved seven independently
-checked source ranges from the official Browser sample using the development
-build. Finite official parser corpus: 22 inputs, zero ERROR/MISSING. No general
+real package-consumer smoke of the same stable tarball. A real Desktop Agent
+loaded the installed stable package and completed five successful tool calls:
+accurate ETS source ranges, mixed references, honest provenance and strict
+5000/500-character budgets. Finite official parser corpus: 22 inputs, zero
+ERROR/MISSING. No general
 accuracy/performance claim or HarmonyOS compiler/device validation is made.
 See [complete evidence and boundaries](RELEASE_EVIDENCE_v0.10.0.md).
 
@@ -39,7 +41,8 @@ UI 重渲染语义。
 轻量 parsed/partial/failed 诊断提供有限位置及索引缺口，不可靠 ArkTS 声明被省略。
 旧缓存自动重建，源码证据和文本/JSON 字符预算继续生效。
 
-Node 22.23.3/24.19.0 各通过 235 个测试、typecheck、构建和真实消费包安装 smoke。
-真实 Desktop Agent 使用开发构建，从官方 Browser 工程获取了 7 段独立核对的源码。
+Node 22.23.3/24.19.0 各通过 235 个测试、typecheck、构建及同一稳定 tarball 的真实安装 smoke。
+真实 Desktop Agent 加载稳定安装包，完成 5 次成功工具调用，验证准确 ETS 源码行号、
+混合引用、诚实的 provenance 和 5000/500 字符预算。
 有限官方解析语料共 22 项，ERROR/MISSING 为零；不宣称整体准确率、性能或鸿蒙编译、
 设备运行已经验证。完整方法与限制见 [Release Evidence](RELEASE_EVIDENCE_v0.10.0.md)。
