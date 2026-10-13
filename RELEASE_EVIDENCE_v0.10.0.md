@@ -1,6 +1,82 @@
 # v0.10.0 release evidence — 2026-10-13
 
-## Stable candidate preflight
+## Actual publication — RELEASED
+
+**v0.10.0 formally released on 2026-10-13.** The maintainer explicitly authorized
+PR merge, main CI, npm publication, tag/Release and the original ArkTS-thread
+follow-up. No functionality or unrelated refactor was added during publication.
+The preflight records below are dated historical evidence, superseded by this
+publication record; their original authorization boundaries apply to those gates.
+
+- [PR #3](https://github.com/lemonxiny55/dsh-code-index/pull/3) merged at
+  **2026-10-13 03:04:03 UTC** using a merge commit and exact-head guard.
+  Verified PR head: `ee98b5b3451fb460ed9ec1fa8cd3c00f19332809`.
+- Main release commit: **`7e6a41bb983d7198c63aa0660636665cb82d16f9`**.
+  Parents are the unchanged main baseline `1fffc47da40e5506f0e96a59e059582f8caeb77c`
+  and the verified PR head. Both release/head trees equal
+  `ff1b1eee4cc8c028c8416421dfe8e9402ff1024c`: zero source/resource differences.
+- [PR CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38339361608)
+  and [post-merge main CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38339921204)
+  succeeded against their exact respective commits.
+
+| Post-merge Ubuntu job | Test results | Other release checks |
+| --- | --- | --- |
+| [Node 22.23.3](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38339921204/job/115108370911) | 25 files, 234 passed, 1 skipped, 0 failed (235 total) | Frozen-lockfile install, typecheck, builds, installed-package smoke passed |
+| [Node 24.21.0](https://github.com/lemonxiny55/dsh-code-index/actions/runs/38339921204/job/115108370824) | 25 files, 234 passed, 1 skipped, 0 failed (235 total) | Frozen-lockfile install, typecheck, builds, installed-package smoke passed |
+
+The skip is the existing Windows-only cache-key casing test. Local Windows
+22.23.3/24.19.0 passed all 235 tests as recorded below. Both main CI jobs reported
+`release smoke passed for dsh-code-index@0.10.0`; Linux CI builds its own archive,
+without a byte-identical archive claim. No large Desktop gate was repeated because
+the runtime, grammar and dependencies remained unchanged.
+
+### npm registry verification
+
+- Immediately before publication, npm `0.10.0` returned E404 and `latest` was
+  `0.9.1`; PR head, main baseline and candidate hash were unchanged.
+- Initial identity check returned E401. The maintainer completed local npm login
+  and the publish browser/2FA authorization manually. No token or OTP was requested
+  or recorded in project evidence.
+- Published once with `npm publish <original stable tarball> --ignore-scripts
+  --tag latest --access public --registry https://registry.npmjs.org` (exit 0).
+  Registry processing briefly returned E404; a subsequent read succeeded without
+  repeating publication.
+- [npm dsh-code-index@0.10.0](https://www.npmjs.com/package/dsh-code-index/v/0.10.0):
+  registry version **0.10.0**, registry **latest = 0.10.0**.
+- [Actual registry archive](https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.10.0.tgz)
+  was downloaded and independently hashed/extracted: SHA256
+  **`0EA5E02E577F347CBD4437782BE4CAF160716BB8D77C3B6518E59EBE107C06A2`**,
+  SHA1 `6799616b61e8146cd90c2b184dcf16febbade70e`, 19 files. Registry integrity equals
+  the candidate integrity below. Every extracted file hash matches
+  [the submitted inventory](assets/package-v0.10.0-preflight.json), including the
+  pinned ArkTS WASM, MIT notices, version manifest and all dist/resources.
+  The npm archive is byte-for-byte the previously validated stable candidate.
+
+### GitHub Release and community follow-up
+
+- Annotated tag **v0.10.0** was created without replacing an existing tag and
+  pushed once. Tag object `4e0577b4b9dfe71bded025f4840bb0269045b384` peels to
+  main release commit `7e6a41bb983d7198c63aa0660636665cb82d16f9`.
+- [GitHub v0.10.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0)
+  published **2026-10-13 03:08:50 UTC**, non-draft, non-prerelease. It uses the
+  prepared English/Chinese notes with the actual released header, main CI and
+  artifact verification. Neither release commit nor tag was rewritten afterward.
+- After npm and GitHub Release were verified, the explicitly authorized reply was
+  posted to `sajjad000`'s original ArkTS comment (database ID 18809236), rather
+  than a new top-level Discussion comment. [Actual follow-up reply](https://github.com/deepseek-ai/deepseek-harness/discussions/5623#discussioncomment-18892793),
+  **2026-10-13 03:09:19 UTC**, author `lemonxiny55`; GraphQL confirmed its parent
+  is [the original thread](https://github.com/deepseek-ai/deepseek-harness/discussions/5623#discussioncomment-18809236).
+  It announces `.ets` indexing/basic navigation, links the Release, states the
+  SDK/HAR/state-update/rerender limits and invites a real HarmonyOS project trial
+  with SDK version and parsing/reference feedback.
+
+Only this evidence document is updated after publication; published files,
+runtime and grammar remain identical. `HANDOFF_PROMPT.md` remains untracked,
+excluded and unchanged (SHA256
+`05D2BE1390A73D588EF6461DF8BA583ABFB86F771581009DA647FCA3244D5034`).
+No DSH Host or third-party extension was modified. No remaining release blocker.
+
+## Historical stable candidate preflight (superseded by publication above)
 
 **RELEASE READY — final local stable-candidate gate passed; remote CI and public
 publication pending separate authorization.** Current package is **0.10.0**.
