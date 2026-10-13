@@ -5,7 +5,7 @@
 
 English | [中文](README.zh.md)
 
-**v0.9.1 — Edit-ready Context Packs**
+**v0.10.0 development — ArkTS & Reliable Code Context**
 
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
@@ -15,6 +15,10 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
 v0.9.1 is published on npm and fixes Gitignore directory whitelist rules that silently omitted source trees. The packaged candidate passed real Agent verification in DSH Desktop `0.2.0-rc.2`. See [release evidence](RELEASE_EVIDENCE_v0.9.1.md).
+
+This branch develops `0.10.0-dev.0`; npm `latest` remains the released v0.9.1.
+ArkTS `.ets` files now use a pinned, bundled MIT grammar rather than the TS
+parser. See [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [v0.10 evidence](RELEASE_EVIDENCE_v0.10.0.md).
 
 ## On this page
 
@@ -173,7 +177,38 @@ Options are passed as the plugin row's `config` in the profile patch (or default
 
 ## Supported languages
 
-TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java .cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later. C/C++ symbol extraction resolves names through the declarator chain (templates, qualified `ns::name` definitions, in-class methods), and `#include "…"` specifiers feed the repo-map reference graph.
+ArkTS, TypeScript, JavaScript, Python, Go, Rust, Java, C++ and C (`.ets .ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java .cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`) via tree-sitter WASM — pure parsing, no native build. The symbol provider seam (`src/extract.ts` + grammars) is where other languages/embeddings plug in later. C/C++ symbol extraction resolves names through the declarator chain (templates, qualified `ns::name` definitions, in-class methods), and `#include "…"` specifiers feed the repo-map reference graph.
+
+### ArkTS scope and limits
+
+- Components declared with `struct` appear as `kind: class`, signature `struct Name`.
+  Methods, fields, global functions, classes/interfaces/types/enums and module
+  variables have stable qualified IDs, owners and source line ranges. Decorators
+  (`@Component`, `@ComponentV2`, `@State`, `@Local`, `@Builder`, etc.) are retained
+  as metadata and included in the definition's source range.
+- `build()` and nested declarative UI blocks parse as ArkTS. Local components and
+  explicit ETS/TS imports feed symbols, search, map, references, change context
+  and Context Packs. `@Extend` metadata and UI attribute chains are excluded from
+  call relationships. Bare capitalized calls in UI bodies have no global-name or
+  imported-module fallback; unbound SDK components cannot acquire unrelated
+  same-named project targets. Ordinary callback/business calls retain existing
+  provenance. `code_refs` uses binding-aware candidates for ArkTS call sites.
+- Relative mixed ETS/TS imports work when the target is statically unique.
+  Extensionless stems with both ETS and another source file stay unresolved.
+  Default imports remain `import-scoped`; no HAR/oh-package/module alias, SDK
+  typing, re-export chain, state-update or UI rerender semantics are inferred.
+  Unbound/global custom UI components may therefore have no relationship edge.
+  Syntax acceptance does not prove valid ArkTS or HarmonyOS runtime behavior.
+- Each indexed file records `parsed`, `partial`, or `failed` syntax/read status,
+  ERROR/MISSING counts and at most three issue locations. Unreliable ArkTS
+  declarations are omitted rather than assigned misleading IDs. `code_index`
+  reports a bounded incomplete-index summary, and Context Packs/change context
+  carry gaps within their existing budgets. `parsed` means syntax extraction
+  completed, not that the index contains every semantic reference. Cache schema
+  3 rebuilds older caches automatically; source bodies remain unpersisted.
+- Grammar: [harmony-contrib 0.3.0](https://github.com/harmony-contrib/tree-sitter-arkts),
+  ABI 14, unchanged npm WASM bundled with its MIT notices. Consumer installation
+  requires no native ArkTS addon. [Asset provenance](grammars/README.md).
 
 ## How it works
 

@@ -2,6 +2,25 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.10.0-dev.0 — ArkTS & Reliable Code Context (unreleased)
+
+- Add dedicated `.ets` parsing using pinned harmony-contrib/tree-sitter-arkts
+  0.3.0 / ABI-14 WASM bundled with MIT notices; no native grammar installation.
+- Extract component structs, methods, fields, decorators and TS-style business
+  declarations with stable qualified IDs and decorator-inclusive source ranges.
+  Integrate mixed ETS/TS imports, tools, Git changes and Context Packs.
+- Avoid UI built-in/attribute false relationships: UI calls need local or explicit
+  bindings; decorators/leading-dot modifiers are metadata. Keep default imports
+  import-scoped and ambiguous ETS/TS stems unresolved. No state/rerender graph.
+- Record lightweight parsed/partial/failed diagnostics and bounded issue locations;
+  omit unreliable ArkTS declarations, report index gaps, and rebuild schema-2 caches.
+- Add 15 ArkTS regression tests and pinned official sources (seven Browser files,
+  all 15 `@Local` documentation snippets). Node 22.23.3 and 24.19.0 each pass
+  235 tests, typecheck, server/client builds and real package-consumer smoke.
+  See `RELEASE_EVIDENCE_v0.10.0.md` for actual methods and Desktop results.
+- v0.9.1 remains the published stable version. No v0.10 tag, npm publication,
+  GitHub Release or main push has been performed.
+
 ## 0.9.1 — Gitignore directory whitelist fix (2026-10-10)
 
 - Fix Gitignore directory whitelist rules (`!dir/`) silently excluding source trees: directory probes now retain their trailing slash in both the scanner and watcher. Thanks to @bbskye5008 for the detailed report and reproduction in [Issue #2](https://github.com/lemonxiny55/dsh-code-index/issues/2).
