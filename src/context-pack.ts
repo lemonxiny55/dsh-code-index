@@ -61,7 +61,7 @@ export async function selectContextPack(
   const graph = buildReferenceGraph(index)
   const candidates: ContextPackItem[][] = []
   const seen = new Set<string>()
-  const gaps: string[] = []
+  const gaps: string[] = [...context.warnings]
   const unavailable = new Set<string>()
   const source = async (symbol: SymbolInfo, kind: ContextPackItem['kind'], reason: string,
     extra: Partial<ContextPackItem> = {}, focus?: number): Promise<void> => {
@@ -138,11 +138,13 @@ export async function selectContextPack(
   gaps.push(...context.warnings)
   const pack: ContextPack = {
     version: 1, root: index.root, task: context.task.slice(0, 120), route: context.route.kind,
-    items: [], gaps: ['budget omitted some evidence'],
+    items: [], gaps: context.warnings.some(warning => warning.startsWith('index incomplete:'))
+      ? ['index incomplete; inspect code_index'] : ['budget omitted some evidence'],
     budget: { budgetChars, usedChars: 0, packChars: 0, truncated: context.task.length > 120 },
   }
   const fits = (): boolean => { account(pack); return Math.max(pack.budget.usedChars, pack.budget.packChars) <= budgetChars }
-  if (!fits()) { pack.task = ''; pack.gaps = []; fits() }
+  if (!fits()) { pack.task = ''; fits() }
+  if (!fits()) { pack.gaps = pack.gaps.filter(gap => gap.startsWith('index incomplete')); fits() }
   if (!fits()) throw new Error('budget too small for repository identity')
   for (const variants of candidates) {
     let added = false
@@ -159,7 +161,7 @@ export async function selectContextPack(
     }
     if (!added) pack.budget.truncated = true
   }
-  if (!pack.budget.truncated) pack.gaps = []
+  if (!pack.budget.truncated) pack.gaps = pack.gaps.filter(gap => gap.startsWith('index incomplete'))
   for (const item of pack.items) if (item.file && unavailable.has(`${item.side}:${item.file}`)) {
     gaps.push(`source unavailable or changed after indexing: ${item.file} (${item.side})`)
   }

@@ -63,10 +63,14 @@ function parseJsonArrayOutput(output, command) {
   throw new Error(`${command} did not return a JSON array`)
 }
 
-const packed = parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
-assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
-const tarball = path.resolve(root, packed[0].filename)
-const listed = new Set(packed[0].files.map((file) => file.path))
+// A release gate can reuse one immutable candidate across Node versions.
+const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
+const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
+if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
+const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
+const listed = suppliedTarball
+  ? new Set(run('tar', ['-tzf', tarball], root).trim().split(/\r?\n/).map(file => file.replace(/^package\//, '')))
+  : new Set(packed[0].files.map((file) => file.path))
 const expectedFiles = [
   'package.json',
   'README.md',
@@ -77,6 +81,9 @@ const expectedFiles = [
   'dist/index.js',
   'dist/index.d.ts',
   'dist/client.js',
+  'grammars/tree-sitter-arkts.wasm',
+  'grammars/ARKTS-LICENSE',
+  'grammars/README.md',
   'scripts/fix-wsl-links.mjs',
   'scripts/release-smoke.mjs',
 ]
@@ -181,6 +188,32 @@ try {
   rmSync(freshSource)
   assert.deepEqual(await invoke('code_search', { query: 'FRESH_MARKER_fn', repoRoot: whitelistRoot }), [])
 
+  // ArkTS must work from the actual installed package, without native grammar
+  // bindings or the source checkout. Keep the fixture tiny and mixed ETS/TS.
+  const arkRoot = path.join(smokeDir, 'arkts-repo')
+  mkdirSync(path.join(arkRoot, '.git'), { recursive: true })
+  writeFileSync(path.join(arkRoot, 'logic.ts'), 'export function label() { return "package ArkTS" }\n')
+  const card = '@ComponentV2\nexport struct PackageCard {\n  @Local count: number = 0;\n  build() { Column() { Text(label()) } }\n}\n'
+  writeFileSync(path.join(arkRoot, 'Card.ets'), "import { label } from './logic'\n" + card)
+  const arkIndex = await plugin.buildIndex(arkRoot)
+  assert.equal(arkIndex.files.length, 2)
+  assert.ok(arkIndex.files.every(file => file.diagnostic.status === 'parsed'))
+  assert.equal(arkIndex.files.find(file => file.path === 'Card.ets').lang, 'arkts')
+  assert.equal((await invoke('code_search', { query: 'PackageCard', repoRoot: arkRoot }))[0]?.file, 'Card.ets')
+  const arkPack = await invoke('code_context', { task: 'Explain PackageCard in Card.ets', repoRoot: arkRoot, outputFormat: 'pack', budgetChars: 5000 })
+  assert.ok(arkPack.items.some(item => item.name === 'PackageCard' && item.code?.includes('@ComponentV2')))
+  assert.ok(JSON.stringify(arkPack).length <= 5000)
+  assert.ok(arkPack.items.some(item => item.name === 'label' && item.provenance === 'explicit-import-binding'))
+  const arkFresh = path.join(arkRoot, 'Fresh.ets')
+  writeFileSync(arkFresh, 'export function ARK_PACKAGE_ADDED() {}\n')
+  assert.equal((await invoke('code_search', { query: 'ARK_PACKAGE_ADDED', repoRoot: arkRoot }))[0]?.name, 'ARK_PACKAGE_ADDED')
+  writeFileSync(arkFresh, 'export function ARK_PACKAGE_EDITED() {}\n')
+  assert.equal((await invoke('code_search', { query: 'ARK_PACKAGE_EDITED', repoRoot: arkRoot }))[0]?.name, 'ARK_PACKAGE_EDITED')
+  rmSync(arkFresh)
+  assert.deepEqual(await invoke('code_search', { query: 'ARK_PACKAGE_EDITED', repoRoot: arkRoot }), [])
+  writeFileSync(path.join(arkRoot, 'Broken.ets'), '@Component\nstruct Broken { build() {')
+  assert.match(await invoke('code_index', { repoRoot: arkRoot }), /index incomplete:/)
+
   for (const dispose of disposers.reverse()) dispose()
 
   const compactRegistered = []
@@ -206,5 +239,5 @@ try {
   console.log(`release smoke passed for ${packageJson.name}@${packageJson.version}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true })
-  rmSync(tarball, { force: true })
+  if (!suppliedTarball) rmSync(tarball, { force: true })
 }

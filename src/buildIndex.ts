@@ -39,7 +39,7 @@ export async function buildIndex(
       batch.map(async (f) => {
         const lang = languageForFile(f.abs)
         if (!lang) return null
-        if (prevMtime.get(f.rel) === f.mtimeMs && !forcePaths.has(f.rel) && !forcePaths.has('*')) {
+        if (prevMtime.get(f.rel) === f.mtimeMs && prevByPath.get(f.rel)?.diagnostic?.status !== 'failed' && !forcePaths.has(f.rel) && !forcePaths.has('*')) {
           const cached = prevByPath.get(f.rel)!
           return {
             ...cached,
@@ -51,9 +51,16 @@ export async function buildIndex(
         try {
           code = await readFile(f.abs, 'utf8')
         } catch {
-          return null
+          return { path: f.rel, lang, mtimeMs: f.mtimeMs, symbols: [], imports: [], importDetails: [], calls: [],
+            diagnostic: { status: 'failed', errorCount: 0, missingCount: 0, issues: [], reason: 'source-unavailable' } } satisfies IndexedFile
         }
-        const { symbols, imports, importDetails, calls } = await extractAll(code, lang, f.rel)
+        let extracted
+        try { extracted = await extractAll(code, lang, f.rel) }
+        catch {
+          return { path: f.rel, lang, mtimeMs: f.mtimeMs, symbols: [], imports: [], importDetails: [], calls: [],
+            diagnostic: { status: 'failed', errorCount: 0, missingCount: 0, issues: [], reason: 'parser-failed' } } satisfies IndexedFile
+        }
+        const { symbols, imports, importDetails, calls, diagnostic } = extracted
         // Backfill the repo-relative path: the extractor is file-agnostic and
         // leaves SymbolInfo.file empty, but search/render depend on it.
         return {
@@ -64,6 +71,7 @@ export async function buildIndex(
           imports,
           importDetails,
           calls,
+          diagnostic,
         } satisfies IndexedFile
       }),
     )
@@ -121,6 +129,7 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
       return false
     }
     if (file.symbols.length !== other.symbols.length) return false
+    if (JSON.stringify(file.diagnostic) !== JSON.stringify(other.diagnostic)) return false
     if (!callsEqual(file.calls, other.calls)) return false
     if (!importsEqual(file.importDetails, other.importDetails)) return false
     return file.symbols.every((symbol, symbolIndex) => {
@@ -135,6 +144,7 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
         && symbol.exported === candidate.exported
         && symbol.signature === candidate.signature
         && symbol.ordinal === candidate.ordinal
+        && JSON.stringify(symbol.decorators) === JSON.stringify(candidate.decorators)
         && scopesEqual(symbol.scope, candidate.scope)
     })
   })
@@ -195,6 +205,7 @@ function callsEqual(left: IndexedFile['calls'], right: IndexedFile['calls']): bo
       && call.from === other.from
       && call.fromId === other.fromId
       && call.qualifier === other.qualifier
+      && call.context === other.context
   })
 }
 

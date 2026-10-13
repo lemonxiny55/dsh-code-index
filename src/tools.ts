@@ -17,6 +17,7 @@ import { renderContextPack, type ContextPack } from './context-pack.js'
 import { getConfig, indexOptions } from './config.js'
 import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
+import { indexIntegrityWarnings } from './integrity.js'
 
 /** Minimal structural types for the harness surfaces we touch. */
 interface ToolCwdContext {
@@ -147,6 +148,7 @@ export const tools = [
           `symbols: ${total}`,
           `languages: ${[...langs].join(', ')}`,
           index.files.length === 0 ? 'no supported files found' : 'index up to date',
+          ...indexIntegrityWarnings(index),
         ].join('\n')
       } catch (error) {
         return `code_index: ${(error as Error).message ?? String(error)}`

@@ -1,0 +1,2 @@
+# Preserve pinned parser fixture bytes/hashes across Windows/Linux checkouts.
+tests/fixtures/arkts/official/** -text -whitespace

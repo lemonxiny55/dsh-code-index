@@ -22,6 +22,7 @@ import {
   type FileChange,
 } from './git-diff.js'
 import type { IndexedFile, RepoIndex, SymbolId, SymbolInfo, SymbolKind } from './types.js'
+import { indexIntegrityWarnings } from './integrity.js'
 
 /* -------------------------------------------------------------------------- */
 /* Types (design §3)                                                          */
@@ -143,7 +144,7 @@ const LABEL_STRENGTH: Record<ResolutionLabel, number> = {
 const ENTRY_KINDS = new Set<SymbolKind>(['function', 'method', 'class'])
 const ENTRY_FILE_RE = /(^|\/)(main|index|cli|server|app)\.[^./]+$/
 const TEST_RE =
-  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
+  /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.(?:[cm]?[jt]sx?|ets)$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/
 
 /** Validate flat tool args and normalize them into one input mode. */
 export function changeContextInputFromArgs(
@@ -216,7 +217,7 @@ export async function buildChangeContext(
   const incomingCount = new Map<SymbolId, number>()
   for (const [id, edges] of graph.incoming) incomingCount.set(id, edges.length)
 
-  const warnings: string[] = []
+  const warnings: string[] = indexIntegrityWarnings(index)
   const changedByKey = new Map<string, ChangedSymbol>()
   const unmapped: UnmappedChange[] = []
   const changedFiles = new Set<string>()
@@ -302,6 +303,7 @@ export async function buildChangeContext(
         const lang = languageForFile(filePath)
         if (!lang) return null
         const extracted = await extractAll(content, lang, filePath)
+        if (extracted.diagnostic.status !== 'parsed') warnings.push(`base ${filePath.slice(0, 100)}: ${extracted.diagnostic.status} parse; change mapping incomplete`)
         return extracted.symbols
       })()
       baseSymbolsCache.set(filePath, pending)

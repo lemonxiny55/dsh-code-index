@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-12",
+  "sessionId": "session-0c6b4ae5-ebb5-4ff0-8085-a31d69ef071a",
+  "verificationMethod": "Windows Computer Use submitted a new, model-backed DSH Desktop conversation; persisted tool events independently audited",
+  "model": {
+    "provider": "nvidia",
+    "model": "deepseek-ai/deepseek-v4.1-flash"
+  },
+  "loadedPlugin": {
+    "version": "0.10.0-dev.0",
+    "installation": "existing desktop profile workspace junction; app quit and relaunched after final runtime build",
+    "runtimeSha256": "5b7b9225e094929b059ac0b438aaf1d37f898fd0f3e78fcd98105e6bb1d89754",
+    "grammarSha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+  },
+  "fixture": {
+    "upstream": "openharmony/app_samples",
+    "upstreamCommit": "508cda899cc6a6df9c0c6fb6aecec3c275337606",
+    "project": "device/Browser",
+    "localBaseline": "15b474900a26b2ec400d518e80acdafb2c5b7fa8"
+  },
+  "calls": [
+    {
+      "seq": 17,
+      "time": 1791813220798,
+      "turn": 1,
+      "step": 1,
+      "callId": "chatcmpl-tool-a6d6a74bb7b3e723",
+      "name": "code_index",
+      "arguments": {
+        "action": "build",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/arkts-poc/desktop-browser"
+      }
+    },
+    {
+      "seq": 22,
+      "time": 1791813234017,
+      "turn": 1,
+      "step": 2,
+      "callId": "chatcmpl-tool-85473db7041d6a92",
+      "name": "code_symbols",
+      "arguments": {
+        "query": "Index",
+        "file": "entry/src/main/ets/pages/Index.ets",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/arkts-poc/desktop-browser"
+      }
+    },
+    {
+      "seq": 27,
+      "time": 1791813287619,
+      "turn": 1,
+      "step": 3,
+      "callId": "chatcmpl-tool-9a6e1be08ed0f86e",
+      "name": "code_context",
+      "arguments": {
+        "task": "Explain Index component and build in entry/src/main/ets/pages/Index.ets, PhoneLayout and Browser dependencies",
+        "outputFormat": "pack",
+        "budgetChars": 5000,
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/arkts-poc/desktop-browser"
+      }
+    }
+  ],
+  "results": [
+    {
+      "seq": 18,
+      "time": 1791813221375,
+      "callId": "chatcmpl-tool-a6d6a74bb7b3e723",
+      "isError": false,
+      "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\arkts-poc\\desktop-browser\nfiles indexed: 9\nsymbols: 101\nlanguages: javascript, typescript, arkts\nindex up to date"
+    },
+    {
+      "seq": 23,
+      "time": 1791813234030,
+      "callId": "chatcmpl-tool-85473db7041d6a92",
+      "isError": false,
+      "text": "class struct Index — entry/src/main/ets/pages/Index.ets:24"
+    },
+    {
+      "seq": 28,
+      "time": 1791813287647,
+      "callId": "chatcmpl-tool-9a6e1be08ed0f86e",
+      "isError": false,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\arkts-poc\\desktop-browser\nTask: Explain Index component and build in entry/src/main/ets/pages/Index.ets, PhoneLayout and Browser dependencies\n\nprimary: Index entry/src/main/ets/pages/Index.ets:24-29 [current]\nReason: task names this symbol\nDeclaration: struct Index\nSource (window):\n@Entry\n@Component\nstruct Index {\n  @State isPhone: boolean= false\n  @State browser: Browser= new Browser()\n  private isInit: Boolean= false\n\nprimary: build entry/src/main/ets/pages/Index.ets:32-46 [current]\nReason: task names this symbol\nSource (complete):\n  build() {\n    Flex({ direction: FlexDirection.Column }) {\n      if (!this.isPhone) {\n        TabletTitle({ browser: $browser })\n        Progress({ value: this.browser.progress, total: 100 })\n          .color('#0000ff')\n          .visibility(this.browser.hideProgress ? Visibility.None : Visibility.Visible)\n        BrowserTabs({ browser: $browser })\n        Divider().color('#c6c6c6').width('100%').flexShrink(0)\n        WebTab({ browser: $browser, isPhone: $isPhone })\n      } else {\n        PhoneLayout({ browser: $browser })\n      }\n    }\n  }\n\nprimary: PhoneLayout entry/src/main/ets/common/PhoneLayout.ets:25-30 [current]\nReason: task names this symbol\nDeclaration: struct PhoneLayout\nSource (window):\n@Component\nexport struct PhoneLayout {\n  @Link browser: Browser;\n  @State isPhone: boolean = true;\n  @State hasDown: boolean = false;\n  @State pageCount: string = '1';\n\nprimary: build entry/src/main/ets/common/PhoneLayout.ets:126-131 [current]\nReason: task names this symbol\nDeclaration: build()\nSource (window):\n  build() {\n    Column() {\n      Navigation() {\n        Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center }) {\n          Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center }) {\n            TextInput({ placeholder: '输入网址...', text: this.browser.inputValue })\n\nprimary: build entry/src/main/ets/common/TitleBar.ets:67-72 [current]\nReason: task names this symbol\nDeclaration: build()\nSource (window):\n  build() {\n    Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center }) {\n      ForEach(this.navigationButton, item => {\n        Button({ type: ButtonType.Normal }) {\n          Image(item.imageSrc)\n        }\n\nprimary: build entry/src/main/ets/common/TitleBar.ets:163-201 [current]\nReason: task names this symbol\nSource (complete):\n  build() {\n    Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Start }) {\n      ForEach(this.browser.webArray, item => {\n        Row() {\n          Row() {\n            Text('主页')\n          }.width('100%').flexShrink(1).justifyContent(FlexAlign.Center).height('100%')\n\n          Button({ type: ButtonType.Normal }) {\n            Image($r('app.media.ic_public_cancel_filled')).width(24).height(24)\n          }\n          .backgroundColor(this.tabButtonIndex == item.key ? DOWN_COLOR : '#00000000')\n          .margin({ right: 2 })\n          .width(33)\n          .height(33)\n          .borderRadius(5)\n          .onTouch((event: TouchEvent) => {\n            if (event.type === TouchType.Down) {\n              this.tabButtonIndex = item.key\n            } else if (event.type == TouchType.Up) {\n              this.tabButtonIndex = -1\n            }\n          })\n          .onClick((event: ClickEvent) => {\n            if (this.browser.webArray.length > 1) {\n              this.browser.deleteTab(this.tabButtonIndex)\n            }\n          })\n        }.width(180).height('100%').backgroundColor(this.browser.tabArrayIndex == item.key ? '#ffffff' : '#ececec')\n        .onClick((event: ClickEvent) => {\n          Logger.info(TAG, `key= ${item.key}`)\n          this.browser.setTabArrayIndex(item.key)\n          this.browser.tabsController.changeIndex(item.key)\n        })\n\n        Divider().vertical(true).color('#c6c6c6')\n      }, item => item.timestamp.toString())\n    }.height(33).flexShrink(0).backgroundColor('#ececec')\n  }\n\nprimary: build entry/src/main/ets/common/TitleBar.ets:223-225 [current]\nReason: task names this symbol\nDeclaration: build()\nSource (window):\n  build() {\n    Tabs({ barPosition: BarPosition.Start, controller: this.browser.tabsController }) {\n      ForEach(this.browser.webArray, item => {\n\nGaps: budget omitted some evidence; no related indexed test found\nBudget: 4365 / 5000 chars (trimmed low-priority context)"
+    }
+  ],
+  "turnEnd": {
+    "seq": 33,
+    "time": 1791813387930,
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "sourceAudit": [
+    {
+      "kind": "primary",
+      "name": "Index",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "startLine": 24,
+      "endLine": 29,
+      "mode": "window",
+      "exactSourceMatch": true,
+      "sourceSha256": "0e742fd1fe0aa2bf03dc812810290eab5b0a4495c66f43d00975aa1cb9a2f117"
+    },
+    {
+      "kind": "primary",
+      "name": "build",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "startLine": 32,
+      "endLine": 46,
+      "mode": "complete",
+      "exactSourceMatch": true,
+      "sourceSha256": "0e742fd1fe0aa2bf03dc812810290eab5b0a4495c66f43d00975aa1cb9a2f117"
+    },
+    {
+      "kind": "primary",
+      "name": "PhoneLayout",
+      "file": "entry/src/main/ets/common/PhoneLayout.ets",
+      "startLine": 25,
+      "endLine": 30,
+      "mode": "window",
+      "exactSourceMatch": true,
+      "sourceSha256": "e27a69ce1ae38cb60f4859b1a831b213e294255cd09d3f56ce5d428b923f9fbe"
+    },
+    {
+      "kind": "primary",
+      "name": "build",
+      "file": "entry/src/main/ets/common/PhoneLayout.ets",
+      "startLine": 126,
+      "endLine": 131,
+      "mode": "window",
+      "exactSourceMatch": true,
+      "sourceSha256": "e27a69ce1ae38cb60f4859b1a831b213e294255cd09d3f56ce5d428b923f9fbe"
+    },
+    {
+      "kind": "primary",
+      "name": "build",
+      "file": "entry/src/main/ets/common/TitleBar.ets",
+      "startLine": 67,
+      "endLine": 72,
+      "mode": "window",
+      "exactSourceMatch": true,
+      "sourceSha256": "09051b660f1f654cb00d128b34f5e18d369a3ff23c22215317504bb304cb6c7a"
+    },
+    {
+      "kind": "primary",
+      "name": "build",
+      "file": "entry/src/main/ets/common/TitleBar.ets",
+      "startLine": 163,
+      "endLine": 201,
+      "mode": "complete",
+      "exactSourceMatch": true,
+      "sourceSha256": "09051b660f1f654cb00d128b34f5e18d369a3ff23c22215317504bb304cb6c7a"
+    },
+    {
+      "kind": "primary",
+      "name": "build",
+      "file": "entry/src/main/ets/common/TitleBar.ets",
+      "startLine": 223,
+      "endLine": 225,
+      "mode": "window",
+      "exactSourceMatch": true,
+      "sourceSha256": "09051b660f1f654cb00d128b34f5e18d369a3ff23c22215317504bb304cb6c7a"
+    }
+  ],
+  "renderedContextChars": 4365,
+  "budgetChars": 5000,
+  "limitations": [
+    "Workspace development build, not a tarball installed in Desktop",
+    "Desktop exposes rendered pack text; serialized pack budgets are separately tested",
+    "No live Desktop freshness/change-context round in this gate; covered by automated unit and installed-consumer checks",
+    "No HarmonyOS compiler/device execution; no relationship-provenance item survived this requested pack budget"
+  ]
+}

@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-**v0.9.1 — Edit-ready Context Packs**
+**v0.10.0 稳定候选 — ArkTS & Reliable Code Context**
 
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
@@ -12,6 +12,10 @@
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
 v0.9.1 已发布到 npm，修复了 Gitignore 目录白名单规则静默遗漏源码的问题。打包候选产物已通过 DSH Desktop `0.2.0-rc.2` 真实 Agent 验证。验证边界见[release evidence](RELEASE_EVIDENCE_v0.9.1.md)。
+
+本分支准备尚未发布的 `0.10.0` 稳定候选，npm `latest` 仍是已发布的 v0.9.1。
+`.ets` 现在使用锁定版本、随包附带 MIT 许可证的 ArkTS grammar，独立于 TS parser。
+见 [ArkTS PoC](ARKTS_POC_v0.10.0.md) 和 [v0.10 验证证据](RELEASE_EVIDENCE_v0.10.0.md)。
 
 ## 本页导航
 
@@ -170,7 +174,30 @@ Git 变化使用固定的 baseline commit 判定 added/modified/deleted，保留
 
 ## 支持的语言
 
-TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java .cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。C/C++ 符号提取通过 declarator 链解析名字(模板、`ns::name` 限定定义、类内方法),`#include "…"` 会接入 repo map 的引用图。
+ArkTS、TypeScript、JavaScript、Python、Go、Rust、Java、C++、C(`.ets .ts .tsx .mts .cts .js .jsx .mjs .cjs .py .pyi .go .rs .java .cpp .cc .cxx .c++ .hpp .hxx .hh .h .ipp .tpp .inl .c`),通过 tree-sitter WASM 解析——纯解析,无需原生编译。符号提供方的接缝(`src/extract.ts` + 语法文件)预留了后续接入其他语言/嵌入检索的位置。C/C++ 符号提取通过 declarator 链解析名字(模板、`ns::name` 限定定义、类内方法),`#include "…"` 会接入 repo map 的引用图。
+
+### ArkTS 功能与限制
+
+- `struct` 组件使用现有 `kind: class`，签名为 `struct Name`。方法、字段、全局函数、
+  class/interface/type/enum 和模块变量保留稳定的限定 ID、所属作用域和源码行号。
+  `@Component`、`@ComponentV2`、`@State`、`@Local`、`@Builder` 等装饰器保留为元数据，
+  装饰器所在行纳入定义源码范围。
+- 能解析 `build()` 和嵌套声明式 UI；本地组件、显式 ETS/TS import 接入符号、搜索、地图、
+  引用、变更上下文和 Context Pack。`@Extend` 元数据及 UI 属性链不会被当作业务调用关系。
+  UI 块内大写裸调用不使用全仓库同名或仅导入模块的回退，避免给无绑定的 SDK 组件关联
+  无关项目符号。普通 callback/业务调用沿用已有 provenance；ArkTS 的 `code_refs` 使用
+  按绑定解析的候选关系。
+- 唯一可确定目标的相对 ETS/TS import 可解析；同一无扩展名路径同时存在 ETS 和其他源码
+  时不猜测。默认 import 保留 `import-scoped`，不推断 HAR/oh-package/模块别名、SDK 类型、
+  re-export 链、状态更新或 UI 重渲染语义。无显式绑定的全局自定义 UI 组件可能没有关系边。
+  语法解析通过不等于 ArkTS 编译通过或鸿蒙运行时行为已验证。
+- 每个索引文件记录 `parsed` / `partial` / `failed`、ERROR/MISSING 数量和最多三处位置。
+  不可靠的 ArkTS 声明会被省略，避免错误的范围或所属作用域。`code_index` 提供有限的
+  索引不完整摘要，Context Pack 和变更上下文在原有预算内保留缺口。`parsed` 只表示语法
+  提取完成，不承诺完整语义引用。缓存 schema 3 自动重建旧缓存，仍不持久化源码正文。
+- grammar 使用 [harmony-contrib 0.3.0](https://github.com/harmony-contrib/tree-sitter-arkts)，
+  ABI 14，未经修改的 npm WASM 与 MIT 声明随包发布，消费端无需原生 ArkTS addon。
+  见 [WASM 来源](grammars/README.md)。
 
 ## 工作原理
 
