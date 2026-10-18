@@ -5,9 +5,9 @@
 
 English | [中文](README.zh.md)
 
-**v0.10.0 released — ArkTS & Reliable Code Context**
+**v0.10.1 released — DSH Desktop compatibility fix**
 
-**v0.10.1 compatibility candidate (unpublished):** adds DSH Desktop `0.2.1-rc.2` support while retaining `0.2.0-rc.2`. Only these two exact DSH/dsh-tools host groups are supported; keep each host's first-party packages on the same version. See [candidate evidence](RELEASE_EVIDENCE_v0.10.1.md) and [bilingual fix notes](RELEASE_NOTES_v0.10.1.md) for verification and release status.
+**[v0.10.1 is released](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1); npm `latest` is `0.10.1`.** Adds DSH Desktop `0.2.1-rc.2` support while retaining `0.2.0-rc.2`. Only these two exact DSH/dsh-tools host groups are supported; keep each host's first-party packages on the same version. See [release evidence](RELEASE_EVIDENCE_v0.10.1.md) and [bilingual fix notes](RELEASE_NOTES_v0.10.1.md).
 
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
@@ -16,7 +16,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-[v0.10.0 is released](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and npm `latest` is `0.10.0`. ArkTS `.ets` files use a dedicated, pinned parser: find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed stable package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
+Introduced in [v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and retained unchanged in v0.10.1: ArkTS `.ets` files use a dedicated, pinned parser to find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
 
 This supports syntax and static code context, without full HarmonyOS SDK semantics, HAR/module-alias resolution or state-update/UI rerender graphs. See [release evidence](RELEASE_EVIDENCE_v0.10.0.md), [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [the bilingual announcement](assets/v0.10.0-announcement.md). The v0.9.1 Gitignore directory whitelist fix remains included.
 
@@ -34,17 +34,17 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24. The published v0.10.0 requires DSH `0.2.0-rc.2`; the unpublished v0.10.1 candidate also supports `0.2.1-rc.2`. To install the candidate into an existing Desktop profile, using its bundled `dsh` CLI:
+Requires Node 22/24 and a matching DSH `0.2.0-rc.2` or `0.2.1-rc.2` host group. Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
-dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.10.1.tgz
+dsh plugin --profile desktop add dsh-code-index@0.10.1
 ```
 
-Restart Desktop after installation. Until v0.10.1 is published, the following registry commands install v0.10.0 on its original host:
+Restart Desktop after installation. For a matching Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
-npx @deepseek-ai/dsh@0.2.0-rc.2 web
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.10.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
 For local development, run `pnpm install` and `pnpm build` at the repository root, then use `plugin --profile web add .`. See [Install](#install) for profile options.
@@ -95,13 +95,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The v0.10.1 candidate declares `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
+v0.10.1 declares `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
 
 Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerates the supported groups instead of requiring a version exemption or an unbounded range. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.1
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

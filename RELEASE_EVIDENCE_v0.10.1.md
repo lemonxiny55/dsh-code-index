@@ -1,8 +1,101 @@
 # v0.10.1 compatibility release evidence — 2026-10-18
 
-**RELEASE READY (local candidate gates); publication confirmation required.**
-Remote CI has not been run. Local gates are recorded below.
-No npm publication, remote branch/main push, tag, GitHub Release or PR was created.
+## Actual publication — RELEASED
+
+**v0.10.1 formally released on 2026-10-18.** The maintainer explicitly authorized
+PR #4 merge, post-merge main CI, npm publication, tag/Release and this evidence
+update. No feature, production source, ArkTS grammar/WASM or license change was
+introduced during publication. The local-candidate sections below are historical
+records; their pending-publication wording is superseded by this publication record.
+
+- [PR #4](https://github.com/lemonxiny55/dsh-code-index/pull/4) merged at
+  **2026-10-18 03:58:45 UTC** with the exact-head guard
+  `8efd5635876f715e2939d10594ecad815fea05dd`.
+- Release/main merge commit: **`17cfb9796a274d5705fe5cb19964f9226028c370`**;
+  parents are unchanged main `cc46057b87cf6e9bed6d317e982ed555ec4a1a34` and the
+  verified PR head. The complete trees are identical,
+  `32ff40a26aa29e43ac193bab58be0ca2a6721912`. No force push was used.
+- [PR CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39094607065)
+  and [post-merge main CI](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39095491158)
+  passed for their exact respective commits.
+
+| Post-merge Ubuntu job | Tests | Other checks |
+| --- | --- | --- |
+| [Node 22.23.3](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39095491158/job/117580949549) | 25 files; 234 passed, 1 skipped, 0 failed | Frozen-lockfile install, typecheck, server/declaration/client builds, installed-package smoke passed |
+| [Node 24.21.0](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39095491158/job/117580949315) | 25 files; 234 passed, 1 skipped, 0 failed | Frozen-lockfile install, typecheck, server/declaration/client builds, installed-package smoke passed |
+
+The skip is the existing Windows-only cache-key casing test. Both main jobs
+logged `release smoke passed for dsh-code-index@0.10.1 with dsh-tools@0.2.1-rc.2`.
+An additional fresh Windows full-suite run passed all 235 tests before merge.
+The two supported RC runtimes and Node 22/24 local installation matrix remain
+covered by the historical candidate evidence below.
+
+### Main build, npm publication and registry archive
+
+From the actual release commit, the server, declarations and browser bundle
+were rebuilt and npm-packed into a separate directory. The resulting archive
+is **byte-for-byte identical** to the retained original candidate, SHA256
+**`4861daae474d1e975a97d5ac0f6240841bd0c253b3b51b013f289c654063207a`**.
+All 19 extracted file paths, sizes and SHA256 values match
+[the frozen inventory](assets/package-v0.10.1-preflight.json), including manifest
+version **0.10.1**, complete peerDependencies, ArkTS WASM and license resources.
+No unexpected package difference was found. Linux CI builds its own archive;
+no byte-identity claim is made for an archive not exported by those jobs.
+
+Before merging and immediately before publication, npm 0.10.1 returned 404,
+`latest` was 0.10.0, and remote v0.10.1 did not exist. Initial `npm whoami`
+returned E401; the maintainer completed npm login and later the publication
+browser/2FA authorization personally. No credential, token or OTP was requested
+or recorded. `npm publish <original candidate tarball> --ignore-scripts --tag
+latest --access public --registry=https://registry.npmjs.org` ran **once** and
+returned exit **0**. Registry processing briefly returned 404; publication was
+not repeated.
+
+- [npm dsh-code-index@0.10.1](https://www.npmjs.com/package/dsh-code-index/v/0.10.1)
+  verified available, registry **latest = 0.10.1**.
+- [Actual registry tarball](https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.10.1.tgz)
+  independently downloaded and checked: **19 files / 414619 bytes**, the same
+  SHA256 above, SHA1 **`c3aefc2eaf4c30ec011faa2446a6a7cae2697b63`**, and matching
+  SHA512 integrity. Every extracted file matches the original candidate and main
+  build; the registry archive is byte-identical to both.
+- Peer remains exactly **`0.2.0-rc.2 || 0.2.1-rc.2`**; no new host version was
+  added. Published v0.10.0 was not modified or overwritten.
+
+### Tag, GitHub Release and documentation
+
+Annotated tag **v0.10.1**, object `c24285969afb2b1e6ef23089a20968075cec7b12`,
+peels to **`17cfb9796a274d5705fe5cb19964f9226028c370`**. It was created and
+pushed once without replacing an existing tag.
+[GitHub Release v0.10.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1)
+was published at **2026-10-18 04:04:24 UTC** (12:04:24 Asia/Shanghai), non-draft
+and non-prerelease, targeting the release commit above. Its body was read back
+and matched the prepared English/Chinese notes with actual publication and CI
+results. No release commit or tag was rewritten after publication.
+
+Both READMEs, CHANGELOG and release notes were synchronized to released status
+after registry and GitHub verification. This follow-up only records publication
+and documentation; the published archive and release tag remain immutable.
+
+### Post-publication Desktop check and repository boundary
+
+Computer Use revisited the actual **DSH Desktop 0.2.1-rc.2** plugin details after
+npm and GitHub publication: **dsh-code-index v0.10.1 / 1 component running**,
+with no incompatibility warning. A separate read-only hash check matched all
+19 files of the retained genuine candidate installation to the now-verified
+registry archive. This reuses the same installed bytes and the real Agent evidence
+below; no reinstall, restart, additional model turn or broad runtime matrix was
+needed. No DSH Host or third-party code/configuration was modified during release.
+
+`HANDOFF_PROMPT.md` remains unchanged and untracked, SHA256
+`05d2be1390a73d588ef6461df8ba583abfb86f771581009da647fca3244d5034`.
+The publication follow-up changes only documentation/evidence. Its later main
+commit is not the release-tag target; the release target remains `17cfb979…`.
+There is no remaining release blocker.
+
+## Historical local candidate preflight
+
+The following local-gate and environment notes describe the pre-publication
+state. Actual publication results above take precedence.
 
 ## Scope and root cause
 

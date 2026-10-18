@@ -2,9 +2,9 @@
 
 [English](README.md) | 中文
 
-**v0.10.0 已发布 — ArkTS & Reliable Code Context**
+**v0.10.1 已发布 — DSH Desktop 兼容修复**
 
-**v0.10.1 兼容修复候选（未发布）：**增加 DSH Desktop `0.2.1-rc.2` 支持，保留 `0.2.0-rc.2`。仅支持这两个精确的 DSH/dsh-tools 宿主版本组；每组第一方包必须保持同版。验证方法和发布状态见[候选发布证据](RELEASE_EVIDENCE_v0.10.1.md)及[中英文修复说明](RELEASE_NOTES_v0.10.1.md)。
+**[v0.10.1 已正式发布](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1)，npm `latest` 为 `0.10.1`。**增加 DSH Desktop `0.2.1-rc.2` 支持，保留 `0.2.0-rc.2`。仅支持这两个精确的 DSH/dsh-tools 宿主版本组；每组第一方包必须保持同版。验证方法见[发布证据](RELEASE_EVIDENCE_v0.10.1.md)及[中英文修复说明](RELEASE_NOTES_v0.10.1.md)。
 
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
@@ -13,7 +13,7 @@
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-[v0.10.0 已正式发布](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0)，npm `latest` 为 `0.10.0`。ArkTS `.ets` 使用独立、版本锁定的 parser：定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。稳定安装包已通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查；部分解析或解析失败会提供有限诊断。
+[v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) 引入的 ArkTS 功能在 v0.10.1 中保持不变：`.ets` 使用独立、版本锁定的 parser，定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。安装包已通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查；部分解析或解析失败会提供有限诊断。
 
 支持范围是语法和静态代码上下文，不包含完整 HarmonyOS SDK 语义、HAR/模块别名解析、状态更新或 UI 重渲染调用图。见[发布证据](RELEASE_EVIDENCE_v0.10.0.md)、[ArkTS PoC](ARKTS_POC_v0.10.0.md) 和[双语公告](assets/v0.10.0-announcement.md)。v0.9.1 的 Gitignore 目录白名单修复继续保留。
 
@@ -31,17 +31,17 @@
 
 ## 快速开始
 
-需要 Node 22/24。已发布的 v0.10.0 要求 DSH `0.2.0-rc.2`；未发布的 v0.10.1 候选同时支持 `0.2.1-rc.2`。用 Desktop 自带的 `dsh` CLI 将候选包安装到现有 profile：
+需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 或 `0.2.1-rc.2` 宿主版本组。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
-dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.10.1.tgz
+dsh plugin --profile desktop add dsh-code-index@0.10.1
 ```
 
-安装后重启 Desktop。v0.10.1 发布前，下面的 registry 命令仍安装原宿主对应的 v0.10.0：
+安装后重启 Desktop。匹配的 Web profile 可使用：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
-npx @deepseek-ai/dsh@0.2.0-rc.2 web
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.10.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
 本地开发时，在仓库根目录运行 `pnpm install`、`pnpm build`，然后使用 `plugin --profile web add .`。其他 profile 选项见[安装说明](#安装)。
@@ -92,13 +92,13 @@ npx @deepseek-ai/dsh@0.2.0-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.10.1 候选声明 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
+v0.10.1 声明 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
 
 Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 明确列举支持组，不依赖版本豁免或无上限范围。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.1
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

@@ -2,10 +2,10 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.10.1 — unreleased
+## 0.10.1 — DSH Desktop compatibility fix (2026-10-18)
 
 - **fix(compat):** enumerate DSH/dsh-tools `0.2.0-rc.2 || 0.2.1-rc.2` so Desktop `0.2.1-rc.2` can activate the plugin without a version exemption. Keep the old development API baseline; no new feature or parser/resource change.
-- **chore(release):** allow installation smoke to select either supported RC group against one candidate archive; document local candidate installation and bilingual compatibility evidence.
+- **chore(release):** allow installation smoke to select either supported RC group against one archive; document installation and bilingual compatibility evidence. Published as npm `latest` with tag `v0.10.1`; post-merge main Node 22/24 CI and exact registry-archive verification passed. See `RELEASE_EVIDENCE_v0.10.1.md`.
 
 ## 0.10.0 — ArkTS & Reliable Code Context (2026-10-13)
 
