@@ -1,0 +1,126 @@
+{
+  "version": "0.10.1",
+  "filename": "dsh-code-index-0.10.1.tgz",
+  "size": 414619,
+  "sha256": "4861daae474d1e975a97d5ac0f6240841bd0c253b3b51b013f289c654063207a",
+  "shasum": "c3aefc2eaf4c30ec011faa2446a6a7cae2697b63",
+  "integrity": "sha512-adSPXAMOH9I9BiI+xV6OR/4A1MkX0KFWFAN2s1QDz5ZljxjhgzZMy7dvs9gBSB+kcKsWs9XAWYLjS5dY3YuzvA==",
+  "fileCount": 19,
+  "unpackedSize": 3145285,
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 16571,
+      "mode": 420,
+      "sha256": "24d0302d0e83e79391455e28ae05e326d8d05b392b84774dd25567f572f494ce"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1083,
+      "mode": 420,
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "README.md",
+      "size": 21212,
+      "mode": 420,
+      "sha256": "3a3a565937bba60891e01719a1b03edb16932fe16ab8426bfed936ca0b87b9f0"
+    },
+    {
+      "path": "README.zh.md",
+      "size": 19168,
+      "mode": 420,
+      "sha256": "41b05d201098649b8c9b1e528be9a55a1b56723e61cb51ee33fac26862618945"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 207,
+      "mode": 420,
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "dist/client.js",
+      "size": 17328,
+      "mode": 420,
+      "sha256": "8bf57869fade71ad1989f27d8bbd6161cc7aa3f0bd33e697de060f5251ac22f8"
+    },
+    {
+      "path": "dist/client.js.map",
+      "size": 24639,
+      "mode": 420,
+      "sha256": "e7dc628c8dc84a4405b90a98667da8984c20ca78afea910a2b064c7dd4e6c0e0"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "size": 26107,
+      "mode": 420,
+      "sha256": "751a7ece669ba67f84d7185ae074c38951a9058c89d261fdadeae69180f4ad15"
+    },
+    {
+      "path": "dist/index.js",
+      "size": 175054,
+      "mode": 420,
+      "sha256": "5b7b9225e094929b059ac0b438aaf1d37f898fd0f3e78fcd98105e6bb1d89754"
+    },
+    {
+      "path": "dist/index.js.map",
+      "size": 373508,
+      "mode": 420,
+      "sha256": "f87208db7a788ea0c9ac1c7cad3e226f9514144cfee271435b452c24d414f093"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "size": 2154,
+      "mode": 420,
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "size": 1566,
+      "mode": 420,
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "size": 2430659,
+      "mode": 420,
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "package.json",
+      "size": 2305,
+      "mode": 420,
+      "sha256": "b809661292559ec0993256cd6463b59435f8ea942b482db55ac216128f69c121"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "size": 4980,
+      "mode": 420,
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "size": 4994,
+      "mode": 420,
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "size": 3579,
+      "mode": 420,
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "size": 13533,
+      "mode": 420,
+      "sha256": "1e12f20577ff0e6507658a9421815fbdc9f419ae46e16f0d8870c83926344665"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "size": 6638,
+      "mode": 420,
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ]
+}

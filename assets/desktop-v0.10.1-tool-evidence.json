@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-18",
+  "sessionId": "session-7e99e153-9b08-42b3-b407-6b686a741ff0",
+  "method": "Real DSH Desktop 0.2.1-rc.2 desktop profile; installed candidate; UI/model-backed turn; persisted tool events independently audited",
+  "model": {
+    "provider": "nvidia",
+    "model": "z-ai/glm-5.3-flash"
+  },
+  "package": {
+    "version": "0.10.1",
+    "filename": "dsh-code-index-0.10.1.tgz",
+    "sha256": "4861daae474d1e975a97d5ac0f6240841bd0c253b3b51b013f289c654063207a",
+    "filesMatched": 19,
+    "unchangedPublishedRuntimeAndGrammarFiles": 10
+  },
+  "fixture": {
+    "description": "Two-file synthetic ETS/TS fixture, not a HarmonyOS SDK/device test",
+    "files": {
+      "Counter.ets": "import { compatLabel } from './logic'\n@ComponentV2\nexport struct CompatCounter {\n  @Local count: number = 0;\n  @Builder\n  heading() { Text(compatLabel()) }\n  build() { Column() { this.heading(); Text(compatLabel()) } }\n}\r\n",
+      "logic.ts": "export function compatLabel() { return \"DSH101_MARKER\" }\r\n"
+    }
+  },
+  "calls": [
+    {
+      "seq": 18,
+      "time": 1792294351908,
+      "turn": 1,
+      "step": 1,
+      "callId": "ae688bb3-d5ed-4e31-b65d-d59b18145b13",
+      "name": "code_index",
+      "arguments": {
+        "action": "build",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/release-v0101/fixture"
+      }
+    },
+    {
+      "seq": 23,
+      "time": 1792294354509,
+      "turn": 1,
+      "step": 2,
+      "callId": "20b94ced-f663-4d5d-afb9-da3d87d0ed02",
+      "name": "code_search",
+      "arguments": {
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/release-v0101/fixture",
+        "query": "CompatCounter"
+      }
+    },
+    {
+      "seq": 28,
+      "time": 1792294356642,
+      "turn": 1,
+      "step": 3,
+      "callId": "3d36043a-766f-4121-a2b7-f245971b7c36",
+      "name": "code_context",
+      "arguments": {
+        "budgetChars": 5000,
+        "task": "Explain CompatCounter in Counter.ets and compatLabel",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/release-v0101/fixture"
+      }
+    },
+    {
+      "seq": 33,
+      "time": 1792294359825,
+      "turn": 1,
+      "step": 4,
+      "callId": "5ec73185-c5f0-44f4-8157-c41b393fabe9",
+      "name": "code_context",
+      "arguments": {
+        "task": "Explain CompatCounter in Counter.ets and compatLabel",
+        "budgetChars": 5000,
+        "outputFormat": "pack",
+        "repoRoot": "D:/ChatGPTProjects/dsh-code-index/.dsh-code-index/release-v0101/fixture"
+      }
+    }
+  ],
+  "results": [
+    {
+      "seq": 19,
+      "time": 1792294352088,
+      "callId": "ae688bb3-d5ed-4e31-b65d-d59b18145b13",
+      "isError": false,
+      "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0101\\fixture\nfiles indexed: 2\nsymbols: 5\nlanguages: arkts, typescript\nindex up to date"
+    },
+    {
+      "seq": 24,
+      "time": 1792294354514,
+      "callId": "20b94ced-f663-4d5d-afb9-da3d87d0ed02",
+      "isError": false,
+      "text": "export class struct CompatCounter — Counter.ets:2",
+      "meta": {
+        "shape": "matches",
+        "files": [
+          {
+            "path": "Counter.ets",
+            "matches": [
+              {
+                "lineNumber": 2,
+                "line": "class struct CompatCounter"
+              }
+            ]
+          }
+        ],
+        "truncated": false,
+        "total": 1
+      }
+    },
+    {
+      "seq": 29,
+      "time": 1792294356653,
+      "callId": "3d36043a-766f-4121-a2b7-f245971b7c36",
+      "isError": false,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0101\\fixture\nTask: Explain CompatCounter in Counter.ets and compatLabel\n\nprimary: CompatCounter Counter.ets:2-8 [current]\nReason: task names this symbol\nSource (complete):\n@ComponentV2\nexport struct CompatCounter {\n  @Local count: number = 0;\n  @Builder\n  heading() { Text(compatLabel()) }\n  build() { Column() { this.heading(); Text(compatLabel()) } }\n}\n\nprimary: compatLabel logic.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function compatLabel() { return \"DSH101_MARKER\" }\n\nprimary: count Counter.ets:4-4 [current]\nReason: matches task terms\nSignature only: count: number\n\nprimary: heading Counter.ets:5-5 [current]\nReason: matches task terms\nSignature only: heading()\n\nprimary: build Counter.ets:7-7 [current]\nReason: matches task terms\nSignature only: build()\n\nimport: ./logic Counter.ets:1-1 [current]\nReason: import binding referenced in primary source Counter.ets\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { compatLabel } from './logic'\n\nrelationship: build (Counter.ets:7) → compatLabel (logic.ts:1) at Counter.ets:7 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: heading (Counter.ets:5) → compatLabel (logic.ts:1) at Counter.ets:6 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: build (Counter.ets:7) → heading (Counter.ets:5) at Counter.ets:7 [name-only; global-name]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; global-name\n\nGaps: budget omitted some evidence; no related indexed test found\nBudget: 1860 / 5000 chars (trimmed low-priority context)"
+    },
+    {
+      "seq": 34,
+      "time": 1792294359832,
+      "callId": "5ec73185-c5f0-44f4-8157-c41b393fabe9",
+      "isError": false,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0101\\fixture\nTask: Explain CompatCounter in Counter.ets and compatLabel\n\nprimary: CompatCounter Counter.ets:2-8 [current]\nReason: task names this symbol\nSource (complete):\n@ComponentV2\nexport struct CompatCounter {\n  @Local count: number = 0;\n  @Builder\n  heading() { Text(compatLabel()) }\n  build() { Column() { this.heading(); Text(compatLabel()) } }\n}\n\nprimary: compatLabel logic.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function compatLabel() { return \"DSH101_MARKER\" }\n\nprimary: count Counter.ets:4-4 [current]\nReason: matches task terms\nSignature only: count: number\n\nprimary: heading Counter.ets:5-5 [current]\nReason: matches task terms\nSignature only: heading()\n\nprimary: build Counter.ets:7-7 [current]\nReason: matches task terms\nSignature only: build()\n\nimport: ./logic Counter.ets:1-1 [current]\nReason: import binding referenced in primary source Counter.ets\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { compatLabel } from './logic'\n\nrelationship: build (Counter.ets:7) → compatLabel (logic.ts:1) at Counter.ets:7 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: heading (Counter.ets:5) → compatLabel (logic.ts:1) at Counter.ets:6 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: build (Counter.ets:7) → heading (Counter.ets:5) at Counter.ets:7 [name-only; global-name]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; global-name\n\nGaps: budget omitted some evidence; no related indexed test found\nBudget: 1860 / 5000 chars (trimmed low-priority context)"
+    }
+  ],
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "sourceAudit": [
+    {
+      "callId": "3d36043a-766f-4121-a2b7-f245971b7c36",
+      "kind": "primary",
+      "name": "CompatCounter",
+      "file": "Counter.ets",
+      "startLine": 2,
+      "endLine": 8,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "3d36043a-766f-4121-a2b7-f245971b7c36",
+      "kind": "primary",
+      "name": "compatLabel",
+      "file": "logic.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "3d36043a-766f-4121-a2b7-f245971b7c36",
+      "kind": "import",
+      "name": "./logic",
+      "file": "Counter.ets",
+      "startLine": 1,
+      "endLine": 1,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "5ec73185-c5f0-44f4-8157-c41b393fabe9",
+      "kind": "primary",
+      "name": "CompatCounter",
+      "file": "Counter.ets",
+      "startLine": 2,
+      "endLine": 8,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "5ec73185-c5f0-44f4-8157-c41b393fabe9",
+      "kind": "primary",
+      "name": "compatLabel",
+      "file": "logic.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "5ec73185-c5f0-44f4-8157-c41b393fabe9",
+      "kind": "import",
+      "name": "./logic",
+      "file": "Counter.ets",
+      "startLine": 1,
+      "endLine": 1,
+      "mode": "complete",
+      "exactSourceMatch": true
+    }
+  ],
+  "budgets": [
+    {
+      "outputFormat": "text",
+      "limit": 5000,
+      "renderedChars": 1860
+    },
+    {
+      "outputFormat": "pack",
+      "limit": 5000,
+      "renderedChars": 1860
+    }
+  ],
+  "limitations": [
+    "Desktop exposes rendered pack text; actual structured value and JSON budget are separately checked by installed-consumer RC runtime smoke on Node 22/24",
+    "No repeat old Desktop binary UI gate; old matched RC tool runtime tested on both Node versions",
+    "No new HarmonyOS semantics, file-navigation, or performance claim"
+  ]
+}

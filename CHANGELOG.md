@@ -2,6 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.10.1 — unreleased
+
+- **fix(compat):** enumerate DSH/dsh-tools `0.2.0-rc.2 || 0.2.1-rc.2` so Desktop `0.2.1-rc.2` can activate the plugin without a version exemption. Keep the old development API baseline; no new feature or parser/resource change.
+- **chore(release):** allow installation smoke to select either supported RC group against one candidate archive; document local candidate installation and bilingual compatibility evidence.
+
 ## 0.10.0 — ArkTS & Reliable Code Context (2026-10-13)
 
 - Add dedicated `.ets` parsing using pinned harmony-contrib/tree-sitter-arkts

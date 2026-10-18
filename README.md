@@ -7,6 +7,8 @@ English | [中文](README.zh.md)
 
 **v0.10.0 released — ArkTS & Reliable Code Context**
 
+**v0.10.1 compatibility candidate (unpublished):** adds DSH Desktop `0.2.1-rc.2` support while retaining `0.2.0-rc.2`. Only these two exact DSH/dsh-tools host groups are supported; keep each host's first-party packages on the same version. See [candidate evidence](RELEASE_EVIDENCE_v0.10.1.md) and [bilingual fix notes](RELEASE_NOTES_v0.10.1.md) for verification and release status.
+
 Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) agent the bounded source context it needs to start a code task. One `code_context` call selects primary declarations, strong callers/callees, imports, current changes, and likely tests, with exact source ranges and reasons for inclusion. When evidence is missing, the pack says so.
 
 - **Source within budget:** complete declarations, then whole-line windows, then explicit signature-only fallback. Overlapping source lines are deduplicated; current and baseline excerpts stay separate.
@@ -32,7 +34,13 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24 and a matching DSH `0.2.0-rc.2` host group. Install the published version into a Web profile:
+Requires Node 22/24. The published v0.10.0 requires DSH `0.2.0-rc.2`; the unpublished v0.10.1 candidate also supports `0.2.1-rc.2`. To install the candidate into an existing Desktop profile, using its bundled `dsh` CLI:
+
+```sh
+dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.10.1.tgz
+```
+
+Restart Desktop after installation. Until v0.10.1 is published, the following registry commands install v0.10.0 on its original host:
 
 ```sh
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
@@ -87,13 +95,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The verified compatibility target is `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2` (Node 22 and 24 verification matrix). The DSH plugin surface is still a preview API, so upstream changes may require compatibility updates.
+The v0.10.1 candidate declares `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
 
-v0.9 requires the matching `0.2.0-rc.2` tool runtime; the peer pin prevents fresh npm installs from selecting the older registry `latest` tag. Upgrade the host group together. The text/config/tool-surface compatibility above does not promise support for older DSH APIs.
+Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerates the supported groups instead of requiring a version exemption or an unbounded range. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

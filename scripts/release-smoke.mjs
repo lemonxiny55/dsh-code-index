@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -65,6 +66,10 @@ function parseJsonArrayOutput(output, command) {
 
 // A release gate can reuse one immutable candidate across Node versions.
 const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
+// Exercise each supported host group against the same immutable candidate.
+const toolsVersion = process.argv[3] ?? '0.2.1-rc.2'
+const supportedToolsVersions = packageJson.peerDependencies['@deepseek-ai/dsh-tools'].split(' || ')
+assert.ok(supportedToolsVersions.includes(toolsVersion), 'smoke requires an explicitly supported DSH tools version')
 const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
 if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
 const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
@@ -92,7 +97,7 @@ for (const file of expectedFiles) assert.ok(listed.has(file), `tarball is missin
 const smokeDir = mkdtempSync(path.join(os.tmpdir(), 'dsh-code-index-release-'))
 try {
   run(npm, ['init', '--yes'], smokeDir)
-  run(npm, ['install', '--ignore-scripts', '--no-save', tarball], smokeDir)
+  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
 
   const installedPackage = JSON.parse(
     readFileSync(path.join(smokeDir, 'node_modules', packageJson.name, 'package.json'), 'utf8'),
@@ -103,7 +108,7 @@ try {
   assert.match(installedPackage.engines.node, />=22/)
   assert.equal(installedPackage.license, 'MIT')
   const installedTools = JSON.parse(readFileSync(path.join(smokeDir, 'node_modules', '@deepseek-ai', 'dsh-tools', 'package.json'), 'utf8'))
-  assert.equal(installedTools.version, '0.2.0-rc.2', 'fresh consumers must resolve the verified matching RC')
+  assert.equal(installedTools.version, toolsVersion, 'consumer must use the selected matching RC group')
 
   const plugin = await import(
     pathToFileURL(path.join(smokeDir, 'node_modules', packageJson.name, 'dist', 'index.js')).href,
@@ -236,7 +241,42 @@ try {
   )
   assert.deepEqual(compactRegistered, ['code_index', 'code_context', 'code_health'])
   for (const dispose of compactDisposers.reverse()) dispose()
-  console.log(`release smoke passed for ${packageJson.name}@${packageJson.version}`)
+
+  // Direct handlers above verify package behavior; this separate check runs
+  // through the selected RC's real schema/dispatch/rendering pipeline.
+  const consumerRequire = createRequire(path.join(smokeDir, 'package.json'))
+  const { Context } = await import(pathToFileURL(consumerRequire.resolve('@deepseek-ai/cordis')).href)
+  const { default: ToolRuntime } = await import(pathToFileURL(consumerRequire.resolve('@deepseek-ai/dsh-tools')).href)
+  const nativeContext = new Context()
+  nativeContext.provide('systemPrompt', { tools: () => () => {}, section: () => () => {} })
+  const runtime = new ToolRuntime(nativeContext)
+  const nativeDisposers = plugin.tools.map(tool => runtime.register(tool))
+  try {
+    const nativeInvoke = async (name, args) => {
+      const result = await runtime.execute({
+        callId: `release:${name}`, name, arguments: args,
+        signal: new AbortController().signal,
+      })
+      assert.equal(result.isError, false, JSON.stringify(result.content))
+      return result
+    }
+    await nativeInvoke('code_index', { action: 'build', repoRoot: arkRoot })
+    const search = await nativeInvoke('code_search', { query: 'PackageCard', repoRoot: arkRoot })
+    assert.equal(search.value[0]?.file, 'Card.ets')
+    assert.ok(search.meta, 'search presentation metadata must survive runtime dispatch')
+    for (const outputFormat of ['text', 'pack']) {
+      const result = await nativeInvoke('code_context', {
+        task: 'Explain PackageCard in Card.ets', repoRoot: arkRoot, outputFormat, budgetChars: 5000,
+      })
+      assert.match(JSON.stringify(result.content), /@ComponentV2/)
+      assert.equal(typeof result.value, outputFormat === 'pack' ? 'object' : 'string')
+      if (outputFormat === 'pack') assert.ok(JSON.stringify(result.value).length <= 5000)
+    }
+  } finally {
+    for (const dispose of nativeDisposers.reverse()) dispose()
+    await nativeContext.fiber.dispose()
+  }
+  console.log(`release smoke passed for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true })
   if (!suppliedTarball) rmSync(tarball, { force: true })
