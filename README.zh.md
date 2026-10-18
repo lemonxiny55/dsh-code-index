@@ -4,6 +4,8 @@
 
 **v0.10.0 已发布 — ArkTS & Reliable Code Context**
 
+**v0.10.1 兼容修复候选（未发布）：**增加 DSH Desktop `0.2.1-rc.2` 支持，保留 `0.2.0-rc.2`。仅支持这两个精确的 DSH/dsh-tools 宿主版本组；每组第一方包必须保持同版。验证方法和发布状态见[候选发布证据](RELEASE_EVIDENCE_v0.10.1.md)及[中英文修复说明](RELEASE_NOTES_v0.10.1.md)。
+
 让 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Agent 用一次 `code_context` 调用拿到开始处理任务所需的有界源码上下文：主要声明、强相关 caller/callee、imports、当前变化和相关测试。每个关键 item 都有入选理由，源码有准确行号；证据不足时明确说明缺口。
 
 - **预算内直接给源码：**完整声明 → 整行窗口 → 明确的 signature-only 降级。重叠源码行去重，current/base 分开。
@@ -29,7 +31,13 @@
 
 ## 快速开始
 
-需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 宿主版本组。将已发布版本安装到 Web profile：
+需要 Node 22/24。已发布的 v0.10.0 要求 DSH `0.2.0-rc.2`；未发布的 v0.10.1 候选同时支持 `0.2.1-rc.2`。用 Desktop 自带的 `dsh` CLI 将候选包安装到现有 profile：
+
+```sh
+dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.10.1.tgz
+```
+
+安装后重启 Desktop。v0.10.1 发布前，下面的 registry 命令仍安装原宿主对应的 v0.10.0：
 
 ```sh
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
@@ -84,13 +92,13 @@ npx @deepseek-ai/dsh@0.2.0-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-当前开发兼容目标为 `@deepseek-ai/dsh@0.2.0-rc.2` / `@deepseek-ai/dsh-tools@0.2.0-rc.2`(CI 覆盖 Node 22 和 24)。DSH 插件接口仍属于预览 API,上游变化可能需要更新兼容适配。
+v0.10.1 候选声明 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
 
-v0.9 要求匹配的 `0.2.0-rc.2` tools runtime；精确 peer pin 防止 npm 新安装选到 registry 中旧的 `latest` 标签。宿主版本组需一起升级；文本、配置、工具 surface 的兼容承诺不等于支持旧 DSH API。
+Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 明确列举支持组，不依赖版本豁免或无上限范围。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.9.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.0
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
