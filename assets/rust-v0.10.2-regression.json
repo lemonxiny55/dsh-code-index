@@ -1,0 +1,413 @@
+{
+  "date": "2026-10-19",
+  "issue": "https://github.com/lemonxiny55/dsh-code-index/issues/5",
+  "baseline": "db73d9c44f0903ce333eb2559d8b84c6f6d46fab",
+  "method": "Actual packaged Rust WASM AST, baseline v0.10.1 bundle and rebuilt v0.10.2 bundle; Vitest and installed actual ToolRuntime smoke",
+  "ast": [
+    {
+      "capture": "class",
+      "type": "struct_item",
+      "ast": "(struct_item (visibility_modifier) name: (type_identifier) body: (field_declaration_list (field_declaration (visibility_modifier) name: (field_identifier) type: (primitive_type))))",
+      "name": "PublicOne",
+      "firstNamedChild": "pub"
+    },
+    {
+      "capture": "class",
+      "type": "struct_item",
+      "ast": "(struct_item name: (type_identifier) body: (field_declaration_list (field_declaration name: (field_identifier) type: (primitive_type))))",
+      "name": "PrivateOne",
+      "firstNamedChild": "PrivateOne"
+    },
+    {
+      "capture": "enum",
+      "type": "enum_item",
+      "ast": "(enum_item (visibility_modifier) name: (type_identifier) body: (enum_variant_list (enum_variant name: (identifier))))",
+      "name": "PublicEnum",
+      "firstNamedChild": "pub"
+    },
+    {
+      "capture": "enum",
+      "type": "enum_item",
+      "ast": "(enum_item name: (type_identifier) body: (enum_variant_list (enum_variant name: (identifier))))",
+      "name": "PrivateEnum",
+      "firstNamedChild": "PrivateEnum"
+    },
+    {
+      "capture": "interface",
+      "type": "trait_item",
+      "ast": "(trait_item (visibility_modifier) name: (type_identifier) body: (declaration_list (function_signature_item name: (identifier) parameters: (parameters (self_parameter (self))))))",
+      "name": "PublicTrait",
+      "firstNamedChild": "pub"
+    },
+    {
+      "capture": "interface",
+      "type": "trait_item",
+      "ast": "(trait_item name: (type_identifier) body: (declaration_list (function_signature_item name: (identifier) parameters: (parameters (self_parameter (self))))))",
+      "name": "PrivateTrait",
+      "firstNamedChild": "PrivateTrait"
+    },
+    {
+      "capture": "function",
+      "type": "function_item",
+      "ast": "(function_item (visibility_modifier) name: (identifier) parameters: (parameters (parameter pattern: (identifier) type: (primitive_type))) return_type: (primitive_type) body: (block (identifier)))",
+      "name": "public_function",
+      "firstNamedChild": "pub"
+    },
+    {
+      "capture": "function",
+      "type": "function_item",
+      "ast": "(function_item name: (identifier) parameters: (parameters (parameter pattern: (identifier) type: (primitive_type))) return_type: (primitive_type) body: (block (identifier)))",
+      "name": "private_function",
+      "firstNamedChild": "private_function"
+    }
+  ],
+  "symbolsBefore": [
+    {
+      "name": "PublicOne",
+      "kind": "class",
+      "line": 2,
+      "endLine": 2,
+      "exported": true,
+      "signature": "pub",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#class:PublicOne@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateOne",
+      "kind": "class",
+      "line": 3,
+      "endLine": 3,
+      "exported": false,
+      "signature": "PrivateOne",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#class:PrivateOne@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PublicEnum",
+      "kind": "enum",
+      "line": 4,
+      "endLine": 4,
+      "exported": true,
+      "signature": "pub",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#owner:PublicEnum@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateEnum",
+      "kind": "enum",
+      "line": 5,
+      "endLine": 5,
+      "exported": false,
+      "signature": "PrivateEnum",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#owner:PrivateEnum@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PublicTrait",
+      "kind": "interface",
+      "line": 6,
+      "endLine": 6,
+      "exported": true,
+      "signature": "pub",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PublicTrait@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "run",
+      "kind": "method",
+      "line": 6,
+      "endLine": 6,
+      "exported": false,
+      "signature": "run(&self)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PublicTrait@1/method:run@1",
+      "scope": [
+        {
+          "kind": "trait",
+          "name": "PublicTrait",
+          "ordinal": 1
+        }
+      ],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateTrait",
+      "kind": "interface",
+      "line": 7,
+      "endLine": 7,
+      "exported": false,
+      "signature": "PrivateTrait",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PrivateTrait@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "run",
+      "kind": "method",
+      "line": 7,
+      "endLine": 7,
+      "exported": false,
+      "signature": "run(&self)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PrivateTrait@1/method:run@1",
+      "scope": [
+        {
+          "kind": "trait",
+          "name": "PrivateTrait",
+          "ordinal": 1
+        }
+      ],
+      "ordinal": 1
+    },
+    {
+      "name": "public_function",
+      "kind": "function",
+      "line": 8,
+      "endLine": 8,
+      "exported": true,
+      "signature": "public_function(a: u32)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#function:public_function@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "private_function",
+      "kind": "function",
+      "line": 9,
+      "endLine": 9,
+      "exported": false,
+      "signature": "private_function(a: u32)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#function:private_function@1",
+      "scope": [],
+      "ordinal": 1
+    }
+  ],
+  "symbolsAfter": [
+    {
+      "name": "PublicOne",
+      "kind": "class",
+      "line": 2,
+      "endLine": 2,
+      "exported": true,
+      "signature": "PublicOne",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#class:PublicOne@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateOne",
+      "kind": "class",
+      "line": 3,
+      "endLine": 3,
+      "exported": false,
+      "signature": "PrivateOne",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#class:PrivateOne@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PublicEnum",
+      "kind": "enum",
+      "line": 4,
+      "endLine": 4,
+      "exported": true,
+      "signature": "PublicEnum",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#owner:PublicEnum@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateEnum",
+      "kind": "enum",
+      "line": 5,
+      "endLine": 5,
+      "exported": false,
+      "signature": "PrivateEnum",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#owner:PrivateEnum@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "PublicTrait",
+      "kind": "interface",
+      "line": 6,
+      "endLine": 6,
+      "exported": true,
+      "signature": "PublicTrait",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PublicTrait@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "run",
+      "kind": "method",
+      "line": 6,
+      "endLine": 6,
+      "exported": false,
+      "signature": "run(&self)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PublicTrait@1/method:run@1",
+      "scope": [
+        {
+          "kind": "trait",
+          "name": "PublicTrait",
+          "ordinal": 1
+        }
+      ],
+      "ordinal": 1
+    },
+    {
+      "name": "PrivateTrait",
+      "kind": "interface",
+      "line": 7,
+      "endLine": 7,
+      "exported": false,
+      "signature": "PrivateTrait",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PrivateTrait@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "run",
+      "kind": "method",
+      "line": 7,
+      "endLine": 7,
+      "exported": false,
+      "signature": "run(&self)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#trait:PrivateTrait@1/method:run@1",
+      "scope": [
+        {
+          "kind": "trait",
+          "name": "PrivateTrait",
+          "ordinal": 1
+        }
+      ],
+      "ordinal": 1
+    },
+    {
+      "name": "public_function",
+      "kind": "function",
+      "line": 8,
+      "endLine": 8,
+      "exported": true,
+      "signature": "public_function(a: u32)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#function:public_function@1",
+      "scope": [],
+      "ordinal": 1
+    },
+    {
+      "name": "private_function",
+      "kind": "function",
+      "line": 9,
+      "endLine": 9,
+      "exported": false,
+      "signature": "private_function(a: u32)",
+      "file": "repro.rs",
+      "id": "sym:v1:repro.rs#function:private_function@1",
+      "scope": [],
+      "ordinal": 1
+    }
+  ],
+  "renderedBefore": [
+    "export class pub [0.40] — repro.rs:2",
+    "class PrivateOne [0.40] — repro.rs:3",
+    "export enum pub [0.40] — repro.rs:4",
+    "enum PrivateEnum [0.40] — repro.rs:5",
+    "export interface pub [0.40] — repro.rs:6",
+    "method run(&self) [0.40] — repro.rs:6",
+    "interface PrivateTrait [0.40] — repro.rs:7",
+    "method run(&self) [0.40] — repro.rs:7",
+    "export function public_function(a: u32) [0.40] — repro.rs:8",
+    "function private_function(a: u32) [0.40] — repro.rs:9"
+  ],
+  "renderedAfter": [
+    "export class PublicOne [0.40] — repro.rs:2",
+    "class PrivateOne [0.40] — repro.rs:3",
+    "export enum PublicEnum [0.40] — repro.rs:4",
+    "enum PrivateEnum [0.40] — repro.rs:5",
+    "export interface PublicTrait [0.40] — repro.rs:6",
+    "method run(&self) [0.40] — repro.rs:6",
+    "interface PrivateTrait [0.40] — repro.rs:7",
+    "method run(&self) [0.40] — repro.rs:7",
+    "export function public_function(a: u32) [0.40] — repro.rs:8",
+    "function private_function(a: u32) [0.40] — repro.rs:9"
+  ],
+  "namesIdsAndExportFlagsUnchanged": true,
+  "tests": {
+    "red": {
+      "total": 7,
+      "passed": 1,
+      "failed": 6,
+      "skipped": 0
+    },
+    "green": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "tests-node22": {
+      "total": 242,
+      "passed": 242,
+      "failed": 0,
+      "skipped": 0
+    },
+    "tests-node24": {
+      "total": 242,
+      "passed": 242,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "smoke": [
+    {
+      "node": 22,
+      "tools": "0.2.0-rc.2",
+      "pass": true
+    },
+    {
+      "node": 22,
+      "tools": "0.2.1-rc.2",
+      "pass": true
+    },
+    {
+      "node": 24,
+      "tools": "0.2.0-rc.2",
+      "pass": true
+    },
+    {
+      "node": 24,
+      "tools": "0.2.1-rc.2",
+      "pass": true
+    }
+  ],
+  "actualCacheUpgrade": {
+    "method": "Actual backed-up installed 0.10.1 bundle writes schema-3 cache; 0.10.2 loads and rebuilds with no source/mtime change",
+    "schemaBefore": 3,
+    "schemaAfter": 4,
+    "sameMtime": true,
+    "sameIds": true,
+    "diskAndDirectBuildPass": true
+  }
+}

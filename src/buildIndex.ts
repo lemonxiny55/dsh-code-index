@@ -25,6 +25,9 @@ export async function buildIndex(
   previous: RepoIndex | null = null,
   forcePaths: ReadonlySet<string> = new Set(),
 ): Promise<RepoIndex> {
+  // Public callers may supply a previous index directly, bypassing loadIndex.
+  // Never reuse extraction from an incompatible cache generation.
+  if (previous?.schemaVersion !== REPO_INDEX_SCHEMA_VERSION) previous = null
   const scanned = await scanRepo(root, options)
 
   // Index stale/current state from the previous run by rel path.

@@ -1,7 +1,8 @@
 /** Shared data model for dsh-code-index. */
 
 /** On-disk cache layout version. Bump when persisted graph/symbol shapes change. */
-export const REPO_INDEX_SCHEMA_VERSION = 3 as const
+// v4 invalidates pre-0.10.2 Rust signatures (visibility rendered as the name).
+export const REPO_INDEX_SCHEMA_VERSION = 4 as const
 
 export type SymbolKind =
   | 'function'
@@ -51,7 +52,7 @@ export interface SymbolInfo {
   line: number
   /** 1-based end line (inclusive). */
   endLine: number
-  /** True when the symbol is exported at module level (export .. / export default). */
+  /** Normalized public/export status by language; Rust: unrestricted `pub` only. */
   exported: boolean
   /** Short human-readable signature, e.g. `greet(name: string)` — empty when n/a. */
   signature: string

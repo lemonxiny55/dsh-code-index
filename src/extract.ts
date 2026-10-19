@@ -1253,6 +1253,9 @@ function signatureFor(id: LanguageId, node: Node): string {
 
 function rawSignature(id: LanguageId, node: Node): string {
   const name = nameOf(id, node)
+  // Rust type items start with visibility/modifiers, not necessarily the
+  // name. Render the same declared name used by search and stable IDs.
+  if (id === 'rust' && ['struct_item', 'enum_item', 'trait_item'].includes(node.type)) return name
   if (id === 'arkts' && node.type === 'struct_declaration') return `struct ${name}`
   if (id === 'arkts' && node.type === 'public_field_definition') {
     return `${name}${collapseSpace(node.childForFieldName('type')?.text ?? '')}`

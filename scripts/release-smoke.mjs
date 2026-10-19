@@ -219,6 +219,23 @@ try {
   writeFileSync(path.join(arkRoot, 'Broken.ets'), '@Component\nstruct Broken { build() {')
   assert.match(await invoke('code_index', { repoRoot: arkRoot }), /index incomplete:/)
 
+  // Issue #5: exercise actual installed Rust signatures, not source imports.
+  const rustRoot = path.join(smokeDir, 'rust-repo')
+  mkdirSync(path.join(rustRoot, '.git'), { recursive: true })
+  writeFileSync(path.join(rustRoot, 'repro.rs'), [
+    'pub struct PublicOne { pub field: u32 }',
+    'struct PrivateOne { field: u32 }',
+    'pub enum PublicEnum { A }',
+    'enum PrivateEnum { A }',
+    'pub trait PublicTrait { fn run(&self); }',
+    'trait PrivateTrait { fn run(&self); }',
+    'pub fn public_function(a: u32) -> u32 { a }',
+    'fn private_function(a: u32) -> u32 { a }',
+    'pub(crate) struct CrateOnly;',
+    'pub(in crate) enum Restricted { A }',
+    'fn caller() { let value = PublicOne { field: public_function(1) }; }',
+  ].join('\n'))
+
   for (const dispose of disposers.reverse()) dispose()
 
   const compactRegistered = []
@@ -271,6 +288,30 @@ try {
       assert.match(JSON.stringify(result.content), /@ComponentV2/)
       assert.equal(typeof result.value, outputFormat === 'pack' ? 'object' : 'string')
       if (outputFormat === 'pack') assert.ok(JSON.stringify(result.value).length <= 5000)
+    }
+    await nativeInvoke('code_index', { action: 'build', repoRoot: rustRoot })
+    const rustSymbols = await nativeInvoke('code_symbols', { repoRoot: rustRoot })
+    assert.ok(rustSymbols.value.some(symbol => symbol.name === 'CrateOnly' && symbol.signature === 'CrateOnly' && !symbol.exported))
+    assert.ok(rustSymbols.value.some(symbol => symbol.name === 'Restricted' && symbol.signature === 'Restricted' && !symbol.exported))
+    const rustMap = await nativeInvoke('code_map', { repoRoot: rustRoot })
+    for (const name of ['PublicOne', 'PublicEnum', 'PublicTrait']) {
+      const search = await nativeInvoke('code_search', { query: name, repoRoot: rustRoot })
+      assert.equal(search.value[0]?.name, name)
+      assert.equal(search.value[0]?.signature, name)
+      assert.match(JSON.stringify(search.content), new RegExp(name))
+      assert.match(rustMap.value, new RegExp(name))
+      const refs = await nativeInvoke('code_refs', { symbol: name, repoRoot: rustRoot })
+      assert.match(refs.value, new RegExp(`${name} — repro.rs:`))
+      assert.match(refs.value, /callers \(0\)/) // no invented struct-literal/type-use edges
+    }
+    const rustFunction = await nativeInvoke('code_refs', { symbol: 'public_function', repoRoot: rustRoot })
+    assert.match(rustFunction.value, /callers \(1\)/)
+    for (const outputFormat of ['text', 'pack']) {
+      const result = await nativeInvoke('code_context', {
+        task: 'Explain PublicOne', repoRoot: rustRoot, outputFormat, budgetChars: 5000,
+      })
+      assert.match(JSON.stringify(result.content), /PublicOne/)
+      if (outputFormat === 'pack') assert.ok(result.value.items.some(item => item.name === 'PublicOne' && item.code?.includes('pub struct PublicOne')))
     }
   } finally {
     for (const dispose of nativeDisposers.reverse()) dispose()
