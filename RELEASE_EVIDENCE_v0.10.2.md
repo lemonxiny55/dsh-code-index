@@ -1,8 +1,29 @@
 # v0.10.2 Release Evidence / 发布证据
 
-Date: 2026-10-19 (Asia/Shanghai). Status: **LOCAL RC READY — unpublished / 本地 RC READY，未发布**.
+Date: 2026-10-19 (Asia/Shanghai). Status: **PUBLISHED — npm latest 0.10.2 / 已正式发布**.
 
-Branch: `codex/rust-symbols-v0.10.2`, forked from freshly fetched `origin/main` at `db73d9c44f0903ce333eb2559d8b84c6f6d46fab`. Source revision is the commit containing this evidence; obtain its full SHA with `git log -1 --format=%H`. No remote branch/PR/CI, main push, npm publication, tag or GitHub Release was performed for v0.10.2. Community feedback has not been posted.
+Implementation branch: `codex/rust-symbols-v0.10.2`, based on `db73d9c44f0903ce333eb2559d8b84c6f6d46fab`. [PR #6](https://github.com/lemonxiny55/dsh-code-index/pull/6), head `b39faebcb046430ae3815c3e461d581e8365fdca`, was merged as release commit [`2d65cbc675722a0d956071429384cd076e6947e4`](https://github.com/lemonxiny55/dsh-code-index/commit/2d65cbc675722a0d956071429384cd076e6947e4). The merged tree equals the verified PR head. Publication evidence and release-note status are updated afterward in a separate documentation-only commit; that later commit is not the published source revision, and the release tag stays on `2d65cbc675722a0d956071429384cd076e6947e4`.
+
+## Formal publication / 正式发布
+
+| Record | Verified result |
+| --- | --- |
+| PR CI | [Run 39210619257](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39210619257); Node 22/24 successful; each 241 passed, 1 expected Windows-only skip, 0 failed |
+| Main CI, attempt 1 | [Original run](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39242685667/attempts/1); Node 22 successful; Node 24 failed: 239 passed, 1 skipped, 2 timeouts; publication stopped |
+| Main CI, attempt 2 | [Successful workflow](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39242685667/attempts/2); exact release SHA above; only failed Node 24 job rerun; Node 22 success carried forward |
+| Node 24 retry | [Job 118030961660](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39242685667/job/118030961660); 43 seconds; 26 test files, 241 passed, 1 expected skipped, 0 failed; frozen install, typecheck, build and installed-package smoke all successful |
+| npm | [dsh-code-index@0.10.2](https://www.npmjs.com/package/dsh-code-index/v/0.10.2); registry `latest = 0.10.2`; publication timestamp `2026-10-19T11:35:13.129Z` (19:35:13 Asia/Shanghai) |
+| Download | [Actual npm tarball](https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.10.2.tgz); 415815 bytes; 19 files; complete SHA256 and every file hash match the frozen candidate |
+| Tag | [v0.10.2](https://github.com/lemonxiny55/dsh-code-index/tree/v0.10.2), annotated object `7d180bc7277d316407d131b80b44694bdde4772c`, peeled commit `2d65cbc675722a0d956071429384cd076e6947e4` |
+| GitHub Release | [v0.10.2](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.2); stable, published `2026-10-19T11:38:38Z`; bilingual notes, original tarball and SHA256SUMS attached |
+
+The initial Node 24 failures were 5000ms timeouts in `tests/arkts.spec.ts:65` (pinned official samples) and `tests/tools-execute.spec.ts:95` (null-cwd resolution). The successful Node 22 job kept its original 11:10:18–11:11:09 UTC execution times. Only Node 24 was rerun, at 11:20:06–11:20:49 UTC. Neither timeout reproduced; source, test thresholds, dependencies and workflow were unchanged. No root cause or test-stability fix is claimed.
+
+Verification method: GitHub Actions API job/step results, original failed-job and successful retry logs, Git tree comparison, an actual local build of the exact merged main commit, archive/file hashing, npm publication and independent registry HTTP download. No new Desktop manual test was performed during publication; the earlier actual Desktop evidence below remains the candidate validation.
+
+The fresh main build was packed separately with `npm pack --ignore-scripts` and compared to the retained candidate before publication. Both archives and the subsequently downloaded npm archive have SHA256 `22a79bd1c36fe8449264f2dcddadbe9e1fa04a088228c12a4f2916e7d308eeae`. All 19 inventory paths, byte lengths and SHA256 values match, including peerDependencies, server/client bundles, declarations, source maps, ArkTS WASM and licenses. The candidate was never replaced. npm SHA1 is `23480a799d1638be7181cde32411b9c4bde364f8`; integrity is `sha512-sY+52u4GrXWuQm0TsiMDaXYdle+80407bgpCSOKE2zfixgZcfYXKiL3uLOH3t6WKmLFAlCDGEQOWVROLhoF7nA==`.
+
+Published the original frozen tarball with `npm publish .dsh-code-index/release-v0102/dsh-code-index-0.10.2.tgz --ignore-scripts --access public --tag latest --registry=https://registry.npmjs.org`. Local npm implementation and dry-run confirmed tarball upload with lifecycle scripts disabled, preventing `prepublishOnly`/prepare from rebuilding publication contents. The user completed browser authorization; no plaintext credentials were requested. npm initially returned success with an asynchronous-processing notice; registry verification waited until the version and latest tag became visible before proceeding. GitHub's uploaded tarball digest independently matches the same SHA256.
 
 ## Observable gate / 最小验收
 
@@ -90,8 +111,14 @@ node scripts/release-smoke.mjs .dsh-code-index/release-v0102/dsh-code-index-0.10
 
 真实 Desktop 最小验收通过，无宿主或第三方 blocker。候选仍安装供复测，原版本已备份；未修改 profile 配置，未展开无关调查。
 
-## Release boundary / 发布停止点
+## Release boundary / 发布边界
 
-**LOCAL RC READY**, no known technical blocker for this candidate. Remote CI/review, merge and formal publication have not been run for v0.10.2 and remain a later authorized release gate. The known limitation is unchanged Rust call-expression coverage, not full type-use navigation.
+**PUBLISHED**, with main CI, npm download integrity, tag and GitHub Release verified. The known limitation remains unchanged Rust call-expression coverage, not full type-use navigation. No production implementation, host compatibility, ArkTS feature, global timeout, DSH Host or third-party extension was changed during release.
 
-`HANDOFF_PROMPT.md` remains untracked and untouched, SHA256 `05d2be1390a73d588ef6461df8ba583abfb86f771581009da647fca3244d5034`. Main stays at the baseline. No npm publish, tag, Release or community message. Both language notes describe the same fix and limitations. 等待用户确认后再推进远程关卡或发布；对 @dio16 的反馈与复测邀请尚未发送。
+`HANDOFF_PROMPT.md` remains untracked and untouched, SHA256 `05d2be1390a73d588ef6461df8ba583abfb86f771581009da647fca3244d5034`; it is excluded from the documentation commit. Both language notes describe the same fix and limitations. Issue #5 feedback and completion are recorded after verifying npm and GitHub Release below.
+
+## Community follow-up / 用户反馈闭环
+
+After npm and GitHub Release were verified, posted the [English reply to @dio16](https://github.com/lemonxiny55/dsh-code-index/issues/5#issuecomment-6266353401) at `2026-10-19T11:40:31Z`. It thanks him for the real-project report and full reproduction, links the official npm package and GitHub Release, explains the Rust public struct/enum/trait signature fix, correct declaration names/stable IDs/source lines, preserved cross-language `exported` semantics, and unchanged type-use/call-edge coverage, and invites a retest on the original Rust Monorepo.
+
+After the reply succeeded, [Issue #5](https://github.com/lemonxiny55/dsh-code-index/issues/5) was closed at `2026-10-19T11:40:45Z` with `state_reason = completed`. API readback confirms `state = closed` and `locked = false`; the reply explicitly invites further results and reopening if the display bug persists.

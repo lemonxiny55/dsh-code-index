@@ -1,6 +1,6 @@
 # v0.10.2 — Rust declaration display fix / Rust 声明展示修复
 
-Candidate only; not published. / 仅为候选，尚未发布。
+Published: [npm 0.10.2](https://www.npmjs.com/package/dsh-code-index/v/0.10.2) · [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.2). / 已正式发布。
 
 ## English
 
@@ -10,7 +10,7 @@ Cache generation advances from 3 to 4. Old caches are rebuilt from source, inclu
 
 `exported` and the generic `export` display marker retain their cross-language public-status meaning. For Rust, unrestricted `pub` is true; ordinary declarations, `pub(crate)` and `pub(in path)` are false. Kind mappings remain struct → class and trait → interface. This patch adds no type-use/struct-literal reference edges: `code_refs` can show a correct type definition with zero callers; actual function calls remain traceable.
 
-DSH tools support remains exactly `0.2.0-rc.2 || 0.2.1-rc.2`; Node 22/24. No ArkTS semantic, UI, vector-search, host or third-party changes. Validation methods and limitations are recorded in [Release Evidence](RELEASE_EVIDENCE_v0.10.2.md). Publication requires a separate authorization.
+DSH tools support remains exactly `0.2.0-rc.2 || 0.2.1-rc.2`; Node 22/24. No ArkTS semantic, UI, vector-search, host or third-party changes. Validation methods, main CI retry, published artifact integrity and limitations are recorded in [Release Evidence](RELEASE_EVIDENCE_v0.10.2.md).
 
 ## 中文
 
@@ -20,4 +20,4 @@ DSH tools support remains exactly `0.2.0-rc.2 || 0.2.1-rc.2`; Node 22/24. No Ark
 
 `exported` 与通用 `export` 展示标记保留跨语言的公开状态含义。Rust 中不带限制的 `pub` 为 true；普通声明、`pub(crate)` 与 `pub(in path)` 为 false。种类映射仍为 struct → class、trait → interface。本次不新增类型使用或结构体字面量引用边：`code_refs` 可正确显示类型定义，同时 callers 为零；真实函数调用仍可追踪。
 
-DSH tools 支持范围仍严格为 `0.2.0-rc.2 || 0.2.1-rc.2`，Node 22/24。不包含 ArkTS 语义、UI、向量检索、宿主或第三方修改。验证方法与局限见[发布证据](RELEASE_EVIDENCE_v0.10.2.md)。正式发布需另行授权。
+DSH tools 支持范围仍严格为 `0.2.0-rc.2 || 0.2.1-rc.2`，Node 22/24。不包含 ArkTS 语义、UI、向量检索、宿主或第三方修改。验证方法、main CI 复测、正式包完整性及局限见[发布证据](RELEASE_EVIDENCE_v0.10.2.md)。
