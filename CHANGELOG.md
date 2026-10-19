@@ -2,6 +2,12 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.10.2 — Rust declaration signatures (candidate, unpublished)
+
+- **fix(rust):** render struct/enum/trait signatures from their declared `name` field, rather than a leading visibility node. Correct `pub`, restricted visibility and ordinary declarations across symbol search, repo maps, context and reference definition labels. Names and stable IDs were already correct; no new reference edges are inferred.
+- **fix(cache):** advance cache generation to 4 and reject old extraction on both disk and direct incremental-build paths, rebuilding unchanged source once.
+- Preserve normalized `exported` semantics, tool contracts, the two exact supported DSH host groups, all nine languages and ArkTS resources. Add Rust regression and installed-runtime smoke coverage. See `RELEASE_EVIDENCE_v0.10.2.md` and bilingual `RELEASE_NOTES_v0.10.2.md`.
+
 ## 0.10.1 — DSH Desktop compatibility fix (2026-10-18)
 
 - **fix(compat):** enumerate DSH/dsh-tools `0.2.0-rc.2 || 0.2.1-rc.2` so Desktop `0.2.1-rc.2` can activate the plugin without a version exemption. Keep the old development API baseline; no new feature or parser/resource change.

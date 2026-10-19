@@ -2,6 +2,8 @@
 
 [English](README.md) | 中文
 
+**v0.10.2 候选 — Rust 声明展示修复（未发布）。**修复 [Issue #5](https://github.com/lemonxiny55/dsh-code-index/issues/5) 中公共 struct/enum/trait 的签名显示为 `pub` 的问题。既有缓存会重建一次。`exported` / 通用 `export` 展示标记仍表示各语言的公开状态：Rust 不带限制的 `pub` 为 true，`pub(crate)` 和 `pub(in path)` 为 false。本次不增加类型使用引用边。见[修复说明](RELEASE_NOTES_v0.10.2.md)及[候选验证证据](RELEASE_EVIDENCE_v0.10.2.md)。
+
 **v0.10.1 已发布 — DSH Desktop 兼容修复**
 
 **[v0.10.1 已正式发布](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1)，npm `latest` 为 `0.10.1`。**增加 DSH Desktop `0.2.1-rc.2` 支持，保留 `0.2.0-rc.2`。仅支持这两个精确的 DSH/dsh-tools 宿主版本组；每组第一方包必须保持同版。验证方法见[发布证据](RELEASE_EVIDENCE_v0.10.1.md)及[中英文修复说明](RELEASE_NOTES_v0.10.1.md)。

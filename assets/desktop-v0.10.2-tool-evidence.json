@@ -1,0 +1,423 @@
+{
+  "date": "2026-10-19",
+  "sessionId": "session-0bc06b87-0f47-4e91-ba63-d4cf83dc9f72",
+  "method": "Computer Use installs/observes actual Desktop profile; GLM-5.3-Flash Agent calls; persisted session events and index independently audited",
+  "hostVersion": "0.2.1-rc.2",
+  "pluginVersion": "0.10.2",
+  "activation": "1 component running; version displayed in plugin details",
+  "turnEnd": "completed",
+  "calls": [
+    {
+      "seq": 18,
+      "time": 1792391054531,
+      "turn": 1,
+      "step": 1,
+      "callId": "f93cd1a3-adc2-4ef8-97c7-e07d8f1e087e",
+      "name": "code_index",
+      "arguments": {
+        "repoRoot": "<fixture>",
+        "action": "build"
+      }
+    },
+    {
+      "seq": 23,
+      "time": 1792391059065,
+      "turn": 1,
+      "step": 2,
+      "callId": "e4a059f5-fb85-4f3c-a0f2-488f09334549",
+      "name": "code_symbols",
+      "arguments": {
+        "repoRoot": "<fixture>"
+      }
+    },
+    {
+      "seq": 28,
+      "time": 1792391066666,
+      "turn": 1,
+      "step": 3,
+      "callId": "19114aee-9e34-4ff4-a966-5d33d5bdefbd",
+      "name": "code_search",
+      "arguments": {
+        "repoRoot": "<fixture>",
+        "query": "PublicOne"
+      }
+    },
+    {
+      "seq": 30,
+      "time": 1792391066672,
+      "turn": 1,
+      "step": 3,
+      "callId": "46162e06-a1ca-424f-881c-bb29ea77c69a",
+      "name": "code_search",
+      "arguments": {
+        "repoRoot": "<fixture>",
+        "query": "PublicEnum"
+      }
+    },
+    {
+      "seq": 32,
+      "time": 1792391066677,
+      "turn": 1,
+      "step": 3,
+      "callId": "f09eb718-22cf-4d99-ad9e-e1eacc6e5082",
+      "name": "code_search",
+      "arguments": {
+        "repoRoot": "<fixture>",
+        "query": "PublicTrait"
+      }
+    },
+    {
+      "seq": 37,
+      "time": 1792391069094,
+      "turn": 1,
+      "step": 4,
+      "callId": "7ce21ffb-25a5-4276-a71b-dbb127cbe580",
+      "name": "code_map",
+      "arguments": {
+        "repoRoot": "<fixture>"
+      }
+    },
+    {
+      "seq": 42,
+      "time": 1792391074057,
+      "turn": 1,
+      "step": 5,
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "code_context",
+      "arguments": {
+        "budgetChars": 5000,
+        "task": "Explain PublicOne PublicEnum PublicTrait",
+        "repoRoot": "<fixture>"
+      }
+    },
+    {
+      "seq": 47,
+      "time": 1792391077818,
+      "turn": 1,
+      "step": 6,
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "code_context",
+      "arguments": {
+        "task": "Explain PublicOne PublicEnum PublicTrait",
+        "repoRoot": "<fixture>",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      }
+    },
+    {
+      "seq": 52,
+      "time": 1792391081646,
+      "turn": 1,
+      "step": 7,
+      "callId": "fb34d019-356a-46e0-bd2e-8b1eb00e36af",
+      "name": "code_refs",
+      "arguments": {
+        "symbol": "PublicOne",
+        "direction": "both",
+        "repoRoot": "<fixture>"
+      }
+    },
+    {
+      "seq": 54,
+      "time": 1792391081651,
+      "turn": 1,
+      "step": 7,
+      "callId": "b9a9d3f2-13d4-45ca-a314-26b81c98ea7a",
+      "name": "code_refs",
+      "arguments": {
+        "symbol": "public_function",
+        "direction": "both",
+        "repoRoot": "<fixture>"
+      }
+    }
+  ],
+  "results": [
+    {
+      "seq": 19,
+      "time": 1792391054650,
+      "callId": "f93cd1a3-adc2-4ef8-97c7-e07d8f1e087e",
+      "isError": false,
+      "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0102\\desktop-fixture\nfiles indexed: 2\nsymbols: 15\nlanguages: rust\nindex up to date"
+    },
+    {
+      "seq": 24,
+      "time": 1792391059071,
+      "callId": "e4a059f5-fb85-4f3c-a0f2-488f09334549",
+      "isError": false,
+      "text": "export function public_function(a: u32) [0.40] — repro.rs:8\nexport enum PublicEnum [0.40] — repro.rs:4\nexport class PublicOne [0.40] — repro.rs:2\nexport interface PublicTrait [0.40] — repro.rs:6\nfunction caller() [0.40] — use.rs:4\nclass CrateOnly [0.40] — use.rs:1\nfunction private_function(a: u32) [0.40] — repro.rs:9\nenum PrivateEnum [0.40] — repro.rs:5\nclass PrivateOne [0.40] — repro.rs:3\ninterface PrivateTrait [0.40] — repro.rs:7\nenum RestrictedEnum [0.40] — use.rs:2\ninterface RestrictedTrait [0.40] — use.rs:3\nmethod run(&self) [0.40] — repro.rs:6\nmethod run(&self) [0.40] — repro.rs:7\nmethod run(&self) [0.40] — use.rs:3"
+    },
+    {
+      "seq": 29,
+      "time": 1792391066672,
+      "callId": "19114aee-9e34-4ff4-a966-5d33d5bdefbd",
+      "isError": false,
+      "text": "export class PublicOne — repro.rs:2"
+    },
+    {
+      "seq": 31,
+      "time": 1792391066676,
+      "callId": "46162e06-a1ca-424f-881c-bb29ea77c69a",
+      "isError": false,
+      "text": "export enum PublicEnum — repro.rs:4"
+    },
+    {
+      "seq": 33,
+      "time": 1792391066680,
+      "callId": "f09eb718-22cf-4d99-ad9e-e1eacc6e5082",
+      "isError": false,
+      "text": "export interface PublicTrait — repro.rs:6"
+    },
+    {
+      "seq": 38,
+      "time": 1792391069099,
+      "callId": "7ce21ffb-25a5-4276-a71b-dbb127cbe580",
+      "isError": false,
+      "text": "# repo map\n## repro.rs (10)\n  class PublicOne :2\n  class PrivateOne :3\n  enum PublicEnum :4\n  enum PrivateEnum :5\n  interface PublicTrait :6\n  method run(&self) :6\n  interface PrivateTrait :7\n  method run(&self) :7\n  function public_function(a: u32) :8\n  function private_function(a: u32) :9\n## use.rs (5)\n  class CrateOnly :1\n  enum RestrictedEnum :2\n  interface RestrictedTrait :3\n  method run(&self) :3\n  function caller() :4"
+    },
+    {
+      "seq": 43,
+      "time": 1792391074069,
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "isError": false,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0102\\desktop-fixture\nTask: Explain PublicOne PublicEnum PublicTrait\n\nprimary: PublicOne repro.rs:2-2 [current]\nReason: task names this symbol\nSource (complete):\npub struct PublicOne { pub field: u32 }\n\nprimary: PublicEnum repro.rs:4-4 [current]\nReason: task names this symbol\nSource (complete):\npub enum PublicEnum { A }\n\nprimary: PublicTrait repro.rs:6-6 [current]\nReason: task names this symbol\nSource (complete):\npub trait PublicTrait { fn run(&self); }\n\nprimary: public_function repro.rs:8-8 [current]\nReason: matches task terms\nSource (complete):\npub fn public_function(a: u32) -> u32 { a }\n\nprimary: PrivateOne repro.rs:3-3 [current]\nReason: matches task terms\nSource (complete):\nstruct PrivateOne { field: u32 }\n\nprimary: PrivateEnum repro.rs:5-5 [current]\nReason: matches task terms\nSource (complete):\nenum PrivateEnum { A }\n\nprimary: PrivateTrait repro.rs:7-7 [current]\nReason: matches task terms\nSource (complete):\ntrait PrivateTrait { fn run(&self); }\n\nprimary: RestrictedEnum use.rs:2-2 [current]\nReason: matches task terms\nSource (complete):\npub(in crate) enum RestrictedEnum { A }\n\nprimary: RestrictedTrait use.rs:3-3 [current]\nReason: matches task terms\nSource (complete):\npub(crate) trait RestrictedTrait { fn run(&self); }\n\nrelationship: caller (use.rs:4) → public_function (repro.rs:8) at use.rs:4 [name-only; global-name]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; global-name\n\nGaps: no related indexed test found\nBudget: 1590 / 5000 chars"
+    },
+    {
+      "seq": 48,
+      "time": 1792391077824,
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "isError": false,
+      "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.dsh-code-index\\release-v0102\\desktop-fixture\nTask: Explain PublicOne PublicEnum PublicTrait\n\nprimary: PublicOne repro.rs:2-2 [current]\nReason: task names this symbol\nSource (complete):\npub struct PublicOne { pub field: u32 }\n\nprimary: PublicEnum repro.rs:4-4 [current]\nReason: task names this symbol\nSource (complete):\npub enum PublicEnum { A }\n\nprimary: PublicTrait repro.rs:6-6 [current]\nReason: task names this symbol\nSource (complete):\npub trait PublicTrait { fn run(&self); }\n\nprimary: public_function repro.rs:8-8 [current]\nReason: matches task terms\nSource (complete):\npub fn public_function(a: u32) -> u32 { a }\n\nprimary: PrivateOne repro.rs:3-3 [current]\nReason: matches task terms\nSource (complete):\nstruct PrivateOne { field: u32 }\n\nprimary: PrivateEnum repro.rs:5-5 [current]\nReason: matches task terms\nSource (complete):\nenum PrivateEnum { A }\n\nprimary: PrivateTrait repro.rs:7-7 [current]\nReason: matches task terms\nSource (complete):\ntrait PrivateTrait { fn run(&self); }\n\nprimary: RestrictedEnum use.rs:2-2 [current]\nReason: matches task terms\nSource (complete):\npub(in crate) enum RestrictedEnum { A }\n\nprimary: RestrictedTrait use.rs:3-3 [current]\nReason: matches task terms\nSource (complete):\npub(crate) trait RestrictedTrait { fn run(&self); }\n\nrelationship: caller (use.rs:4) → public_function (repro.rs:8) at use.rs:4 [name-only; global-name]\nReason: bounded primary graph neighborhood\nRelationship provenance: name-only; global-name\n\nGaps: no related indexed test found\nBudget: 1590 / 5000 chars"
+    },
+    {
+      "seq": 53,
+      "time": 1792391081651,
+      "callId": "fb34d019-356a-46e0-bd2e-8b1eb00e36af",
+      "isError": false,
+      "text": "definitions:\n  class PublicOne — repro.rs:2\n\ncallers (0):\n  (none)\n\ncallees (0):\n  (none)"
+    },
+    {
+      "seq": 55,
+      "time": 1792391081655,
+      "callId": "b9a9d3f2-13d4-45ca-a314-26b81c98ea7a",
+      "isError": false,
+      "text": "definitions:\n  function public_function(a: u32) — repro.rs:8\n\ncallers (1):\n  use.rs:4 in caller\n\ncallees (0):\n  (none)"
+    }
+  ],
+  "fixture": {
+    "repro.rs": "// Issue #5: preserve declaration names with and without public visibility.\npub struct PublicOne { pub field: u32 }\nstruct PrivateOne { field: u32 }\npub enum PublicEnum { A }\nenum PrivateEnum { A }\npub trait PublicTrait { fn run(&self); }\ntrait PrivateTrait { fn run(&self); }\npub fn public_function(a: u32) -> u32 { a }\nfn private_function(a: u32) -> u32 { a }\n",
+    "use.rs": "pub(crate) struct CrateOnly;\npub(in crate) enum RestrictedEnum { A }\npub(crate) trait RestrictedTrait { fn run(&self); }\nfn caller() { let value: PublicOne = PublicOne { field: public_function(1) }; }\r\n"
+  },
+  "sourceAudit": [
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PublicOne",
+      "file": "repro.rs",
+      "startLine": 2,
+      "endLine": 2,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PublicEnum",
+      "file": "repro.rs",
+      "startLine": 4,
+      "endLine": 4,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PublicTrait",
+      "file": "repro.rs",
+      "startLine": 6,
+      "endLine": 6,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "public_function",
+      "file": "repro.rs",
+      "startLine": 8,
+      "endLine": 8,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PrivateOne",
+      "file": "repro.rs",
+      "startLine": 3,
+      "endLine": 3,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PrivateEnum",
+      "file": "repro.rs",
+      "startLine": 5,
+      "endLine": 5,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "PrivateTrait",
+      "file": "repro.rs",
+      "startLine": 7,
+      "endLine": 7,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "RestrictedEnum",
+      "file": "use.rs",
+      "startLine": 2,
+      "endLine": 2,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "2f83bd9a-3d66-476f-9658-ec7befc4a568",
+      "name": "RestrictedTrait",
+      "file": "use.rs",
+      "startLine": 3,
+      "endLine": 3,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PublicOne",
+      "file": "repro.rs",
+      "startLine": 2,
+      "endLine": 2,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PublicEnum",
+      "file": "repro.rs",
+      "startLine": 4,
+      "endLine": 4,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PublicTrait",
+      "file": "repro.rs",
+      "startLine": 6,
+      "endLine": 6,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "public_function",
+      "file": "repro.rs",
+      "startLine": 8,
+      "endLine": 8,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PrivateOne",
+      "file": "repro.rs",
+      "startLine": 3,
+      "endLine": 3,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PrivateEnum",
+      "file": "repro.rs",
+      "startLine": 5,
+      "endLine": 5,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "PrivateTrait",
+      "file": "repro.rs",
+      "startLine": 7,
+      "endLine": 7,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "RestrictedEnum",
+      "file": "use.rs",
+      "startLine": 2,
+      "endLine": 2,
+      "mode": "complete",
+      "exactSourceMatch": true
+    },
+    {
+      "callId": "ccc42cb0-b97d-43ce-9c53-2783460582b7",
+      "name": "RestrictedTrait",
+      "file": "use.rs",
+      "startLine": 3,
+      "endLine": 3,
+      "mode": "complete",
+      "exactSourceMatch": true
+    }
+  ],
+  "renderedContextChars": [
+    1590,
+    1590
+  ],
+  "publicFlags": [
+    {
+      "name": "PublicOne",
+      "id": "sym:v1:repro.rs#class:PublicOne@1",
+      "signature": "PublicOne",
+      "exported": true
+    },
+    {
+      "name": "PublicEnum",
+      "id": "sym:v1:repro.rs#owner:PublicEnum@1",
+      "signature": "PublicEnum",
+      "exported": true
+    },
+    {
+      "name": "PublicTrait",
+      "id": "sym:v1:repro.rs#trait:PublicTrait@1",
+      "signature": "PublicTrait",
+      "exported": true
+    },
+    {
+      "name": "CrateOnly",
+      "id": "sym:v1:use.rs#class:CrateOnly@1",
+      "signature": "CrateOnly",
+      "exported": false
+    },
+    {
+      "name": "RestrictedEnum",
+      "id": "sym:v1:use.rs#owner:RestrictedEnum@1",
+      "signature": "RestrictedEnum",
+      "exported": false
+    },
+    {
+      "name": "RestrictedTrait",
+      "id": "sym:v1:use.rs#trait:RestrictedTrait@1",
+      "signature": "RestrictedTrait",
+      "exported": false
+    }
+  ],
+  "profileConfigurationFilesUnchanged": [
+    "package.json",
+    "cordis.yml",
+    "cordis.patch.yml",
+    "pnpm-lock.yaml"
+  ],
+  "limitations": "Synthetic parser fixture, no Cargo build or full Rust type-use graph claim. Pack request success and rendered content are persisted; raw pack DTO is separately verified by actual ToolRuntime installation smoke."
+}

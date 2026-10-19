@@ -1,0 +1,141 @@
+{
+  "version": "0.10.2",
+  "filename": "dsh-code-index-0.10.2.tgz",
+  "size": 415815,
+  "unpackedSize": 3150476,
+  "sha256": "22a79bd1c36fe8449264f2dcddadbe9e1fa04a088228c12a4f2916e7d308eeae",
+  "shasum": "23480a799d1638be7181cde32411b9c4bde364f8",
+  "integrity": "sha512-sY+52u4GrXWuQm0TsiMDaXYdle+80407bgpCSOKE2zfixgZcfYXKiL3uLOH3t6WKmLFAlCDGEQOWVROLhoF7nA==",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "0.2.0-rc.2 || 0.2.1-rc.2"
+  },
+  "fileCount": 19,
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 17580,
+      "mode": 420,
+      "sha256": "56e017281279f9ddc2592d55a0381ee959510a480507198906739ca536582f8c"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1083,
+      "mode": 420,
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "README.md",
+      "size": 21618,
+      "mode": 420,
+      "sha256": "3b00352b991408f957fc5c6bafbeab04ca65970dc5441673dddf59dff263fe60"
+    },
+    {
+      "path": "README.zh.md",
+      "size": 19619,
+      "mode": 420,
+      "sha256": "1030a9794b3fa4e052c88007b7e9b66860bfd438fd5c0ad1f1b4ead101d497ae"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 207,
+      "mode": 420,
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "dist/client.js",
+      "size": 17328,
+      "mode": 420,
+      "sha256": "8bf57869fade71ad1989f27d8bbd6161cc7aa3f0bd33e697de060f5251ac22f8"
+    },
+    {
+      "path": "dist/client.js.map",
+      "size": 24639,
+      "mode": 420,
+      "sha256": "e7dc628c8dc84a4405b90a98667da8984c20ca78afea910a2b064c7dd4e6c0e0"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "size": 26104,
+      "mode": 420,
+      "sha256": "bf43c21abbe1b9dbbdcc7b36163cacc80506d61cba9ffff5ab917d173b76d943"
+    },
+    {
+      "path": "dist/index.js",
+      "size": 175233,
+      "mode": 420,
+      "sha256": "ad24b23f1167c6e3d16ccccdc52593d63796f9238da92050ed58bad4ebae33d7"
+    },
+    {
+      "path": "dist/index.js.map",
+      "size": 374167,
+      "mode": 420,
+      "sha256": "95f314d330d716095f9f5c3d3c2efeb3b0b3dc35d6bad3828f0b78046218f2e0"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "size": 2154,
+      "mode": 420,
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "size": 1566,
+      "mode": 420,
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "size": 2430659,
+      "mode": 420,
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "package.json",
+      "size": 2305,
+      "mode": 420,
+      "sha256": "b8c6daf07039c48909a11e4dd72c4c05f8dff9faea44231d90ee509e658c1ad9"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "size": 4980,
+      "mode": 420,
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "size": 4994,
+      "mode": 420,
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "size": 3579,
+      "mode": 420,
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "size": 16023,
+      "mode": 420,
+      "sha256": "0b196799908bd81295b39542c39b3898f4e1615cc313175fffde66801c9ae01c"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "size": 6638,
+      "mode": 420,
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ],
+  "node22And24BuildArchivesIdentical": true,
+  "desktopInstalledFilesMatch": true,
+  "retainedResources": [
+    "LICENSE",
+    "cordis.patch.yml",
+    "dist/client.js",
+    "dist/client.js.map",
+    "grammars/ARKTS-LICENSE",
+    "grammars/README.md",
+    "grammars/tree-sitter-arkts.wasm"
+  ]
+}

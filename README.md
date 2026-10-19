@@ -5,6 +5,8 @@
 
 English | [中文](README.zh.md)
 
+**v0.10.2 candidate — Rust declaration display fix (not published).** Fixes public struct/enum/trait signatures reported as `pub` in [Issue #5](https://github.com/lemonxiny55/dsh-code-index/issues/5). Existing caches rebuild once. `exported` / the generic `export` display marker still mean language-specific public visibility: Rust unrestricted `pub` is true; `pub(crate)` and `pub(in path)` are false. This does not add type-use reference edges. See [fix notes](RELEASE_NOTES_v0.10.2.md) and [candidate evidence](RELEASE_EVIDENCE_v0.10.2.md).
+
 **v0.10.1 released — DSH Desktop compatibility fix**
 
 **[v0.10.1 is released](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1); npm `latest` is `0.10.1`.** Adds DSH Desktop `0.2.1-rc.2` support while retaining `0.2.0-rc.2`. Only these two exact DSH/dsh-tools host groups are supported; keep each host's first-party packages on the same version. See [release evidence](RELEASE_EVIDENCE_v0.10.1.md) and [bilingual fix notes](RELEASE_NOTES_v0.10.1.md).
