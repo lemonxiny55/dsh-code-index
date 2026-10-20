@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useState, type ReactNode } from 'react'
+import { asImpactXray, ImpactXrayCard } from './impact-xray.js'
 
 /** Minimal structural view of the client plugin context this bundle uses. */
 interface ClientContextLike {
@@ -61,6 +62,7 @@ interface ToolResultLike {
   content?: readonly TextContent[]
   isError?: boolean
   resultView?: unknown
+  meta?: unknown
 }
 
 interface SearchView {
@@ -134,6 +136,8 @@ function CodeToolCard(props: ToolViewProps): ReactNode {
   const summary = summarizeArgs(parseArgs(head.argsRaw))
   const search = asSearchView(block.resultView)
   const isError = block.isError === true
+  const xray = !isError && toolName === 'code_change_context' ? asImpactXray(block.meta) : null
+  if (xray) return <ImpactXrayCard view={xray} openFile={openFile} />
 
   return (
     <div style={CARD_STYLE}>

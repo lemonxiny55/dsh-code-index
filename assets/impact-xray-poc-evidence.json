@@ -1,0 +1,540 @@
+{
+  "date": "2026-10-20",
+  "stage": "Architecture audit + PoC; not RC READY",
+  "baseline": "ba24d2a",
+  "branch": "feat/v0.11-impact-xray",
+  "host": "Actual DSH Desktop 0.2.1-rc.2; existing desktop profile",
+  "packageVersion": "0.10.2 (unreleased branch PoC, not a v0.11 release)",
+  "method": "Computer Use submitted a model-backed Desktop request, selected a node and an exact relation, expanded the graph and opened native file preview. Persisted session events and actual repository source independently audited. Final client replay checked after routing correction.",
+  "sessionId": "session-e4fc8f09-efb1-49ff-906c-ebc8cb6cf205",
+  "events": {
+    "calls": 1,
+    "results": 1,
+    "turnEnd": "completed",
+    "callId": "5f874c41-b9ef-4890-8578-d66f8425c7d5",
+    "toolElapsedMs": 497
+  },
+  "fixture": {
+    "src/core.ts": "export function normalize(input: string) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n",
+    "src/loose.ts": "// Deliberately unresolved: a low-confidence name match, not an executable import.\nexport function looseUsage() { return normalize(\" loose \") }\n",
+    "src/main.ts": "import { startup } from \"./startup\"\nexport function main() { return startup() }\n",
+    "src/scoped.ts": "import * as core from \"./core\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n",
+    "src/startup.ts": "import { normalize } from \"./core\"\nexport function startup() { return normalize(\" startup \") }\n",
+    "tests/core.test.ts": "import { normalize } from \"../src/core\"\nexport function checkNormalize() { return normalize(\" test \") === \"test\" }\n"
+  },
+  "graph": {
+    "nodes": 7,
+    "edges": 6,
+    "confidenceCounts": {
+      "name-only": 2,
+      "import-scoped": 1,
+      "exact": 3
+    },
+    "metadataBytes": 5818,
+    "snapshot": {
+      "card": "impact-xray",
+      "version": 1,
+      "root": "<fixture>",
+      "source": "git",
+      "nodes": [
+        {
+          "id": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "name": "normalize",
+          "kind": "function",
+          "file": "src/core.ts",
+          "line": 1,
+          "changed": true,
+          "reason": "modified; Git/diff declaration mapping; current",
+          "evidence": {
+            "file": "src/core.ts",
+            "line": 1,
+            "startLine": 1,
+            "side": "current",
+            "code": "export function normalize(input: string) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+          }
+        },
+        {
+          "id": "current:sym:v1:src%2Fcore.ts#function:localUsage@1",
+          "name": "localUsage",
+          "kind": "function",
+          "file": "src/core.ts",
+          "line": 4,
+          "changed": false,
+          "reason": "Caller via local-unique",
+          "evidence": {
+            "file": "src/core.ts",
+            "line": 4,
+            "startLine": 2,
+            "side": "current",
+            "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+          }
+        },
+        {
+          "id": "current:sym:v1:src%2Floose.ts#function:looseUsage@1",
+          "name": "looseUsage",
+          "kind": "function",
+          "file": "src/loose.ts",
+          "line": 2,
+          "changed": false,
+          "reason": "Caller via global-name",
+          "evidence": {
+            "file": "src/loose.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "// Deliberately unresolved: a low-confidence name match, not an executable import.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+          }
+        },
+        {
+          "id": "current:sym:v1:src%2Fscoped.ts#function:scopedUsage@1",
+          "name": "scopedUsage",
+          "kind": "function",
+          "file": "src/scoped.ts",
+          "line": 2,
+          "changed": false,
+          "reason": "Caller via namespace-import",
+          "evidence": {
+            "file": "src/scoped.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import * as core from \"./core\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+          }
+        },
+        {
+          "id": "current:sym:v1:src%2Fstartup.ts#function:startup@1",
+          "name": "startup",
+          "kind": "function",
+          "file": "src/startup.ts",
+          "line": 2,
+          "changed": false,
+          "reason": "Caller via explicit-import-binding",
+          "evidence": {
+            "file": "src/startup.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { normalize } from \"./core\"\nexport function startup() { return normalize(\" startup \") }\n"
+          }
+        },
+        {
+          "id": "current:sym:v1:tests%2Fcore.test.ts#function:checkNormalize@1",
+          "name": "checkNormalize",
+          "kind": "function",
+          "file": "tests/core.test.ts",
+          "line": 2,
+          "changed": false,
+          "reason": "Caller via explicit-import-binding",
+          "evidence": {
+            "file": "tests/core.test.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { normalize } from \"../src/core\"\nexport function checkNormalize() { return normalize(\" test \") === \"test\" }\n"
+          }
+        },
+        {
+          "id": "current:sym:v1:src%2Fmain.ts#function:main@1",
+          "name": "main",
+          "kind": "function",
+          "file": "src/main.ts",
+          "line": 2,
+          "changed": false,
+          "reason": "Caller via explicit-import-binding",
+          "evidence": {
+            "file": "src/main.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { startup } from \"./startup\"\nexport function main() { return startup() }\n"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge:0",
+          "from": "current:sym:v1:src%2Fcore.ts#function:localUsage@1",
+          "to": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "resolution": "name-only",
+          "reason": "local-unique",
+          "evidence": {
+            "file": "src/core.ts",
+            "line": 4,
+            "startLine": 2,
+            "side": "current",
+            "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+          }
+        },
+        {
+          "id": "edge:1",
+          "from": "current:sym:v1:src%2Floose.ts#function:looseUsage@1",
+          "to": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "resolution": "name-only",
+          "reason": "global-name",
+          "evidence": {
+            "file": "src/loose.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "// Deliberately unresolved: a low-confidence name match, not an executable import.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+          }
+        },
+        {
+          "id": "edge:2",
+          "from": "current:sym:v1:src%2Fscoped.ts#function:scopedUsage@1",
+          "to": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "resolution": "import-scoped",
+          "reason": "namespace-import",
+          "evidence": {
+            "file": "src/scoped.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import * as core from \"./core\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+          }
+        },
+        {
+          "id": "edge:3",
+          "from": "current:sym:v1:src%2Fstartup.ts#function:startup@1",
+          "to": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "resolution": "exact",
+          "reason": "explicit-import-binding",
+          "evidence": {
+            "file": "src/startup.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { normalize } from \"./core\"\nexport function startup() { return normalize(\" startup \") }\n"
+          }
+        },
+        {
+          "id": "edge:4",
+          "from": "current:sym:v1:tests%2Fcore.test.ts#function:checkNormalize@1",
+          "to": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+          "resolution": "exact",
+          "reason": "explicit-import-binding",
+          "evidence": {
+            "file": "tests/core.test.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { normalize } from \"../src/core\"\nexport function checkNormalize() { return normalize(\" test \") === \"test\" }\n"
+          }
+        },
+        {
+          "id": "edge:5",
+          "from": "current:sym:v1:src%2Fmain.ts#function:main@1",
+          "to": "current:sym:v1:src%2Fstartup.ts#function:startup@1",
+          "resolution": "exact",
+          "reason": "explicit-import-binding",
+          "evidence": {
+            "file": "src/main.ts",
+            "line": 2,
+            "startLine": 1,
+            "side": "current",
+            "code": "import { startup } from \"./startup\"\nexport function main() { return startup() }\n"
+          }
+        }
+      ],
+      "tests": [
+        {
+          "file": "tests/core.test.ts",
+          "resolution": "import-scoped",
+          "reason": "imports-changed-file",
+          "distance": 1
+        }
+      ],
+      "imports": [
+        {
+          "file": "src/scoped.ts",
+          "changedFile": "src/core.ts",
+          "specifier": "./core",
+          "resolution": "import-scoped"
+        },
+        {
+          "file": "src/startup.ts",
+          "changedFile": "src/core.ts",
+          "specifier": "./core",
+          "resolution": "import-scoped"
+        },
+        {
+          "file": "tests/core.test.ts",
+          "changedFile": "src/core.ts",
+          "specifier": "../src/core",
+          "resolution": "import-scoped"
+        }
+      ],
+      "gaps": [
+        "Potential impact only. exact means structurally resolved within this index, not runtime certainty. Test leads are not coverage proof."
+      ],
+      "truncated": false
+    }
+  },
+  "sourceAudit": [
+    {
+      "id": "current:sym:v1:src%2Fcore.ts#function:normalize@1",
+      "file": "src/core.ts",
+      "line": 1,
+      "startLine": 1,
+      "endLine": 4,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fcore.ts#function:localUsage@1",
+      "file": "src/core.ts",
+      "line": 4,
+      "startLine": 2,
+      "endLine": 5,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:src%2Floose.ts#function:looseUsage@1",
+      "file": "src/loose.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fscoped.ts#function:scopedUsage@1",
+      "file": "src/scoped.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fstartup.ts#function:startup@1",
+      "file": "src/startup.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:tests%2Fcore.test.ts#function:checkNormalize@1",
+      "file": "tests/core.test.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fmain.ts#function:main@1",
+      "file": "src/main.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:0",
+      "file": "src/core.ts",
+      "line": 4,
+      "startLine": 2,
+      "endLine": 5,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:1",
+      "file": "src/loose.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:2",
+      "file": "src/scoped.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:3",
+      "file": "src/startup.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:4",
+      "file": "tests/core.test.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    },
+    {
+      "id": "edge:5",
+      "file": "src/main.ts",
+      "line": 2,
+      "startLine": 1,
+      "endLine": 3,
+      "exactSourceMatch": true
+    }
+  ],
+  "tests": {
+    "22": {
+      "total": 246,
+      "passed": 246,
+      "failed": 0
+    },
+    "24": {
+      "total": 246,
+      "passed": 246,
+      "failed": 0
+    }
+  },
+  "installedRuntimeSmoke": {
+    "node22": {
+      "node": "v22.23.3",
+      "dshTools": "0.2.1-rc.2",
+      "method": "Frozen tarball installed in actual Desktop plugin directory; actual Cordis ToolRuntime schema/dispatch/render/meta, no model or UI simulation",
+      "registered": [
+        "code_index",
+        "code_symbols",
+        "code_search",
+        "code_map",
+        "code_refs",
+        "code_change_context",
+        "code_context",
+        "code_health"
+      ],
+      "defaultStringUnchanged": true,
+      "nodes": 7,
+      "edges": 6,
+      "metadataBytes": 5818,
+      "warmSingleRequestMs": 1153.7287,
+      "pass": true
+    },
+    "node24": {
+      "node": "v24.19.0",
+      "dshTools": "0.2.1-rc.2",
+      "method": "Frozen tarball installed in actual Desktop plugin directory; actual Cordis ToolRuntime schema/dispatch/render/meta, no model or UI simulation",
+      "registered": [
+        "code_index",
+        "code_symbols",
+        "code_search",
+        "code_map",
+        "code_refs",
+        "code_change_context",
+        "code_context",
+        "code_health"
+      ],
+      "defaultStringUnchanged": true,
+      "nodes": 7,
+      "edges": 6,
+      "metadataBytes": 5818,
+      "warmSingleRequestMs": 267.365,
+      "pass": true
+    }
+  },
+  "builds": {
+    "node22": "v22.23.3; typecheck and host/client builds passed",
+    "node24": "v24.19.0; typecheck and host/client builds passed",
+    "clientBytesIdentical": true,
+    "clientSha256": "23f393e66662adf4c4328717e83af432d0ba90d938e99d9b9f662f75999aeeb8"
+  },
+  "installation": {
+    "archiveSha256": "0941895a5bc545d0ad14ac00cf9b4e7573dd4fd681ad74b3c07be0648b854084",
+    "filesMatched": 20,
+    "profileConfigFilesUnchanged": [
+      "pnpm-lock.yaml",
+      "package.json",
+      "cordis.patch.yml",
+      "cordis.yml"
+    ],
+    "backupDirectory": ".dsh-code-index-impact-xray-poc-original-20261020"
+  },
+  "uiSteps": [
+    {
+      "step": "changed-node-selected",
+      "evidence": "224 区域 Impact X-Ray\n225 文本 Impact X-Ray · experimental PoC\n226 文本 Potential impact ·\n227 文本 git\n228 文本 ·\n229 文本 6\n230 文本 /\n231 文本 7\n232 文本 nodes ·\n233 文本 5\n234 文本 /\n235 文本 6\n236 文本 call edges\n237 文本 Solid: exact · dashed: import-scoped · dotted: name-only (low confidence). Arrows point from caller to callee.\n238 图形 Call relationships\n239 组 name-only: src/core.ts:4 Description: name-only: src/core.ts:4\n240 组 name-only: src/loose.ts:2 Description: name-only: src/loose.ts:2\n241 组 import-scoped: src/scoped.ts:2 Description: import-scoped: src/scoped.ts:2\n242 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n243 组 exact: tests/core.test.ts:2 Description: exact: tests/core.test.ts:2\n244 切换按钮 ◆ normalize src/core.ts:1\n245 文本 ◆\n246 文本 normalize\n247 文本 \n248 文本 src/core.ts\n249 文本 :\n250 文本 1\n251 切换按钮 localUsage src/core.ts:4\n252 文本 localUsage\n253 文本 \n254 文本 src/core.ts\n255 文本 :\n256 文本 4\n257 切换按钮 looseUsage src/loose.ts:2\n258 文本 looseUsage\n259 文本 \n260 文本 src/loose.ts\n261 文本 :\n262 文本 2\n263 切换按钮 scopedUsage src/scoped.ts:2\n264 文本 scopedUsage\n265 文本 \n266 文本 src/scoped.ts\n267 文本 :\n268 文本 2\n269 切换按钮 startup src/startup.ts:2\n270 文本 startup\n271 文本 \n272 文本 src/startup.ts\n273 文本 :\n274 文本 2\n275 切换按钮 checkNormalize tests/core.test.ts:2\n276 文本 checkNormalize\n277 文本 \n278 文本 tests/core.test.ts\n279 文本 :\n280 文本 2\n281 按钮 Expand nodes (1 remaining)\n282 详细信息\n283 开合三角标记 Call evidence (5)\n284 文本 Call evidence (\n285 文本 5\n286 文本 )\n287 组\n300 文本 function\n301 文本 \n302 文本 normalize\n303 文本 Included because:\n304 文本 modified; Git/diff declaration mapping; current\n305 文本 src/core.ts\n306 文本 :\n307 文本 1\n308 文本 ·\n309 文本 current\n310 文本 Source snapshot captured with this tool result. Repository files may since have changed.\n311 文本 1 export function normalize(input: string) { 2 return input.trim().toUpperCase() 3 } 4 export function localUsage() { return normalize(\" local \") }\n312 按钮 Open current file at line 1\n289 详细信息\n290 开合三角标记 Test leads (1) / import dependents (3)\n291 文本 Test leads (\n292 文本 1\n293 文本 ) / import dependents (\n294 文本 3\n295 文本 )\n296 详细信息\n297 开合三角标记 Analysis gaps / limits\n298 文本 Analysis gaps / limits\n299"
+    },
+    {
+      "step": "expanded-seven-nodes",
+      "evidence": "224 区域 Impact X-Ray\n225 文本 Impact X-Ray · experimental PoC\n226 文本 Potential impact ·\n227 文本 git\n228 文本 ·\n229 文本 7\n230 文本 /\n231 文本 7\n232 文本 nodes ·\n233 文本 6\n234 文本 /\n235 文本 6\n236 文本 call edges\n237 文本 Solid: exact · dashed: import-scoped · dotted: name-only (low confidence). Arrows point from caller to callee.\n238 图形 Call relationships\n239 组 name-only: src/core.ts:4 Description: name-only: src/core.ts:4\n240 组 name-only: src/loose.ts:2 Description: name-only: src/loose.ts:2\n241 组 import-scoped: src/scoped.ts:2 Description: import-scoped: src/scoped.ts:2\n242 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n243 组 exact: tests/core.test.ts:2 Description: exact: tests/core.test.ts:2\n313 组 exact: src/main.ts:2 Description: exact: src/main.ts:2\n244 切换按钮 ◆ normalize src/core.ts:1\n245 文本 ◆\n246 文本 normalize\n247 文本 \n248 文本 src/core.ts\n249 文本 :\n250 文本 1\n251 切换按钮 localUsage src/core.ts:4\n252 文本 localUsage\n253 文本 \n254 文本 src/core.ts\n255 文本 :\n256 文本 4\n257 切换按钮 looseUsage src/loose.ts:2\n258 文本 looseUsage\n259 文本 \n260 文本 src/loose.ts\n261 文本 :\n262 文本 2\n263 切换按钮 scopedUsage src/scoped.ts:2\n264 文本 scopedUsage\n265 文本 \n266 文本 src/scoped.ts\n267 文本 :\n268 文本 2\n269 切换按钮 startup src/startup.ts:2\n270 文本 startup\n271 文本 \n272 文本 src/startup.ts\n273 文本 :\n274 文本 2\n275 切换按钮 checkNormalize tests/core.test.ts:2\n276 文本 checkNormalize\n277 文本 \n278 文本 tests/core.test.ts\n279 文本 :\n280 文本 2\n314 切换按钮 main src/main.ts:2\n315 文本 main\n316 文本 \n317 文本 src/main.ts\n318 文本 :\n319 文本 2\n282 详细信息\n283 开合三角标记 Call evidence (6)\n284 文本 Call evidence (\n285 文本 6\n286 文本 )\n287 组\n300 文本 function\n301 文本 \n302 文本 normalize\n303 文本 Included because:\n304 文本 modified; Git/diff declaration mapping; current\n305 文本 src/core.ts\n306 文本 :\n307 文本 1\n308 文本 ·\n309 文本 current\n310 文本 Source snapshot captured with this tool result. Repository files may since have changed.\n311 文本 1 export function normalize(input: string) { 2 return input.trim().toUpperCase() 3 } 4 export function localUsage() { return normalize(\" local \") }\n312 按钮 Open current file at line 1\n289 详细信息\n290 开合三角标记 Test leads (1) / import dependents (3)\n291 文本 Test leads (\n292 文本 1\n293 文本 ) / import dependents (\n294 文本 3\n295 文本 )\n296 详细信息\n297 开合三角标记 Analysis gaps / limits\n298 文本 Analysis gaps / limits"
+    },
+    {
+      "step": "exact-call-selected",
+      "evidence": "224 区域 Impact X-Ray\n225 文本 Impact X-Ray · experimental PoC\n226 文本 Potential impact ·\n227 文本 git\n228 文本 ·\n229 文本 7\n230 文本 /\n231 文本 7\n232 文本 nodes ·\n233 文本 6\n234 文本 /\n235 文本 6\n236 文本 call edges\n237 文本 Solid: exact · dashed: import-scoped · dotted: name-only (low confidence). Arrows point from caller to callee.\n238 图形 Call relationships\n239 组 name-only: src/core.ts:4 Description: name-only: src/core.ts:4\n240 组 name-only: src/loose.ts:2 Description: name-only: src/loose.ts:2\n241 组 import-scoped: src/scoped.ts:2 Description: import-scoped: src/scoped.ts:2\n242 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n243 组 exact: tests/core.test.ts:2 Description: exact: tests/core.test.ts:2\n313 组 exact: src/main.ts:2 Description: exact: src/main.ts:2\n244 切换按钮 ◆ normalize src/core.ts:1\n245 文本 ◆\n246 文本 normalize\n247 文本 \n248 文本 src/core.ts\n249 文本 :\n250 文本 1\n251 切换按钮 localUsage src/core.ts:4\n252 文本 localUsage\n253 文本 \n254 文本 src/core.ts\n255 文本 :\n256 文本 4\n257 切换按钮 looseUsage src/loose.ts:2\n258 文本 looseUsage\n259 文本 \n260 文本 src/loose.ts\n261 文本 :\n262 文本 2\n263 切换按钮 scopedUsage src/scoped.ts:2\n264 文本 scopedUsage\n265 文本 \n266 文本 src/scoped.ts\n267 文本 :\n268 文本 2\n269 切换按钮 startup src/startup.ts:2\n270 文本 startup\n271 文本 \n272 文本 src/startup.ts\n273 文本 :\n274 文本 2\n275 切换按钮 checkNormalize tests/core.test.ts:2\n276 文本 checkNormalize\n277 文本 \n278 文本 tests/core.test.ts\n279 文本 :\n280 文本 2\n314 切换按钮 main src/main.ts:2\n315 文本 main\n316 文本 \n317 文本 src/main.ts\n318 文本 :\n319 文本 2\n282 详细信息\n283 开合三角标记 Call evidence (6)\n284 文本 Call evidence (\n285 文本 6\n286 文本 )\n320 切换按钮 localUsage → normalize · name-only · src/core.ts:4\n321 文本 localUsage\n322 文本 →\n323 文本 normalize\n324 文本 ·\n325 文本 name-only\n326 文本 ·\n327 文本 src/core.ts\n328 文本 :\n329 文本 4\n330 切换按钮 looseUsage → normalize · name-only · src/loose.ts:2\n331 文本 looseUsage\n332 文本 →\n333 文本 normalize\n334 文本 ·\n335 文本 name-only\n336 文本 ·\n337 文本 src/loose.ts\n338 文本 :\n339 文本 2\n340 切换按钮 scopedUsage → normalize · import-scoped · src/scoped.ts:2\n341 文本 scopedUsage\n342 文本 →\n343 文本 normalize\n344 文本 ·\n345 文本 import-scoped\n346 文本 ·\n347 文本 src/scoped.ts\n348 文本 :\n349 文本 2\n350 切换按钮 startup → normalize · exact · src/startup.ts:2\n351 文本 startup\n352 文本 →\n353 文本 normalize\n354 文本 ·\n355 文本 exact\n356 文本 ·\n357 文本 src/startup.ts\n358 文本 :\n359 文本 2\n360 切换按钮 checkNormalize → normalize · exact · tests/core.test.ts:2\n361 文本 checkNormalize\n362 文本 →\n363 文本 normalize\n364 文本 ·\n365 文本 exact\n366 文本 ·\n367 文本 tests/core.test.ts\n368 文本 :\n369 文本 2\n370 切换按钮 main → startup · exact · src/main.ts:2\n371 文本 main\n372 文本 →\n373 文本 startup\n374 文本 ·\n375 文本 exact\n376 文本 ·\n377 文本 src/main.ts\n378 文本 :\n379 文本 2\n287 组\n300 文本 Call evidence ·\n301 文本 exact\n303 文本 Resolution reason:\n304 文本 explicit-import-binding\n380 文本 . This is a potential impact relation.\n305 文本 src/startup.ts\n306 文本 :\n307 文本 2\n308 文本 ·\n309 文本 current\n310 文本 Source snapshot captured with this tool result. Repository files may since have changed.\n311 文本 1 import { normalize } from \"./core\" 2 export function startup() { return normalize(\" startup \") } 3\n312 按钮 Open current file at line 2\n289 详细信息\n290 开合三角标记 Test leads (1) / import dependents (3)\n291 文本 Test leads (\n292 文本 1\n293 文本 ) / import dependents (\n294 文本 3\n295 文本 )\n296 详细信息\n297 开合三角标记 Analysis gaps / limits\n298 文本 Analysis gaps / limits"
+    },
+    {
+      "step": "native-file-preview",
+      "evidence": "242 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n269 切换按钮 startup src/startup.ts:2\n270 文本 startup\n272 文本 src/startup.ts\n350 切换按钮 startup → normalize · exact · src/startup.ts:2\n351 文本 startup\n357 文本 src/startup.ts\n370 切换按钮 main → startup · exact · src/main.ts:2\n373 文本 startup\n305 文本 src/startup.ts\n311 文本 1 import { normalize } from \"./core\" 2 export function startup() { return normalize(\" startup \") } 3\n312 按钮 Open current file at line 2\n174 项 startup (src/startup.ts:2), checkNormalize (tests/core.test.ts:2)\n186 项 src/scoped.ts , src/startup.ts , tests/core.test.ts → ./core\n383 选项卡项目 (selectable) startup.ts 关闭\n391 文本 startup.ts\n408 文本 startup\n413 文本 \" startup \""
+    },
+    {
+      "step": "final-client-node-replay",
+      "evidence": "141 区域 Impact X-Ray\n142 文本 Impact X-Ray · experimental PoC\n143 文本 Potential impact ·\n144 文本 git\n145 文本 ·\n146 文本 6\n147 文本 /\n148 文本 7\n149 文本 nodes ·\n150 文本 5\n151 文本 /\n152 文本 6\n153 文本 call edges\n154 文本 Solid: exact · dashed: import-scoped · dotted: name-only (low confidence). Arrows point from caller to callee.\n155 图形 Call relationships\n156 组 name-only: src/core.ts:4 Description: name-only: src/core.ts:4\n157 组 name-only: src/loose.ts:2 Description: name-only: src/loose.ts:2\n158 组 import-scoped: src/scoped.ts:2 Description: import-scoped: src/scoped.ts:2\n159 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n160 组 exact: tests/core.test.ts:2 Description: exact: tests/core.test.ts:2\n161 切换按钮 ◆ normalize src/core.ts:1\n162 文本 ◆\n163 文本 normalize\n164 文本 \n165 文本 src/core.ts\n166 文本 :\n167 文本 1\n168 切换按钮 localUsage src/core.ts:4\n169 文本 localUsage\n170 文本 \n171 文本 src/core.ts\n172 文本 :\n173 文本 4\n174 切换按钮 looseUsage src/loose.ts:2\n175 文本 looseUsage\n176 文本 \n177 文本 src/loose.ts\n178 文本 :\n179 文本 2\n180 切换按钮 scopedUsage src/scoped.ts:2\n181 文本 scopedUsage\n182 文本 \n183 文本 src/scoped.ts\n184 文本 :\n185 文本 2\n186 切换按钮 startup src/startup.ts:2\n187 文本 startup\n188 文本 \n189 文本 src/startup.ts\n190 文本 :\n191 文本 2\n192 切换按钮 checkNormalize tests/core.test.ts:2\n193 文本 checkNormalize\n194 文本 \n195 文本 tests/core.test.ts\n196 文本 :\n197 文本 2\n198 按钮 Expand nodes (1 remaining)\n199 详细信息\n200 开合三角标记 Call evidence (5)\n201 文本 Call evidence (\n202 文本 5\n203 文本 )\n204 组\n217 文本 function\n218 文本 \n219 文本 normalize\n220 文本 Included because:\n221 文本 modified; Git/diff declaration mapping; current\n222 文本 src/core.ts\n223 文本 :\n224 文本 1\n225 文本 ·\n226 文本 current\n227 文本 Source snapshot captured with this tool result. Repository files may since have changed.\n228 文本 1 export function normalize(input: string) { 2 return input.trim().toUpperCase() 3 } 4 export function localUsage() { return normalize(\" local \") }\n229 按钮 Open current file at line 1\n206 详细信息\n207 开合三角标记 Test leads (1) / import dependents (3)\n208 文本 Test leads (\n209 文本 1\n210 文本 ) / import dependents (\n211 文本 3\n212 文本 )\n213 详细信息\n214 开合三角标记 Analysis gaps / limits\n215 文本 Analysis gaps / limits"
+    },
+    {
+      "step": "final-client-expanded-replay-routing-fixed",
+      "evidence": "59 区域 Impact X-Ray\n60 文本 Impact X-Ray · experimental PoC\n61 文本 Potential impact ·\n62 文本 git\n63 文本 ·\n64 文本 7\n65 文本 /\n66 文本 7\n67 文本 nodes ·\n68 文本 6\n69 文本 /\n70 文本 6\n71 文本 call edges\n72 文本 Solid: exact · dashed: import-scoped · dotted: name-only (low confidence). Arrows point from caller to callee.\n73 图形 Call relationships\n74 组 name-only: src/core.ts:4 Description: name-only: src/core.ts:4\n75 组 name-only: src/loose.ts:2 Description: name-only: src/loose.ts:2\n76 组 import-scoped: src/scoped.ts:2 Description: import-scoped: src/scoped.ts:2\n77 组 exact: src/startup.ts:2 Description: exact: src/startup.ts:2\n78 组 exact: tests/core.test.ts:2 Description: exact: tests/core.test.ts:2\n223 组 exact: src/main.ts:2 Description: exact: src/main.ts:2\n79 切换按钮 ◆ normalize src/core.ts:1\n80 文本 ◆\n81 文本 normalize\n82 文本 \n83 文本 src/core.ts\n84 文本 :\n85 文本 1\n86 切换按钮 localUsage src/core.ts:4\n87 文本 localUsage\n88 文本 \n89 文本 src/core.ts\n90 文本 :\n91 文本 4\n92 切换按钮 looseUsage src/loose.ts:2\n93 文本 looseUsage\n94 文本 \n95 文本 src/loose.ts\n96 文本 :\n97 文本 2\n98 切换按钮 scopedUsage src/scoped.ts:2\n99 文本 scopedUsage\n100 文本 \n101 文本 src/scoped.ts\n102 文本 :\n103 文本 2\n104 切换按钮 startup src/startup.ts:2\n105 文本 startup\n106 文本 \n107 文本 src/startup.ts\n108 文本 :\n109 文本 2\n110 切换按钮 checkNormalize tests/core.test.ts:2\n111 文本 checkNormalize\n112 文本 \n113 文本 tests/core.test.ts\n114 文本 :\n115 文本 2\n224 切换按钮 main src/main.ts:2\n225 文本 main\n226 文本 \n227 文本 src/main.ts\n228 文本 :\n229 文本 2\n117 详细信息\n118 开合三角标记 Call evidence (6)\n119 文本 Call evidence (\n120 文本 6\n121 文本 )\n122 组\n123 文本 function\n124 文本 \n125 文本 normalize\n126 文本 Included because:\n127 文本 modified; Git/diff declaration mapping; current\n128 文本 src/core.ts\n129 文本 :\n130 文本 1\n131 文本 ·\n132 文本 current\n133 文本 Source snapshot captured with this tool result. Repository files may since have changed.\n134 文本 1 export function normalize(input: string) { 2 return input.trim().toUpperCase() 3 } 4 export function localUsage() { return normalize(\" local \") }\n135 按钮 Open current file at line 1\n136 详细信息\n137 开合三角标记 Test leads (1) / import dependents (3)\n138 文本 Test leads (\n139 文本 1\n140 文本 ) / import dependents (\n141 文本 3\n142 文本 )\n143 详细信息\n144 开合三角标记 Analysis gaps / limits\n145 文本 Analysis gaps / limits"
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "graph",
+      "sourceSha256": "da4501f7e8cc9359b256f19cf86e700575947827ddd0d5dc8228b7e6656246a4",
+      "crop": [
+        440,
+        465,
+        1110,
+        690
+      ],
+      "file": "assets/impact-xray-poc-graph.png",
+      "sha256": "9ce9874455ab50fb20cccf93b6a07d51a9c3cfd36b396aaa697bac8adde48b7a",
+      "method": "Lossless rectangular crop of actual Desktop screenshot; no generated pixels, overlays or retyped source"
+    },
+    {
+      "name": "exact-source",
+      "sourceSha256": "a0a2ed315fd8eaad88c21ad3a2f003013e1baf3c6b1f18155b63bffb18ba5fea",
+      "crop": [
+        440,
+        135,
+        1110,
+        375
+      ],
+      "file": "assets/impact-xray-poc-exact-source.png",
+      "sha256": "fcb9da6b7babc5e0fcc2cac2c5c83c90b65be30c718380815af0ba050f75998c",
+      "method": "Lossless rectangular crop of actual Desktop screenshot; no generated pixels, overlays or retyped source"
+    },
+    {
+      "name": "native-preview",
+      "sourceSha256": "d906780c65c7eb39596013b6444713c0f8023c14ef07132192a94e1eb81777e9",
+      "crop": [
+        310,
+        115,
+        1270,
+        375
+      ],
+      "file": "assets/impact-xray-poc-native-preview.png",
+      "sha256": "2ec227489d877cbb12f211d1a9965c2830ba801151e524adea0c1bf393f59178",
+      "method": "Lossless rectangular crop of actual Desktop screenshot; no generated pixels, overlays or retyped source"
+    },
+    {
+      "name": "routing",
+      "sourceSha256": "bbe1882d05d964d830e217dffdafa81a32ff647b7df5b059cf2f99dd1d037b2d",
+      "crop": [
+        440,
+        432,
+        1110,
+        690
+      ],
+      "file": "assets/impact-xray-poc-routing.png",
+      "sha256": "085e4a21af106719c9cd168e4c575e7c4cd5c8a27fd3a8f5d7a08f823f2765f4",
+      "method": "Lossless rectangular crop of actual Desktop screenshot; no generated pixels, overlays or retyped source"
+    }
+  ],
+  "limitations": [
+    "Only PoC core flow gated, not full MVP/release acceptance",
+    "Initial Desktop call used initial client; final package changes client routing only and replays the same persisted metadata",
+    "Native preview opened startup.ts with requested line 2 visible; no editor caret/highlight precision claim for this three-line file",
+    "Screenshots are separate authentic observations, not a continuous demo recording",
+    "Warm timings are single tiny-fixture observations, not performance claims",
+    "Full large-repository benchmark, complete bilingual product UI, comprehensive Desktop degradation checks and 20–30 second recording remain future work"
+  ]
+}

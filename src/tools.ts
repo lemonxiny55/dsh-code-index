@@ -18,6 +18,7 @@ import { getConfig, indexOptions } from './config.js'
 import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
 import { indexIntegrityWarnings } from './integrity.js'
+import { buildImpactXray } from './impact-xray.js'
 
 /** Minimal structural types for the harness surfaces we touch. */
 interface ToolCwdContext {
@@ -387,6 +388,10 @@ export const tools = [
     description:
       'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Every relation is labeled exact / import-scoped / name-only, so confidence is explicit. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
     parameters: {
+      outputFormat: {
+        type: 'string', enum: ['text', 'xray'],
+        description: 'Default text preserves the canonical string. xray requests the experimental bounded Impact X-Ray evidence snapshot.',
+      },
       repoRoot: {
         type: 'string',
         description: 'Optional absolute repo path; defaults to the session workspace root.',
@@ -427,8 +432,9 @@ export const tools = [
       },
     },
     output: {
-      schema: { type: 'string' },
-      render: (_args, value: string): TextBlock[] => [{ type: 'text', text: value }],
+      schema: { oneOf: [{ type: 'string' }, { type: 'object', additionalProperties: true }] },
+      render: (_args, value: JsonValue): TextBlock[] => [{ type: 'text', text: typeof value === 'string' ? value : String((value as Record<string, JsonValue>).text) }],
+      presentationMeta: (_args, value): JsonValue => typeof value === 'object' && value !== null && !Array.isArray(value) ? value.xray ?? null : null,
     },
     presentCall: (args) => ({
       card: 'generic',
@@ -443,6 +449,7 @@ export const tools = [
     }),
     async execute(
       args: {
+        outputFormat?: 'text' | 'xray'
         repoRoot?: string
         diff?: string
         baseRef?: string
@@ -454,7 +461,7 @@ export const tools = [
         maxTests?: number
       },
       exec: ToolRunExec,
-    ): Promise<string> {
+    ): Promise<string | Record<string, JsonValue>> {
       try {
         const root = await resolveRoot(args.repoRoot, exec)
         const index = await getIndex(root)
@@ -465,6 +472,10 @@ export const tools = [
           maxPaths: args.maxPaths,
           maxTests: args.maxTests,
         })
+        if (args.outputFormat === 'xray') {
+          const xray = await buildImpactXray(index, result)
+          return { text: renderChangeContext(result).slice(0, 24_000), xray: JSON.parse(JSON.stringify(xray)) as JsonValue }
+        }
         return renderChangeContext(result)
       } catch (error) {
         return `code_change_context: ${(error as Error).message ?? String(error)}`

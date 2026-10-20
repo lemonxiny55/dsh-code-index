@@ -1,0 +1,64 @@
+{
+  "method": "Read-only audit of actual installed Desktop app.asar with its Electron Node filesystem",
+  "modules": [
+    {
+      "name": "dsh-client-ui-tool",
+      "version": "0.2.1-rc.2",
+      "file": "E:/DeepSeek Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-client-ui-tool/lib/client.js",
+      "sha256": "c37c08369505ce10d0e16282f0dce817db62664aac68ffbed8eba172da629c9e",
+      "markers": [
+        {
+          "marker": "renderSlot(\"tool.call.toolview\", owner",
+          "found": true,
+          "line": 1967
+        },
+        {
+          "marker": "...call,",
+          "found": true,
+          "line": 1939
+        },
+        {
+          "marker": "openFile,",
+          "found": true,
+          "line": 1653
+        },
+        {
+          "marker": "block.meta",
+          "found": true,
+          "line": 314
+        },
+        {
+          "marker": "onOpenFile(filePath, { line: filePathLine })",
+          "found": true,
+          "line": 1632
+        }
+      ]
+    },
+    {
+      "name": "dsh-tools",
+      "version": "0.2.1-rc.2",
+      "file": "E:/DeepSeek Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tools/lib/index.js",
+      "sha256": "1e53932e7c4213ea24a7d87f06960b7a7702cb21f8a5741c97242b4a470a442a",
+      "markers": [
+        {
+          "marker": "presentationMeta",
+          "found": true,
+          "line": 843
+        }
+      ]
+    },
+    {
+      "name": "dsh-client-ui-renderer",
+      "version": "0.2.1-rc.2",
+      "file": "E:/DeepSeek Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-client-ui-renderer/lib/client.js",
+      "sha256": "dbdb3f26bfbc1d143bc8a0eed5982a2507c4f0cf8027e7c170f3bed3604be356",
+      "markers": [
+        {
+          "marker": "window.__ModuleLoader__.load",
+          "found": true,
+          "line": 1
+        }
+      ]
+    }
+  ]
+}
