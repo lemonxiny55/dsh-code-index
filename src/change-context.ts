@@ -110,6 +110,7 @@ export interface ChangeContextResult {
 }
 
 export interface CodeChangeContextArgs {
+  outputFormat?: 'text' | 'xray'
   repoRoot?: string
   diff?: string
   baseRef?: string

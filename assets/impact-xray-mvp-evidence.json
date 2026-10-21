@@ -1,0 +1,2602 @@
+{
+  "date": "2026-10-20/21",
+  "host": "DSH Desktop 0.2.1-rc.2",
+  "plugin": "0.11.0-dev.0",
+  "session": "session-27deb698-490e-4776-9cb5-6a3d0967a333",
+  "method": "Actual Desktop Agent call; persisted events; independently rebuilt existing analysis and exact source-window comparison. UI exercised through Computer Use.",
+  "call": {
+    "seq": 18,
+    "name": "code_change_context",
+    "args": {
+      "repoRoot": "<real-demo>",
+      "outputFormat": "xray"
+    }
+  },
+  "result": {
+    "seq": 19,
+    "isError": false,
+    "metadataBytes": 10554
+  },
+  "turnEnd": "completed",
+  "snapshot": {
+    "card": "impact-xray",
+    "version": 2,
+    "root": "<real-demo>",
+    "source": "git",
+    "nodes": [
+      {
+        "id": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "name": "normalize",
+        "kind": "function",
+        "file": "src/core.js",
+        "line": 1,
+        "changed": true,
+        "category": "change",
+        "depth": 0,
+        "reason": "diff-mapping",
+        "evidence": {
+          "file": "src/core.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+        },
+        "change": "modified"
+      },
+      {
+        "id": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+        "name": "localUsage",
+        "kind": "function",
+        "file": "src/core.js",
+        "line": 4,
+        "changed": false,
+        "category": "caller",
+        "depth": 1,
+        "reason": "local-unique",
+        "evidence": {
+          "file": "src/core.js",
+          "line": 4,
+          "startLine": 2,
+          "side": "current",
+          "type": "declaration",
+          "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+        }
+      },
+      {
+        "id": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+        "name": "looseUsage",
+        "kind": "function",
+        "file": "src/loose.js",
+        "line": 2,
+        "changed": false,
+        "category": "caller",
+        "depth": 1,
+        "reason": "global-name",
+        "evidence": {
+          "file": "src/loose.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+        }
+      },
+      {
+        "id": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+        "name": "scopedUsage",
+        "kind": "function",
+        "file": "src/scoped.js",
+        "line": 2,
+        "changed": false,
+        "category": "caller",
+        "depth": 1,
+        "reason": "namespace-import",
+        "evidence": {
+          "file": "src/scoped.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+        }
+      },
+      {
+        "id": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+        "name": "startup",
+        "kind": "function",
+        "file": "src/startup.js",
+        "line": 2,
+        "changed": false,
+        "category": "caller",
+        "depth": 1,
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "src/startup.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+        }
+      },
+      {
+        "id": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+        "name": "checkNormalize",
+        "kind": "function",
+        "file": "tests/core.test.js",
+        "line": 4,
+        "changed": false,
+        "category": "test",
+        "depth": 1,
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "tests/core.test.js",
+          "line": 4,
+          "startLine": 2,
+          "side": "current",
+          "type": "declaration",
+          "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+        }
+      },
+      {
+        "id": "current:sym:v1:src%2Fmain.js#function:main@1",
+        "name": "main",
+        "kind": "function",
+        "file": "src/main.js",
+        "line": 2,
+        "changed": false,
+        "category": "impact",
+        "depth": 2,
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "src/main.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+        }
+      },
+      {
+        "id": "file:current:src/scoped.js",
+        "name": "src/scoped.js",
+        "kind": "module",
+        "file": "src/scoped.js",
+        "line": 1,
+        "changed": false,
+        "category": "module",
+        "reason": "import-dependent",
+        "evidence": {
+          "file": "src/scoped.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+        }
+      },
+      {
+        "id": "file:current:src/core.js",
+        "name": "src/core.js",
+        "kind": "module",
+        "file": "src/core.js",
+        "line": 1,
+        "changed": true,
+        "category": "module",
+        "reason": "changed-module",
+        "evidence": {
+          "file": "src/core.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+        }
+      },
+      {
+        "id": "file:current:src/startup.js",
+        "name": "src/startup.js",
+        "kind": "module",
+        "file": "src/startup.js",
+        "line": 1,
+        "changed": false,
+        "category": "module",
+        "reason": "import-dependent",
+        "evidence": {
+          "file": "src/startup.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "declaration",
+          "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+        }
+      },
+      {
+        "id": "file:current:tests/core.test.js",
+        "name": "tests/core.test.js",
+        "kind": "module",
+        "file": "tests/core.test.js",
+        "line": 3,
+        "changed": false,
+        "category": "test",
+        "reason": "imports-changed-file",
+        "evidence": {
+          "file": "tests/core.test.js",
+          "line": 3,
+          "startLine": 1,
+          "side": "current",
+          "type": "import-site",
+          "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+        },
+        "resolution": "import-scoped"
+      }
+    ],
+    "edges": [
+      {
+        "id": "call:0",
+        "from": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+        "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "kind": "call",
+        "resolution": "name-only",
+        "reason": "local-unique",
+        "evidence": {
+          "file": "src/core.js",
+          "line": 4,
+          "startLine": 2,
+          "side": "current",
+          "type": "call-site",
+          "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+        }
+      },
+      {
+        "id": "call:1",
+        "from": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+        "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "kind": "call",
+        "resolution": "name-only",
+        "reason": "global-name",
+        "evidence": {
+          "file": "src/loose.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "call-site",
+          "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+        }
+      },
+      {
+        "id": "call:2",
+        "from": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+        "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "kind": "call",
+        "resolution": "import-scoped",
+        "reason": "namespace-import",
+        "evidence": {
+          "file": "src/scoped.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "call-site",
+          "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+        }
+      },
+      {
+        "id": "call:3",
+        "from": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+        "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "kind": "call",
+        "resolution": "exact",
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "src/startup.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "call-site",
+          "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+        }
+      },
+      {
+        "id": "call:4",
+        "from": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+        "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+        "kind": "call",
+        "resolution": "exact",
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "tests/core.test.js",
+          "line": 4,
+          "startLine": 2,
+          "side": "current",
+          "type": "call-site",
+          "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+        }
+      },
+      {
+        "id": "call:5",
+        "from": "current:sym:v1:src%2Fmain.js#function:main@1",
+        "to": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+        "kind": "call",
+        "resolution": "exact",
+        "reason": "explicit-import-binding",
+        "evidence": {
+          "file": "src/main.js",
+          "line": 2,
+          "startLine": 1,
+          "side": "current",
+          "type": "call-site",
+          "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+        }
+      },
+      {
+        "id": "import:6",
+        "from": "file:current:src/scoped.js",
+        "to": "file:current:src/core.js",
+        "kind": "import",
+        "resolution": "import-scoped",
+        "reason": "imports-changed-file",
+        "evidence": {
+          "file": "src/scoped.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "import-site",
+          "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+        }
+      },
+      {
+        "id": "import:7",
+        "from": "file:current:src/startup.js",
+        "to": "file:current:src/core.js",
+        "kind": "import",
+        "resolution": "import-scoped",
+        "reason": "imports-changed-file",
+        "evidence": {
+          "file": "src/startup.js",
+          "line": 1,
+          "startLine": 1,
+          "side": "current",
+          "type": "import-site",
+          "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+        }
+      },
+      {
+        "id": "import:8",
+        "from": "file:current:tests/core.test.js",
+        "to": "file:current:src/core.js",
+        "kind": "import",
+        "resolution": "import-scoped",
+        "reason": "imports-changed-file",
+        "evidence": {
+          "file": "tests/core.test.js",
+          "line": 3,
+          "startLine": 1,
+          "side": "current",
+          "type": "import-site",
+          "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+        }
+      }
+    ],
+    "tests": [
+      {
+        "file": "tests/core.test.js",
+        "resolution": "import-scoped",
+        "reason": "imports-changed-file",
+        "distance": 1,
+        "nodeId": "file:current:tests/core.test.js"
+      }
+    ],
+    "imports": [
+      {
+        "file": "src/scoped.js",
+        "changedFile": "src/core.js",
+        "specifier": "./core.js",
+        "resolution": "import-scoped",
+        "edgeId": "import:6"
+      },
+      {
+        "file": "src/startup.js",
+        "changedFile": "src/core.js",
+        "specifier": "./core.js",
+        "resolution": "import-scoped",
+        "edgeId": "import:7"
+      },
+      {
+        "file": "tests/core.test.js",
+        "changedFile": "src/core.js",
+        "specifier": "../src/core.js",
+        "resolution": "import-scoped",
+        "edgeId": "import:8"
+      }
+    ],
+    "paths": [
+      {
+        "id": "path:0",
+        "from": "localUsage",
+        "to": "normalize",
+        "edgeIds": [
+          "call:0"
+        ],
+        "resolution": "name-only",
+        "omitted": false
+      },
+      {
+        "id": "path:1",
+        "from": "looseUsage",
+        "to": "normalize",
+        "edgeIds": [
+          "call:1"
+        ],
+        "resolution": "name-only",
+        "omitted": false
+      },
+      {
+        "id": "path:2",
+        "from": "main",
+        "to": "normalize",
+        "edgeIds": [
+          "call:5",
+          "call:3"
+        ],
+        "resolution": "exact",
+        "omitted": false
+      },
+      {
+        "id": "path:3",
+        "from": "scopedUsage",
+        "to": "normalize",
+        "edgeIds": [
+          "call:2"
+        ],
+        "resolution": "import-scoped",
+        "omitted": false
+      },
+      {
+        "id": "path:4",
+        "from": "startup",
+        "to": "normalize",
+        "edgeIds": [
+          "call:3"
+        ],
+        "resolution": "exact",
+        "omitted": false
+      },
+      {
+        "id": "path:5",
+        "from": "checkNormalize",
+        "to": "normalize",
+        "edgeIds": [
+          "call:4"
+        ],
+        "resolution": "exact",
+        "omitted": false
+      }
+    ],
+    "unmapped": [],
+    "gaps": [],
+    "truncated": false,
+    "bounds": {
+      "analysis": {
+        "callers": false,
+        "dependents": false,
+        "paths": false,
+        "impact": false,
+        "tests": false
+      },
+      "projection": false,
+      "totals": {
+        "changed": 1,
+        "callers": 5,
+        "impact": 1,
+        "imports": 3,
+        "tests": 1,
+        "paths": 6,
+        "unmapped": 0
+      }
+    }
+  },
+  "sourceAudit": [
+    {
+      "id": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+      "file": "src/core.js",
+      "line": 1,
+      "sourceSha256": "2f2b492a1babf62de80c141ad96ded3c2817c2e3e8ad6376693661ac393f328e",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+      "file": "src/core.js",
+      "line": 4,
+      "sourceSha256": "2f2b492a1babf62de80c141ad96ded3c2817c2e3e8ad6376693661ac393f328e",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+      "file": "src/loose.js",
+      "line": 2,
+      "sourceSha256": "91307864e836a2b74951f4a8e339c8da7984665c59f2a3c01d4dfe771aea4c3c",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+      "file": "src/scoped.js",
+      "line": 2,
+      "sourceSha256": "71811e6d3df763740c4189b77cbfd7af48600eb554d86f7b26d33ca534161772",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+      "file": "src/startup.js",
+      "line": 2,
+      "sourceSha256": "01ee74216b79b0032cec09e62554b16e881da1c3223b97626a5763dfcf333a46",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+      "file": "tests/core.test.js",
+      "line": 4,
+      "sourceSha256": "3da6afd033dc417bcba77716480b688b04307cd4dde4569b9b96a66a12b66302",
+      "match": true
+    },
+    {
+      "id": "current:sym:v1:src%2Fmain.js#function:main@1",
+      "file": "src/main.js",
+      "line": 2,
+      "sourceSha256": "704fbb3acf6f5e58dcea567992cfc2c4c76b9da34ec6d324fc7110d3919845e7",
+      "match": true
+    },
+    {
+      "id": "file:current:src/scoped.js",
+      "file": "src/scoped.js",
+      "line": 1,
+      "sourceSha256": "71811e6d3df763740c4189b77cbfd7af48600eb554d86f7b26d33ca534161772",
+      "match": true
+    },
+    {
+      "id": "file:current:src/core.js",
+      "file": "src/core.js",
+      "line": 1,
+      "sourceSha256": "2f2b492a1babf62de80c141ad96ded3c2817c2e3e8ad6376693661ac393f328e",
+      "match": true
+    },
+    {
+      "id": "file:current:src/startup.js",
+      "file": "src/startup.js",
+      "line": 1,
+      "sourceSha256": "01ee74216b79b0032cec09e62554b16e881da1c3223b97626a5763dfcf333a46",
+      "match": true
+    },
+    {
+      "id": "file:current:tests/core.test.js",
+      "file": "tests/core.test.js",
+      "line": 3,
+      "sourceSha256": "3da6afd033dc417bcba77716480b688b04307cd4dde4569b9b96a66a12b66302",
+      "match": true
+    },
+    {
+      "id": "call:0",
+      "file": "src/core.js",
+      "line": 4,
+      "sourceSha256": "2f2b492a1babf62de80c141ad96ded3c2817c2e3e8ad6376693661ac393f328e",
+      "match": true
+    },
+    {
+      "id": "call:1",
+      "file": "src/loose.js",
+      "line": 2,
+      "sourceSha256": "91307864e836a2b74951f4a8e339c8da7984665c59f2a3c01d4dfe771aea4c3c",
+      "match": true
+    },
+    {
+      "id": "call:2",
+      "file": "src/scoped.js",
+      "line": 2,
+      "sourceSha256": "71811e6d3df763740c4189b77cbfd7af48600eb554d86f7b26d33ca534161772",
+      "match": true
+    },
+    {
+      "id": "call:3",
+      "file": "src/startup.js",
+      "line": 2,
+      "sourceSha256": "01ee74216b79b0032cec09e62554b16e881da1c3223b97626a5763dfcf333a46",
+      "match": true
+    },
+    {
+      "id": "call:4",
+      "file": "tests/core.test.js",
+      "line": 4,
+      "sourceSha256": "3da6afd033dc417bcba77716480b688b04307cd4dde4569b9b96a66a12b66302",
+      "match": true
+    },
+    {
+      "id": "call:5",
+      "file": "src/main.js",
+      "line": 2,
+      "sourceSha256": "704fbb3acf6f5e58dcea567992cfc2c4c76b9da34ec6d324fc7110d3919845e7",
+      "match": true
+    },
+    {
+      "id": "import:6",
+      "file": "src/scoped.js",
+      "line": 1,
+      "sourceSha256": "71811e6d3df763740c4189b77cbfd7af48600eb554d86f7b26d33ca534161772",
+      "match": true
+    },
+    {
+      "id": "import:7",
+      "file": "src/startup.js",
+      "line": 1,
+      "sourceSha256": "01ee74216b79b0032cec09e62554b16e881da1c3223b97626a5763dfcf333a46",
+      "match": true
+    },
+    {
+      "id": "import:8",
+      "file": "tests/core.test.js",
+      "line": 3,
+      "sourceSha256": "3da6afd033dc417bcba77716480b688b04307cd4dde4569b9b96a66a12b66302",
+      "match": true
+    }
+  ],
+  "boundaries": [
+    {
+      "case": "empty",
+      "callSeq": 35,
+      "resultSeq": 36,
+      "isError": false,
+      "elapsedMs": 277,
+      "method": "Actual Desktop tool call; persisted metadata; real source comparison",
+      "args": {
+        "repoRoot": "<empty-then-unmapped-fixture>",
+        "outputFormat": "xray"
+      },
+      "snapshot": {
+        "card": "impact-xray",
+        "version": 2,
+        "root": "<fixture>",
+        "source": "git",
+        "nodes": [],
+        "edges": [],
+        "tests": [],
+        "imports": [],
+        "paths": [],
+        "unmapped": [],
+        "gaps": [
+          "no changes found in the diff"
+        ],
+        "truncated": false,
+        "bounds": {
+          "analysis": {
+            "callers": false,
+            "dependents": false,
+            "paths": false,
+            "impact": false,
+            "tests": false
+          },
+          "projection": false,
+          "totals": {
+            "changed": 0,
+            "callers": 0,
+            "impact": 0,
+            "imports": 0,
+            "tests": 0,
+            "paths": 0,
+            "unmapped": 0
+          }
+        }
+      },
+      "sourceAudit": []
+    },
+    {
+      "case": "invalid-path",
+      "callSeq": 37,
+      "resultSeq": 38,
+      "isError": false,
+      "elapsedMs": 20,
+      "method": "Actual Desktop tool call; persisted metadata; real source comparison",
+      "args": {
+        "outputFormat": "xray",
+        "repoRoot": "<real-demo>",
+        "files": [
+          "../outside.js"
+        ]
+      },
+      "snapshot": null,
+      "errorText": "code_change_context: path must stay inside the repo: ../outside.js",
+      "sourceAudit": []
+    },
+    {
+      "case": "large-special-untrusted-source",
+      "callSeq": 39,
+      "resultSeq": 40,
+      "isError": false,
+      "elapsedMs": 1700,
+      "method": "Actual Desktop tool call; persisted metadata; real source comparison",
+      "args": {
+        "maxImpact": 200,
+        "outputFormat": "xray",
+        "repoRoot": "<large-fixture>",
+        "maxPaths": 12
+      },
+      "snapshot": {
+        "card": "impact-xray",
+        "version": 2,
+        "root": "<fixture>",
+        "source": "git",
+        "nodes": [
+          {
+            "id": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "name": "boundaryMarker",
+            "kind": "function",
+            "file": "core.js",
+            "line": 1,
+            "changed": true,
+            "category": "change",
+            "depth": 0,
+            "reason": "diff-mapping",
+            "evidence": {
+              "file": "core.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "export function boundaryMarker() { return \"</pre><img src=x onerror=\\\"document.title=XRAY_UNSAFE\\\"><script>XRAY_UNSAFE</script>\" }\n// unmapped real diff marker: 未映射 & outside-symbol\n"
+            },
+            "change": "modified"
+          },
+          {
+            "id": "current:sym:v1:long%20%E6%B1%89%E5%AD%97.js#function:longCaller@1",
+            "name": "longCaller",
+            "kind": "function",
+            "file": "long 汉字.js",
+            "line": 142,
+            "changed": true,
+            "category": "change",
+            "depth": 0,
+            "reason": "diff-mapping",
+            "evidence": {
+              "file": "long 汉字.js",
+              "line": 142,
+              "startLine": 140,
+              "side": "current",
+              "type": "declaration",
+              "code": "// authentic long-file positioning context\n// authentic long-file positioning context\nexport function longCaller() { return boundaryMarker() }\n"
+            },
+            "change": "added"
+          },
+          {
+            "id": "current:sym:v1:oversized.js#function:oversizedEvidence@1",
+            "name": "oversizedEvidence",
+            "kind": "function",
+            "file": "oversized.js",
+            "line": 1,
+            "changed": true,
+            "category": "change",
+            "depth": 0,
+            "reason": "diff-mapping",
+            "evidence": {
+              "file": "oversized.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "gap": "source-budget"
+            },
+            "change": "modified"
+          },
+          {
+            "id": "current:sym:v1:caller0.js#function:caller0@1",
+            "name": "caller0",
+            "kind": "function",
+            "file": "caller0.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller0.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller0() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller1.js#function:caller1@1",
+            "name": "caller1",
+            "kind": "function",
+            "file": "caller1.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller1.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller1() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller10.js#function:caller10@1",
+            "name": "caller10",
+            "kind": "function",
+            "file": "caller10.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller10.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller10() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller11.js#function:caller11@1",
+            "name": "caller11",
+            "kind": "function",
+            "file": "caller11.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller11.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller11() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller12.js#function:caller12@1",
+            "name": "caller12",
+            "kind": "function",
+            "file": "caller12.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller12.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller12() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller13.js#function:caller13@1",
+            "name": "caller13",
+            "kind": "function",
+            "file": "caller13.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller13.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller13() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller14.js#function:caller14@1",
+            "name": "caller14",
+            "kind": "function",
+            "file": "caller14.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller14.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller14() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller15.js#function:caller15@1",
+            "name": "caller15",
+            "kind": "function",
+            "file": "caller15.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller15.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller15() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller16.js#function:caller16@1",
+            "name": "caller16",
+            "kind": "function",
+            "file": "caller16.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller16.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller16() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller17.js#function:caller17@1",
+            "name": "caller17",
+            "kind": "function",
+            "file": "caller17.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller17.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller17() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller18.js#function:caller18@1",
+            "name": "caller18",
+            "kind": "function",
+            "file": "caller18.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller18.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller18() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller19.js#function:caller19@1",
+            "name": "caller19",
+            "kind": "function",
+            "file": "caller19.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller19.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller19() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller2.js#function:caller2@1",
+            "name": "caller2",
+            "kind": "function",
+            "file": "caller2.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller2.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller2() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller20.js#function:caller20@1",
+            "name": "caller20",
+            "kind": "function",
+            "file": "caller20.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller20.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller20() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller21.js#function:caller21@1",
+            "name": "caller21",
+            "kind": "function",
+            "file": "caller21.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller21.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller21() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller22.js#function:caller22@1",
+            "name": "caller22",
+            "kind": "function",
+            "file": "caller22.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller22.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller22() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller23.js#function:caller23@1",
+            "name": "caller23",
+            "kind": "function",
+            "file": "caller23.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller23.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller23() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller24.js#function:caller24@1",
+            "name": "caller24",
+            "kind": "function",
+            "file": "caller24.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller24.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller24() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller25.js#function:caller25@1",
+            "name": "caller25",
+            "kind": "function",
+            "file": "caller25.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller25.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller25() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller26.js#function:caller26@1",
+            "name": "caller26",
+            "kind": "function",
+            "file": "caller26.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller26.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller26() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "current:sym:v1:caller27.js#function:caller27@1",
+            "name": "caller27",
+            "kind": "function",
+            "file": "caller27.js",
+            "line": 2,
+            "changed": false,
+            "category": "caller",
+            "depth": 1,
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller27.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller27() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller0.js",
+            "name": "caller0.js",
+            "kind": "module",
+            "file": "caller0.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller0.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller0() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:core.js",
+            "name": "core.js",
+            "kind": "module",
+            "file": "core.js",
+            "line": 1,
+            "changed": true,
+            "category": "module",
+            "reason": "changed-module",
+            "evidence": {
+              "file": "core.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "export function boundaryMarker() { return \"</pre><img src=x onerror=\\\"document.title=XRAY_UNSAFE\\\"><script>XRAY_UNSAFE</script>\" }\n// unmapped real diff marker: 未映射 & outside-symbol\n"
+            }
+          },
+          {
+            "id": "file:current:caller1.js",
+            "name": "caller1.js",
+            "kind": "module",
+            "file": "caller1.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller1.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller1() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller10.js",
+            "name": "caller10.js",
+            "kind": "module",
+            "file": "caller10.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller10.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller10() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller11.js",
+            "name": "caller11.js",
+            "kind": "module",
+            "file": "caller11.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller11.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller11() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller12.js",
+            "name": "caller12.js",
+            "kind": "module",
+            "file": "caller12.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller12.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller12() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller13.js",
+            "name": "caller13.js",
+            "kind": "module",
+            "file": "caller13.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller13.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller13() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "file:current:caller14.js",
+            "name": "caller14.js",
+            "kind": "module",
+            "file": "caller14.js",
+            "line": 1,
+            "changed": false,
+            "category": "module",
+            "reason": "import-dependent",
+            "evidence": {
+              "file": "caller14.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "declaration",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller14() { return boundaryMarker() }\n"
+            }
+          }
+        ],
+        "edges": [
+          {
+            "id": "call:0",
+            "from": "current:sym:v1:caller0.js#function:caller0@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller0.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller0() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:1",
+            "from": "current:sym:v1:caller1.js#function:caller1@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller1.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller1() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:2",
+            "from": "current:sym:v1:caller10.js#function:caller10@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller10.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller10() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:3",
+            "from": "current:sym:v1:caller11.js#function:caller11@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller11.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller11() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:4",
+            "from": "current:sym:v1:caller12.js#function:caller12@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller12.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller12() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:5",
+            "from": "current:sym:v1:caller13.js#function:caller13@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller13.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller13() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:6",
+            "from": "current:sym:v1:caller14.js#function:caller14@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller14.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller14() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:7",
+            "from": "current:sym:v1:caller15.js#function:caller15@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller15.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller15() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:8",
+            "from": "current:sym:v1:caller16.js#function:caller16@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller16.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller16() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:9",
+            "from": "current:sym:v1:caller17.js#function:caller17@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller17.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller17() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:10",
+            "from": "current:sym:v1:caller18.js#function:caller18@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller18.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller18() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:11",
+            "from": "current:sym:v1:caller19.js#function:caller19@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller19.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller19() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:12",
+            "from": "current:sym:v1:caller2.js#function:caller2@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller2.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller2() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:13",
+            "from": "current:sym:v1:caller20.js#function:caller20@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller20.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller20() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:14",
+            "from": "current:sym:v1:caller21.js#function:caller21@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller21.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller21() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:15",
+            "from": "current:sym:v1:caller22.js#function:caller22@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller22.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller22() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:16",
+            "from": "current:sym:v1:caller23.js#function:caller23@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller23.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller23() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:17",
+            "from": "current:sym:v1:caller24.js#function:caller24@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller24.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller24() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:18",
+            "from": "current:sym:v1:caller25.js#function:caller25@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller25.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller25() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:19",
+            "from": "current:sym:v1:caller26.js#function:caller26@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller26.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller26() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:20",
+            "from": "current:sym:v1:caller27.js#function:caller27@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "caller27.js",
+              "line": 2,
+              "startLine": 1,
+              "side": "current",
+              "type": "call-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller27() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "call:21",
+            "from": "current:sym:v1:long%20%E6%B1%89%E5%AD%97.js#function:longCaller@1",
+            "to": "current:sym:v1:core.js#function:boundaryMarker@1",
+            "kind": "call",
+            "resolution": "exact",
+            "reason": "explicit-import-binding",
+            "evidence": {
+              "file": "long 汉字.js",
+              "line": 142,
+              "startLine": 140,
+              "side": "current",
+              "type": "call-site",
+              "code": "// authentic long-file positioning context\n// authentic long-file positioning context\nexport function longCaller() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:22",
+            "from": "file:current:caller0.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller0.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller0() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:23",
+            "from": "file:current:caller1.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller1.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller1() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:24",
+            "from": "file:current:caller10.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller10.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller10() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:25",
+            "from": "file:current:caller11.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller11.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller11() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:26",
+            "from": "file:current:caller12.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller12.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller12() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:27",
+            "from": "file:current:caller13.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller13.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller13() { return boundaryMarker() }\n"
+            }
+          },
+          {
+            "id": "import:28",
+            "from": "file:current:caller14.js",
+            "to": "file:current:core.js",
+            "kind": "import",
+            "resolution": "import-scoped",
+            "reason": "imports-changed-file",
+            "evidence": {
+              "file": "caller14.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "import-site",
+              "code": "import { boundaryMarker } from './core.js'\nexport function caller14() { return boundaryMarker() }\n"
+            }
+          }
+        ],
+        "tests": [],
+        "imports": [
+          {
+            "file": "caller0.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:22"
+          },
+          {
+            "file": "caller1.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:23"
+          },
+          {
+            "file": "caller10.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:24"
+          },
+          {
+            "file": "caller11.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:25"
+          },
+          {
+            "file": "caller12.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:26"
+          },
+          {
+            "file": "caller13.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:27"
+          },
+          {
+            "file": "caller14.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped",
+            "edgeId": "import:28"
+          },
+          {
+            "file": "caller15.js",
+            "changedFile": "core.js",
+            "specifier": "./core.js",
+            "resolution": "import-scoped"
+          }
+        ],
+        "paths": [
+          {
+            "id": "path:0",
+            "from": "caller0",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:0"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:1",
+            "from": "caller1",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:1"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:2",
+            "from": "caller10",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:2"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:3",
+            "from": "caller11",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:3"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:4",
+            "from": "caller12",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:4"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:5",
+            "from": "caller13",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:5"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:6",
+            "from": "caller14",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:6"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:7",
+            "from": "caller15",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:7"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:8",
+            "from": "caller16",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:8"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:9",
+            "from": "caller17",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:9"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:10",
+            "from": "caller18",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:10"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          },
+          {
+            "id": "path:11",
+            "from": "caller19",
+            "to": "boundaryMarker",
+            "edgeIds": [
+              "call:11"
+            ],
+            "resolution": "exact",
+            "omitted": false
+          }
+        ],
+        "unmapped": [],
+        "gaps": [
+          "import-site-unavailable"
+        ],
+        "truncated": true,
+        "bounds": {
+          "analysis": {
+            "callers": false,
+            "dependents": false,
+            "paths": true,
+            "impact": false,
+            "tests": false
+          },
+          "projection": true,
+          "totals": {
+            "changed": 3,
+            "callers": 81,
+            "impact": 0,
+            "imports": 81,
+            "tests": 0,
+            "paths": 12,
+            "unmapped": 0
+          }
+        }
+      },
+      "sourceAudit": [
+        {
+          "id": "current:sym:v1:core.js#function:boundaryMarker@1",
+          "file": "core.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "3e46eb98d75e50fa365b448aaa101ff2e55caf88ef7a76a2da2d17734f03b018",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:long%20%E6%B1%89%E5%AD%97.js#function:longCaller@1",
+          "file": "long 汉字.js",
+          "line": 142,
+          "side": "current",
+          "sourceSha256": "a00b218f78b5615f42ab455509384bc49c4098685cd13d1a4ff87e4e37086a7d",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:oversized.js#function:oversizedEvidence@1",
+          "file": "oversized.js",
+          "line": 1,
+          "gap": "source-budget"
+        },
+        {
+          "id": "current:sym:v1:caller0.js#function:caller0@1",
+          "file": "caller0.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "cf9ce8d0649a80302dca850f1d712abfe841340b131869520e0b020ca06b823b",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller1.js#function:caller1@1",
+          "file": "caller1.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "4a37109df72dd3727c4a485ed36cf9f739b860c093f8e56c2eee89b728c91da3",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller10.js#function:caller10@1",
+          "file": "caller10.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "cdbbdcb48e80e09786325d75a222565a91eb20dec07a915c6928222926478077",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller11.js#function:caller11@1",
+          "file": "caller11.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "e067b640a1f865bc741533706c2a33c4c14f4c7f629b1ec05d8b679db18f9b69",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller12.js#function:caller12@1",
+          "file": "caller12.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "c22bb84fec6c8542389c989a4ee8de2b28b7cfcdf94855d2a70a2928f724ac91",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller13.js#function:caller13@1",
+          "file": "caller13.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "9b10679e60b23196fd58aa05bae07c908fa8104f4267f99d2168d5ebb2c5a958",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller14.js#function:caller14@1",
+          "file": "caller14.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "bc81641527010e4163357294c2e883728ff2cf8cd16aabc86d559090c59db2c7",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller15.js#function:caller15@1",
+          "file": "caller15.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "ae937453f563a961f90a297d4c16d9bd870cd0b901e797960f071df3e6938e33",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller16.js#function:caller16@1",
+          "file": "caller16.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "b3ef21d77d5257e7227bcf86ab0ad0729810ae6e3ef879064eec15192adb20e8",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller17.js#function:caller17@1",
+          "file": "caller17.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "2a9f393daa1ad4dbde906b6cd47dbc56bf048946764c1f42e34200b44424970f",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller18.js#function:caller18@1",
+          "file": "caller18.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "913aa010c7f3aa854d2c8304f0ae45cc86a3ef7edc306fc3cf885061a298d598",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller19.js#function:caller19@1",
+          "file": "caller19.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "1ebcda9faa22939c7c21f418c1b8e49f54112bcdea733f2dde4995dfd4c378dc",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller2.js#function:caller2@1",
+          "file": "caller2.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "85bfeddf2f64c87590e60f1eb0d679e8373e168551f32d1c0848d80b9506b4c5",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller20.js#function:caller20@1",
+          "file": "caller20.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "3111f08d06696e589d6883f197107fe06b84b0733f822747572afab835955b6e",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller21.js#function:caller21@1",
+          "file": "caller21.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "0bb8f936e05324098dc48635d5914e57221a6ab76f4d7b66a348008e1e6d8ad8",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller22.js#function:caller22@1",
+          "file": "caller22.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "a78fe366fec3a36f02323daa8c37ec1ec65ce4d242f9575991e723162936c0e4",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller23.js#function:caller23@1",
+          "file": "caller23.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "b29fc996c6e2ff2c51be01bef8ef8a3d96eda4bee17a7e02e087b293891e7c23",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller24.js#function:caller24@1",
+          "file": "caller24.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "274020ea1f74458611bad476d5f4397921dbea914d47f5a339ee68ee997f0ca9",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller25.js#function:caller25@1",
+          "file": "caller25.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "9f11bbf81b7c95954f37c4cacf4618fa25bc62f4ba0febb505daa3a50a788624",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller26.js#function:caller26@1",
+          "file": "caller26.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "981592a41aea862f31af9e7bb5edc2ba53467cba5f054b824e79a98138bcdd69",
+          "match": true
+        },
+        {
+          "id": "current:sym:v1:caller27.js#function:caller27@1",
+          "file": "caller27.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "921a156280a4697e908a139f327ca878b4838ef432b3e9f4d7630ef70fee9a79",
+          "match": true
+        },
+        {
+          "id": "file:current:caller0.js",
+          "file": "caller0.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "cf9ce8d0649a80302dca850f1d712abfe841340b131869520e0b020ca06b823b",
+          "match": true
+        },
+        {
+          "id": "file:current:core.js",
+          "file": "core.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "3e46eb98d75e50fa365b448aaa101ff2e55caf88ef7a76a2da2d17734f03b018",
+          "match": true
+        },
+        {
+          "id": "file:current:caller1.js",
+          "file": "caller1.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "4a37109df72dd3727c4a485ed36cf9f739b860c093f8e56c2eee89b728c91da3",
+          "match": true
+        },
+        {
+          "id": "file:current:caller10.js",
+          "file": "caller10.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "cdbbdcb48e80e09786325d75a222565a91eb20dec07a915c6928222926478077",
+          "match": true
+        },
+        {
+          "id": "file:current:caller11.js",
+          "file": "caller11.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "e067b640a1f865bc741533706c2a33c4c14f4c7f629b1ec05d8b679db18f9b69",
+          "match": true
+        },
+        {
+          "id": "file:current:caller12.js",
+          "file": "caller12.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "c22bb84fec6c8542389c989a4ee8de2b28b7cfcdf94855d2a70a2928f724ac91",
+          "match": true
+        },
+        {
+          "id": "file:current:caller13.js",
+          "file": "caller13.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "9b10679e60b23196fd58aa05bae07c908fa8104f4267f99d2168d5ebb2c5a958",
+          "match": true
+        },
+        {
+          "id": "file:current:caller14.js",
+          "file": "caller14.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "bc81641527010e4163357294c2e883728ff2cf8cd16aabc86d559090c59db2c7",
+          "match": true
+        },
+        {
+          "id": "call:0",
+          "file": "caller0.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "cf9ce8d0649a80302dca850f1d712abfe841340b131869520e0b020ca06b823b",
+          "match": true
+        },
+        {
+          "id": "call:1",
+          "file": "caller1.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "4a37109df72dd3727c4a485ed36cf9f739b860c093f8e56c2eee89b728c91da3",
+          "match": true
+        },
+        {
+          "id": "call:2",
+          "file": "caller10.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "cdbbdcb48e80e09786325d75a222565a91eb20dec07a915c6928222926478077",
+          "match": true
+        },
+        {
+          "id": "call:3",
+          "file": "caller11.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "e067b640a1f865bc741533706c2a33c4c14f4c7f629b1ec05d8b679db18f9b69",
+          "match": true
+        },
+        {
+          "id": "call:4",
+          "file": "caller12.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "c22bb84fec6c8542389c989a4ee8de2b28b7cfcdf94855d2a70a2928f724ac91",
+          "match": true
+        },
+        {
+          "id": "call:5",
+          "file": "caller13.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "9b10679e60b23196fd58aa05bae07c908fa8104f4267f99d2168d5ebb2c5a958",
+          "match": true
+        },
+        {
+          "id": "call:6",
+          "file": "caller14.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "bc81641527010e4163357294c2e883728ff2cf8cd16aabc86d559090c59db2c7",
+          "match": true
+        },
+        {
+          "id": "call:7",
+          "file": "caller15.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "ae937453f563a961f90a297d4c16d9bd870cd0b901e797960f071df3e6938e33",
+          "match": true
+        },
+        {
+          "id": "call:8",
+          "file": "caller16.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "b3ef21d77d5257e7227bcf86ab0ad0729810ae6e3ef879064eec15192adb20e8",
+          "match": true
+        },
+        {
+          "id": "call:9",
+          "file": "caller17.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "2a9f393daa1ad4dbde906b6cd47dbc56bf048946764c1f42e34200b44424970f",
+          "match": true
+        },
+        {
+          "id": "call:10",
+          "file": "caller18.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "913aa010c7f3aa854d2c8304f0ae45cc86a3ef7edc306fc3cf885061a298d598",
+          "match": true
+        },
+        {
+          "id": "call:11",
+          "file": "caller19.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "1ebcda9faa22939c7c21f418c1b8e49f54112bcdea733f2dde4995dfd4c378dc",
+          "match": true
+        },
+        {
+          "id": "call:12",
+          "file": "caller2.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "85bfeddf2f64c87590e60f1eb0d679e8373e168551f32d1c0848d80b9506b4c5",
+          "match": true
+        },
+        {
+          "id": "call:13",
+          "file": "caller20.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "3111f08d06696e589d6883f197107fe06b84b0733f822747572afab835955b6e",
+          "match": true
+        },
+        {
+          "id": "call:14",
+          "file": "caller21.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "0bb8f936e05324098dc48635d5914e57221a6ab76f4d7b66a348008e1e6d8ad8",
+          "match": true
+        },
+        {
+          "id": "call:15",
+          "file": "caller22.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "a78fe366fec3a36f02323daa8c37ec1ec65ce4d242f9575991e723162936c0e4",
+          "match": true
+        },
+        {
+          "id": "call:16",
+          "file": "caller23.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "b29fc996c6e2ff2c51be01bef8ef8a3d96eda4bee17a7e02e087b293891e7c23",
+          "match": true
+        },
+        {
+          "id": "call:17",
+          "file": "caller24.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "274020ea1f74458611bad476d5f4397921dbea914d47f5a339ee68ee997f0ca9",
+          "match": true
+        },
+        {
+          "id": "call:18",
+          "file": "caller25.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "9f11bbf81b7c95954f37c4cacf4618fa25bc62f4ba0febb505daa3a50a788624",
+          "match": true
+        },
+        {
+          "id": "call:19",
+          "file": "caller26.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "981592a41aea862f31af9e7bb5edc2ba53467cba5f054b824e79a98138bcdd69",
+          "match": true
+        },
+        {
+          "id": "call:20",
+          "file": "caller27.js",
+          "line": 2,
+          "side": "current",
+          "sourceSha256": "921a156280a4697e908a139f327ca878b4838ef432b3e9f4d7630ef70fee9a79",
+          "match": true
+        },
+        {
+          "id": "call:21",
+          "file": "long 汉字.js",
+          "line": 142,
+          "side": "current",
+          "sourceSha256": "a00b218f78b5615f42ab455509384bc49c4098685cd13d1a4ff87e4e37086a7d",
+          "match": true
+        },
+        {
+          "id": "import:22",
+          "file": "caller0.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "cf9ce8d0649a80302dca850f1d712abfe841340b131869520e0b020ca06b823b",
+          "match": true
+        },
+        {
+          "id": "import:23",
+          "file": "caller1.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "4a37109df72dd3727c4a485ed36cf9f739b860c093f8e56c2eee89b728c91da3",
+          "match": true
+        },
+        {
+          "id": "import:24",
+          "file": "caller10.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "cdbbdcb48e80e09786325d75a222565a91eb20dec07a915c6928222926478077",
+          "match": true
+        },
+        {
+          "id": "import:25",
+          "file": "caller11.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "e067b640a1f865bc741533706c2a33c4c14f4c7f629b1ec05d8b679db18f9b69",
+          "match": true
+        },
+        {
+          "id": "import:26",
+          "file": "caller12.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "c22bb84fec6c8542389c989a4ee8de2b28b7cfcdf94855d2a70a2928f724ac91",
+          "match": true
+        },
+        {
+          "id": "import:27",
+          "file": "caller13.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "9b10679e60b23196fd58aa05bae07c908fa8104f4267f99d2168d5ebb2c5a958",
+          "match": true
+        },
+        {
+          "id": "import:28",
+          "file": "caller14.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "bc81641527010e4163357294c2e883728ff2cf8cd16aabc86d559090c59db2c7",
+          "match": true
+        }
+      ]
+    },
+    {
+      "case": "unmapped-current-and-base",
+      "callSeq": 52,
+      "resultSeq": 53,
+      "isError": false,
+      "elapsedMs": 286,
+      "method": "Actual Desktop tool call; persisted metadata; real source comparison",
+      "args": {
+        "outputFormat": "xray",
+        "repoRoot": "<empty-then-unmapped-fixture>"
+      },
+      "snapshot": {
+        "card": "impact-xray",
+        "version": 2,
+        "root": "<fixture>",
+        "source": "git",
+        "nodes": [],
+        "edges": [],
+        "tests": [],
+        "imports": [],
+        "paths": [],
+        "unmapped": [
+          {
+            "file": "unmapped.js",
+            "side": "base",
+            "ranges": [
+              {
+                "startLine": 1,
+                "endLine": 1
+              }
+            ],
+            "reason": "outside-symbol",
+            "evidence": {
+              "file": "unmapped.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "base",
+              "type": "unmapped-change",
+              "ref": "7e2887172b1db58204d7d14fea8d47518f4c67f2",
+              "code": "// initial comment-only source\n"
+            }
+          },
+          {
+            "file": "unmapped.js",
+            "side": "current",
+            "ranges": [
+              {
+                "startLine": 1,
+                "endLine": 1
+              }
+            ],
+            "reason": "outside-symbol",
+            "evidence": {
+              "file": "unmapped.js",
+              "line": 1,
+              "startLine": 1,
+              "side": "current",
+              "type": "unmapped-change",
+              "code": "// changed comment-only source: 未映射 & explicit gap\n"
+            }
+          }
+        ],
+        "gaps": [],
+        "truncated": false,
+        "bounds": {
+          "analysis": {
+            "callers": false,
+            "dependents": false,
+            "paths": false,
+            "impact": false,
+            "tests": false
+          },
+          "projection": false,
+          "totals": {
+            "changed": 0,
+            "callers": 0,
+            "impact": 0,
+            "imports": 0,
+            "tests": 0,
+            "paths": 0,
+            "unmapped": 2
+          }
+        }
+      },
+      "sourceAudit": [
+        {
+          "id": "unmapped.js",
+          "file": "unmapped.js",
+          "line": 1,
+          "side": "base",
+          "sourceSha256": "7416e52c49004d569a05fdb561f919414fb8b21e5e1492eaf4c92f9b60a62e65",
+          "match": true
+        },
+        {
+          "id": "unmapped.js",
+          "file": "unmapped.js",
+          "line": 1,
+          "side": "current",
+          "sourceSha256": "b6b22e5bdc3dc3feeae4c90fc5bf6122356b50e08d464dd79fe4787ab6a5c3c5",
+          "match": true
+        }
+      ]
+    }
+  ],
+  "allTurns": "3 completed",
+  "totalToolCalls": 5,
+  "uiFix": {
+    "issue": "First unmapped selection skipped evidence when node history was empty",
+    "regression": "Old cursor fails, corrected cursor passes tests/impact-xray-client.spec.ts; actual Desktop first-selection replay passed",
+    "clientSha256": "792c65aa38041c3beeea7797502bec2f15b5b8858cec55420f2d68f837329081"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "date": "2026-10-21",
+  "baseline": "v0.10.2 / ba24d2a",
+  "candidate": "0.11.0-dev.0",
+  "tests": [
+    {
+      "node": "22.23.3",
+      "passed": 253,
+      "failed": 0,
+      "reportSha256": "18eeec7fe33abd7bab2d42c7b885b9667e896e70cebc0dded4fa73b8d40ebe56",
+      "command": "node node_modules/vitest/vitest.mjs run --reporter=json"
+    },
+    {
+      "node": "24.19.0",
+      "passed": 253,
+      "failed": 0,
+      "reportSha256": "7e913cebea85d92fd5234b587b76a925ff5be71b9469f09ee2eba8e082c07c38",
+      "command": "node node_modules/vitest/vitest.mjs run --reporter=json"
+    }
+  ],
+  "typecheck": {
+    "nodes": [
+      "22.23.3",
+      "24.19.0"
+    ],
+    "passed": true,
+    "command": "tsc --noEmit"
+  },
+  "build": {
+    "nodes": [
+      "22.23.3",
+      "24.19.0"
+    ],
+    "passed": true,
+    "matchingRuntimeHashes": true,
+    "files": [
+      {
+        "file": "client.js",
+        "sha256": "792c65aa38041c3beeea7797502bec2f15b5b8858cec55420f2d68f837329081"
+      },
+      {
+        "file": "index.js",
+        "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+      }
+    ]
+  },
+  "packedInstall": {
+    "archive": "dsh-code-index-0.11.0-dev.0.tgz",
+    "sha256": "6706e11417057d3c97e3cf14b814de739d2de9aa4450617eb3316b2bbac6575f",
+    "shasum": "989dbcd6c6c1281179b1be6f2d54092a90bf6fff",
+    "matrix": [
+      {
+        "node": "22",
+        "tools": "0.2.0-rc.2",
+        "passed": true,
+        "command": "node scripts/release-smoke.mjs dsh-code-index-0.11.0-dev.0.tgz 0.2.0-rc.2",
+        "logSha256": "bdc1ffc754fa87489af1e958e3e3b9602d63895d24eda0bb4023abc2406c03a3"
+      },
+      {
+        "node": "22",
+        "tools": "0.2.1-rc.2",
+        "passed": true,
+        "command": "node scripts/release-smoke.mjs dsh-code-index-0.11.0-dev.0.tgz 0.2.1-rc.2",
+        "logSha256": "a1ba2c1421aa9088292eaacaca5f2a8521838574ca0df61ba936bd0075628e77"
+      },
+      {
+        "node": "24",
+        "tools": "0.2.0-rc.2",
+        "passed": true,
+        "command": "node scripts/release-smoke.mjs dsh-code-index-0.11.0-dev.0.tgz 0.2.0-rc.2",
+        "logSha256": "438fd99109357567ca5aecd2439755872a6e3dad091a7b8a98095cd80a7b8ebb"
+      },
+      {
+        "node": "24",
+        "tools": "0.2.1-rc.2",
+        "passed": true,
+        "command": "node scripts/release-smoke.mjs dsh-code-index-0.11.0-dev.0.tgz 0.2.1-rc.2",
+        "logSha256": "24ba825f6e155e638cbaa6e4d87d328bf1a98b7450c475c8020141e8242ae69c"
+      }
+    ]
+  },
+  "comparison": {
+    "dependenciesUnchanged": true,
+    "devDependenciesUnchanged": true,
+    "peersUnchanged": {
+      "@deepseek-ai/cordis": "^4.0.1",
+      "@deepseek-ai/dsh-tools": "0.2.0-rc.2 || 0.2.1-rc.2"
+    },
+    "lockfileAndGrammarsUnchanged": true,
+    "runtimeDependencies": 5,
+    "baseline": {
+      "compressedBytes": 415815,
+      "unpackedBytes": 3150476,
+      "files": 19,
+      "clientJsBytes": 17328,
+      "serverJsBytes": 175233
+    },
+    "candidate": {
+      "compressedBytes": 456831,
+      "unpackedBytes": 3294192,
+      "files": 23,
+      "clientJsBytes": 58814,
+      "serverJsBytes": 184901
+    },
+    "compressedDeltaBytes": 41016,
+    "compressedDeltaPercent": 9.86
+  },
+  "desktop": {
+    "version": "0.2.1-rc.2",
+    "method": "Real installed plugin, actual Agent tool events; Computer Use observes/operates native UI; persisted replay and source independently audited",
+    "toolCalls": 5,
+    "turnsCompleted": 3,
+    "sourceWindowsMatched": 82,
+    "explicitSourceGap": 1,
+    "oldRcBoundary": "0.2.0-rc.2 actual package ToolRuntime install matrix plus official client slot/props/locale source audit; no old Desktop executable UI run in this MVP session",
+    "profileConfiguration": [
+      {
+        "file": "pnpm-lock.yaml",
+        "sha256": "aba96044f740de1ac5598f344bc360575df70950144216fbc24192bdef1693d9",
+        "unchanged": true
+      },
+      {
+        "file": "package.json",
+        "sha256": "df489db74795d72a55eea76a0bfc4695e2eaf95d8a50ba3f36dfa9e7179f6a95",
+        "unchanged": true
+      },
+      {
+        "file": "cordis.patch.yml",
+        "sha256": "d1278583ab69b53860b3c6765475614146e82a25491d5454f89c9ae07b195a45",
+        "unchanged": true
+      },
+      {
+        "file": "cordis.yml",
+        "sha256": "c300dcf2ebc5f02062d6591268d29d3db6fe45e0cb138f5467276fe2ba06076e",
+        "unchanged": true
+      }
+    ],
+    "installedClientMatchesBuild": true,
+    "originalPackageBackupRetained": true
+  },
+  "regression": {
+    "test": "tests/impact-xray-client.spec.ts",
+    "oldLogicFailed": true,
+    "fixedLogicPassed": true,
+    "actualDesktopFirstUnmappedSelectionPassed": true,
+    "redLogSha256": "358c0ef0fdab218c0b4a749bf12fd90963b0248741f6a97796b4399c00faf70a",
+    "greenLogSha256": "2a986377b076d6ca77b4e315f67683a54ea3e426120b892a6e78e5b3b0bfeca5"
+  },
+  "media": {
+    "seconds": 30,
+    "videoFrames": 900,
+    "gifFrames": 300,
+    "audio": false,
+    "userStartedRegionCapture": true,
+    "computerUsePerformedClicksAndStop": true,
+    "chronologicalExcerpt": true
+  },
+  "handoffPromptUntouched": true
+}

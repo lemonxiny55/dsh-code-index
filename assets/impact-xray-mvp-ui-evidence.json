@@ -1,0 +1,149 @@
+{
+  "method": "Computer Use screenshots of actual DSH Desktop. Rectangular crop only; no generated UI, inserted source or overlays. Raw captures remain locally under the ignored validation directory.",
+  "screenshots": [
+    {
+      "file": "assets/impact-xray-mvp-overview.png",
+      "stage": "final client",
+      "captured": "2026-10-21T06:10:45.5804677Z",
+      "rawFile": "final-demo-start.png",
+      "rawSha256": "6bb61c07073184234849e9c9ddbcc31f1eb4efc5bf4b41c2a10eca6bd20ee021",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        40,
+        1180,
+        740
+      ],
+      "sha256": "53d4a0cbed953933b32bcc7f7935d0125a7ef8c88ed52ec6ed3ea9223a6641ed"
+    },
+    {
+      "file": "assets/impact-xray-mvp-import.png",
+      "stage": "before empty-history fix",
+      "captured": "2026-10-21T05:44:23.8973509Z",
+      "rawFile": "final-import-source.png",
+      "rawSha256": "25a88817b987c6f42cf218a060bccd888f24336dade246b193c22667a6229af6",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        110,
+        1180,
+        600
+      ],
+      "sha256": "bcf4a18f76fd7c549aaadba7f421491482537d52024e71a40964ed4c581e3473"
+    },
+    {
+      "file": "assets/impact-xray-mvp-tests.png",
+      "stage": "before empty-history fix",
+      "captured": "2026-10-21T05:45:13.7775142Z",
+      "rawFile": "final-test-source.png",
+      "rawSha256": "2e12adbe2738c0102d1b4551c9dda76f41c875560760d7bf77d261068095e179",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        110,
+        1180,
+        600
+      ],
+      "sha256": "9312615b7f3f980b5d7c182cc7fa08a31a6a39966c95516026d26bbe1371307a"
+    },
+    {
+      "file": "assets/impact-xray-mvp-paths.png",
+      "stage": "before empty-history fix",
+      "captured": "2026-10-21T05:45:42.3167400Z",
+      "rawFile": "final-paths.png",
+      "rawSha256": "408037e6d5c4e7cf780c8f35d1644166e6a31bbb74bb297204792db671f1d801",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        40,
+        1180,
+        740
+      ],
+      "sha256": "55b8861bdf82aa603c0edc61fa4f92a1695f671713c18195c8448786d1fb6405"
+    },
+    {
+      "file": "assets/impact-xray-mvp-bounded.png",
+      "stage": "before empty-history fix",
+      "captured": "2026-10-21T05:55:22.9421143Z",
+      "rawFile": "boundary-large.png",
+      "rawSha256": "d19d622d1ad913c224d5c7d0b779cb5f1519ca25d43a11d8f27468b7dcdd4a1d",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        40,
+        1180,
+        740
+      ],
+      "sha256": "215ada36f4b1ca9007ac4ad056c1b0de1fd0d645de4a75c3e3e6c1fea546be17"
+    },
+    {
+      "file": "assets/impact-xray-mvp-unmapped.png",
+      "stage": "final client",
+      "captured": "2026-10-21T06:08:08.1354471Z",
+      "rawFile": "boundary-unmapped-fixed.png",
+      "rawSha256": "df411e9e23afc382971477f7df154929fb858c5093f257cbb2e4755afd38f09b",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        51,
+        110,
+        1180,
+        600
+      ],
+      "sha256": "5ee0cb0b01cebeda7ee5c3bb706ff2600343458e410d4d0558b19bc770ebbb25"
+    },
+    {
+      "file": "assets/impact-xray-mvp-native-long.png",
+      "stage": "host preview, before empty-history fix",
+      "captured": "2026-10-21T05:58:12.6916747Z",
+      "rawFile": "boundary-native-long.png",
+      "rawSha256": "4a44d2ff49cbdc964115f1917cfe94ae794e093d07a899123185c1351a33f0b8",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        706,
+        40,
+        574,
+        780
+      ],
+      "sha256": "1f89b6850d28a7a1052471dd4b8b5e3cb7ea11c97ff9368b572b33003dbcd228"
+    },
+    {
+      "file": "assets/impact-xray-mvp-error.png",
+      "stage": "before empty-history fix",
+      "captured": "2026-10-21T05:58:45.1832101Z",
+      "rawFile": "boundary-error.png",
+      "rawSha256": "8de5da207f5bddf7a8462ef8afaf724d236d040cc3aadf7036be38cdf60d3cc7",
+      "rawDimensions": [
+        1282,
+        823
+      ],
+      "crop": [
+        438,
+        225,
+        675,
+        135
+      ],
+      "sha256": "4c099e86de50713a1aead2a5db067e3f420cdc13ebfcdfc49b450caed641312b"
+    }
+  ]
+}

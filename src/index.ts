@@ -85,6 +85,8 @@ export type {
   ChangeContextResult,
 } from './change-context.js'
 export { tools } from './tools.js'
+export { buildImpactXray, XRAY_LIMITS } from './impact-xray.js'
+export type { ImpactXray, XrayNode, XrayEdge, XrayPath, XrayEvidence } from './impact-xray-model.js'
 export { Config } from './config.js'
 
 import { activateRepoContextManager, clearRepoContextManager, getIndex, invalidateIndexCache, tools } from './tools.js'
