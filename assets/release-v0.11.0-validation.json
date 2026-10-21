@@ -1,0 +1,88 @@
+{
+  "version": "0.11.0",
+  "candidateCommit": "pending",
+  "preflight": {
+    "pr": 7,
+    "reviewedCandidate": "f67c00529115519fc94352c0b23aa981c6a79658",
+    "main": "ba24d2abdc158ae14d60727c20d77752453237ad",
+    "npmLatest": "0.10.2",
+    "npm011Published": false,
+    "githubV011TagPresent": false,
+    "githubV011ReleasePresent": false
+  },
+  "tests": [
+    {
+      "node": "22.23.3",
+      "passed": 253,
+      "failed": 0,
+      "logSha256": "40d115c19cf8eddf8baca9b3f125f9e06995e94e5b545b97491fbd4cfaf9a46c",
+      "typecheck": "passed",
+      "serverBuild": "passed",
+      "clientBuild": "passed"
+    },
+    {
+      "node": "24.19.0",
+      "passed": 253,
+      "failed": 0,
+      "logSha256": "52c88ab5922d93890c74d90bab28aa11deeee5d6b3e8653a35045821c65dba92",
+      "typecheck": "passed",
+      "serverBuild": "passed",
+      "clientBuild": "passed"
+    }
+  ],
+  "packedInstallSmoke": [
+    {
+      "node": "22",
+      "dshTools": "0.2.0-rc.2",
+      "passed": true
+    },
+    {
+      "node": "22",
+      "dshTools": "0.2.1-rc.2",
+      "passed": true
+    },
+    {
+      "node": "24",
+      "dshTools": "0.2.0-rc.2",
+      "passed": true
+    },
+    {
+      "node": "24",
+      "dshTools": "0.2.1-rc.2",
+      "passed": true
+    }
+  ],
+  "package": {
+    "sha256": "b8eb24a76dcb367c7c710ef2fd79da1644f1f6b57f132bd76ac8f2e5a7f22af0",
+    "sha1": "b95dbce9d7154d02c3d18476f32d07a375dc8314",
+    "integrity": "sha512-3q9UI/Nfo0AOr142E0ZbgNUIcCn4wntsDIZmtxm3uMnOOlSjaRx4Fe/vGZbyNEBCzQqhJpFOchFNZfmOr7FqNQ==",
+    "bytes": 460993,
+    "files": 24,
+    "runtimeFilesEqualDev1": true,
+    "changedOnly": [
+      "CHANGELOG.md",
+      "README.md",
+      "README.zh.md",
+      "package.json"
+    ],
+    "dependenciesUnchanged": true,
+    "peersUnchanged": true,
+    "lockfileUnchanged": true
+  },
+  "desktop": {
+    "dsh021rc2": "full UI manually verified",
+    "dsh020rc2": "install and ToolRuntime verified; full UI not validated"
+  },
+  "ci": {
+    "pullRequestHead": "pending",
+    "workflowRun": "pending",
+    "postMergeMain": "pending"
+  },
+  "publication": {
+    "npm": "pending",
+    "registryArchive": "pending",
+    "tag": "pending",
+    "githubRelease": "pending",
+    "postPublicationEvidenceCommit": "pending"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "name": "dsh-code-index",
+  "version": "0.11.0",
+  "filename": "dsh-code-index-0.11.0.tgz",
+  "bytes": 460993,
+  "sha256": "b8eb24a76dcb367c7c710ef2fd79da1644f1f6b57f132bd76ac8f2e5a7f22af0",
+  "shasum": "b95dbce9d7154d02c3d18476f32d07a375dc8314",
+  "integrity": "sha512-3q9UI/Nfo0AOr142E0ZbgNUIcCn4wntsDIZmtxm3uMnOOlSjaRx4Fe/vGZbyNEBCzQqhJpFOchFNZfmOr7FqNQ==",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 19365,
+      "sha256": "c975c8f72d6fc76c70c3dfbf20067ac31757ada9f3b50853faedfc0ac73e085b"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 207,
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "dist/client.js",
+      "size": 62174,
+      "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+    },
+    {
+      "path": "dist/client.js.map",
+      "size": 80631,
+      "sha256": "b8333ff2cc73377dd4c3643828a95d6e3e1bfb4035870e336a81047d10da899e"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "size": 28530,
+      "sha256": "382dc91e9ef9f0fb9a2b032a9f77079afd363cb870cd62eef20d222e71d374ca"
+    },
+    {
+      "path": "dist/index.js",
+      "size": 184901,
+      "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+    },
+    {
+      "path": "dist/index.js.map",
+      "size": 394146,
+      "sha256": "00a2a9a7b1e72423ed471e86cb4d8abfc221dcdb014d771240b324e726a06bb4"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "size": 2154,
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "size": 1566,
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "size": 2430659,
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1083,
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "package.json",
+      "size": 2288,
+      "sha256": "918481108a73df5242478f267b08580ebde206c650cbc56d4900e7c0b5774948"
+    },
+    {
+      "path": "README.md",
+      "size": 25547,
+      "sha256": "072e38a9eaed8e09d3b210371e5ea72a28dd43c3af46d1da419e87a4139b6616"
+    },
+    {
+      "path": "README.zh.md",
+      "size": 23048,
+      "sha256": "5f6e9bbbb3395cb29925303e4978911794aeb96dbab81c3b9eb913669d300f3c"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "size": 4980,
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "size": 4994,
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/impact-xray-benchmark.mjs",
+      "size": 2791,
+      "sha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb"
+    },
+    {
+      "path": "scripts/impact-xray-demo.mjs",
+      "size": 2437,
+      "sha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7"
+    },
+    {
+      "path": "scripts/impact-xray-poc.mjs",
+      "size": 2126,
+      "sha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b"
+    },
+    {
+      "path": "scripts/impact-xray-rc-benchmark.mjs",
+      "size": 5529,
+      "sha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "size": 3579,
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/process-impact-xray-demo.mjs",
+      "size": 2490,
+      "sha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "size": 17644,
+      "sha256": "13cf16ccf0271f676f2ad55e922244f5ae315625cab5f14efea01f72d256471b"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "size": 6638,
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ]
+}

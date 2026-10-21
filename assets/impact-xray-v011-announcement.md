@@ -1,4 +1,4 @@
-# Impact X-Ray — v0.11 development preview
+# Impact X-Ray — v0.11.0
 
 **See the blast radius before your AI edits the code.**
 
@@ -8,11 +8,11 @@ Know what remains uncertain: solid `exact` relationships describe structural res
 
 English and 简体中文 UI, a bounded graph, an expanded graph/evidence view, native current-file preview and saved-result replay turn the existing change-context analysis into a Desktop workflow. This is not a new impact-analysis algorithm. There are no speed, accuracy or Token-savings claims.
 
-This development branch builds `0.11.0-dev.0`. It is for MVP review, not a published release. See [actual Desktop footage](impact-xray-mvp-demo.md) and [validation boundaries](../IMPACT_XRAY_MVP.md).
+The 30-second recording is genuine `0.11.0-dev.0` MVP footage. First-screen improvements in `dev.1` are documented separately with real Desktop screenshots. DSH Desktop 0.2.1-rc.2 received full UI verification; 0.2.0-rc.2 passed install and ToolRuntime checks, while its full X-Ray UI remains unvalidated. See [actual Desktop footage](impact-xray-mvp-demo.md), [release notes](../RELEASE_NOTES_v0.11.0.md) and [release evidence](../RELEASE_EVIDENCE_v0.11.0.md).
 
 ---
 
-# Impact X-Ray — v0.11 开发预览
+# Impact X-Ray — v0.11.0
 
 **在 AI 修改代码前，看清潜在影响范围。**
 
@@ -22,4 +22,4 @@ This development branch builds `0.11.0-dev.0`. It is for MVP review, not a publi
 
 中英文 UI、有界图、并排图与证据视图、原生当前文件预览及保存结果回放，将既有变更分析能力带入实际 Desktop 工作流。本次不是新的影响分析算法，不作速度、准确率或 Token 节省宣传。
 
-当前分支构建 `0.11.0-dev.0`，用于 MVP 审查，尚未正式发布。见[真实 Desktop 演示](impact-xray-mvp-demo.md)及[验证与边界](../IMPACT_XRAY_MVP.md)。
+30 秒录屏来自真实 `0.11.0-dev.0` MVP；`dev.1` 首屏改进另有真实 Desktop 截图。DSH Desktop 0.2.1-rc.2 已完成 UI 实机验证；0.2.0-rc.2 通过安装和 ToolRuntime 检查，但未验证完整 X-Ray UI。见[真实 Desktop 演示](impact-xray-mvp-demo.md)、[发布说明](../RELEASE_NOTES_v0.11.0.md)及[发布证据](../RELEASE_EVIDENCE_v0.11.0.md)。

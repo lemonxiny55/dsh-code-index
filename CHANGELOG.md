@@ -2,10 +2,12 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.11.0-dev.1 — RC preparation (unpublished)
+## 0.11.0 — Impact X-Ray
 
-- Highlight the change center, bounded relation counts and name-only / unmapped uncertainty; retain the graph layout and existing analysis.
-- Add repeated, stage-separated memory observations and a pinned real Express sample. Prepare bilingual candidate installation and future v0.11.0 notes without publishing.
+- Present the existing `code_change_context` analysis in an interactive bilingual Desktop view with source-backed nodes and relationships; keep default text output and `code_context` Context Packs compatible.
+- Highlight the change center, bounded relation counts and name-only / unmapped uncertainty. Preserve `exact`, `import-scoped` and `name-only` semantics and do not infer missing call edges.
+- Add bounded graph projection, actual source inspection, native preview and saved-result replay without a graph framework or runtime dependencies.
+- Record measured six-file and real Express observations, with underlying index-memory, static-analysis and snapshot limits in the release evidence. Desktop 0.2.1-rc.2 UI is verified; 0.2.0-rc.2 is verified for installation and ToolRuntime only.
 
 ## 0.11.0-dev.0 — Impact X-Ray (development preview, unpublished)
 

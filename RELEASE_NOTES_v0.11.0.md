@@ -1,48 +1,55 @@
-# v0.11.0 release notes — unpublished candidate
-
-**Development candidate: `0.11.0-dev.1`. This prepares the future v0.11.0 release; it does not announce a published version.**
-
-## English
+# dsh-code-index v0.11.0 — Impact X-Ray
 
 **See the blast radius before your AI edits the code.**
 
-Impact X-Ray presents existing `code_change_context` analysis in an interactive English / 简体中文 Desktop view. Start with a real Git diff, inspect changed declarations, callers, indirect paths, import dependencies and candidate tests, then select a node or arrow to inspect actual source, file/line and the inclusion reason.
+## English
 
-The first screen highlights the change center, counts relations in the bounded snapshot, and calls out name-only candidates and unmapped changes. Solid `exact`, dashed `import-scoped` and dotted amber `name-only` retain their original semantics. Native preview, selection history, filters, local expansion and saved-result replay help inspect evidence. Potential relationships do not guarantee runtime impact; test leads do not prove coverage or failure.
+Impact X-Ray presents the existing `code_change_context` analysis in an interactive DSH Desktop view. Start from a real Git diff or an explicitly labeled file/symbol selection. Inspect changed declarations, direct callers, indirect paths, import dependencies and candidate tests. Select a node or relationship to inspect its source, file and line, evidence type, and reason for inclusion.
 
-No new analysis engine, graph framework or runtime dependencies. Default tool text and `code_context` Context Packs retain their behavior. UI bounds are 32 nodes / 48 relations / 12 paths with explicit truncation and missing evidence; they do not bound the underlying index's memory. Source snapshots can become stale after edits.
+The view distinguishes `exact`, `import-scoped` and `name-only` relationships and makes missing evidence, unmapped changes and bounded-result truncation visible. Potential impact is not a guarantee of runtime behavior, and a test lead does not prove coverage or failure. The existing `code_change_context` text output and `code_context` Context Packs remain compatible. No new analysis engine, graph framework or runtime dependency was added.
 
-### Install the development candidate
+The display is bounded to 32 nodes, 48 relations and 12 paths, with up to eight test and import leads each. These presentation limits do not bound the existing index's memory. Measurements, verification methods and known limits are recorded in the release evidence.
 
-Use Node 22/24 and pnpm 11. Build this branch, pack locally, then install into an existing supported Desktop profile with its bundled CLI:
+The 30-second GIF/MP4 is continuous footage from the real `0.11.0-dev.0` MVP; it shows the changed function, caller/test lanes and source-backed exact relationship within its opening 10 seconds. The `dev.1` first-screen change-center improvements have separate real DSH Desktop screenshots. The footage was not recreated or relabeled as a recording of the later first screen.
+
+### Install
 
 ```sh
-pnpm install --frozen-lockfile
-npm run build
-npm pack --ignore-scripts
-dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.11.0-dev.1.tgz
+dsh plugin --profile desktop add dsh-code-index@0.11.0
 ```
 
-Keep a backup and restart Desktop. Only matching DSH/dsh-tools `0.2.0-rc.2` or `0.2.1-rc.2` groups are declared; the range is unchanged. The RC report states the verification method and remaining old-Desktop UI limitation. Published v0.10.2 remains the baseline and does not include X-Ray.
+Restart Desktop after installation. Node 22/24 and pnpm 11 are used for development and verification. DSH Desktop 0.2.1-rc.2 received full Impact X-Ray UI verification. DSH Desktop 0.2.0-rc.2 passed installation and ToolRuntime verification, but its full Impact X-Ray UI was not validated. The existing peer range is unchanged.
 
-After a separately authorized v0.11.0 publication, the intended public install command will be `dsh plugin --profile desktop add dsh-code-index@0.11.0`. Do not use that version as though it were already published; install the local candidate above during review.
+### Compatibility and limits
 
-Ask for `code_change_context` with `{"repoRoot":"/absolute/repo","outputFormat":"xray"}`, expand the result and choose **Expand view**. Select an arrow to inspect its source. The original text remains available.
-
-The README's 30-second recording is real Desktop footage of the audited `0.11.0-dev.0` MVP. This candidate refines the header while preserving those interactions and analysis. It is not a performance or live Agent-latency demonstration.
+- `exact` describes structural relationships resolved by the existing index; it does not guarantee runtime impact. `import-scoped` retains import-scope evidence. `name-only` is a lower-confidence candidate that should be checked against source.
+- The view uses bounded source snapshots. Re-run the analysis after edits; historical source availability is limited. Deleted declarations may use baseline source when available.
+- The existing parser and index can consume substantial peak memory on even a small repository. UI bounds limit projection and rendered results, not cold-index cost.
+- Static analysis does not resolve dynamic dispatch, infer missing calls, guarantee test coverage, or provide full HarmonyOS SDK semantics, HAR/module-alias resolution, state-update or UI-rerender graphs.
 
 ## 中文
 
 **在 AI 修改代码前，看清潜在影响范围。**
 
-Impact X-Ray 将已有 `code_change_context` 分析转成中英双语 Desktop 交互视图。从真实 Git diff 开始，检查变更声明、调用者、间接路径、导入依赖和测试候选；点击节点或箭头查看实际源码、文件行号、来源及纳入原因。
+Impact X-Ray 将已有 `code_change_context` 分析呈现在可交互的 DSH Desktop 界面中。从真实 Git diff 或明确标注的文件/符号选择开始，查看变更声明、直接调用者、间接路径、导入依赖和测试候选。点击节点或关系可检查源码、文件行号、证据类型及纳入原因。
 
-首屏突出变更中心、有界快照的关系数量、仅名称候选和未映射变更。`exact` 实线、`import-scoped` 虚线及 `name-only` 黄色点线保留原始含义，不将潜在关系包装为必然影响。支持原生文件预览、选择历史、筛选、本地展开和已保存结果回放。
+界面区分 `exact`、`import-scoped` 和 `name-only`，并明确显示证据缺失、未映射变更及有界结果裁剪。潜在影响不等于运行时必然行为；测试线索不证明覆盖或必然失败。现有 `code_change_context` 文本输出和 `code_context` Context Pack 行为保持兼容。本版本没有新增分析引擎、大型图库或运行时依赖。
 
-没有新增分析引擎、大型图库或运行时依赖。默认工具文本与 Context Pack 行为兼容。展示上限为 32 节点、48 关系、12 路径，裁剪与缺失证据明确提示；它不限制底层索引内存。修改工作区后应重新请求证据快照，测试线索不证明覆盖或必然失败。
+展示上限为 32 个节点、48 条关系和 12 条路径，测试与导入线索各最多 8 条。这些展示上限不限制既有索引的内存消耗。实测数据、验证方法和已知限制记录在发布证据中。
 
-当前仅为**未发布的 `0.11.0-dev.1` 候选包**，安装步骤见上方；正式发布另需授权。兼容范围保持两个精确的 DSH/dsh-tools RC 组，实测方式及旧版 UI 风险见 RC 报告。README 中的 30 秒素材来自真实 `dev.0` MVP；本候选版改进首屏，保留相同交互与分析语义。
+30 秒 GIF/MP4 是真实 `0.11.0-dev.0` MVP 的连续录屏；前 10 秒可看到变更函数、调用者/测试轨道和有源码证据的 exact 关系。`dev.1` 首屏变更中心改进另有真实 DSH Desktop 截图。录屏没有重制，也没有冒充后续首屏版本的录制。
 
-单独授权并正式发布 v0.11.0 后，公共安装命令计划为 `dsh plugin --profile desktop add dsh-code-index@0.11.0`；当前不能把该版本当成已发布版本使用。
+### 安装
 
-本轮不发布 npm、不创建 tag/Release、不合并 main；PR 保持 Draft。
+```sh
+dsh plugin --profile desktop add dsh-code-index@0.11.0
+```
+
+安装后重启 Desktop。开发与验证使用 Node 22/24、pnpm 11。Impact X-Ray 完整 UI 已在 DSH Desktop 0.2.1-rc.2 实机验证。DSH Desktop 0.2.0-rc.2 通过安装和 ToolRuntime 验证，但没有完成完整 Impact X-Ray UI 验收。现有 peer 范围保持不变。
+
+### 兼容范围与限制
+
+- `exact` 表示既有索引解析出的结构关系，不保证运行时必然受影响；`import-scoped` 保留导入范围证据；`name-only` 是置信度较低的候选，应结合源码核实。
+- 界面使用有界源码快照。代码编辑后应重新分析；历史源码可用范围有限。删除声明在基线源码可用时可能显示基线内容。
+- 即使小型仓库，既有解析器和索引也可能产生较高峰值内存。UI 上限约束投影和渲染结果，不约束冷索引成本。
+- 静态分析无法解析动态分发、推断缺失调用或保证测试覆盖，也不提供完整 HarmonyOS SDK 语义、HAR/模块别名解析、状态更新或 UI 重渲染调用图。
