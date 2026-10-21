@@ -18,8 +18,8 @@ describe('settings card locales', () => {
       const disposers: Array<() => void> = []
       let activeLocaleRegistrations = 0
       const locale = activeLocale ? {
-        register(_namespace: string, dictionaries: { zh: Record<string, string>; en: Record<string, string> }) {
-          expect(dictionaries[activeLocale].description).toBeTruthy()
+        register(namespace: string, dictionaries: { zh: Record<string, string>; en: Record<string, string> }) {
+          expect(dictionaries[activeLocale][namespace === 'settings.codeIndex' ? 'description' : 'subtitle']).toBeTruthy()
           activeLocaleRegistrations += 1
           return () => { activeLocaleRegistrations -= 1 }
         },

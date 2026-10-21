@@ -1,0 +1,237 @@
+{
+  "environment": {
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 9 7940HX with Radeon Graphics        ",
+    "physicalMemoryBytes": 16339554304
+  },
+  "candidate": {
+    "method": "Three isolated Node processes; generated real files; explicit file selection, not a Git-change or production-repository benchmark; one cold index and three warm analysis/projection samples per size",
+    "node": "v24.19.0",
+    "rows": [
+      {
+        "files": 6,
+        "symbols": 11,
+        "indexMs": 176.99179999999998,
+        "samples": [
+          {
+            "analysisMs": 4.653999999999996,
+            "projectionMs": 8.536699999999996,
+            "cpuMs": 31,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15627,
+            "truncated": false
+          },
+          {
+            "analysisMs": 0.5797000000000025,
+            "projectionMs": 5.081099999999992,
+            "cpuMs": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15627,
+            "truncated": false
+          },
+          {
+            "analysisMs": 0.37299999999999045,
+            "projectionMs": 4.63919999999996,
+            "cpuMs": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15627,
+            "truncated": false
+          }
+        ],
+        "rssBytes": 927842304,
+        "processPeakRssBytes": 927981568
+      },
+      {
+        "files": 100,
+        "symbols": 199,
+        "indexMs": 1926.4660000000001,
+        "samples": [
+          {
+            "analysisMs": 4.891399999999976,
+            "projectionMs": 17.504799999999705,
+            "cpuMs": 32,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 29696,
+            "truncated": true
+          },
+          {
+            "analysisMs": 3.018800000000283,
+            "projectionMs": 18.879300000000057,
+            "cpuMs": 16,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 29696,
+            "truncated": true
+          },
+          {
+            "analysisMs": 1.9268000000001848,
+            "projectionMs": 17.074099999999817,
+            "cpuMs": 93,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 29696,
+            "truncated": true
+          }
+        ],
+        "rssBytes": 74575872,
+        "processPeakRssBytes": 1354305536
+      },
+      {
+        "files": 600,
+        "symbols": 1199,
+        "indexMs": 12648.8251,
+        "samples": [
+          {
+            "analysisMs": 25.818600000000515,
+            "projectionMs": 21.79280000000108,
+            "cpuMs": 47,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 30078,
+            "truncated": true
+          },
+          {
+            "analysisMs": 12.218700000001263,
+            "projectionMs": 16.41860000000088,
+            "cpuMs": 30,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 30078,
+            "truncated": true
+          },
+          {
+            "analysisMs": 11.769200000000637,
+            "projectionMs": 18.252200000000812,
+            "cpuMs": 32,
+            "nodes": 32,
+            "edges": 30,
+            "metadataBytes": 30078,
+            "truncated": true
+          }
+        ],
+        "rssBytes": 77676544,
+        "processPeakRssBytes": 1355563008
+      }
+    ]
+  },
+  "baseline": {
+    "method": "Three isolated Node processes; generated real files; explicit file selection, not a Git-change or production-repository benchmark; one cold index and three warm analysis/projection samples per size",
+    "node": "v24.19.0",
+    "rows": [
+      {
+        "files": 6,
+        "symbols": 11,
+        "indexMs": 198.548,
+        "samples": [
+          {
+            "analysisMs": 3.281000000000006,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": false
+          },
+          {
+            "analysisMs": 1.9703000000000657,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": false
+          },
+          {
+            "analysisMs": 0.3447999999999638,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": false
+          }
+        ],
+        "rssBytes": 539013120,
+        "processPeakRssBytes": 539144192
+      },
+      {
+        "files": 100,
+        "symbols": 199,
+        "indexMs": 1880.0085000000001,
+        "samples": [
+          {
+            "analysisMs": 4.848300000000108,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          },
+          {
+            "analysisMs": 1.9472000000000662,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          },
+          {
+            "analysisMs": 2.0225000000000364,
+            "projectionMs": null,
+            "cpuMs": 0,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          }
+        ],
+        "rssBytes": 73613312,
+        "processPeakRssBytes": 1355915264
+      },
+      {
+        "files": 600,
+        "symbols": 1199,
+        "indexMs": 11738.0038,
+        "samples": [
+          {
+            "analysisMs": 21.11989999999969,
+            "projectionMs": null,
+            "cpuMs": 31,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          },
+          {
+            "analysisMs": 11.006999999999607,
+            "projectionMs": null,
+            "cpuMs": 16,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          },
+          {
+            "analysisMs": 12.376099999999497,
+            "projectionMs": null,
+            "cpuMs": 62,
+            "nodes": 0,
+            "edges": 0,
+            "metadataBytes": 0,
+            "truncated": true
+          }
+        ],
+        "rssBytes": 79908864,
+        "processPeakRssBytes": 1355677696
+      }
+    ]
+  },
+  "limits": "Cold index/WASM parser allocation remains substantial and is not bounded by UI limits. Three warm samples per synthetic size are observations, not general performance claims. No renderer FPS/heap or Token-saving claim."
+}

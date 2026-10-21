@@ -9,7 +9,8 @@
  */
 
 import { useEffect, useState, type ReactNode } from 'react'
-import { asImpactXray, ImpactXrayCard } from './impact-xray.js'
+import { asImpactXray, ImpactXrayCard, XrayFallback } from './impact-xray.js'
+import { XRAY_EN, XRAY_ZH, type XrayLocaleStore } from './xray-locales.js'
 
 /** Minimal structural view of the client plugin context this bundle uses. */
 interface ClientContextLike {
@@ -21,7 +22,8 @@ interface ClientContextLike {
   inject?(deps: string[], run: (ctx: ClientContextLike) => void): unknown
   settingsScope?: { bind(spec: { namespace: string }): SettingsScopeLike<CodeIndexSettings> }
   configForms?: { get(id: string): SettingsScopeLike<CodeIndexSettings> | undefined }
-  locale?: { register(namespace: string, dictionaries: { zh: Record<string, string>; en: Record<string, string> }): () => void }
+  locale?: { register(namespace: string, dictionaries: { zh: Record<string, string>; en: Record<string, string> }): () => void
+    getSnapshot?(): { active?: string }; subscribe?(listener: () => void): () => void }
 }
 
 interface SettingsSnapshot<T> {
@@ -75,9 +77,11 @@ interface SearchView {
 }
 
 interface ToolViewProps {
+  phase?: string
   toolName: string
   block: ToolResultLike & ToolCallHead
   openFile?: (path: string, options?: unknown) => void
+  localeStore?: XrayLocaleStore
 }
 
 const CARD_STYLE: Record<string, string | number> = {
@@ -133,11 +137,13 @@ function resultText(block: ToolResultLike): string {
 function CodeToolCard(props: ToolViewProps): ReactNode {
   const { toolName, block, openFile } = props
   const head: ToolCallHead = block.call ?? block
-  const summary = summarizeArgs(parseArgs(head.argsRaw))
+  const args = parseArgs(head.argsRaw)
+  const summary = summarizeArgs(args)
   const search = asSearchView(block.resultView)
   const isError = block.isError === true
   const xray = !isError && toolName === 'code_change_context' ? asImpactXray(block.meta) : null
-  if (xray) return <ImpactXrayCard view={xray} openFile={openFile} />
+  if (xray) return <ImpactXrayCard view={xray} openFile={openFile} localeStore={props.localeStore} rawText={resultText(block)} />
+  if (toolName === 'code_change_context' && args.outputFormat === 'xray') return <XrayFallback loading={props.phase !== 'result' && !block.content} text={resultText(block)} localeStore={props.localeStore} />
 
   return (
     <div style={CARD_STYLE}>
@@ -357,9 +363,22 @@ const TOOLVIEW_KEYS = [
 ]
 
 export function apply(ctx: ClientContextLike): void {
-  const card = CodeToolCard as unknown as (props: never) => ReactNode
+  let locale: ClientContextLike['locale']
+  const listeners = new Set<() => void>()
+  const localeStore: XrayLocaleStore = { getSnapshot: () => locale?.getSnapshot?.().active ?? 'en',
+    subscribe: (fn) => { listeners.add(fn); return () => { listeners.delete(fn) } } }
+  const card = ((props: ToolViewProps) => <CodeToolCard {...props} localeStore={localeStore} />) as unknown as (props: never) => ReactNode
   ctx.inject?.(['locale'], (localized) => {
     if (localized.locale) localized.effect(() => localized.locale!.register('settings.codeIndex', { zh: SETTINGS_ZH, en: SETTINGS_EN }))
+    if (localized.locale) localized.effect(() => {
+      const service = localized.locale!
+      locale = service
+      const unregister = service.register('tools.impactXray', { zh: XRAY_ZH, en: XRAY_EN })
+      const notify = (): void => { for (const fn of listeners) fn() }
+      const off = service.subscribe?.(notify)
+      notify()
+      return () => { off?.(); unregister(); locale = undefined; notify() }
+    })
   })
   ctx.slots.inject('tool.call.toolview', function* () {
     for (const key of TOOLVIEW_KEYS) {

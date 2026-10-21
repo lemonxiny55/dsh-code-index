@@ -474,7 +474,12 @@ export const tools = [
         })
         if (args.outputFormat === 'xray') {
           const xray = await buildImpactXray(index, result)
-          return { text: renderChangeContext(result).slice(0, 24_000), xray: JSON.parse(JSON.stringify(xray)) as JsonValue }
+          let text = renderChangeContext(result)
+          if (text.length > 24_000) {
+            text = text.slice(0, 23_800).split('\n').slice(0, -1).join('\n') + '\n[X-Ray text budget reached; default text output remains available.]'
+            if (xray.bounds) xray.bounds.text = true
+          }
+          return { text, xray: JSON.parse(JSON.stringify(xray)) as JsonValue }
         }
         return renderChangeContext(result)
       } catch (error) {

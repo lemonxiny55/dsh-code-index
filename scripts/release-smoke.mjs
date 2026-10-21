@@ -306,6 +306,26 @@ try {
     }
     const rustFunction = await nativeInvoke('code_refs', { symbol: 'public_function', repoRoot: rustRoot })
     assert.match(rustFunction.value, /callers \(1\)/)
+    const xrayRoot = path.join(smokeDir, 'xray-demo')
+    execFileSync(process.execPath, [path.join(smokeDir, 'node_modules', packageJson.name, 'scripts/impact-xray-demo.mjs'), xrayRoot], { encoding: 'utf8' })
+    const legacyChange = await nativeInvoke('code_change_context', { repoRoot: xrayRoot })
+    const xray = await nativeInvoke('code_change_context', { repoRoot: xrayRoot, outputFormat: 'xray' })
+    assert.equal(typeof legacyChange.value, 'string')
+    assert.deepEqual(xray.content, legacyChange.content)
+    assert.equal(xray.meta.card, 'impact-xray'); assert.equal(xray.meta.version, 2)
+    assert.equal(xray.meta.edges.filter(e => e.kind === 'call').length, 6)
+    assert.equal(xray.meta.edges.filter(e => e.kind === 'import').length, 3)
+    assert.equal(xray.meta.tests.length, 1)
+    assert.deepEqual(new Set(xray.meta.edges.map(e => e.resolution)), new Set(['exact', 'import-scoped', 'name-only']))
+    assert.ok(xray.meta.paths.some(p => p.edgeIds.length === 2 && p.resolution === 'exact' && !p.omitted))
+    assert.ok(Buffer.byteLength(JSON.stringify(xray.meta)) <= plugin.XRAY_LIMITS.metadataBytes)
+    for (const item of [...xray.meta.nodes, ...xray.meta.edges]) {
+      const e = item.evidence
+      assert.equal(typeof e.code, 'string')
+      const lines = readFileSync(path.join(xrayRoot, e.file), 'utf8').split(/\r?\n/)
+      assert.equal(e.code, lines.slice(e.startLine - 1, e.startLine - 1 + e.code.split('\n').length).join('\n'))
+    }
+    console.log('Impact X-Ray installed runtime: default text, call/import/test/path provenance and source windows passed')
     for (const outputFormat of ['text', 'pack']) {
       const result = await nativeInvoke('code_context', {
         task: 'Explain PublicOne', repoRoot: rustRoot, outputFormat, budgetChars: 5000,
@@ -319,6 +339,6 @@ try {
   }
   console.log(`release smoke passed for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
 } finally {
-  rmSync(smokeDir, { recursive: true, force: true })
+  rmSync(smokeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
   if (!suppliedTarball) rmSync(tarball, { force: true })
 }

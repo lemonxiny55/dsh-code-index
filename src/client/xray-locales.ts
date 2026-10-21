@@ -1,0 +1,64 @@
+export const XRAY_EN = {
+  focusView: 'Expand view', closeView: 'Close expanded view',
+  subtitle: 'See the blast radius before your AI edits the code.', calls: 'Call graph', imports: 'Import graph', tests: 'Test leads', paths: 'Impact paths', gaps: 'Gaps & limits',
+  potential: 'Potential impact, not a runtime guarantee', changed: 'Changed / selected', snapshot: 'Source snapshot captured with this result. The working tree may since have changed.',
+  exact: 'exact · structurally resolved', 'import-scoped': 'import-scoped · import scope', 'name-only': 'name-only · low confidence',
+  legend: 'Solid: exact. Dashed: import-scoped. Dotted amber: name-only. Arrows follow actual caller → callee or importer → module.',
+  inspect: 'Inspect the evidence', reason: 'Included because', evidenceType: 'Evidence type', source: 'Change source', current: 'current', base: 'base',
+  empty: 'No mapped symbols or relationships. Check unmapped changes and analysis gaps.', loading: 'Analyzing changes…', error: 'Impact X-Ray unavailable', fallback: 'Showing the original tool text. Rerun with outputFormat="xray" to request fresh evidence.',
+  expand: 'Expand', collapse: 'Collapse', all: 'All confidence levels', depth: 'Max caller depth', rows: '{shown} / {total} relations', nodes: '{count} nodes',
+  open: 'Open current file at line {line}', openFailed: 'The host could not open this file. The saved source snapshot remains available.', noOpen: 'Native file preview unavailable for this evidence.',
+  raw: 'Original tool text', back: 'Previous selection', forward: 'Next selection', reset: 'Reset filters', noMatch: 'No relations match these filters.',
+  uncertain: 'Know what remains uncertain', caveat: 'exact describes structural resolution under the index, not guaranteed runtime behavior. Test leads do not prove coverage. Ownerless calls, dynamic dispatch and historical call graphs may be absent.',
+  analysisCut: 'The analysis engine truncated these categories', displayCut: 'The presentation budget omitted some rows or source. Missing rows are not proof of no impact.', textCut: 'The optional X-Ray text was shortened; the default text tool is unchanged.',
+  saved: 'Saved PoC result: some newer evidence fields are unavailable. The original relationships are preserved.',
+  pathConfidence: 'Whole-path confidence', incompletePath: 'Some path steps are outside this bounded snapshot.', pathStep: 'Step {step} / {total}',
+  noTests: 'No related indexed tests found. This does not establish test coverage.', noPaths: 'No entry-point paths were returned.', testCaveat: 'A test lead is a candidate to inspect, not proof that the test calls a particular function or will fail.',
+  unmapped: 'Unmapped changes', ranges: 'Changed line ranges', missing: 'No source evidence available.',
+  'source-unavailable': 'Source is unavailable, stale, unindexed, or outside the repository.', 'line-unavailable': 'The recorded line is no longer available.', 'source-budget': 'Source exceeds the evidence budget. No partial line is presented as complete code.',
+  'endpoint-unavailable': 'A relationship endpoint is absent from the current index.', 'import-site-unavailable': 'An import lead lacks an indexed import statement or a displayed endpoint.', 'metadata-budget': 'Presentation exceeds its size budget. Select a smaller change set.',
+  'declaration': 'declaration window', 'call-site': 'actual call site', 'import-site': 'actual import statement', 'test-lead': 'test file context (not a call proof)', 'unmapped-change': 'unmapped diff context',
+  'diff-mapping': 'diff intersects the declaration', 'explicit-selection': 'explicit selection; not a proven edit', 'changed-module': 'module with a mapped or unmapped change', module: 'module context', 'import-dependent': 'module imports a changed file',
+  'structural-owner': 'AST structural owner', 'local-unique': 'same-file name candidate; shadowing is not ruled out', 'explicit-import-binding': 'explicit imported binding', 'namespace-import': 'namespace import scope', 'resolved-import-module': 'name exists in an imported module', 'global-name': 'repository-wide name match',
+  'changed-test': 'the test file changed', 'imports-changed-file': 'imports a changed file', 'imports-impact-file': 'imports a caller/impact file', 'references-symbol-name': 'matches a changed symbol name', 'path-convention': 'matches a test path convention only',
+  'outside-symbol': 'changed lines are outside indexed declarations', 'base-content-unavailable': 'baseline content could not be mapped',
+  modified: 'modified', added: 'added', deleted: 'deleted', renamed: 'renamed', unclassified: 'unclassified',
+  change: 'change', caller: 'direct caller', impact: 'indirect caller', test: 'test', call: 'call', import: 'import',
+  git: 'working-tree Git diff', diff: 'supplied diff', files: 'explicit files', symbols: 'explicit symbols',
+} as const
+export type XrayKey = keyof typeof XRAY_EN
+export const XRAY_ZH: Record<XrayKey, string> = {
+  focusView: '放大查看', closeView: '关闭放大视图',
+  subtitle: '在 AI 修改代码前，看清潜在影响范围。', calls: '调用图', imports: '导入图', tests: '测试线索', paths: '影响路径', gaps: '缺口与边界',
+  potential: '潜在影响，不是运行时保证', changed: '变更 / 选择中心', snapshot: '这是本次结果保存的源码快照，工作区随后可能已经变化。',
+  exact: 'exact · 结构解析', 'import-scoped': 'import-scoped · 导入范围', 'name-only': 'name-only · 低置信度',
+  legend: '实线：exact；虚线：import-scoped；黄色点线：name-only。箭头保留真实调用者 → 被调用者或导入者 → 模块方向。',
+  inspect: '检查源码证据', reason: '纳入原因', evidenceType: '证据类型', source: '变更来源', current: '当前', base: '基线',
+  empty: '没有映射到符号或关系，请查看未映射变更和分析缺口。', loading: '正在分析变更…', error: 'Impact X-Ray 暂不可用', fallback: '下方保留原始工具文本。使用 outputFormat="xray" 重新运行可请求新的证据快照。',
+  expand: '展开', collapse: '收起', all: '全部置信度', depth: '最大调用者深度', rows: '{shown} / {total} 条关系', nodes: '{count} 个节点',
+  open: '打开当前文件第 {line} 行', openFailed: '宿主未能打开文件，仍可查看已保存的源码快照。', noOpen: '该证据没有可用的原生文件预览入口。',
+  raw: '原始工具文本', back: '上一个选择', forward: '下一个选择', reset: '重置筛选', noMatch: '没有符合当前筛选的关系。',
+  uncertain: '了解仍不确定的部分', caveat: 'exact 表示索引模型内的结构解析，不保证运行时行为。测试线索不证明覆盖率；模块级无所属调用、动态分派及历史调用图可能未覆盖。',
+  analysisCut: '分析引擎已裁剪以下类别', displayCut: '展示预算省略了部分行或源码；没有显示不代表没有影响。', textCut: '可选 X-Ray 模式的文本已缩短；默认文本工具保持不变。',
+  saved: '这是已保存的 PoC 结果，部分新证据字段不可用；原始关系仍被保留。',
+  pathConfidence: '整条路径置信度', incompletePath: '部分路径步骤不在本次有界快照内。', pathStep: '第 {step} / {total} 步',
+  noTests: '未找到相关的已索引测试；这不能证明测试覆盖情况。', noPaths: '分析未返回入口路径。', testCaveat: '测试线索是待检查的候选，不证明测试调用了某个函数，也不保证测试会失败。',
+  unmapped: '未映射变更', ranges: '变更行范围', missing: '没有可用的源码证据。',
+  'source-unavailable': '源码不可用、已过期、未索引，或位于仓库范围之外。', 'line-unavailable': '记录的行号已不可用。', 'source-budget': '源码超出证据预算，不将截断行伪装成完整代码。',
+  'endpoint-unavailable': '当前索引缺少关系端点。', 'import-site-unavailable': '导入线索缺少已索引的导入语句或可显示的端点。', 'metadata-budget': '展示结果超出体积预算，请缩小变更选择。',
+  'declaration': '声明窗口', 'call-site': '真实调用位置', 'import-site': '真实导入语句', 'test-lead': '测试文件上下文（不是调用证明）', 'unmapped-change': '未映射差异上下文',
+  'diff-mapping': '差异行与声明相交', 'explicit-selection': '显式选择，不证明实际发生修改', 'changed-module': '包含已映射或未映射变更的模块', module: '模块上下文', 'import-dependent': '模块导入了变更文件',
+  'structural-owner': 'AST 结构所属关系', 'local-unique': '同文件名称候选，尚不能排除遮蔽', 'explicit-import-binding': '显式导入绑定', 'namespace-import': 'namespace 导入范围', 'resolved-import-module': '名称存在于已导入模块', 'global-name': '仓库范围名称匹配',
+  'changed-test': '测试文件发生变更', 'imports-changed-file': '导入了变更文件', 'imports-impact-file': '导入了调用者或影响文件', 'references-symbol-name': '匹配变更符号名称', 'path-convention': '仅匹配测试路径惯例',
+  'outside-symbol': '变更行位于已索引声明范围之外', 'base-content-unavailable': '无法映射基线内容',
+  modified: '修改', added: '新增', deleted: '删除', renamed: '重命名', unclassified: '未分类',
+  change: '变更', caller: '直接调用者', impact: '间接调用者', test: '测试', call: '调用', import: '导入',
+  git: '工作区 Git 差异', diff: '输入差异', files: '显式文件选择', symbols: '显式符号选择',
+}
+export type XrayTranslate = (key: string, params?: Record<string, string | number>) => string
+export function xrayTranslator(language: string): XrayTranslate {
+  const dict = language.toLowerCase().startsWith('zh') ? XRAY_ZH : XRAY_EN
+  return (key, params = {}) => (Object.hasOwn(dict, key) ? (dict as Record<string, string>)[key]! : key).replace(/\{(\w+)\}/g, (match, name: string) => String(params[name] ?? match))
+}
+export interface XrayLocaleStore { getSnapshot(): string; subscribe(listener: () => void): () => void }
+export const FALLBACK_LOCALE: XrayLocaleStore = { getSnapshot: () => 'en', subscribe: () => () => {} }

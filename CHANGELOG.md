@@ -2,7 +2,14 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.10.2 — Rust declaration signatures (candidate, unpublished)
+## 0.11.0-dev.0 — Impact X-Ray (development preview, unpublished)
+
+- Add opt-in `code_change_context` `outputFormat: "xray"`: project existing analysis into a bounded, persisted evidence card. Preserve default canonical text, Context Packs and all provenance semantics.
+- Add English / 简体中文 Desktop UI, expanded graph/evidence view, actual call/import arrows, candidate tests, whole-path provenance, depth/confidence filters, selection history, local expansion and native current-file preview.
+- Expose unmapped line ranges, source gaps, analysis versus presentation clipping and saved-snapshot caveats. Keep PoC v1 replay readable; validate untrusted metadata and render source as text.
+- Cap graph/metadata/source size without new runtime dependencies. Add real Git fixtures, installed ToolRuntime coverage, measured observations and genuine Desktop demo material. See `IMPACT_XRAY_MVP.md` for verification methods and remaining limits. No release or RC approval is implied.
+
+## 0.10.2 — Rust declaration signatures
 
 - **fix(rust):** render struct/enum/trait signatures from their declared `name` field, rather than a leading visibility node. Correct `pub`, restricted visibility and ordinary declarations across symbol search, repo maps, context and reference definition labels. Names and stable IDs were already correct; no new reference edges are inferred.
 - **fix(cache):** advance cache generation to 4 and reject old extraction on both disk and direct incremental-build paths, rebuilding unchanged source once.

@@ -1,0 +1,30 @@
+{
+  "method": "A chronological excerpt of actual DSH Desktop screen recording; rectangular crop/scale, frame-rate conversion, palette quantization and audio removal only. No fabricated UI, text, screenshots or latency claim.",
+  "raw": {
+    "filename": "desktop-raw.mp4",
+    "sha256": "d671e01f1b5cf63c3d7fbcfd5f08f2ead8c27075ddc52ef4b63f8257d59a305f"
+  },
+  "excerpt": {
+    "startSeconds": 28,
+    "durationSeconds": 30,
+    "crop": "1760:1104:76:64",
+    "speed": 1
+  },
+  "files": [
+    {
+      "file": "assets/impact-xray-mvp.mp4",
+      "bytes": 397824,
+      "sha256": "a905c04c396a02f36f802795ac573428c6ec6a9b65bd449ac75ae154a2d748dc"
+    },
+    {
+      "file": "assets/impact-xray-mvp.gif",
+      "bytes": 769594,
+      "sha256": "cb5a9f72102f19aef861d4c14fe059aaaa852da27d161583d71ceb6e9c777f25"
+    },
+    {
+      "file": "assets/impact-xray-mvp-poster.png",
+      "bytes": 250045,
+      "sha256": "4220ad409bfdbaf2112c5aa54a2d4453f92c3799f60946604059a6c53bf67c37"
+    }
+  ]
+}
