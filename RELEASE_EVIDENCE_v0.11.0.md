@@ -29,9 +29,12 @@ On Windows x64 with Node 24.19.0 and Ryzen 9 7940HX, 36 isolated processes compa
 
 ## Formal publication record
 
-The candidate package was locked before merge as described above. This section is completed in a separate documentation-only commit after publication so the release tag and npm archive remain tied to the reviewed package contents.
+The candidate package was locked before merge as described above. This publication record is a separate documentation-only commit after release; it does not change the tagged source tree or npm archive.
 
-- PR #7 merge commit and post-merge `main` CI: pending.
-- npm package version, `latest` tag, registry archive SHA256 and integrity: pending.
-- Git tag `v0.11.0` and GitHub Release: pending.
-- Post-publication evidence commit: pending.
+- PR [#7](https://github.com/lemonxiny55/dsh-code-index/pull/7) was squash-merged as **`8c89e794c2d9e5b104d7ff72753bc52da9eba81b`**. The main tree matches the reviewed candidate tree.
+- Post-merge [main CI run 45](https://github.com/lemonxiny55/dsh-code-index/actions/runs/39602401737) completed successfully on Node 22 and Node 24.
+- Published package: [`dsh-code-index@0.11.0`](https://www.npmjs.com/package/dsh-code-index), registry `latest=0.11.0`.
+- Registry archive: [dsh-code-index-0.11.0.tgz](https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.11.0.tgz), **460,993 bytes**, SHA256 `b8eb24a76dcb367c7c710ef2fd79da1644f1f6b57f132bd76ac8f2e5a7f22af0`, SHA1 `b95dbce9d7154d02c3d18476f32d07a375dc8314`, SHA512 integrity `sha512-3q9UI/Nfo0AOr142E0ZbgNUIcCn4wntsDIZmtxm3uMnOOlSjaRx4Fe/vGZbyNEBCzQqhJpFOchFNZfmOr7FqNQ==`.
+- The registry archive was downloaded and checked against all **24** entries in the committed per-file SHA256 manifest. Every path and hash matched; the server/client runtime hashes match the locked candidate. `package.json` reports version `0.11.0`.
+- Annotated Git tag [`v0.11.0`](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.0) points to the verified merge commit above. The [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.0) includes these bilingual release notes.
+- This post-publication evidence commit is documentation-only and follows the release tag; its commit SHA is recorded in the delivery report. It does not amend the tag or modify files included in the npm package.
