@@ -5,9 +5,9 @@
 
 English | [中文](README.zh.md)
 
-**v0.11 development preview — Impact X-Ray.** This branch builds `0.11.0-dev.0`; it is not an npm release. The published v0.10.2 baseline includes the [Rust declaration fix](RELEASE_NOTES_v0.10.2.md).
+**v0.11 development preview — Impact X-Ray.** This branch builds `0.11.0-dev.1`; it is not an npm release. The published v0.10.2 baseline includes the [Rust declaration fix](RELEASE_NOTES_v0.10.2.md).
 
-**v0.10.1 released — DSH Desktop compatibility fix**
+**Supported Desktop versions**
 
 The compatibility support introduced in [v0.10.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1) remains: only DSH/dsh-tools `0.2.0-rc.2` and `0.2.1-rc.2` host groups are supported. Keep each host's first-party packages on the same version.
 
@@ -24,7 +24,20 @@ This is an interactive presentation of the existing `code_change_context` analys
 
 ![Impact X-Ray in actual DSH Desktop](assets/impact-xray-mvp.gif)
 
-[Actual recording and reproduction notes](assets/impact-xray-mvp-demo.md) · [MVP validation and limitations](IMPACT_XRAY_MVP.md)
+[Actual recording and reproduction notes](assets/impact-xray-mvp-demo.md) · [RC evidence and remaining risks](IMPACT_XRAY_RC.md) · [v0.11.0 release preparation](RELEASE_NOTES_v0.11.0.md)
+
+The recording shows the real `dev.0` MVP; the current `dev.1` candidate improves the change-center header and bounded counts. Updated actual Desktop screenshots are in the RC report.
+
+Impact X-Ray is available in the **unpublished development candidate**, not the published v0.10.2 package. To try this checkout, build and pack it, then install the local archive with Desktop's bundled CLI:
+
+```sh
+pnpm install --frozen-lockfile
+npm run build
+npm pack --ignore-scripts
+dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.11.0-dev.1.tgz
+```
+
+Use Node 22/24 and pnpm 11 for this checkout. Restart Desktop after installation. Preserve your previous package if you need to roll back. These commands do not publish anything. The Quick start below installs the published v0.10.2 baseline; it does not enable the unreleased X-Ray UI.
 
 Ask the Agent to call `code_change_context` with:
 
@@ -60,7 +73,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-Introduced in [v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and retained unchanged in v0.10.1: ArkTS `.ets` files use a dedicated, pinned parser to find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
+Introduced in [v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and retained in this development branch: ArkTS `.ets` files use a dedicated, pinned parser to find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
 
 This supports syntax and static code context, without full HarmonyOS SDK semantics, HAR/module-alias resolution or state-update/UI rerender graphs. See [release evidence](RELEASE_EVIDENCE_v0.10.0.md), [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [the bilingual announcement](assets/v0.10.0-announcement.md). The v0.9.1 Gitignore directory whitelist fix remains included.
 
@@ -139,13 +152,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-v0.10.1 declares `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
+The compatibility range introduced in v0.10.1 remains `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
 
 Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerates the supported groups instead of requiring a version exemption or an unbounded range. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.2
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

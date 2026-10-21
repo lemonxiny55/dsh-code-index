@@ -1,0 +1,86 @@
+{
+  "method": "Computer Use observes real installed candidate rendering original persisted tool results; rectangular screenshot crops only. No generated UI or injected metadata.",
+  "host": "DSH Desktop 0.2.1-rc.2",
+  "observations": [
+    {
+      "file": "assets/impact-xray-rc-zh-overview.png",
+      "sha256": "fe35490a15dc41b27c3f28288041931daf68fbda61149d7fef6a33b37027a0c3",
+      "name": "zh-overview",
+      "crop": {
+        "y": 42,
+        "x": 52,
+        "width": 1175,
+        "height": 737
+      },
+      "observedAt": "2026-10-21T11:43:35.067Z",
+      "rawSha256": "f2ead290a8b823011ed31df39f62479cd1611929d99c45fe2dd3136e5da4205f"
+    },
+    {
+      "file": "assets/impact-xray-rc-en-exact.png",
+      "sha256": "d5e5873e7335b4970b9b510e409ee782d7bc42c3f21ed9b189c48658cf6fa6fe",
+      "name": "en-exact",
+      "crop": {
+        "y": 42,
+        "x": 52,
+        "width": 1175,
+        "height": 737
+      },
+      "observedAt": "2026-10-21T11:44:21.416Z",
+      "rawSha256": "b1325ca7721ddab9e738be88ba7974d151e6f972a75f1df50b148fc85034c8f2"
+    },
+    {
+      "file": "assets/impact-xray-rc-en-name-only.png",
+      "sha256": "67f4e28afa937338ba5541201335e31ed62a1bb4bffd9f4235d8791db8b15128",
+      "name": "en-name-only",
+      "crop": {
+        "y": 42,
+        "x": 52,
+        "width": 1175,
+        "height": 737
+      },
+      "observedAt": "2026-10-21T11:44:43.713Z",
+      "rawSha256": "0e57967cfc18c810f11077f3d02d7e0491774daa042a38b2a8f676f60ff5a905"
+    },
+    {
+      "file": "assets/impact-xray-rc-en-import-scoped.png",
+      "sha256": "544b86ba2e75b9437c297204f233839e436eac2d43e7d48f8671892e678544af",
+      "name": "en-import-scoped",
+      "crop": {
+        "y": 42,
+        "x": 52,
+        "width": 1175,
+        "height": 737
+      },
+      "observedAt": "2026-10-21T11:45:00.469Z",
+      "rawSha256": "7b0a1175e9b5bb120a2a79d974597c263b06ba349078f98bcdfd2e9c59528cc9"
+    },
+    {
+      "file": "assets/impact-xray-rc-native-preview.png",
+      "sha256": "fe7d49b91f905f4c3b6bc786c053fde1d1f12a13d17138ad0ca11c82aa5d1558",
+      "name": "native-preview",
+      "crop": {
+        "y": 40,
+        "x": 708,
+        "width": 570,
+        "height": 740
+      },
+      "observedAt": "2026-10-21T11:45:21.659Z",
+      "rawSha256": "737e7b8049127af07ce2b8669f8bad726bda8948dc3cdeeefe5b5e07dd513b30"
+    },
+    {
+      "file": "assets/impact-xray-rc-error-visible-final.png",
+      "sha256": "85174393b0ff9c85ab9b4e378120035af22041c4d44cd98cf7976945db8e6701",
+      "name": "error-visible-final",
+      "crop": {
+        "y": 505,
+        "x": 438,
+        "width": 675,
+        "height": 133
+      },
+      "observedAt": "2026-10-21T11:48:59.164Z",
+      "rawSha256": "a32c0de6975cd9a523c0ae42c9c975d87e5221ec6ab4a1a50082b0b46c2f9100"
+    }
+  ],
+  "sourceSession": "session-27deb698-490e-4776-9cb5-6a3d0967a333",
+  "candidate": "0.11.0-dev.1"
+}

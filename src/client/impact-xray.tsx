@@ -52,6 +52,7 @@ type OpenFile = (path: string, options?: unknown) => unknown
 type Selection = { type: 'node' | 'edge' | 'unmapped'; id: string }
 const CSS = `
 .ix-dialog{width:min(1180px,96vw);max-width:96vw;max-height:90vh;padding:0;border:0;border-radius:12px;background:#161b24;color:#e7edf5;overflow:auto}.ix-dialog::backdrop{background:#000b}.ix-dialog .ix{min-height:70vh}.ix-dialog .ix-workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}.ix-dialog .ix-evidence{grid-column:2;grid-row:1}.ix-dialog .ix-relations{grid-column:1;grid-row:1}.ix-dialog .ix .pane{max-height:420px}.ix-dialog .ix .graph{max-height:410px}.ix-dialog .ix .code{max-height:240px}@media(max-width:750px){.ix-dialog .ix-workspace{display:block}}
+.ix .change-center{border-left:3px solid #f49b5c;background:#f49b5c0c;border-radius:6px;padding:8px 10px;margin:8px 0}.ix .change-center .chips{margin-top:5px}.ix .metrics{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.ix .metrics span{padding:3px 8px;border-radius:5px;background:#65baf212}.ix .uncertainty{color:#e7b852;font-size:11px}.ix .heading{justify-content:space-between}.ix .heading h3{margin:0}.ix .heading .bar{margin:0}.ix .legend{margin:7px 0}
 .ix{border:1px solid var(--dsw-alias-border-l2,#455164);border-radius:12px;background:var(--dsw-alias-bg-layer-2,#161b24);color:var(--dsw-alias-label-primary,#e7edf5);font:12px/1.5 system-ui,sans-serif;padding:12px;overflow-wrap:anywhere;container-type:inline-size}
 .ix *{box-sizing:border-box}.ix h3,.ix p{margin:0 0 7px}.ix h3{font-size:17px}.ix small,.ix .muted{opacity:.72}.ix button,.ix select{font:inherit;color:inherit;border:1px solid var(--dsw-alias-border-l2,#4c586a);border-radius:6px;background:var(--dsw-alias-bg-layer-3,#253042);padding:4px 7px;cursor:pointer}.ix button:disabled{opacity:.35;cursor:default}.ix button:hover:not(:disabled),.ix button[aria-pressed=true]{border-color:#65baf2;background:var(--dsw-alias-bg-layer-1,#33465b)}.ix button:focus-visible,.ix select:focus-visible{outline:2px solid #65baf2;outline-offset:2px}.ix .bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0}.ix .badge{font-size:10px;border-radius:4px;padding:1px 4px;background:#374151;color:#fff;white-space:nowrap}.ix .low{color:#e7b852}.ix .pane{border:1px solid var(--dsw-alias-border-l2,#455164);border-radius:8px;padding:9px;margin:8px 0;max-height:250px;overflow:auto}.ix .code{font:11px/1.6 var(--dsh-mono-font,monospace);white-space:pre-wrap;margin:8px 0;max-height:130px;overflow:auto}.ix .code span{display:block}.ix .code .focus{background:#28475b66}.ix .lane{display:grid;grid-template-columns:minmax(0,1fr) 100px minmax(0,1fr);align-items:center;gap:6px;margin:8px 0}.ix .node{text-align:left;min-height:45px;min-width:0;overflow:hidden}.ix .node.changed{border-left:3px solid #f49b5c}.ix .node small{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ix .edge{border:0;background:none!important;padding:0;display:flex;flex-direction:column;align-items:center}.ix .edge svg{width:100%;height:20px}.ix .edge small{font-size:9px}.ix .graph{max-height:310px;overflow:auto;padding:0 3px}.ix .notice{border-left:3px solid #e7b852;padding:5px 8px;margin:7px 0}.ix summary{cursor:pointer}.ix .tabs button[aria-pressed=true]{border-bottom:2px solid #65baf2}.ix .chips{display:flex;gap:5px;flex-wrap:wrap}.ix .chips button{text-align:left;max-width:100%}@container(max-width:360px){.ix .lane{grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr)}.ix .node{font-size:11px;padding:4px}.ix .edge small{font-size:8px}}
 `
@@ -83,6 +84,10 @@ export function ImpactXrayCard({ view, openFile, localeStore = FALLBACK_LOCALE, 
   const [focused, setFocused] = useState(false)
   useEffect(() => { if (focused && dialog.current && !dialog.current.open) dialog.current.showModal() }, [focused])
   const byId = useMemo(() => new Map(view.nodes.map(n => [n.id, n])), [view])
+  const centers = view.nodes.filter(n => n.changed && n.kind !== 'module')
+  const callCount = view.edges.filter(e => e.kind !== 'import').length
+  const importCount = view.edges.length - callCount
+  const weakCount = view.edges.filter(e => e.resolution === 'name-only').length
   const selected = history[cursor]
   const selectedNode = selected?.type === 'node' ? byId.get(selected.id) : undefined
   const selectedEdge = selected?.type === 'edge' ? view.edges.find(e => e.id === selected.id) : undefined
@@ -115,8 +120,12 @@ export function ImpactXrayCard({ view, openFile, localeStore = FALLBACK_LOCALE, 
     <div className="bar">{visible < filtered.length ? <button type="button" onClick={() => setVisible(v => v + 6)}>{t('expand')} (+6)</button> : null}{visible > 6 ? <button type="button" onClick={() => setVisible(6)}>{t('collapse')}</button> : null}</div>
   </>
   const card = <section className="ix" aria-label="Impact X-Ray"><style>{CSS}</style>
-    <div className="bar"><h3>Impact X-Ray</h3><button type="button" aria-label="English" onClick={() => setLanguage('en')}>EN</button><button type="button" aria-label="简体中文" onClick={() => setLanguage('zh')}>简体中文</button><button type="button" onClick={() => setFocused(v => !v)}>{t(focused ? 'closeView' : 'focusView')}</button></div>
-    <p>{t('subtitle')}</p><small>{t('potential')} · {t('source')}: {t(view.source)} · {t('nodes', { count: view.nodes.length })}</small>
+    <div className="bar heading"><h3>Impact X-Ray</h3><div className="bar"><button type="button" aria-label="English" onClick={() => setLanguage('en')}>EN</button><button type="button" aria-label="简体中文" onClick={() => setLanguage('zh')}>简体中文</button><button type="button" onClick={() => setFocused(v => !v)}>{t(focused ? 'closeView' : 'focusView')}</button></div></div>
+    <p>{t('subtitle')}</p><small>{t('source')}: {t(view.source)} · {t('snapshotCounts')}</small>
+    <div className="change-center"><strong>{t(view.source === 'git' || view.source === 'diff' ? 'changeCenter' : 'selectionCenter')}</strong>
+      {centers.length ? <div className="chips">{centers.map(nodeButton)}</div> : <p>{t('noCenter')}</p>}</div>
+    <div className="metrics" aria-label={t('snapshotCounts')}><span>{t('callCount', { count: callCount })}</span><span>{t('importCount', { count: importCount })}</span><span>{t('testCount', { count: view.tests.length })}</span></div>
+    <p className="uncertainty">{t('potential')} · {t('weakCount', { count: weakCount })} · {t('unmappedCount', { count: view.unmapped?.length ?? 0 })}</p>
     {view.version === 1 ? <p className="notice">{t('saved')}</p> : null}
     {view.truncated ? <p className="notice">{t('displayCut')}</p> : null}
     <div className="ix-workspace"><div className="ix-evidence">
@@ -127,8 +136,8 @@ export function ImpactXrayCard({ view, openFile, localeStore = FALLBACK_LOCALE, 
       {selectedEvidence ? <Evidence key={`${selected?.type}:${selected?.id}`} value={selectedEvidence} root={view.root} openFile={openFile && focused ? (file, options) => Promise.resolve(openFile(file, options)).then(() => setFocused(false)) : openFile} t={t} /> : <p>{t('missing')}</p>}
     </div> : null}
     </div><div className="ix-relations"><div className="bar tabs" role="group">{['calls', 'imports', 'tests', 'paths', 'gaps'].map(key => <button type="button" key={key} aria-pressed={tab === key} onClick={() => { setTab(key); setVisible(6); if (key !== 'calls') setPathId(null) }}>{t(key)}</button>)}</div>
-    {tab === 'calls' ? <><small>{t('changed')}</small><div className="chips">{view.nodes.filter(n => n.changed && n.kind !== 'module').map(nodeButton)}</div><p className="muted">{t('legend')}</p>{graph}</> : null}
-    {tab === 'imports' ? <><p className="muted">{t('legend')}</p>{graph}{view.imports.filter(i => !i.edgeId).map((i, n) => <p className="notice" key={n}>{i.file} → {i.changedFile} · {t('import-site-unavailable')}</p>)}</> : null}
+    {tab === 'calls' ? <>{graph}<details className="legend"><summary>{t('legendTitle')}</summary><p>{t('legend')}</p></details></> : null}
+    {tab === 'imports' ? <>{graph}<details className="legend"><summary>{t('legendTitle')}</summary><p>{t('legend')}</p></details>{view.imports.filter(i => !i.edgeId).map((i, n) => <p className="notice" key={n}>{i.file} → {i.changedFile} · {t('import-site-unavailable')}</p>)}</> : null}
     {tab === 'tests' ? <><p>{t('testCaveat')}</p>{!view.tests.length ? <p>{t('noTests')}</p> : view.tests.map((test, i) => <div className="bar" key={i}>
       {test.nodeId && byId.has(test.nodeId) ? nodeButton(byId.get(test.nodeId)!) : <span>{test.file} · {t('missing')}</span>}<span>{t(test.resolution)} · {t(test.reason)}</span>
     </div>)}</> : null}

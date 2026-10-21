@@ -1,0 +1,4055 @@
+{
+  "method": "18 isolated processes, three rotated repeats per fixture/variant. Identical files and explicit file selection, no fabricated diff. Cold index then three analysis samples; projection only in xray variant. Same analysis output hashes required. Process high-water RSS is cumulative, not a per-stage allocation metric. No forced GC; retained RSS is not proof of a leak.",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "win32",
+    "cpu": "AMD Ryzen 9 7940HX with Radeon Graphics        ",
+    "physicalMemoryBytes": 16339554304
+  },
+  "medium": {
+    "origin": "https://github.com/expressjs/express.git",
+    "commit": "cd7d4397c398a3f3ecadeaf9ef6ac1377bd414c4",
+    "selectedFile": "lib/utils.js"
+  },
+  "engineUnchangedFromPublishedBaseline": true,
+  "summary": [
+    {
+      "fixture": "six-files",
+      "variant": "v0.10.2-analysis",
+      "files": 6,
+      "symbols": 11,
+      "indexedSourceBytes": 760,
+      "coldIndexMs": {
+        "min": 177.7249,
+        "max": 213.5863
+      },
+      "analysisMs": {
+        "min": 0.24959999999987303,
+        "max": 3.489799999999832
+      },
+      "projectionMs": null,
+      "indexIdlePeakMiB": {
+        "min": 1289.21484375,
+        "max": 1289.6015625
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 62.484375,
+        "max": 62.65234375
+      },
+      "endCurrentRssMiB": {
+        "min": 62.96875,
+        "max": 63.2265625
+      },
+      "endHeapUsedMiB": {
+        "min": 9.416816711425781,
+        "max": 9.445907592773438
+      },
+      "metadataBytes": {
+        "min": 0,
+        "max": 0
+      },
+      "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35"
+    },
+    {
+      "fixture": "six-files",
+      "variant": "candidate-analysis",
+      "files": 6,
+      "symbols": 11,
+      "indexedSourceBytes": 760,
+      "coldIndexMs": {
+        "min": 174.9847,
+        "max": 189.71300000000002
+      },
+      "analysisMs": {
+        "min": 0.2535000000000309,
+        "max": 3.379599999999982
+      },
+      "projectionMs": null,
+      "indexIdlePeakMiB": {
+        "min": 1289.4765625,
+        "max": 1290.06640625
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 62.54296875,
+        "max": 63.02734375
+      },
+      "endCurrentRssMiB": {
+        "min": 63.0078125,
+        "max": 63.50390625
+      },
+      "endHeapUsedMiB": {
+        "min": 9.445075988769531,
+        "max": 9.91864013671875
+      },
+      "metadataBytes": {
+        "min": 0,
+        "max": 0
+      },
+      "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35"
+    },
+    {
+      "fixture": "six-files",
+      "variant": "candidate-xray",
+      "files": 6,
+      "symbols": 11,
+      "indexedSourceBytes": 760,
+      "coldIndexMs": {
+        "min": 188.48559999999998,
+        "max": 198.41310000000001
+      },
+      "analysisMs": {
+        "min": 0.20870000000013533,
+        "max": 3.3853999999998905
+      },
+      "projectionMs": {
+        "min": 3.2838999999999032,
+        "max": 7.682600000000093
+      },
+      "indexIdlePeakMiB": {
+        "min": 1289.296875,
+        "max": 1289.9140625
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 62.4375,
+        "max": 63.2109375
+      },
+      "endCurrentRssMiB": {
+        "min": 63.171875,
+        "max": 63.83984375
+      },
+      "endHeapUsedMiB": {
+        "min": 10.475311279296875,
+        "max": 10.4835205078125
+      },
+      "metadataBytes": {
+        "min": 15623,
+        "max": 15623
+      },
+      "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35"
+    },
+    {
+      "fixture": "express-v5.1.0",
+      "variant": "v0.10.2-analysis",
+      "files": 142,
+      "symbols": 586,
+      "indexedSourceBytes": 559459,
+      "coldIndexMs": {
+        "min": 1295.3997,
+        "max": 1333.1841000000002
+      },
+      "analysisMs": {
+        "min": 4.819600000000264,
+        "max": 12.470100000000002
+      },
+      "projectionMs": null,
+      "indexIdlePeakMiB": {
+        "min": 613.71875,
+        "max": 614.7578125
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 75.4765625,
+        "max": 75.68359375
+      },
+      "endCurrentRssMiB": {
+        "min": 77.0703125,
+        "max": 77.71484375
+      },
+      "endHeapUsedMiB": {
+        "min": 13.82586669921875,
+        "max": 17.567306518554688
+      },
+      "metadataBytes": {
+        "min": 0,
+        "max": 0
+      },
+      "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f"
+    },
+    {
+      "fixture": "express-v5.1.0",
+      "variant": "candidate-analysis",
+      "files": 142,
+      "symbols": 586,
+      "indexedSourceBytes": 559459,
+      "coldIndexMs": {
+        "min": 1306.9895999999999,
+        "max": 1361.8446999999999
+      },
+      "analysisMs": {
+        "min": 4.353599999999915,
+        "max": 10.752300000000105
+      },
+      "projectionMs": null,
+      "indexIdlePeakMiB": {
+        "min": 613.53125,
+        "max": 614.55078125
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 75.25390625,
+        "max": 75.94921875
+      },
+      "endCurrentRssMiB": {
+        "min": 76.37109375,
+        "max": 76.6796875
+      },
+      "endHeapUsedMiB": {
+        "min": 14.208206176757812,
+        "max": 17.526649475097656
+      },
+      "metadataBytes": {
+        "min": 0,
+        "max": 0
+      },
+      "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f"
+    },
+    {
+      "fixture": "express-v5.1.0",
+      "variant": "candidate-xray",
+      "files": 142,
+      "symbols": 586,
+      "indexedSourceBytes": 559459,
+      "coldIndexMs": {
+        "min": 1293.0659,
+        "max": 1306.2968
+      },
+      "analysisMs": {
+        "min": 3.516099999999824,
+        "max": 10.658199999999852
+      },
+      "projectionMs": {
+        "min": 3.0860999999999876,
+        "max": 5.733600000000024
+      },
+      "indexIdlePeakMiB": {
+        "min": 614.37109375,
+        "max": 615.30078125
+      },
+      "indexIdleCurrentRssMiB": {
+        "min": 75.83984375,
+        "max": 76.515625
+      },
+      "endCurrentRssMiB": {
+        "min": 77.1875,
+        "max": 77.96875
+      },
+      "endHeapUsedMiB": {
+        "min": 12.382759094238281,
+        "max": 17.02276611328125
+      },
+      "metadataBytes": {
+        "min": 8227,
+        "max": 8227
+      },
+      "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f"
+    }
+  ],
+  "interpretation": "All six-file variants reached ~1.29 GiB cumulative peak during the identical post-index 1s idle, before analysis or projection, then current RSS fell to ~63 MiB. Immediate-exit peak comparisons measure different observation durations and are not an isolated X-Ray allocation. This identifies an existing index/runtime cost, not the exact V8/WASM allocator cause. X-Ray still performs source IO and JS projection; small samples do not prove zero cost or a leak. Express is a clean real repository selected by file, not an edited Git-diff performance claim. No renderer/FPS measurement.",
+  "immediate": {
+    "node": "v24.19.0",
+    "platform": "win32",
+    "cpu": "AMD Ryzen 9 7940HX with Radeon Graphics        ",
+    "physicalMemoryBytes": 16339554304,
+    "method": "18 isolated processes, three rotated repeats per fixture/variant. Identical files and explicit file selection, no fabricated diff. Cold index then three analysis samples; projection only in xray variant. Same analysis output hashes required. Process high-water RSS is cumulative, not a per-stage allocation metric. No forced GC; retained RSS is not proof of a leak.",
+    "medium": {
+      "origin": "https://github.com/expressjs/express.git",
+      "commit": "cd7d4397c398a3f3ecadeaf9ef6ac1377bd414c4",
+      "selectedFile": "lib/utils.js"
+    },
+    "engineSources": [
+      {
+        "file": "src/buildIndex.ts",
+        "sha256": "7f53ed3fd105fdfc8a174c2b486835109bc9883b95971837c29142924ba37974"
+      },
+      {
+        "file": "src/extract.ts",
+        "sha256": "966637341807e4060eb91e2572f964c49a571cabf95fe9254ef507f89d6a3e88"
+      },
+      {
+        "file": "src/refgraph.ts",
+        "sha256": "8f6959d969d28a999cc4953f7bc06d019b179f86379ec6a9b94eaea4d4128d64"
+      },
+      {
+        "file": "src/change-context.ts",
+        "sha256": "a8b3100f816d5a7d286d56bb213ea7434142210c4a237d69e70f786d1f797534"
+      }
+    ],
+    "observations": [
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49659904,
+            "heapTotal": 12820480,
+            "heapUsed": 8692056,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 49963008
+          },
+          {
+            "stage": "cold-index",
+            "ms": 202.86369999999994,
+            "rss": 622665728,
+            "heapTotal": 13606912,
+            "heapUsed": 10416688,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 622731264
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.1592999999999165,
+            "rss": 635432960,
+            "heapTotal": 13606912,
+            "heapUsed": 10669640,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 635498496
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.6720000000000255,
+            "rss": 642461696,
+            "heapTotal": 15966208,
+            "heapUsed": 10979672,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 642461696
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.25890000000003965,
+            "rss": 643846144,
+            "heapTotal": 15966208,
+            "heapUsed": 9763728,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 643911680
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50032640,
+            "heapTotal": 13365248,
+            "heapUsed": 8682224,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50483200
+          },
+          {
+            "stage": "cold-index",
+            "ms": 184.11220000000003,
+            "rss": 668487680,
+            "heapTotal": 14151680,
+            "heapUsed": 10397776,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 668749824
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.3514999999999873,
+            "rss": 683298816,
+            "heapTotal": 14151680,
+            "heapUsed": 10652320,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 683319296
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 2.2250999999999976,
+            "rss": 692867072,
+            "heapTotal": 14938112,
+            "heapUsed": 9602632,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 693223424
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.3036999999999921,
+            "rss": 694640640,
+            "heapTotal": 14938112,
+            "heapUsed": 9739880,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 694640640
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49836032,
+            "heapTotal": 13365248,
+            "heapUsed": 8751176,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50208768
+          },
+          {
+            "stage": "cold-index",
+            "ms": 180.85109999999997,
+            "rss": 700522496,
+            "heapTotal": 13627392,
+            "heapUsed": 10460280,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 700588032
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 6.017499999999984,
+            "rss": 721555456,
+            "heapTotal": 14413824,
+            "heapUsed": 9461848,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 721620992
+          },
+          {
+            "stage": "projection-1",
+            "ms": 8.697099999999978,
+            "rss": 765644800,
+            "heapTotal": 14675968,
+            "heapUsed": 9895280,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 765722624
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.7218000000000302,
+            "rss": 769826816,
+            "heapTotal": 14938112,
+            "heapUsed": 10857728,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 769896448
+          },
+          {
+            "stage": "projection-2",
+            "ms": 4.961000000000013,
+            "rss": 793018368,
+            "heapTotal": 15200256,
+            "heapUsed": 10906632,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 793018368
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.3509999999999991,
+            "rss": 794984448,
+            "heapTotal": 15200256,
+            "heapUsed": 10581392,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 794984448
+          },
+          {
+            "stage": "projection-3",
+            "ms": 4.5837999999999965,
+            "rss": 817008640,
+            "heapTotal": 15200256,
+            "heapUsed": 10884416,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 817074176
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49717248,
+            "heapTotal": 12840960,
+            "heapUsed": 8757048,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50008064
+          },
+          {
+            "stage": "cold-index",
+            "ms": 180.5052,
+            "rss": 719900672,
+            "heapTotal": 13627392,
+            "heapUsed": 10466272,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 719966208
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.688199999999995,
+            "rss": 736370688,
+            "heapTotal": 13889536,
+            "heapUsed": 10720816,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 736436224
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.7343000000000188,
+            "rss": 746250240,
+            "heapTotal": 14675968,
+            "heapUsed": 10399328,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 746258432
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.3643999999999892,
+            "rss": 748834816,
+            "heapTotal": 14938112,
+            "heapUsed": 9785320,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 748900352
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49631232,
+            "heapTotal": 13365248,
+            "heapUsed": 8706424,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 49872896
+          },
+          {
+            "stage": "cold-index",
+            "ms": 179.1602,
+            "rss": 715087872,
+            "heapTotal": 13627392,
+            "heapUsed": 10417064,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 715218944
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.4775999999999954,
+            "rss": 729890816,
+            "heapTotal": 13627392,
+            "heapUsed": 10669992,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 729956352
+          },
+          {
+            "stage": "projection-1",
+            "ms": 8.126500000000021,
+            "rss": 772972544,
+            "heapTotal": 14938112,
+            "heapUsed": 9867264,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 773038080
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.7255999999999858,
+            "rss": 777322496,
+            "heapTotal": 15200256,
+            "heapUsed": 10914832,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 777392128
+          },
+          {
+            "stage": "projection-2",
+            "ms": 5.175900000000013,
+            "rss": 803758080,
+            "heapTotal": 15462400,
+            "heapUsed": 10963656,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 803758080
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.407799999999952,
+            "rss": 806055936,
+            "heapTotal": 15462400,
+            "heapUsed": 10553280,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 806121472
+          },
+          {
+            "stage": "projection-3",
+            "ms": 4.0815000000000055,
+            "rss": 826507264,
+            "heapTotal": 15462400,
+            "heapUsed": 10856232,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 826507264
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50286592,
+            "heapTotal": 12820480,
+            "heapUsed": 8686408,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50290688
+          },
+          {
+            "stage": "cold-index",
+            "ms": 184.23360000000002,
+            "rss": 649568256,
+            "heapTotal": 13344768,
+            "heapUsed": 10404736,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 649633792
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.7274999999999636,
+            "rss": 664539136,
+            "heapTotal": 13606912,
+            "heapUsed": 10659304,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 664539136
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 2.141899999999964,
+            "rss": 673513472,
+            "heapTotal": 15179776,
+            "heapUsed": 10205448,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 673513472
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.40039999999999054,
+            "rss": 675618816,
+            "heapTotal": 15179776,
+            "heapUsed": 9749976,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 675618816
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49987584,
+            "heapTotal": 13365248,
+            "heapUsed": 8685672,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 49991680
+          },
+          {
+            "stage": "cold-index",
+            "ms": 185.75,
+            "rss": 707252224,
+            "heapTotal": 13627392,
+            "heapUsed": 10398848,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 707317760
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.1030000000000086,
+            "rss": 720748544,
+            "heapTotal": 13627392,
+            "heapUsed": 10651776,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 720814080
+          },
+          {
+            "stage": "projection-1",
+            "ms": 8.114599999999996,
+            "rss": 763211776,
+            "heapTotal": 14675968,
+            "heapUsed": 9833104,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 763277312
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.6537999999999897,
+            "rss": 767209472,
+            "heapTotal": 14675968,
+            "heapUsed": 10033344,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 767213568
+          },
+          {
+            "stage": "projection-2",
+            "ms": 4.009200000000021,
+            "rss": 789999616,
+            "heapTotal": 14675968,
+            "heapUsed": 10393128,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 789999616
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.34600000000000364,
+            "rss": 792227840,
+            "heapTotal": 14675968,
+            "heapUsed": 10519208,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 792293376
+          },
+          {
+            "stage": "projection-3",
+            "ms": 4.68629999999996,
+            "rss": 818057216,
+            "heapTotal": 14675968,
+            "heapUsed": 10822336,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 818077696
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50049024,
+            "heapTotal": 13344768,
+            "heapUsed": 8708440,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50053120
+          },
+          {
+            "stage": "cold-index",
+            "ms": 183.7584,
+            "rss": 728027136,
+            "heapTotal": 13869056,
+            "heapUsed": 10428416,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 728158208
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 4.8023000000000025,
+            "rss": 753618944,
+            "heapTotal": 14393344,
+            "heapUsed": 9423576,
+            "external": 38920801,
+            "arrayBuffers": 210947,
+            "peakRssBytes": 753684480
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.712600000000009,
+            "rss": 759934976,
+            "heapTotal": 14393344,
+            "heapUsed": 10061976,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 760004608
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.29160000000001673,
+            "rss": 762580992,
+            "heapTotal": 14393344,
+            "heapUsed": 9773280,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 762580992
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49594368,
+            "heapTotal": 13365248,
+            "heapUsed": 8746088,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 49868800
+          },
+          {
+            "stage": "cold-index",
+            "ms": 175.8132,
+            "rss": 724176896,
+            "heapTotal": 13627392,
+            "heapUsed": 10455264,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 724242432
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 4.133499999999998,
+            "rss": 744239104,
+            "heapTotal": 14413824,
+            "heapUsed": 9471968,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 744304640
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.672300000000007,
+            "rss": 750731264,
+            "heapTotal": 14938112,
+            "heapUsed": 10913712,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 750743552
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.3551999999999964,
+            "rss": 753270784,
+            "heapTotal": 15200256,
+            "heapUsed": 9821816,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 753270784
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50143232,
+            "heapTotal": 13344768,
+            "heapUsed": 8688536,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50147328
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1906.9272999999998,
+            "rss": 79163392,
+            "heapTotal": 29335552,
+            "heapUsed": 18632288,
+            "external": 36790155,
+            "arrayBuffers": 840558,
+            "peakRssBytes": 644112384
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 9.997700000000123,
+            "rss": 79888384,
+            "heapTotal": 30384128,
+            "heapUsed": 15510536,
+            "external": 36746966,
+            "arrayBuffers": 797369,
+            "peakRssBytes": 644112384
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.750800000000027,
+            "rss": 81399808,
+            "heapTotal": 30908416,
+            "heapUsed": 19160360,
+            "external": 36746966,
+            "arrayBuffers": 797369,
+            "peakRssBytes": 644112384
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.873000000000047,
+            "rss": 80723968,
+            "heapTotal": 31170560,
+            "heapUsed": 14336416,
+            "external": 36746966,
+            "arrayBuffers": 797369,
+            "peakRssBytes": 644112384
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49909760,
+            "heapTotal": 13103104,
+            "heapUsed": 8736592,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50221056
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1296.1596,
+            "rss": 79085568,
+            "heapTotal": 29880320,
+            "heapUsed": 18389680,
+            "external": 36778410,
+            "arrayBuffers": 828813,
+            "peakRssBytes": 645013504
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.640699999999924,
+            "rss": 80416768,
+            "heapTotal": 30142464,
+            "heapUsed": 15241832,
+            "external": 36744719,
+            "arrayBuffers": 795122,
+            "peakRssBytes": 645013504
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.031299999999874,
+            "rss": 81260544,
+            "heapTotal": 30666752,
+            "heapUsed": 18908888,
+            "external": 36744719,
+            "arrayBuffers": 795122,
+            "peakRssBytes": 645013504
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.581899999999905,
+            "rss": 81330176,
+            "heapTotal": 30928896,
+            "heapUsed": 14070088,
+            "external": 36744719,
+            "arrayBuffers": 795122,
+            "peakRssBytes": 645013504
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50065408,
+            "heapTotal": 13103104,
+            "heapUsed": 8757224,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50069504
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1313.5397,
+            "rss": 79355904,
+            "heapTotal": 30142464,
+            "heapUsed": 18890592,
+            "external": 36792265,
+            "arrayBuffers": 842668,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.783199999999852,
+            "rss": 80060416,
+            "heapTotal": 30404608,
+            "heapUsed": 15773128,
+            "external": 36758574,
+            "arrayBuffers": 808977,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.757699999999886,
+            "rss": 79884288,
+            "heapTotal": 30666752,
+            "heapUsed": 16383024,
+            "external": 36803595,
+            "arrayBuffers": 853998,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.492600000000039,
+            "rss": 81395712,
+            "heapTotal": 31191040,
+            "heapUsed": 20099848,
+            "external": 36803595,
+            "arrayBuffers": 809185,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "projection-2",
+            "ms": 4.449800000000096,
+            "rss": 80498688,
+            "heapTotal": 31453184,
+            "heapUsed": 13802568,
+            "external": 36803595,
+            "arrayBuffers": 853998,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.010999999999967,
+            "rss": 81088512,
+            "heapTotal": 31453184,
+            "heapUsed": 16297392,
+            "external": 36803595,
+            "arrayBuffers": 809185,
+            "peakRssBytes": 644571136
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.633199999999988,
+            "rss": 81096704,
+            "heapTotal": 31453184,
+            "heapUsed": 16806648,
+            "external": 36803803,
+            "arrayBuffers": 854206,
+            "peakRssBytes": 644571136
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49770496,
+            "heapTotal": 13365248,
+            "heapUsed": 8687552,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50032640
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1347.4434,
+            "rss": 79106048,
+            "heapTotal": 30142464,
+            "heapUsed": 18740816,
+            "external": 36807008,
+            "arrayBuffers": 857411,
+            "peakRssBytes": 645152768
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 11.815500000000156,
+            "rss": 80117760,
+            "heapTotal": 30404608,
+            "heapUsed": 15621696,
+            "external": 36773317,
+            "arrayBuffers": 823720,
+            "peakRssBytes": 645152768
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.563699999999926,
+            "rss": 81534976,
+            "heapTotal": 30666752,
+            "heapUsed": 19276120,
+            "external": 36773317,
+            "arrayBuffers": 823720,
+            "peakRssBytes": 645152768
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.413999999999987,
+            "rss": 80617472,
+            "heapTotal": 30928896,
+            "heapUsed": 14385568,
+            "external": 36773317,
+            "arrayBuffers": 823720,
+            "peakRssBytes": 645152768
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50147328,
+            "heapTotal": 13365248,
+            "heapUsed": 8721984,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50151424
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1308.7849,
+            "rss": 79376384,
+            "heapTotal": 29880320,
+            "heapUsed": 12085816,
+            "external": 36780513,
+            "arrayBuffers": 797225,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.172600000000102,
+            "rss": 79876096,
+            "heapTotal": 30404608,
+            "heapUsed": 16772184,
+            "external": 36746822,
+            "arrayBuffers": 797225,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.343800000000101,
+            "rss": 80166912,
+            "heapTotal": 30404608,
+            "heapUsed": 17375984,
+            "external": 36791843,
+            "arrayBuffers": 842246,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.111900000000105,
+            "rss": 80994304,
+            "heapTotal": 30666752,
+            "heapUsed": 20545904,
+            "external": 36791843,
+            "arrayBuffers": 797433,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "projection-2",
+            "ms": 4.3016999999999825,
+            "rss": 80273408,
+            "heapTotal": 30666752,
+            "heapUsed": 12893984,
+            "external": 36791843,
+            "arrayBuffers": 842246,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 3.8644000000001597,
+            "rss": 80703488,
+            "heapTotal": 30666752,
+            "heapUsed": 15336344,
+            "external": 36791843,
+            "arrayBuffers": 797433,
+            "peakRssBytes": 644472832
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.4778000000001157,
+            "rss": 80711680,
+            "heapTotal": 30666752,
+            "heapUsed": 15842352,
+            "external": 36792051,
+            "arrayBuffers": 842454,
+            "peakRssBytes": 644472832
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50192384,
+            "heapTotal": 13344768,
+            "heapUsed": 8732240,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50552832
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1306.3115,
+            "rss": 79159296,
+            "heapTotal": 30121984,
+            "heapUsed": 18887064,
+            "external": 36775897,
+            "arrayBuffers": 826300,
+            "peakRssBytes": 644788224
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.509199999999964,
+            "rss": 79876096,
+            "heapTotal": 30646272,
+            "heapUsed": 15775768,
+            "external": 36742206,
+            "arrayBuffers": 792609,
+            "peakRssBytes": 644788224
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.997100000000046,
+            "rss": 81530880,
+            "heapTotal": 31432704,
+            "heapUsed": 19420592,
+            "external": 36742206,
+            "arrayBuffers": 792609,
+            "peakRssBytes": 644788224
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.178300000000036,
+            "rss": 82956288,
+            "heapTotal": 31432704,
+            "heapUsed": 14730536,
+            "external": 36742206,
+            "arrayBuffers": 792609,
+            "peakRssBytes": 644788224
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50360320,
+            "heapTotal": 13365248,
+            "heapUsed": 8732784,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50647040
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1297.5658999999998,
+            "rss": 79069184,
+            "heapTotal": 30142464,
+            "heapUsed": 18601000,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 11.06529999999998,
+            "rss": 79810560,
+            "heapTotal": 30404608,
+            "heapUsed": 15489392,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.322499999999991,
+            "rss": 80105472,
+            "heapTotal": 30404608,
+            "heapUsed": 16091576,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.1422999999999774,
+            "rss": 81616896,
+            "heapTotal": 30666752,
+            "heapUsed": 19844352,
+            "external": 36786478,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.7393999999999323,
+            "rss": 80543744,
+            "heapTotal": 31191040,
+            "heapUsed": 13491768,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.5797999999999774,
+            "rss": 81125376,
+            "heapTotal": 31191040,
+            "heapUsed": 15905984,
+            "external": 36786478,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 645222400
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.6544000000001233,
+            "rss": 81125376,
+            "heapTotal": 31191040,
+            "heapUsed": 16407680,
+            "external": 36786686,
+            "arrayBuffers": 837089,
+            "peakRssBytes": 645222400
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50438144,
+            "heapTotal": 13082624,
+            "heapUsed": 8698240,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50442240
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1322.7174,
+            "rss": 79355904,
+            "heapTotal": 29859840,
+            "heapUsed": 18917680,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644399104
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 16.51389999999992,
+            "rss": 80367616,
+            "heapTotal": 30646272,
+            "heapUsed": 15799344,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644399104
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.700099999999793,
+            "rss": 82124800,
+            "heapTotal": 30908416,
+            "heapUsed": 19428408,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644399104
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.338799999999992,
+            "rss": 81764352,
+            "heapTotal": 31432704,
+            "heapUsed": 14347256,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644399104
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50397184,
+            "heapTotal": 13365248,
+            "heapUsed": 8743152,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50405376
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1300.942,
+            "rss": 79794176,
+            "heapTotal": 30142464,
+            "heapUsed": 18678928,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644628480
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.93549999999982,
+            "rss": 80396288,
+            "heapTotal": 30404608,
+            "heapUsed": 15532456,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644628480
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.995999999999867,
+            "rss": 82096128,
+            "heapTotal": 30928896,
+            "heapUsed": 19215656,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644628480
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.03469999999993,
+            "rss": 81666048,
+            "heapTotal": 31191040,
+            "heapUsed": 14300880,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644628480
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      }
+    ]
+  },
+  "settled": {
+    "node": "v24.19.0",
+    "platform": "win32",
+    "cpu": "AMD Ryzen 9 7940HX with Radeon Graphics        ",
+    "physicalMemoryBytes": 16339554304,
+    "method": "18 isolated processes, three rotated repeats per fixture/variant. Identical files and explicit file selection, no fabricated diff. Cold index then three analysis samples; projection only in xray variant. Same analysis output hashes required. Process high-water RSS is cumulative, not a per-stage allocation metric. No forced GC; retained RSS is not proof of a leak.",
+    "indexIdleMs": 1000,
+    "medium": {
+      "origin": "https://github.com/expressjs/express.git",
+      "commit": "cd7d4397c398a3f3ecadeaf9ef6ac1377bd414c4",
+      "selectedFile": "lib/utils.js"
+    },
+    "engineSources": [
+      {
+        "file": "src/buildIndex.ts",
+        "sha256": "7f53ed3fd105fdfc8a174c2b486835109bc9883b95971837c29142924ba37974"
+      },
+      {
+        "file": "src/extract.ts",
+        "sha256": "966637341807e4060eb91e2572f964c49a571cabf95fe9254ef507f89d6a3e88"
+      },
+      {
+        "file": "src/refgraph.ts",
+        "sha256": "8f6959d969d28a999cc4953f7bc06d019b179f86379ec6a9b94eaea4d4128d64"
+      },
+      {
+        "file": "src/change-context.ts",
+        "sha256": "a8b3100f816d5a7d286d56bb213ea7434142210c4a237d69e70f786d1f797534"
+      }
+    ],
+    "observations": [
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49278976,
+            "heapTotal": 13082624,
+            "heapUsed": 8689952,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 49283072
+          },
+          {
+            "stage": "cold-index",
+            "ms": 213.5863,
+            "rss": 506994688,
+            "heapTotal": 13082624,
+            "heapUsed": 10417464,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 507060224
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65519616,
+            "heapTotal": 14131200,
+            "heapUsed": 9310616,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351839744
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 2.9880000000000564,
+            "rss": 65941504,
+            "heapTotal": 14655488,
+            "heapUsed": 9563136,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351839744
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.47470000000021173,
+            "rss": 66211840,
+            "heapTotal": 14917632,
+            "heapUsed": 10205760,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351839744
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.33609999999998763,
+            "rss": 66297856,
+            "heapTotal": 14917632,
+            "heapUsed": 9904752,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351839744
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49831936,
+            "heapTotal": 13103104,
+            "heapUsed": 8681120,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50147328
+          },
+          {
+            "stage": "cold-index",
+            "ms": 189.71300000000002,
+            "rss": 675385344,
+            "heapTotal": 13889536,
+            "heapUsed": 10390216,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 675459072
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65765376,
+            "heapTotal": 14413824,
+            "heapUsed": 9300240,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352114176
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.188799999999901,
+            "rss": 66023424,
+            "heapTotal": 14413824,
+            "heapUsed": 9554352,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352114176
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.657799999999952,
+            "rss": 66551808,
+            "heapTotal": 15200256,
+            "heapUsed": 11020216,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352114176
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.2535000000000309,
+            "rss": 66588672,
+            "heapTotal": 15200256,
+            "heapUsed": 9903880,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352114176
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 1,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50036736,
+            "heapTotal": 13365248,
+            "heapUsed": 8757200,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50040832
+          },
+          {
+            "stage": "cold-index",
+            "ms": 198.41310000000001,
+            "rss": 708087808,
+            "heapTotal": 14151680,
+            "heapUsed": 10466656,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 708153344
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65470464,
+            "heapTotal": 14675968,
+            "heapUsed": 9311752,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.022100000000137,
+            "rss": 65826816,
+            "heapTotal": 14675968,
+            "heapUsed": 9565864,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "projection-1",
+            "ms": 7.682600000000093,
+            "rss": 66072576,
+            "heapTotal": 14938112,
+            "heapUsed": 9999136,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.5860000000000127,
+            "rss": 66121728,
+            "heapTotal": 14938112,
+            "heapUsed": 10617848,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.9764999999999873,
+            "rss": 66142208,
+            "heapTotal": 14938112,
+            "heapUsed": 10524328,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.22600000000011278,
+            "rss": 66240512,
+            "heapTotal": 14938112,
+            "heapUsed": 10685136,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1351925760
+          },
+          {
+            "stage": "projection-3",
+            "ms": 4.480299999999943,
+            "rss": 66240512,
+            "heapTotal": 14938112,
+            "heapUsed": 10988256,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 1351925760
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50589696,
+            "heapTotal": 13365248,
+            "heapUsed": 8721936,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50593792
+          },
+          {
+            "stage": "cold-index",
+            "ms": 180.02589999999998,
+            "rss": 768233472,
+            "heapTotal": 13889536,
+            "heapUsed": 10431904,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 768364544
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65581056,
+            "heapTotal": 14675968,
+            "heapUsed": 9325416,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352286208
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 2.9972000000000207,
+            "rss": 66039808,
+            "heapTotal": 14675968,
+            "heapUsed": 9579528,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352286208
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.4914000000001124,
+            "rss": 66387968,
+            "heapTotal": 15200256,
+            "heapUsed": 10929504,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352286208
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.30739999999991596,
+            "rss": 66068480,
+            "heapTotal": 15200256,
+            "heapUsed": 9929072,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352286208
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49881088,
+            "heapTotal": 12840960,
+            "heapUsed": 8738256,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50167808
+          },
+          {
+            "stage": "cold-index",
+            "ms": 191.2475,
+            "rss": 765341696,
+            "heapTotal": 13627392,
+            "heapUsed": 10448920,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 765472768
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 66281472,
+            "heapTotal": 14675968,
+            "heapUsed": 9318144,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.3853999999998905,
+            "rss": 66519040,
+            "heapTotal": 14675968,
+            "heapUsed": 9570640,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.6554000000001,
+            "rss": 66842624,
+            "heapTotal": 15200256,
+            "heapUsed": 10003912,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.42849999999998545,
+            "rss": 66854912,
+            "heapTotal": 15200256,
+            "heapUsed": 11041624,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.2838999999999032,
+            "rss": 66899968,
+            "heapTotal": 15462400,
+            "heapUsed": 10529008,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.20870000000013533,
+            "rss": 66936832,
+            "heapTotal": 15462400,
+            "heapUsed": 10689816,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1352327168
+          },
+          {
+            "stage": "projection-3",
+            "ms": 4.411399999999958,
+            "rss": 66940928,
+            "heapTotal": 15462400,
+            "heapUsed": 10992768,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 1352327168
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 2,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49795072,
+            "heapTotal": 13344768,
+            "heapUsed": 8736448,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50167808
+          },
+          {
+            "stage": "cold-index",
+            "ms": 194.70230000000004,
+            "rss": 725581824,
+            "heapTotal": 13606912,
+            "heapUsed": 10456464,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 725778432
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65695744,
+            "heapTotal": 14655488,
+            "heapUsed": 9295384,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352245248
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 2.9478999999998905,
+            "rss": 65974272,
+            "heapTotal": 14655488,
+            "heapUsed": 9547904,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352245248
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.6040000000000418,
+            "rss": 66445312,
+            "heapTotal": 14917632,
+            "heapUsed": 10036080,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352245248
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.25890000000003965,
+            "rss": 66121728,
+            "heapTotal": 14917632,
+            "heapUsed": 9902000,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352245248
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50094080,
+            "heapTotal": 13365248,
+            "heapUsed": 8737352,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50384896
+          },
+          {
+            "stage": "cold-index",
+            "ms": 188.48559999999998,
+            "rss": 783421440,
+            "heapTotal": 13889536,
+            "heapUsed": 10447760,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 783618048
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 66142208,
+            "heapTotal": 14675968,
+            "heapUsed": 9309616,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.0633000000000266,
+            "rss": 66420736,
+            "heapTotal": 14675968,
+            "heapUsed": 9562112,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "projection-1",
+            "ms": 6.06009999999992,
+            "rss": 66736128,
+            "heapTotal": 14938112,
+            "heapUsed": 9995336,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.4052000000001499,
+            "rss": 66785280,
+            "heapTotal": 14938112,
+            "heapUsed": 10776064,
+            "external": 36168976,
+            "arrayBuffers": 219379,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.4711999999999534,
+            "rss": 66818048,
+            "heapTotal": 14938112,
+            "heapUsed": 10520352,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.23270000000002256,
+            "rss": 66850816,
+            "heapTotal": 14938112,
+            "heapUsed": 10681160,
+            "external": 36178472,
+            "arrayBuffers": 228875,
+            "peakRssBytes": 1352572928
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.7987000000000535,
+            "rss": 66850816,
+            "heapTotal": 14938112,
+            "heapUsed": 10984160,
+            "external": 36187968,
+            "arrayBuffers": 238371,
+            "peakRssBytes": 1352572928
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "nodes": 17,
+            "edges": 15,
+            "metadataBytes": 15623
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 49852416,
+            "heapTotal": 13344768,
+            "heapUsed": 8722128,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50216960
+          },
+          {
+            "stage": "cold-index",
+            "ms": 177.7249,
+            "rss": 763990016,
+            "heapTotal": 13606912,
+            "heapUsed": 10440624,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 764121088
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 65638400,
+            "heapTotal": 14393344,
+            "heapUsed": 9270496,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352089600
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.489799999999832,
+            "rss": 65945600,
+            "heapTotal": 14393344,
+            "heapUsed": 9524712,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352089600
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.4917000000000371,
+            "rss": 66256896,
+            "heapTotal": 14655488,
+            "heapUsed": 9936520,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352089600
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.24959999999987303,
+            "rss": 66027520,
+            "heapTotal": 14655488,
+            "heapUsed": 9874248,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352089600
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "six-files",
+        "repeat": 3,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 6,
+        "symbols": 11,
+        "indexedSourceBytes": 760,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50253824,
+            "heapTotal": 13365248,
+            "heapUsed": 8741320,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50503680
+          },
+          {
+            "stage": "cold-index",
+            "ms": 174.9847,
+            "rss": 739360768,
+            "heapTotal": 13627392,
+            "heapUsed": 10450840,
+            "external": 38920801,
+            "arrayBuffers": 2971204,
+            "peakRssBytes": 739557376
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 66088960,
+            "heapTotal": 14413824,
+            "heapUsed": 9301488,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352732672
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 3.379599999999982,
+            "rss": 66416640,
+            "heapTotal": 14413824,
+            "heapUsed": 9555600,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352732672
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 0.4837999999999738,
+            "rss": 66703360,
+            "heapTotal": 14675968,
+            "heapUsed": 10442568,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352732672
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 0.2604999999998654,
+            "rss": 66576384,
+            "heapTotal": 14675968,
+            "heapUsed": 10400448,
+            "external": 38920801,
+            "arrayBuffers": 209883,
+            "peakRssBytes": 1352732672
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "b620d76c9b20ab43dbf68763d8115b53bac0584d1f539df885612402248b2e35",
+            "changed": 1,
+            "callers": 5,
+            "impact": 5,
+            "tests": 0,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50061312,
+            "heapTotal": 13344768,
+            "heapUsed": 8689272,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50339840
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1333.1841000000002,
+            "rss": 79011840,
+            "heapTotal": 30121984,
+            "heapUsed": 18438968,
+            "external": 36821209,
+            "arrayBuffers": 871612,
+            "peakRssBytes": 644620288
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79196160,
+            "heapTotal": 30384128,
+            "heapUsed": 12075872,
+            "external": 36821209,
+            "arrayBuffers": 837921,
+            "peakRssBytes": 644620288
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.55450000000019,
+            "rss": 80834560,
+            "heapTotal": 30646272,
+            "heapUsed": 16692928,
+            "external": 36787518,
+            "arrayBuffers": 837921,
+            "peakRssBytes": 644620288
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.819600000000264,
+            "rss": 80904192,
+            "heapTotal": 30646272,
+            "heapUsed": 19861176,
+            "external": 36787518,
+            "arrayBuffers": 837921,
+            "peakRssBytes": 644620288
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.9296000000003914,
+            "rss": 81489920,
+            "heapTotal": 30646272,
+            "heapUsed": 14865784,
+            "external": 36787518,
+            "arrayBuffers": 837921,
+            "peakRssBytes": 644620288
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50409472,
+            "heapTotal": 13365248,
+            "heapUsed": 8737416,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50413568
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1361.8446999999999,
+            "rss": 79540224,
+            "heapTotal": 29880320,
+            "heapUsed": 18983704,
+            "external": 36777574,
+            "arrayBuffers": 827977,
+            "peakRssBytes": 643756032
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79638528,
+            "heapTotal": 30142464,
+            "heapUsed": 12397472,
+            "external": 36777574,
+            "arrayBuffers": 794286,
+            "peakRssBytes": 643756032
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.743200000000343,
+            "rss": 80777216,
+            "heapTotal": 30142464,
+            "heapUsed": 17054488,
+            "external": 36743883,
+            "arrayBuffers": 794286,
+            "peakRssBytes": 643756032
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.080600000000231,
+            "rss": 81309696,
+            "heapTotal": 30404608,
+            "heapUsed": 20089232,
+            "external": 36743883,
+            "arrayBuffers": 794286,
+            "peakRssBytes": 643756032
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.73720000000003,
+            "rss": 80080896,
+            "heapTotal": 30404608,
+            "heapUsed": 14981408,
+            "external": 36743883,
+            "arrayBuffers": 794286,
+            "peakRssBytes": 643756032
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 1,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50380800,
+            "heapTotal": 12840960,
+            "heapUsed": 8724248,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50384896
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1293.0659,
+            "rss": 79560704,
+            "heapTotal": 29880320,
+            "heapUsed": 13168024,
+            "external": 36775148,
+            "arrayBuffers": 794346,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79560704,
+            "heapTotal": 29880320,
+            "heapUsed": 13202520,
+            "external": 36775148,
+            "arrayBuffers": 794346,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.658199999999852,
+            "rss": 80760832,
+            "heapTotal": 30142464,
+            "heapUsed": 17818904,
+            "external": 36743943,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.733600000000024,
+            "rss": 79966208,
+            "heapTotal": 30142464,
+            "heapUsed": 18433048,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.998600000000351,
+            "rss": 81952768,
+            "heapTotal": 30928896,
+            "heapUsed": 14001440,
+            "external": 36741665,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "projection-2",
+            "ms": 4.014999999999873,
+            "rss": 80863232,
+            "heapTotal": 30928896,
+            "heapUsed": 14533016,
+            "external": 36786686,
+            "arrayBuffers": 837089,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.061000000000149,
+            "rss": 81743872,
+            "heapTotal": 30928896,
+            "heapUsed": 17337360,
+            "external": 36786686,
+            "arrayBuffers": 792276,
+            "peakRssBytes": 645189632
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.659700000000157,
+            "rss": 81756160,
+            "heapTotal": 30928896,
+            "heapUsed": 17849664,
+            "external": 36786894,
+            "arrayBuffers": 837297,
+            "peakRssBytes": 645189632
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50151424,
+            "heapTotal": 13365248,
+            "heapUsed": 8738856,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50450432
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1306.9895999999999,
+            "rss": 79282176,
+            "heapTotal": 29880320,
+            "heapUsed": 18917784,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644403200
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79433728,
+            "heapTotal": 29880320,
+            "heapUsed": 12345472,
+            "external": 36775148,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644403200
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 9.873299999999745,
+            "rss": 80510976,
+            "heapTotal": 30404608,
+            "heapUsed": 17038064,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644403200
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.970700000000306,
+            "rss": 80932864,
+            "heapTotal": 30666752,
+            "heapUsed": 20126304,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644403200
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.774399999999787,
+            "rss": 80101376,
+            "heapTotal": 30666752,
+            "heapUsed": 14898384,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644403200
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50671616,
+            "heapTotal": 12840960,
+            "heapUsed": 8707688,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50675712
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1301.9404000000002,
+            "rss": 79523840,
+            "heapTotal": 29618176,
+            "heapUsed": 15920280,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79523840,
+            "heapTotal": 29618176,
+            "heapUsed": 15954936,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 9.90020000000004,
+            "rss": 80367616,
+            "heapTotal": 29618176,
+            "heapUsed": 20488648,
+            "external": 36775148,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "projection-1",
+            "ms": 5.6973000000002685,
+            "rss": 80285696,
+            "heapTotal": 30142464,
+            "heapUsed": 12992288,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.218000000000302,
+            "rss": 81080320,
+            "heapTotal": 30142464,
+            "heapUsed": 16338888,
+            "external": 36786478,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.7213999999999032,
+            "rss": 80429056,
+            "heapTotal": 30142464,
+            "heapUsed": 16869504,
+            "external": 36786686,
+            "arrayBuffers": 837089,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 3.780699999999797,
+            "rss": 80936960,
+            "heapTotal": 30142464,
+            "heapUsed": 19287408,
+            "external": 36786686,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 644984832
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.0860999999999876,
+            "rss": 80936960,
+            "heapTotal": 30142464,
+            "heapUsed": 12984264,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 644984832
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 2,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50315264,
+            "heapTotal": 13082624,
+            "heapUsed": 8727128,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50319360
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1295.3997,
+            "rss": 79339520,
+            "heapTotal": 29859840,
+            "heapUsed": 15962832,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644489216
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79360000,
+            "heapTotal": 29859840,
+            "heapUsed": 15997328,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644489216
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.870600000000195,
+            "rss": 80465920,
+            "heapTotal": 30121984,
+            "heapUsed": 20533392,
+            "external": 36775148,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644489216
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 6.485200000000077,
+            "rss": 81506304,
+            "heapTotal": 30646272,
+            "heapUsed": 15721192,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644489216
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.151299999999992,
+            "rss": 80814080,
+            "heapTotal": 30646272,
+            "heapUsed": 18420656,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644489216
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "candidate-xray",
+        "mode": "xray",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50278400,
+            "heapTotal": 12578816,
+            "heapUsed": 8747976,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50540544
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1306.2968,
+            "rss": 79921152,
+            "heapTotal": 30142464,
+            "heapUsed": 18908304,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 80232448,
+            "heapTotal": 30142464,
+            "heapUsed": 12388000,
+            "external": 36775148,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.365699999999833,
+            "rss": 81477632,
+            "heapTotal": 30142464,
+            "heapUsed": 17050752,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "projection-1",
+            "ms": 4.724999999999909,
+            "rss": 80306176,
+            "heapTotal": 30142464,
+            "heapUsed": 17671752,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 4.861099999999624,
+            "rss": 81301504,
+            "heapTotal": 30404608,
+            "heapUsed": 20864040,
+            "external": 36786478,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "projection-2",
+            "ms": 3.6745999999998276,
+            "rss": 80736256,
+            "heapTotal": 30404608,
+            "heapUsed": 13156040,
+            "external": 36786478,
+            "arrayBuffers": 836881,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 3.516099999999824,
+            "rss": 81121280,
+            "heapTotal": 30404608,
+            "heapUsed": 15564552,
+            "external": 36786478,
+            "arrayBuffers": 792068,
+            "peakRssBytes": 644214784
+          },
+          {
+            "stage": "projection-3",
+            "ms": 3.842999999999847,
+            "rss": 81129472,
+            "heapTotal": 30404608,
+            "heapUsed": 16070296,
+            "external": 36786686,
+            "arrayBuffers": 837089,
+            "peakRssBytes": 644214784
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "nodes": 14,
+            "edges": 1,
+            "metadataBytes": 8227
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "v0.10.2-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50180096,
+            "heapTotal": 13344768,
+            "heapUsed": 8719280,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50479104
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1307.0636,
+            "rss": 79040512,
+            "heapTotal": 29335552,
+            "heapUsed": 18638016,
+            "external": 36775148,
+            "arrayBuffers": 825551,
+            "peakRssBytes": 643530752
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 79142912,
+            "heapTotal": 29859840,
+            "heapUsed": 12088744,
+            "external": 36775148,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643530752
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 12.470100000000002,
+            "rss": 79740928,
+            "heapTotal": 29859840,
+            "heapUsed": 16748944,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643530752
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.3429000000001,
+            "rss": 81190912,
+            "heapTotal": 30384128,
+            "heapUsed": 19819192,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643530752
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 5.81230000000005,
+            "rss": 80875520,
+            "heapTotal": 30384128,
+            "heapUsed": 14497472,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643530752
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      },
+      {
+        "fixture": "express-v5.1.0",
+        "repeat": 3,
+        "variant": "candidate-analysis",
+        "mode": "analysis",
+        "files": 142,
+        "symbols": 586,
+        "indexedSourceBytes": 559459,
+        "stages": [
+          {
+            "stage": "module-loaded",
+            "ms": 0,
+            "rss": 50364416,
+            "heapTotal": 13365248,
+            "heapUsed": 8771504,
+            "external": 2731077,
+            "arrayBuffers": 209183,
+            "peakRssBytes": 50368512
+          },
+          {
+            "stage": "cold-index",
+            "ms": 1324.6465,
+            "rss": 78909440,
+            "heapTotal": 29880320,
+            "heapUsed": 15943488,
+            "external": 36773708,
+            "arrayBuffers": 824111,
+            "peakRssBytes": 643334144
+          },
+          {
+            "stage": "after-index-idle",
+            "ms": 1000,
+            "rss": 78909440,
+            "heapTotal": 29880320,
+            "heapUsed": 15977984,
+            "external": 36773708,
+            "arrayBuffers": 824111,
+            "peakRssBytes": 643334144
+          },
+          {
+            "stage": "analysis-1",
+            "ms": 10.752300000000105,
+            "rss": 80093184,
+            "heapTotal": 29880320,
+            "heapUsed": 20455888,
+            "external": 36773708,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643334144
+          },
+          {
+            "stage": "analysis-2",
+            "ms": 5.02330000000029,
+            "rss": 80834560,
+            "heapTotal": 30666752,
+            "heapUsed": 15612616,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643334144
+          },
+          {
+            "stage": "analysis-3",
+            "ms": 4.353599999999915,
+            "rss": 80404480,
+            "heapTotal": 30666752,
+            "heapUsed": 18378024,
+            "external": 36741457,
+            "arrayBuffers": 791860,
+            "peakRssBytes": 643334144
+          }
+        ],
+        "samples": [
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          },
+          {
+            "analysisSha256": "8558b336352138537170992261741973f5ab854a88f8cc3a19c1717343930b9f",
+            "changed": 10,
+            "callers": 1,
+            "impact": 0,
+            "tests": 4,
+            "metadataBytes": 0
+          }
+        ]
+      }
+    ]
+  }
+}

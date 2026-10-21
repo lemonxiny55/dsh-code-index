@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.11.0-dev.0",
+  "version": "0.11.0-dev.1",
   "description": "Impact X-Ray for DSH: inspect potential code-change impact, provenance and real source evidence before AI edits.",
   "type": "module",
   "main": "./dist/index.js",

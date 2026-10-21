@@ -1,4 +1,7 @@
 export const XRAY_EN = {
+  changeCenter: 'Changed symbols', selectionCenter: 'Selected symbols · not a proven edit', noCenter: 'No mapped symbol. Inspect unmapped changes in Gaps & limits.',
+  snapshotCounts: 'In this bounded snapshot', callCount: '{count} call relations', importCount: '{count} import relations', testCount: '{count} test leads',
+  weakCount: '{count} name-only candidates', unmappedCount: '{count} unmapped entries', legendTitle: 'Line styles & direction',
   focusView: 'Expand view', closeView: 'Close expanded view',
   subtitle: 'See the blast radius before your AI edits the code.', calls: 'Call graph', imports: 'Import graph', tests: 'Test leads', paths: 'Impact paths', gaps: 'Gaps & limits',
   potential: 'Potential impact, not a runtime guarantee', changed: 'Changed / selected', snapshot: 'Source snapshot captured with this result. The working tree may since have changed.',
@@ -28,6 +31,9 @@ export const XRAY_EN = {
 } as const
 export type XrayKey = keyof typeof XRAY_EN
 export const XRAY_ZH: Record<XrayKey, string> = {
+  changeCenter: '真实变更中心', selectionCenter: '选择中心 · 不证明实际修改', noCenter: '未映射到符号，请在“缺口与边界”检查未映射变更。',
+  snapshotCounts: '本次有界快照', callCount: '{count} 条调用关系', importCount: '{count} 条导入关系', testCount: '{count} 条测试线索',
+  weakCount: '{count} 条仅名称候选', unmappedCount: '{count} 项未映射变更', legendTitle: '线型与箭头方向',
   focusView: '放大查看', closeView: '关闭放大视图',
   subtitle: '在 AI 修改代码前，看清潜在影响范围。', calls: '调用图', imports: '导入图', tests: '测试线索', paths: '影响路径', gaps: '缺口与边界',
   potential: '潜在影响，不是运行时保证', changed: '变更 / 选择中心', snapshot: '这是本次结果保存的源码快照，工作区随后可能已经变化。',

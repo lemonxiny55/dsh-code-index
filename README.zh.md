@@ -2,9 +2,9 @@
 
 [English](README.md) | 中文
 
-**v0.11 开发预览 — Impact X-Ray。**本分支构建 `0.11.0-dev.0`，尚未发布 npm。已发布的 v0.10.2 基线包含 [Rust 声明修复](RELEASE_NOTES_v0.10.2.md)。
+**v0.11 开发预览 — Impact X-Ray。**本分支构建 `0.11.0-dev.1`，尚未发布 npm。已发布的 v0.10.2 基线包含 [Rust 声明修复](RELEASE_NOTES_v0.10.2.md)。
 
-**v0.10.1 已发布 — DSH Desktop 兼容修复**
+**支持的 Desktop 版本**
 
 [v0.10.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1) 引入的兼容范围保持不变：仅支持 DSH/dsh-tools `0.2.0-rc.2`、`0.2.1-rc.2` 两个精确宿主组，每组第一方包必须同版。
 
@@ -21,7 +21,20 @@
 
 ![真实 DSH Desktop 中的 Impact X-Ray](assets/impact-xray-mvp.gif)
 
-[真实录制与复现说明](assets/impact-xray-mvp-demo.md) · [MVP 验证与限制](IMPACT_XRAY_MVP.md)
+[真实录制与复现说明](assets/impact-xray-mvp-demo.md) · [RC 证据与剩余风险](IMPACT_XRAY_RC.md) · [v0.11.0 发布准备说明](RELEASE_NOTES_v0.11.0.md)
+
+视频展示真实 `dev.0` MVP；当前 `dev.1` 候选版改进变更中心标题区及有界计数，最新实机截图见 RC 报告。
+
+Impact X-Ray 仅在**尚未发布的开发候选版**中提供，已发布的 v0.10.2 不包含此界面。使用 Node 22/24、pnpm 11 构建本分支并打包，再用 Desktop 自带的 CLI 安装本地候选包：
+
+```sh
+pnpm install --frozen-lockfile
+npm run build
+npm pack --ignore-scripts
+dsh plugin --profile desktop add /absolute/path/to/dsh-code-index-0.11.0-dev.1.tgz
+```
+
+安装后重启 Desktop，并保留先前安装包以便回退。以上命令不会发布 npm。下方快速开始安装的是已发布 v0.10.2 基线，不会启用未发布的 X-Ray 界面。
 
 让 Agent 调用 `code_change_context`：
 
@@ -57,7 +70,7 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-[v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) 引入的 ArkTS 功能在 v0.10.1 中保持不变：`.ets` 使用独立、版本锁定的 parser，定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。安装包已通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查；部分解析或解析失败会提供有限诊断。
+[v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) 引入的 ArkTS 功能在本开发分支继续保留：`.ets` 使用独立、版本锁定的 parser，定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。安装包已通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查；部分解析或解析失败会提供有限诊断。
 
 支持范围是语法和静态代码上下文，不包含完整 HarmonyOS SDK 语义、HAR/模块别名解析、状态更新或 UI 重渲染调用图。见[发布证据](RELEASE_EVIDENCE_v0.10.0.md)、[ArkTS PoC](ARKTS_POC_v0.10.0.md) 和[双语公告](assets/v0.10.0-announcement.md)。v0.9.1 的 Gitignore 目录白名单修复继续保留。
 
@@ -136,13 +149,13 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.10.1 声明 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
+v0.10.1 引入的兼容范围继续保持 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
 
 Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 明确列举支持组，不依赖版本豁免或无上限范围。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.10.2
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

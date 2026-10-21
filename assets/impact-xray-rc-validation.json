@@ -1,0 +1,247 @@
+{
+  "candidate": "0.11.0-dev.1",
+  "date": "2026-10-21",
+  "reviewedMvpCommit": "f867f2caf1bf62997f1bf71c215f79e90bc08b88",
+  "tests": [
+    {
+      "node": "22",
+      "passed": 253,
+      "failed": 0,
+      "sha256": "8a2565a6ffe64889cf145687c4ee095a6dce472d1c8362e9e0b786941ec43350"
+    },
+    {
+      "node": "24",
+      "passed": 253,
+      "failed": 0,
+      "sha256": "531ed09a8221f3471e0ca4a3ef99cf84a55b3d0c1a99b9014124e9a8e4fd44bd"
+    }
+  ],
+  "typecheckAndBuild": {
+    "passed": true,
+    "runtimeHashesMatch": true,
+    "files": [
+      {
+        "file": "client.js",
+        "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+      },
+      {
+        "file": "index.js",
+        "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+      }
+    ]
+  },
+  "archive": {
+    "filename": "dsh-code-index-0.11.0-dev.1.tgz",
+    "bytes": 460843,
+    "unpackedBytes": 3308573,
+    "sha256": "c61bd83b2be942a14eabdd911a35cb6d387aaaf9b56b1e27f81ce231473b8fdd",
+    "shasum": "ecf0ec4464fa999b3283c6aea8caf01b373ef1ef",
+    "files": [
+      {
+        "file": "CHANGELOG.md",
+        "bytes": 18906,
+        "sha256": "af065b0f55c68da26931e7be243f9cec276e2d86749defeb25c2632495122758"
+      },
+      {
+        "file": "LICENSE",
+        "bytes": 1083,
+        "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+      },
+      {
+        "file": "README.md",
+        "bytes": 25294,
+        "sha256": "429e06564442d1ecd18fbef45ae23d832a40ab703fff6ea7ba95f8b87d7ed873"
+      },
+      {
+        "file": "README.zh.md",
+        "bytes": 22820,
+        "sha256": "776b8078b82dabb29f839fcdf9e832c6788638bb703cb117237d6bc53e657c9b"
+      },
+      {
+        "file": "cordis.patch.yml",
+        "bytes": 207,
+        "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+      },
+      {
+        "file": "dist/client.js",
+        "bytes": 62174,
+        "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+      },
+      {
+        "file": "dist/client.js.map",
+        "bytes": 80631,
+        "sha256": "b8333ff2cc73377dd4c3643828a95d6e3e1bfb4035870e336a81047d10da899e"
+      },
+      {
+        "file": "dist/index.d.ts",
+        "bytes": 28530,
+        "sha256": "382dc91e9ef9f0fb9a2b032a9f77079afd363cb870cd62eef20d222e71d374ca"
+      },
+      {
+        "file": "dist/index.js",
+        "bytes": 184901,
+        "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+      },
+      {
+        "file": "dist/index.js.map",
+        "bytes": 394146,
+        "sha256": "00a2a9a7b1e72423ed471e86cb4d8abfc221dcdb014d771240b324e726a06bb4"
+      },
+      {
+        "file": "grammars/ARKTS-LICENSE",
+        "bytes": 2154,
+        "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+      },
+      {
+        "file": "grammars/README.md",
+        "bytes": 1566,
+        "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+      },
+      {
+        "file": "grammars/tree-sitter-arkts.wasm",
+        "bytes": 2430659,
+        "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+      },
+      {
+        "file": "package.json",
+        "bytes": 2294,
+        "sha256": "3d3bccc476fadf864ecbe9c87394f331c75db3263a4503f028a493e0933279fc"
+      },
+      {
+        "file": "scripts/context-pack-demo.mjs",
+        "bytes": 4980,
+        "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+      },
+      {
+        "file": "scripts/fix-wsl-links.mjs",
+        "bytes": 4994,
+        "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+      },
+      {
+        "file": "scripts/impact-xray-benchmark.mjs",
+        "bytes": 2791,
+        "sha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb"
+      },
+      {
+        "file": "scripts/impact-xray-demo.mjs",
+        "bytes": 2437,
+        "sha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7"
+      },
+      {
+        "file": "scripts/impact-xray-poc.mjs",
+        "bytes": 2126,
+        "sha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b"
+      },
+      {
+        "file": "scripts/impact-xray-rc-benchmark.mjs",
+        "bytes": 5529,
+        "sha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921"
+      },
+      {
+        "file": "scripts/process-desktop-demo.py",
+        "bytes": 3579,
+        "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+      },
+      {
+        "file": "scripts/process-impact-xray-demo.mjs",
+        "bytes": 2490,
+        "sha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7"
+      },
+      {
+        "file": "scripts/release-smoke.mjs",
+        "bytes": 17644,
+        "sha256": "13cf16ccf0271f676f2ad55e922244f5ae315625cab5f14efea01f72d256471b"
+      },
+      {
+        "file": "scripts/render-agent-demo.py",
+        "bytes": 6638,
+        "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+      }
+    ]
+  },
+  "matrix": [
+    {
+      "node": "22",
+      "tools": "0.2.0-rc.2",
+      "passed": true,
+      "logSha256": "ecde0cef5cdb1b5636989479c9576bed53ce018c3555acb524ba4d585e168378"
+    },
+    {
+      "node": "22",
+      "tools": "0.2.1-rc.2",
+      "passed": true,
+      "logSha256": "50cd9c14c03d5eb51ad3b35c449d2c8012c3eeeb1edf9c8e690ab9d48cb5a3d7"
+    },
+    {
+      "node": "24",
+      "tools": "0.2.0-rc.2",
+      "passed": true,
+      "logSha256": "ecde0cef5cdb1b5636989479c9576bed53ce018c3555acb524ba4d585e168378"
+    },
+    {
+      "node": "24",
+      "tools": "0.2.1-rc.2",
+      "passed": true,
+      "logSha256": "50cd9c14c03d5eb51ad3b35c449d2c8012c3eeeb1edf9c8e690ab9d48cb5a3d7"
+    }
+  ],
+  "comparison": {
+    "baseline": "v0.10.2 / ba24d2a",
+    "baselineCompressedBytes": 415815,
+    "candidateCompressedBytes": 460843,
+    "deltaBytes": 45028,
+    "deltaPercent": 10.83,
+    "dependenciesUnchanged": true,
+    "peers": {
+      "@deepseek-ai/cordis": "^4.0.1",
+      "@deepseek-ai/dsh-tools": "0.2.0-rc.2 || 0.2.1-rc.2"
+    },
+    "lockfileGrammarsAndExistingEngineUnchanged": true
+  },
+  "desktop": {
+    "host": "0.2.1-rc.2",
+    "method": "Actual installed final runtime hashes; normal application exit/restart; real persisted MVP tool-result replay through native keyed slot; Computer Use node and three provenance-arrow selections, EN/Chinese, native scoped.js line 2 preview and invalid-path text fallback. Original actual tool calls and source-window audit are retained in MVP evidence; no new Agent call is claimed.",
+    "passed": true,
+    "oldDesktopUi": "NOT COMPLETED. Signed unmodified 0.2.0-rc.2 archive reached setup/main UI but twice exited through quitAndInstall before X-Ray inspection. User subsequently directed validation in their opened 0.2.1-rc.2; no further old-version attempts. Old API install/runtime matrix remains passed, not an old UI claim.",
+    "profile": [
+      {
+        "file": "package.json",
+        "beforeSha256": "df489db74795d72a55eea76a0bfc4695e2eaf95d8a50ba3f36dfa9e7179f6a95",
+        "afterSha256": "df489db74795d72a55eea76a0bfc4695e2eaf95d8a50ba3f36dfa9e7179f6a95",
+        "unchanged": true
+      },
+      {
+        "file": "cordis.yml",
+        "beforeSha256": "c300dcf2ebc5f02062d6591268d29d3db6fe45e0cb138f5467276fe2ba06076e",
+        "afterSha256": "c300dcf2ebc5f02062d6591268d29d3db6fe45e0cb138f5467276fe2ba06076e",
+        "unchanged": true
+      },
+      {
+        "file": "cordis.patch.yml",
+        "beforeSha256": "828b0e818da694f0bdbebc34a36a530d2177f0bfb60ff7725fe3b320f6a46ac3",
+        "afterSha256": "cc7e76c200a7a93ad9be010a08949af8412481a79d62c9cfd01514c3d6e3d34d",
+        "unchanged": false
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "beforeSha256": "aba96044f740de1ac5598f344bc360575df70950144216fbc24192bdef1693d9",
+        "afterSha256": "aba96044f740de1ac5598f344bc360575df70950144216fbc24192bdef1693d9",
+        "unchanged": true
+      }
+    ],
+    "profileNote": "package.json, cordis.yml and lockfile unchanged. cordis.patch.yml changed while the user also operated Desktop/model settings; no direct agent write to this file, no rollback of user settings, and no claim that every profile hash stayed unchanged. Exact UI persistence cause was not investigated."
+  },
+  "media": {
+    "reusedActualMvpFootage": true,
+    "seconds": 30,
+    "reviewedFramesSeconds": [
+      5,
+      9
+    ],
+    "firstTenSeconds": "Changed normalize source, caller/test lanes and selection of exact startup call/source are visible. Retained truthful dev.0 footage; new dev.1 header screenshots supplied separately.",
+    "decodePassed": true,
+    "hashesUnchanged": true
+  },
+  "githubCi": "Pending current commit PR checks; do not infer green from this local report",
+  "handoffUntouched": true
+}

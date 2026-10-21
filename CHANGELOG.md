@@ -2,6 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.11.0-dev.1 — RC preparation (unpublished)
+
+- Highlight the change center, bounded relation counts and name-only / unmapped uncertainty; retain the graph layout and existing analysis.
+- Add repeated, stage-separated memory observations and a pinned real Express sample. Prepare bilingual candidate installation and future v0.11.0 notes without publishing.
+
 ## 0.11.0-dev.0 — Impact X-Ray (development preview, unpublished)
 
 - Add opt-in `code_change_context` `outputFormat: "xray"`: project existing analysis into a bounded, persisted evidence card. Preserve default canonical text, Context Packs and all provenance semantics.
