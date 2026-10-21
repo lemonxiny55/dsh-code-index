@@ -1,14 +1,14 @@
 {
   "version": "0.11.0",
-  "candidateCommit": "pending",
+  "candidateCommit": "8c89e794c2d9e5b104d7ff72753bc52da9eba81b",
   "preflight": {
     "pr": 7,
     "reviewedCandidate": "f67c00529115519fc94352c0b23aa981c6a79658",
-    "main": "ba24d2abdc158ae14d60727c20d77752453237ad",
-    "npmLatest": "0.10.2",
-    "npm011Published": false,
-    "githubV011TagPresent": false,
-    "githubV011ReleasePresent": false
+    "mainBeforeMerge": "ba24d2abdc158ae14d60727c20d77752453237ad",
+    "npmLatest": "0.11.0",
+    "npm011Published": true,
+    "githubV011TagPresent": true,
+    "githubV011ReleasePresent": true
   },
   "tests": [
     {
@@ -74,15 +74,18 @@
     "dsh020rc2": "install and ToolRuntime verified; full UI not validated"
   },
   "ci": {
-    "pullRequestHead": "pending",
-    "workflowRun": "pending",
-    "postMergeMain": "pending"
+    "pullRequestHead": "d04a8079bf8646a242527981d2cdedf7f9adbc23",
+    "workflowRun": "https://github.com/lemonxiny55/dsh-code-index/actions/runs/39601641379",
+    "postMergeMain": "https://github.com/lemonxiny55/dsh-code-index/actions/runs/39602401737"
   },
   "publication": {
-    "npm": "pending",
-    "registryArchive": "pending",
-    "tag": "pending",
-    "githubRelease": "pending",
-    "postPublicationEvidenceCommit": "pending"
+    "npm": "https://www.npmjs.com/package/dsh-code-index",
+    "registryArchive": "sha256:b8eb24a76dcb367c7c710ef2fd79da1644f1f6b57f132bd76ac8f2e5a7f22af0",
+    "registryLatest": "0.11.0",
+    "registryFilesMatchedManifest": 24,
+    "tag": "https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.0",
+    "taggedCommit": "8c89e794c2d9e5b104d7ff72753bc52da9eba81b",
+    "githubRelease": "https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.0",
+    "postPublicationEvidenceCommit": "documentation-only; SHA recorded in delivery report"
   }
 }
