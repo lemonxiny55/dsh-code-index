@@ -2,15 +2,29 @@
 
 [English](README.md) | 中文
 
-**v0.11.0 — Impact X-Ray。**在 AI 修改代码前查看潜在影响范围，并用真实源码证据核对每条关系。30 秒录屏来自真实运行的 `0.11.0-dev.0` MVP；dev.1 首屏对变更中心及不确定性的改进另有[真实 Desktop 截图](IMPACT_XRAY_RC.md#first-screen-and-visual-evidence)。本版本复用现有 `code_change_context` 分析，保留 `code_context` pack 行为。
-
-**支持的 Desktop 版本**
-
-[v0.10.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1) 引入的兼容范围保持不变：仅支持 DSH/dsh-tools `0.2.0-rc.2`、`0.2.1-rc.2` 两个精确宿主组，每组第一方包必须同版。
-
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**
+
+**在 AI 修改代码前，看清潜在影响范围。**
+
+这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件。查看代码变更可能影响的调用者、导入和测试，再点击关系核对真实源码、文件与行号。不确定的匹配和缺失证据会明确显示。
+
+**在 DSH Desktop 0.2.1-rc.2 中试用 v0.11.0**，使用 Desktop 自带的 CLI：
+
+```sh
+dsh plugin --profile desktop add dsh-code-index@0.11.0
+```
+
+安装后重启 Desktop。[其他 profile 与兼容范围](#安装)。
+
+**30 秒真实 Desktop 演示：**`normalize()` 发生修改 → 查看调用者和测试 → 点击箭头核对源码证据。
+
+![真实 DSH Desktop 中的 Impact X-Ray：变更的 normalize、调用者、测试与可点击的源码证据](assets/impact-xray-mvp.gif)
+
+[全尺寸 GIF](assets/impact-xray-mvp.gif) · [MP4 视频](assets/impact-xray-mvp.mp4) · [复现 Demo](assets/impact-xray-mvp-demo.md) · [反馈有帮助或遗漏的上下文](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml)
+
+录屏来自真实 Desktop 0.2.1-rc.2 中的 `0.11.0-dev.0` MVP；后续首屏改进另有[真实 Desktop 截图](IMPACT_XRAY_RC.md#首屏与实机操作)。源码小字请打开全尺寸素材查看。
 
 - **在 AI 修改之前：**从真实工作区 Git diff、输入 diff，或明确标注的文件/符号选择开始。
 - **看清可能影响什么：**检查变更声明、直接调用者、间接路径、模块导入和测试候选。
@@ -19,19 +33,7 @@
 
 这是既有 `code_change_context` 分析和源码读取能力的交互展示，不是新开发的影响分析算法。
 
-![真实 DSH Desktop 中的 Impact X-Ray](assets/impact-xray-mvp.gif)
-
-[真实录制与复现说明](assets/impact-xray-mvp-demo.md) · [发布证据与已知限制](RELEASE_EVIDENCE_v0.11.0.md) · [中英文发布说明](RELEASE_NOTES_v0.11.0.md)
-
-视频展示真实 `dev.0` MVP；前 10 秒可看到变更函数、调用者/测试和有源码证据的 exact 关系。`dev.1` 首屏的变更中心改进另以实机截图记录，没有把视频描述成后续首屏版本的录制。
-
-使用 Desktop 自带的 CLI 将 v0.11.0 安装到现有受支持的 Desktop profile：
-
-```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
-```
-
-安装后重启 Desktop。本版本的完整 UI 已在 DSH Desktop 0.2.1-rc.2 实机验证；0.2.0-rc.2 通过安装及 ToolRuntime 检查，但未完成完整 Impact X-Ray UI 验收。peer 范围未扩大。实际验证方法、性能观察和已知限制见发布证据。开发构建使用 Node 22/24 与 pnpm 11。
+**实测宿主：**DSH Desktop 0.2.1-rc.2 已完成完整 Impact X-Ray UI 验证；0.2.0-rc.2 通过安装及 ToolRuntime 检查，但未完成完整 X-Ray UI 验收。仅声明这两个精确 DSH/dsh-tools 宿主组，每组第一方包必须同版。开发构建使用 Node 22/24 与 pnpm 11。[发布证据与已知限制](RELEASE_EVIDENCE_v0.11.0.md) · [中英文发布说明](RELEASE_NOTES_v0.11.0.md)。
 
 让 Agent 调用 `code_change_context`：
 

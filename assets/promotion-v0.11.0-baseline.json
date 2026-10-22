@@ -1,0 +1,53 @@
+{
+  "purpose": "Preparation snapshot, not a campaign result. Recapture D0 immediately before the first approved public action.",
+  "capturedAt": "2026-10-22T01:58:00Z",
+  "clientTimezone": "Asia/Shanghai",
+  "localDateTime": "2026-10-22T09:58:00+08:00",
+  "repository": "lemonxiny55/dsh-code-index",
+  "mainCommit": "3fbe39109ce4d9e97fb5430c4b5cc4d86ed2f3e4",
+  "counts": {
+    "stars": 10,
+    "forks": 1,
+    "issues": {
+      "total": 2,
+      "open": 0,
+      "closed": 2
+    },
+    "pullRequests": {
+      "total": 6,
+      "open": 0,
+      "merged": 5,
+      "externalTotal": 1
+    },
+    "confirmedV011InstallReports": null,
+    "failedV011InstallReports": null,
+    "npmDownloads7Days": null
+  },
+  "issueNumbers": [
+    5,
+    2
+  ],
+  "pullRequestNumbers": [
+    8,
+    7,
+    6,
+    4,
+    3,
+    1
+  ],
+  "externalPullRequestNumbers": [
+    1
+  ],
+  "sources": [
+    "https://api.github.com/repos/lemonxiny55/dsh-code-index",
+    "https://api.github.com/repos/lemonxiny55/dsh-code-index/issues?state=all&per_page=100",
+    "https://api.github.com/repos/lemonxiny55/dsh-code-index/pulls?state=all&per_page=100"
+  ],
+  "collectionNotes": [
+    "Single complete page for both collections at this snapshot; future runs must follow pagination.",
+    "GitHub open_issues_count includes PRs; issue counts here explicitly exclude pull_request entries.",
+    "Historical contributor/feedback counts do not prove v0.11.0 installation.",
+    "null is unknown/not collected, not zero.",
+    "The promotion Draft PR is not included and must be identified as maintainer activity in later snapshots."
+  ]
+}
