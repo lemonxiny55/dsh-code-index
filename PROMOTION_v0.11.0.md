@@ -35,6 +35,8 @@ Source-order comparison against the baseline main (UTF-8 bytes are an order/leng
 
 The Chinese GIF moves one source line later because installation now precedes it; this is not described as a reduced line count. No conversion improvement is inferred from these figures.
 
+Both proposed README openings were inspected in GitHub's actual browser renderer at a 1265 × 712 viewport. After a short scroll past GitHub's file-page chrome, the feature heading, value paragraph, install command and start of the GIF fit together. At the page's absolute top, GitHub chrome still pushes the command below the fold; this is not advertised as a universal no-scroll view. No mobile viewport test was performed. The preview also exposed literal Markdown stars around Chinese labels; spacing in those opening labels was corrected.
+
 ## Media assessment / 素材检查
 
 Reuse the [existing GIF](assets/impact-xray-mvp.gif), [MP4](assets/impact-xray-mvp.mp4), [poster](assets/impact-xray-mvp-poster.png) and [RC screenshots](IMPACT_XRAY_RC.md#首屏与实机操作). Provenance: [recording notes](assets/impact-xray-mvp-demo.md) and [SHA256/edit manifest](assets/impact-xray-mvp-media.json).
