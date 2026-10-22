@@ -5,15 +5,27 @@
 
 English | [中文](README.zh.md)
 
-**v0.11.0 — Impact X-Ray.** See the potential blast radius before AI edits code, then inspect each relationship against real source evidence. The 30-second recording shows the real `0.11.0-dev.0` MVP; the dev.1 first-screen change-center and uncertainty improvements are shown in separate [real Desktop screenshots](IMPACT_XRAY_RC.md#first-screen-and-visual-evidence). The release preserves existing `code_change_context` analysis and `code_context` packs.
-
-**Supported Desktop versions**
-
-The compatibility support introduced in [v0.10.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.1) remains: only DSH/dsh-tools `0.2.0-rc.2` and `0.2.1-rc.2` host groups are supported. Keep each host's first-party packages on the same version.
-
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**
+
+A local plugin for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness). See which callers, imports and tests may be affected by a code change, then click a relationship to inspect its actual source, file and line. Uncertain matches and missing evidence stay visible.
+
+**Try v0.11.0 in DSH Desktop 0.2.1-rc.2** using Desktop's bundled CLI:
+
+```sh
+dsh plugin --profile desktop add dsh-code-index@0.11.0
+```
+
+Restart Desktop after installation. [Other profiles and compatibility](#install).
+
+**30-second real Desktop demo:** `normalize()` changes → inspect callers and tests → click an arrow for source evidence.
+
+![Impact X-Ray in actual DSH Desktop: changed normalize function, callers, tests and clickable source evidence](assets/impact-xray-mvp.gif)
+
+[Full-size GIF](assets/impact-xray-mvp.gif) · [MP4](assets/impact-xray-mvp.mp4) · [Reproduce the demo](assets/impact-xray-mvp-demo.md) · [Report what helped or was missing](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml)
+
+The recording is the real `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. Later first-screen improvements have separate [real Desktop screenshots](IMPACT_XRAY_RC.md#首屏与实机操作). Open the full-size media to read small source text.
 
 - **Before AI edits your code:** start from a real working-tree Git diff, a supplied diff, or an explicitly labeled file/symbol selection.
 - **See what may break:** inspect changed declarations, direct callers, indirect paths, module imports and candidate tests.
@@ -22,19 +34,7 @@ The compatibility support introduced in [v0.10.1](https://github.com/lemonxiny55
 
 This is an interactive presentation of the existing `code_change_context` analysis, with source from the existing reader. It does not introduce a new impact-analysis engine.
 
-![Impact X-Ray in actual DSH Desktop](assets/impact-xray-mvp.gif)
-
-[Actual recording and reproduction notes](assets/impact-xray-mvp-demo.md) · [Release evidence and remaining limits](RELEASE_EVIDENCE_v0.11.0.md) · [Bilingual release notes](RELEASE_NOTES_v0.11.0.md)
-
-The recording shows the real `dev.0` MVP; its first 10 seconds show the changed function, caller/test lanes and source-backed exact relationship. The `dev.1` first-screen improvements are documented separately with actual Desktop screenshots; the video has not been represented as a recording of those later header changes.
-
-Install v0.11.0 into an existing supported Desktop profile with Desktop's bundled CLI:
-
-```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
-```
-
-Restart Desktop after installation. For local development, use Node 22/24 and pnpm 11. Desktop 0.2.1-rc.2 received full UI verification. Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks; its full Impact X-Ray UI was not validated. The peer range remains unchanged. See the release evidence for actual methods, performance observations and limitations.
+**Verified hosts:** Desktop 0.2.1-rc.2 received full Impact X-Ray UI verification. Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks; its full X-Ray UI was not validated. Only those two exact DSH/dsh-tools host groups are declared; keep each host's first-party packages on the same version. For local development, use Node 22/24 and pnpm 11. [Release evidence and limits](RELEASE_EVIDENCE_v0.11.0.md) · [Bilingual release notes](RELEASE_NOTES_v0.11.0.md).
 
 Ask the Agent to call `code_change_context` with:
 
