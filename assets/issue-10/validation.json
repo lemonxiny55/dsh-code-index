@@ -1,0 +1,344 @@
+{
+  "issue": "https://github.com/lemonxiny55/dsh-code-index/issues/10",
+  "observedAt": "2026-10-23T07:28:02.321Z",
+  "platform": "Windows x64; PowerShell 7.6",
+  "baseCommit": "72be3146247d7e9c7f9df2847eb55b1ab0d992c5",
+  "testedFixCommit": "0fcd590bd9f618b6afa598870b05b50b9f297c9e",
+  "reporter": {
+    "login": "deyyangyang-bit",
+    "createdAt": "2026-10-22T15:52:09Z",
+    "platform": "macOS Apple Silicon",
+    "hostPnpm": "11.28.5",
+    "pathPnpm": "9.15.0",
+    "campaignAttribution": "unknown; no causal claim"
+  },
+  "pnpm": {
+    "local9": {
+      "version": "9.15.0",
+      "node": "24.19.0",
+      "beforeInstallExit": 1,
+      "afterInstallExit": 0,
+      "afterBuildExit": 0,
+      "installArgs": "install --lockfile=false"
+    },
+    "local11": {
+      "version": "11.28.5",
+      "node": "24.19.0",
+      "beforeInstallExit": 0,
+      "afterInstallExit": 0,
+      "afterBuildExit": 0,
+      "installArgs": "install --frozen-lockfile"
+    },
+    "local11Latest": {
+      "version": "11.28.8",
+      "node": "24.19.0",
+      "afterInstallExit": 0,
+      "afterBuildExit": 0,
+      "installArgs": "install --frozen-lockfile"
+    }
+  },
+  "nodeMatrix": [
+    {
+      "node": "22.23.4",
+      "pnpm": "11.28.5",
+      "testFiles": 28,
+      "passed": 253,
+      "failed": 0,
+      "results": [
+        {
+          "check": "install",
+          "exitCode": 0,
+          "log": "node22-install.log"
+        },
+        {
+          "check": "typecheck",
+          "exitCode": 0,
+          "log": "node22-typecheck.log"
+        },
+        {
+          "check": "test",
+          "exitCode": 0,
+          "log": "node22-test.log"
+        },
+        {
+          "check": "build",
+          "exitCode": 0,
+          "log": "node22-build.log"
+        },
+        {
+          "check": "pack",
+          "exitCode": 0,
+          "log": "node22-pack.log"
+        },
+        {
+          "check": "smoke-0.2.0-rc.2",
+          "exitCode": 0,
+          "log": "node22-smoke-0.2.0-rc.2.log"
+        },
+        {
+          "check": "smoke-0.2.1-rc.2",
+          "exitCode": 0,
+          "log": "node22-smoke-0.2.1-rc.2.log"
+        }
+      ]
+    },
+    {
+      "node": "24.19.0",
+      "pnpm": "11.28.5",
+      "testFiles": 28,
+      "passed": 253,
+      "failed": 0,
+      "results": [
+        {
+          "check": "install",
+          "exitCode": 0,
+          "log": "node24-install.log"
+        },
+        {
+          "check": "typecheck",
+          "exitCode": 0,
+          "log": "node24-typecheck.log"
+        },
+        {
+          "check": "test",
+          "exitCode": 0,
+          "log": "node24-test.log"
+        },
+        {
+          "check": "build",
+          "exitCode": 0,
+          "log": "node24-build.log"
+        },
+        {
+          "check": "pack",
+          "exitCode": 0,
+          "log": "node24-pack.log"
+        },
+        {
+          "check": "smoke-0.2.0-rc.2",
+          "exitCode": 0,
+          "log": "node24-smoke-0.2.0-rc.2.log"
+        },
+        {
+          "check": "smoke-0.2.1-rc.2",
+          "exitCode": 0,
+          "log": "node24-smoke-0.2.1-rc.2.log"
+        }
+      ]
+    }
+  ],
+  "gitInstall": {
+    "outerPnpm": "11.28.5",
+    "pathPnpm": "9.15.0",
+    "node": "24.19.0",
+    "deniedExit": 1,
+    "baseAuthorizedExit": 1,
+    "fixAuthorizedExit": 0,
+    "pluginSmokeExit": 0,
+    "authorization": "exact codeload URL for each tested SHA plus esbuild; no global build bypass",
+    "method": "real GitHub dependency download, Node CLI plugin.apply registration and real dsh-tools@0.2.0-rc.2 ToolRuntime; no Desktop UI"
+  },
+  "packageComparison": {
+    "beforeCount": 24,
+    "afterCount": 24,
+    "differences": 0,
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "sha256": "C975C8F72D6FC76C70C3DFBF20067AC31757ADA9F3B50853FAEDFC0AC73E085B"
+      },
+      {
+        "path": "cordis.patch.yml",
+        "sha256": "6EFAAD7F5B9167CC2C92BEE5C7D8C4C4708C618584BEDF536377D086FA940A07"
+      },
+      {
+        "path": "LICENSE",
+        "sha256": "1572A948F3791011906314939E6F1537F63297892CE764C8F313696C22669A18"
+      },
+      {
+        "path": "package.json",
+        "sha256": "918481108A73DF5242478F267B08580EBDE206C650CBC56D4900E7C0B5774948"
+      },
+      {
+        "path": "README.md",
+        "sha256": "23EFA290112DCE2C3BA8E58D8E36EF81B9C6FD9F38C22A5FEBEA62301300329B"
+      },
+      {
+        "path": "README.zh.md",
+        "sha256": "F2EBA736252FC4CC7C9777ADE3F4CA2705362C720B806C35C9769AABE90A722A"
+      },
+      {
+        "path": "dist\\client.js",
+        "sha256": "9ABACEB9BB8B08F664C9DAFCF1BC9BAF8BD11D1862F03E665FFC95D1A1BB4553"
+      },
+      {
+        "path": "dist\\client.js.map",
+        "sha256": "B8333FF2CC73377DD4C3643828A95D6E3E1BFB4035870E336A81047D10DA899E"
+      },
+      {
+        "path": "dist\\index.d.ts",
+        "sha256": "382DC91E9EF9F0FB9A2B032A9F77079AFD363CB870CD62EEF20D222E71D374CA"
+      },
+      {
+        "path": "dist\\index.js",
+        "sha256": "6ABC5D0E6DBB5134B6FAB748E9EAF5057B186EFD121FD178DBF249B3CB2A99E6"
+      },
+      {
+        "path": "dist\\index.js.map",
+        "sha256": "00A2A9A7B1E72423ED471E86CB4D8ABFC221DCDB014D771240B324E726A06BB4"
+      },
+      {
+        "path": "grammars\\ARKTS-LICENSE",
+        "sha256": "048E4DCB7A71FB725495EBB3E7052D0E76DCB6705B828AF8B9B461DF10BCD8CA"
+      },
+      {
+        "path": "grammars\\README.md",
+        "sha256": "F36FC7157E5BD091ACAA57B7B9BB05180EE9C1FE62C29805E58B9FEE23F37A79"
+      },
+      {
+        "path": "grammars\\tree-sitter-arkts.wasm",
+        "sha256": "A5FBF24B2EEAB43CF60E9FCDBDE99E9089F7CEAE43134D24E1D5CC166D285446"
+      },
+      {
+        "path": "scripts\\context-pack-demo.mjs",
+        "sha256": "778ABB24AAFABE382CAF4851EDF17D076CCFF31AE76931029BAD31CCD09D3149"
+      },
+      {
+        "path": "scripts\\fix-wsl-links.mjs",
+        "sha256": "DC7FF03AB950D9942EC48AA0CABBFC9BC28C7295F25C3F4838EC12DA07C9687A"
+      },
+      {
+        "path": "scripts\\impact-xray-benchmark.mjs",
+        "sha256": "93D0004186D914435C19F402766C0029CD2E3206ABCD0801B1D7F585DF4E93CB"
+      },
+      {
+        "path": "scripts\\impact-xray-demo.mjs",
+        "sha256": "D802F0BFDBA9154B4252C9784B78297D5319499BFD9FC0488E6E77FD9F70C2C7"
+      },
+      {
+        "path": "scripts\\impact-xray-poc.mjs",
+        "sha256": "453DB734CD795B793332E0032951664AE50F7B8B67FB8680EE7BDBE6D430868B"
+      },
+      {
+        "path": "scripts\\impact-xray-rc-benchmark.mjs",
+        "sha256": "2895032B9B4EF943A835687539D78C3345563D3329BD1E03482CAE88219E7921"
+      },
+      {
+        "path": "scripts\\process-desktop-demo.py",
+        "sha256": "4289E669C6B290BD0F736FC06AF828BF25A2DCE1223629FC94A51239B1D99811"
+      },
+      {
+        "path": "scripts\\process-impact-xray-demo.mjs",
+        "sha256": "DB0FB49A21D25BCBB7ADCDAF2A5CCACCC6BD8385040A9A8FDCB1FF2B346847C7"
+      },
+      {
+        "path": "scripts\\release-smoke.mjs",
+        "sha256": "13CF16CCF0271F676F2AD55E922244F5AE315625CAB5F14EFEA01F72D256471B"
+      },
+      {
+        "path": "scripts\\render-agent-demo.py",
+        "sha256": "C1559E609559DAF0C4F161EA496EB165A1EAD3B4F04835DD8568F945256F1863"
+      }
+    ]
+  },
+  "candidateTarballSha256": "9a12f8be13d1416c31caaa420e1b065fa3aef964a4af8855388af0b6c8a9826f",
+  "baselineTarballSha256": "9a12f8be13d1416c31caaa420e1b065fa3aef964a4af8855388af0b6c8a9826f",
+  "publishedNpm": {
+    "version": "0.11.0",
+    "shasum": "b95dbce9d7154d02c3d18476f32d07a375dc8314",
+    "smokeExit": 0,
+    "tools": "0.2.1-rc.2",
+    "node": "24.19.0"
+  },
+  "lockfileSha256": "ca40ce21cf68bf039b563b1db6cdacb17b9e90af036ba2a852ee1823e8b38d9c",
+  "logs": [
+    {
+      "name": "pnpm9-before.log",
+      "sha256": "860fe024785e244994528622ee4c1e53ad2a625665ea4e02aaa567077f45b86c"
+    },
+    {
+      "name": "pnpm9-after-install.log",
+      "sha256": "e76c0655cfd4c464a1afbd20808824721775431610f7d4d6a6f60c6f3a192acc"
+    },
+    {
+      "name": "pnpm9-after-build.log",
+      "sha256": "c3c1922fcb2c46e88bbbba64ac5222edd78bf46a9ded637667c25287de988b08"
+    },
+    {
+      "name": "pnpm11-before-install.log",
+      "sha256": "656f4fcf59859024066b9ea38025c7ffa28153dc1eb6d8a34df6d4f669f1dc73"
+    },
+    {
+      "name": "pnpm11-after-install.log",
+      "sha256": "fbd48b755e261e4ad76786760ef17ed56298054ad1a61345ef59b6baae68d2dc"
+    },
+    {
+      "name": "pnpm11latest-install.log",
+      "sha256": "081b6c4143cb6e4ec1d8647c1a2e3c59c54571f93c3126094579c8d77d6a652e"
+    },
+    {
+      "name": "pnpm11latest-build.log",
+      "sha256": "a8af728b8d6964c6fd449d08c07503094c2f069611eb17f7583040a8e8b30f18"
+    },
+    {
+      "name": "git-denied.log",
+      "sha256": "e2dc00f71ee944d2221d94160ce808894a079337697f1e1ba9f88f197a8f1ab6"
+    },
+    {
+      "name": "git-before.log",
+      "sha256": "3b35fd6f595c56682ae2c269e66981c2659957010e8cb18fb3622efd3b7a355b"
+    },
+    {
+      "name": "git-after.log",
+      "sha256": "58634f236a70e063580963c7f8029d5362440bff4d7a0f776b43c6fd341a4e1b"
+    },
+    {
+      "name": "git-plugin-load.log",
+      "sha256": "00b408f644cde44c173c2ef38d2c0020e92ce02fbca7e02170260886b2f0aa9e"
+    },
+    {
+      "name": "node22-test.log",
+      "sha256": "e0efd3b480da4995a6bd84752e02825af6f14fe0c3d0f8f763adfc548bfaffb1"
+    },
+    {
+      "name": "node24-test.log",
+      "sha256": "2b680ff41a0ed20b22ea429c0409c3aab854a3a8bd83156aa82e33cceb024e2f"
+    },
+    {
+      "name": "node22-typecheck.log",
+      "sha256": "5a3973f79ed9becd5f23c4feff467513814de7ea381d75a4d2e339aa8b8edca9"
+    },
+    {
+      "name": "node24-typecheck.log",
+      "sha256": "5a3973f79ed9becd5f23c4feff467513814de7ea381d75a4d2e339aa8b8edca9"
+    },
+    {
+      "name": "node22-build.log",
+      "sha256": "bcf72fc55114b76e0e7f2c94eaa7a5922f0e0ca13af64354221752429782d7af"
+    },
+    {
+      "name": "node24-build.log",
+      "sha256": "42a0a3fd6498a2b66d73739909c5f0f7175e2edf2a28da81ebef10d63553cddf"
+    },
+    {
+      "name": "node22-smoke-0.2.0-rc.2.log",
+      "sha256": "852c3f5b5cba1caf661b0999255450f15f1638be11fac3b20c2ca1b05ee8929a"
+    },
+    {
+      "name": "node22-smoke-0.2.1-rc.2.log",
+      "sha256": "89701cc2a3f8fed991f5c74c644468a2d128a7a6a0d72f3bbad7bde5ac9536f8"
+    },
+    {
+      "name": "node24-smoke-0.2.0-rc.2.log",
+      "sha256": "852c3f5b5cba1caf661b0999255450f15f1638be11fac3b20c2ca1b05ee8929a"
+    },
+    {
+      "name": "node24-smoke-0.2.1-rc.2.log",
+      "sha256": "89701cc2a3f8fed991f5c74c644468a2d128a7a6a0d72f3bbad7bde5ac9536f8"
+    },
+    {
+      "name": "published-npm-smoke.log",
+      "sha256": "89701cc2a3f8fed991f5c74c644468a2d128a7a6a0d72f3bbad7bde5ac9536f8"
+    }
+  ]
+}

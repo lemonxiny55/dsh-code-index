@@ -95,6 +95,14 @@ Use [the CSV](assets/promotion-v0.11.0-tracking.csv) for snapshots and this smal
 | Timestamp | Channel / exact URL | Approved copy revision | Action | Feedback URL / category | Installation evidence / outcome |
 | --- | --- | --- | --- | --- | --- |
 | Not started | — | — | Awaiting PROMOTION REVIEW | — | Unknown |
+| Reported 2026-10-22 15:52:09 UTC / 23:52:09 Asia/Shanghai; recorded 2026-10-23 | [Issue #10](https://github.com/lemonxiny55/dsh-code-index/issues/10) | — | Record external setup feedback; no outreach | `deyyangyang-bit`; Git dependency installation failure | macOS ARM; DSH pnpm 11.28.5 invokes PATH pnpm 9.15.0; missing workspace packages reproduced; [fix evidence](ISSUE_10_FIX_EVIDENCE.md); pending FIX REVIEW and reporter confirmation |
+
+Issue #10 counts as one known external installation-failure reporter in this
+seven-day observation ledger. The tracking CSV uses a separate
+`feedback-issue-10` record, not a daily metrics snapshot; unknown metrics stay
+blank. The discovery channel is unknown: timing alone does not establish that
+promotion caused the report or installation attempt. This Git-path report does
+not establish a failure in the published v0.11.0 npm installation path.
 
 Counting rules:
 

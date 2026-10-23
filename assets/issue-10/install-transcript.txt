@@ -1,0 +1,150 @@
+===== pnpm9-before.log =====
+ ERROR  packages field missing or empty
+For help, run: pnpm help install
+
+===== git-denied.log =====
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 1, reused 0, downloaded 1, added 0
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: D:\ChatGPTProjects\dsh-code-index\.issue10\git-store-denied\v11
+  Virtual store is at:             node_modules/.pnpm
+[ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED] Failed to prepare git-hosted package fetched from "https://codeload.github.com/lemonxiny55/dsh-code-index/tar.gz/72be3146247d7e9c7f9df2847eb55b1ab0d992c5": The git-hosted package "dsh-code-index@0.11.0" needs to execute build scripts but is not in the "allowBuilds" allowlist.
+
+This error happened while installing a direct dependency of D:\ChatGPTProjects\dsh-code-index\.issue10\git-denied
+
+Add the package to "allowBuilds" in your project's pnpm-workspace.yaml to allow it to run scripts. For example:
+allowBuilds:
+  dsh-code-index@https://codeload.github.com/lemonxiny55/dsh-code-index/tar.gz/72be3146247d7e9c7f9df2847eb55b1ab0d992c5: true
+
+===== git-before.log =====
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 1, reused 1, downloaded 0, added 0
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: D:\ChatGPTProjects\dsh-code-index\.issue10\git-store-before\v11
+  Virtual store is at:             node_modules/.pnpm
+../git-store-before/v11/tmp/_tmp_gLUY6M pnpm-install$ pnpm install
+../git-store-before/v11/tmp/_tmp_gLUY6M pnpm-install:  ERROR  packages field missing or empty
+../git-store-before/v11/tmp/_tmp_gLUY6M pnpm-install: For help, run: pnpm help install
+../git-store-before/v11/tmp/_tmp_gLUY6M pnpm-install: Failed
+[ERR_PNPM_PREPARE_PACKAGE] Failed to prepare git-hosted package fetched from "https://codeload.github.com/lemonxiny55/dsh-code-index/tar.gz/72be3146247d7e9c7f9df2847eb55b1ab0d992c5": dsh-code-index@0.11.0 pnpm-install: `pnpm install`
+Exit status 1
+
+This error happened while installing a direct dependency of D:\ChatGPTProjects\dsh-code-index\.issue10\git-before
+
+===== git-after.log =====
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 1, reused 0, downloaded 1, added 0
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: D:\ChatGPTProjects\dsh-code-index\.issue10\git-store-after\v11
+  Virtual store is at:             node_modules/.pnpm
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install$ pnpm install
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Lockfile is up to date, resolution step is skipped
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 1, reused 0, downloaded 0, added 0
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Packages: +122
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 18, added 18
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 28, added 28
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 30, added 30
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 37, added 37
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 45, added 44
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 65, added 65
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 88, added 87
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 95, added 95
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 99, added 99
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 111, added 111
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 115, added 115
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Progress: resolved 122, reused 0, downloaded 122, added 122, done
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: .../esbuild@0.27.7/node_modules/esbuild postinstall$ node install.js
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: .../esbuild@0.27.7/node_modules/esbuild postinstall: Done
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: dependencies:
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + @deepseek-ai/schemastery 3.18.4
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + chokidar 4.0.3
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + ignore 7.0.5
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + tree-sitter-wasms 0.1.13
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + web-tree-sitter 0.25.10
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: devDependencies:
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + @deepseek-ai/cordis 4.0.4
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + @deepseek-ai/dsh-tools 0.2.0-rc.2
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + @types/node 26.2.0
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + @types/react 18.3.31
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + react 18.3.1
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + tsup 8.5.1
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + typescript 6.0.3
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: + vitest 4.1.11
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare$ tsup && tsup --config tsup.client.config.ts
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Building entry: src/index.ts
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Using tsconfig: tsconfig.json
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI tsup v8.5.1
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\.issue10\git-store-after\v11\tmp\_tmp_XdaSvB\tsup.config.ts
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Target: node22
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Cleaning output folder
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: ESM Build start
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: ESM dist\index.js     180.56 KB
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: ESM dist\index.js.map 384.75 KB
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: ESM ⚡️ Build success in 32ms
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: DTS Build start
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: DTS ⚡️ Build success in 1508ms
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: DTS dist\index.d.ts 27.84 KB
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Building entry: {"client":"src/client/index.tsx"}
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Using tsconfig: tsconfig.json
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI tsup v8.5.1
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\.issue10\git-store-after\v11\tmp\_tmp_XdaSvB\tsup.client.config.ts
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CLI Target: es2022
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CJS Build start
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CJS dist\client.js     60.72 KB
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CJS dist\client.js.map 76.41 KB
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: CJS ⚡️ Build success in 14ms
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: . prepare: Done
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Done in 15.7s
+../git-store-after/v11/tmp/_tmp_XdaSvB pnpm-install: Done
+Progress: resolved 1, reused 0, downloaded 2, added 0
+Progress: resolved 8, reused 0, downloaded 4, added 0
+Progress: resolved 10, reused 0, downloaded 6, added 0
+Packages: +28
+++++++++++++++++++++++++++++
+Progress: resolved 28, reused 0, downloaded 22, added 22
+Progress: resolved 28, reused 0, downloaded 28, added 28, done
+
+dependencies:
++ @deepseek-ai/dsh-tools 0.2.0-rc.2
++ dsh-code-index 0.11.0
+
+Done in 25.9s using pnpm v11.28.5
+
+===== git-plugin-load.log =====
+[dsh-code-index] plugin loaded
+[dsh-code-index] registered tool: code_index
+[dsh-code-index] registered tool: code_symbols
+[dsh-code-index] registered tool: code_search
+[dsh-code-index] registered tool: code_map
+[dsh-code-index] registered tool: code_refs
+[dsh-code-index] registered tool: code_change_context
+[dsh-code-index] registered tool: code_context
+[dsh-code-index] registered tool: code_health
+{
+  "passed": true,
+  "method": "Node CLI + installed plugin apply + real dsh-tools ToolRuntime; no Desktop UI",
+  "version": "0.11.0",
+  "dist": [
+    "index.js",
+    "index.d.ts",
+    "client.js"
+  ],
+  "registered": [
+    "code_index",
+    "code_symbols",
+    "code_search",
+    "code_map",
+    "code_refs",
+    "code_change_context",
+    "code_context",
+    "code_health"
+  ],
+  "checks": [
+    "two repositories",
+    "switching isolation",
+    "external add/delete freshness",
+    "change context"
+  ]
+}
+[dsh-code-index] plugin unloaded
