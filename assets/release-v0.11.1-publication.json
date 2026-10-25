@@ -1,0 +1,106 @@
+{
+  "version": "0.11.1",
+  "status": "PUBLISHED",
+  "date": "2026-10-25",
+  "timezone": "Asia/Shanghai",
+  "reviewedHead": "68f872e4850a4f4090b9b82077faf5ecd22e0d2c",
+  "releaseCommit": "d3fb04eb3f0af9c93bc5c661064f03c30d469db0",
+  "mergedTreeMatchesReviewedHead": true,
+  "pr": "https://github.com/lemonxiny55/dsh-code-index/pull/12",
+  "mainCI": {
+    "conclusion": "success",
+    "event": "push",
+    "head_sha": "d3fb04eb3f0af9c93bc5c661064f03c30d469db0",
+    "html_url": "https://github.com/lemonxiny55/dsh-code-index/actions/runs/40156561879",
+    "id": 40156561879,
+    "status": "completed",
+    "runNumber": 54,
+    "jobs": [
+      {
+        "id": 121059096314,
+        "node": "22.23.3",
+        "conclusion": "success"
+      },
+      {
+        "id": 121059096214,
+        "node": "24.21.0",
+        "conclusion": "success"
+      }
+    ],
+    "testsPerJob": {
+      "passed": 252,
+      "skipped": 1,
+      "filesPassed": 28,
+      "skipReason": "Pre-existing Windows-only cache path casing test; passed in Windows local gate"
+    },
+    "logSha256": {
+      "node22": "b130c32dff951d5105205689c593ddb10c2b86ca86356c0723ee0d60aab2f793",
+      "node24": "b15e142093642d0572616c6a774d38d64c9db352ce70f5bc943098c2b3bc8f71"
+    }
+  },
+  "candidate": {
+    "files": 24,
+    "bytes": 461291,
+    "sha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+    "mainRebuildByteIdentical": true,
+    "eachFileMatchesManifest": true,
+    "manifest": "assets/release-v0.11.1-package-manifest.json",
+    "mainBuildLogSha256": "c491c30fb99d22ea30786208ab3495419a31fba54ee351e0c3d566031cddd5a6"
+  },
+  "npm": {
+    "url": "https://www.npmjs.com/package/dsh-code-index/v/0.11.1",
+    "latest": "0.11.1",
+    "version": "0.11.1",
+    "tarball": "https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.11.1.tgz",
+    "bytes": 461291,
+    "sha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+    "filesVerified": 24,
+    "shasum": "ecaaa420f9210842415035d4e757409d95a81576",
+    "integrity": "sha512-2OP70HwRIbcacBgLev3O9N7bGBjdoeDasvGYtD69JJpagPCd3x446OqMfXCVwNjxOa6NXN7vWUTuem3ZftftWg==",
+    "published": "2026-10-25T03:08:24.216Z",
+    "publishCommand": "npm publish <locked candidate tarball> --ignore-scripts --tag latest --access public --registry=https://registry.npmjs.org",
+    "lifecycleScriptsDisabled": true,
+    "originalTarballPublished": true,
+    "authentication": "User completed official browser login and per-publication approval; no credentials shared",
+    "downloadedArchiveVerified": true
+  },
+  "tag": {
+    "name": "v0.11.1",
+    "annotated": true,
+    "objectSha": "80ce8fddbe8f6e2d19a1b076cedadde6a036c75c",
+    "commit": "d3fb04eb3f0af9c93bc5c661064f03c30d469db0"
+  },
+  "githubRelease": {
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/lemonxiny55/dsh-code-index/releases/download/v0.11.1/dsh-code-index-0.11.1.tgz",
+        "digest": "sha256:f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+        "name": "dsh-code-index-0.11.1.tgz",
+        "size": 461291
+      },
+      {
+        "browser_download_url": "https://github.com/lemonxiny55/dsh-code-index/releases/download/v0.11.1/release-v0.11.1-package-manifest.json",
+        "digest": "sha256:93350bf855d637fbb55698a66ac30a2e65274a835c2fda95fdf73f1085f4b694",
+        "name": "release-v0.11.1-package-manifest.json",
+        "size": 4264
+      }
+    ],
+    "draft": false,
+    "html_url": "https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.1",
+    "id": 423118654,
+    "prerelease": false,
+    "published_at": "2026-10-25T03:09:13Z",
+    "tag_name": "v0.11.1",
+    "target_commitish": "d3fb04eb3f0af9c93bc5c661064f03c30d469db0"
+  },
+  "limits": [
+    "rc.3 Electron Desktop UI not verified",
+    "Model-driven Agent round-trip not verified"
+  ],
+  "handoffPrompt": {
+    "modified": false,
+    "committed": false,
+    "sha256": "05d2be1390a73d588ef6461df8ba583abfb86f771581009da647fca3244d5034"
+  },
+  "record": "Documentation-only post-publication record; does not amend the release tag or npm package"
+}

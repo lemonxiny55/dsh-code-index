@@ -1,6 +1,6 @@
 # v0.11.1 compatibility verification
 
-**Status: RELEASE READY — 2026-10-24 (Asia/Shanghai).** No publication, merge, tag or Release was performed. Changes remain reviewable on `codex/dsh-rc3-v0.11.1`.
+**Status: PUBLISHED — 2026-10-25 (Asia/Shanghai).** The candidate reached RELEASE READY on 2026-10-24; the formal publication record below follows explicit user authorization and the successful post-merge main gate.
 
 ## Scope and workspace
 
@@ -78,4 +78,19 @@ No plugin blocker or rc.3 Host defect was found. Initial sandbox runs failed bef
 
 The isolated profile-only pnpm install emitted peer warnings; the normal Host resolved its own matching first-party services and loaded the plugin, and all six independent packed consumers passed. No exemption was used and no host/plugin ecosystem investigation was needed.
 
-Verification covers actual rc.3 Host APIs and Web UI, including cold replay. It does **not** claim a model-driven Agent round-trip or rc.3 Electron Desktop interaction. Old-group full Desktop UI was not rerun; their installed ToolRuntime matrix passed, and the prior v0.11.0 Desktop evidence remains separately documented. Existing static-analysis, source-snapshot and memory limits remain unchanged. There are no remaining blockers for this bounded compatibility patch; npm publication, PR merge and Release creation are intentionally pending user action.
+Verification covers actual rc.3 Host APIs and Web UI, including cold replay. It does **not** claim a model-driven Agent round-trip or rc.3 Electron Desktop interaction. Old-group full Desktop UI was not rerun; their installed ToolRuntime matrix passed, and the prior v0.11.0 Desktop evidence remains separately documented. Existing static-analysis, source-snapshot and memory limits remain unchanged. At the candidate gate, no blocker remained; npm publication, PR merge and Release creation were still pending explicit user action. See the formal publication record below.
+
+## Formal publication record — 2026-10-25
+
+This section and [publication metadata](assets/release-v0.11.1-publication.json) are a documentation-only record after the release tag. The candidate validation JSON above remains the historical pre-publication gate; this record does not amend the tag or change the npm archive.
+
+- PR [#12](https://github.com/lemonxiny55/dsh-code-index/pull/12), reviewed Head `68f872e4850a4f4090b9b82077faf5ecd22e0d2c`, was squash-merged as **`d3fb04eb3f0af9c93bc5c661064f03c30d469db0`**. The merged tree exactly matches the reviewed candidate tree.
+- Post-merge [main CI run 54](https://github.com/lemonxiny55/dsh-code-index/actions/runs/40156561879) completed successfully for that exact release SHA. Node **22.23.3** and **24.21.0** both passed frozen install, typecheck, server/client builds and the rc.3 installed-package smoke. Each Linux job reported **252 passed / 1 skipped**, with all 28 test files passing. The skip is the pre-existing Windows-only cache-path casing test, already passed in the Windows local gate; no check was disabled.
+- An independent clean build from the release commit reproduced the candidate archive byte for byte: **24 files, 461,291 bytes**, SHA256 **`f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846`**. Every packed file matched the committed manifest. Existing local acceptance was not repeated wholesale.
+- Both `prepare` and `prepublishOnly` build scripts were inspected. Publication explicitly used the original locked tarball with `npm publish <tarball> --ignore-scripts --tag latest --access public --registry=https://registry.npmjs.org`; lifecycle scripts could not rebuild or mutate it. npm login and per-publication authentication were completed by the user in npm's official browser flow, without sharing credentials.
+- Published npm package: [`dsh-code-index@0.11.1`](https://www.npmjs.com/package/dsh-code-index/v/0.11.1), **`latest=0.11.1`**. Registry publication time: **2026-10-25 03:08:24.216 UTC / 11:08:24.216 Asia/Shanghai**. The registry briefly reported processing before the version became visible; no duplicate publication was attempted.
+- Downloaded the [official registry archive](https://registry.npmjs.org/dsh-code-index/-/dsh-code-index-0.11.1.tgz) and verified its 461,291 bytes, complete SHA256 above, SHA1 `ecaaa420f9210842415035d4e757409d95a81576`, SHA512 integrity and all **24** paths/per-file hashes against [the locked manifest](assets/release-v0.11.1-package-manifest.json). All matched, including server/client runtime and metadata; the package reports version `0.11.1` and retains exactly the three verified host groups.
+- Annotated tag **[`v0.11.1`](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.1)** has tag-object SHA `80ce8fddbe8f6e2d19a1b076cedadde6a036c75c` and peels to the release commit `d3fb04eb3f0af9c93bc5c661064f03c30d469db0`.
+- [GitHub Release v0.11.1](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.1), ID `423118654`, is published, non-draft and non-prerelease. It contains bilingual notes, the identical tarball (GitHub asset digest matches the same SHA256), and the per-file manifest.
+
+**Remaining verification boundaries:** rc.3 Electron Desktop UI and a model-driven Agent round-trip remain **unverified**. Actual rc.3 evidence is CLI installation, Host APIs and computer-operated Web interaction/cold replay. The release does not expand the compatibility range or assert those unperformed checks. DSH Host, production source and existing user data were not changed; `HANDOFF_PROMPT.md` was neither modified nor committed. Publication is complete; no new-version development was started.
