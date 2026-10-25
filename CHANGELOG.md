@@ -2,6 +2,12 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.11.1 — DSH rc.3 compatibility
+
+- Add the verified exact `@deepseek-ai/dsh-tools@0.2.1-rc.3` host group; retain `0.2.0-rc.2` and `0.2.1-rc.2` support without exemptions or an open-ended range.
+- Verify all eight tools and Impact X-Ray in a real DSH rc.3 Web/Host environment. Keep server/client behavior, runtime dependencies and the development API baseline unchanged.
+- Make rc.3 the default installed-package smoke target and include `code_health` in native runtime dispatch coverage. See `RELEASE_EVIDENCE_v0.11.1.md` for methods and limits.
+
 ## 0.11.0 — Impact X-Ray
 
 - Present the existing `code_change_context` analysis in an interactive bilingual Desktop view with source-backed nodes and relationships; keep default text output and `code_context` Context Packs compatible.

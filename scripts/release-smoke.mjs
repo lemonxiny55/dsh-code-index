@@ -67,7 +67,7 @@ function parseJsonArrayOutput(output, command) {
 // A release gate can reuse one immutable candidate across Node versions.
 const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
 // Exercise each supported host group against the same immutable candidate.
-const toolsVersion = process.argv[3] ?? '0.2.1-rc.2'
+const toolsVersion = process.argv[3] ?? '0.2.1-rc.3'
 const supportedToolsVersions = packageJson.peerDependencies['@deepseek-ai/dsh-tools'].split(' || ')
 assert.ok(supportedToolsVersions.includes(toolsVersion), 'smoke requires an explicitly supported DSH tools version')
 const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
@@ -294,6 +294,8 @@ try {
     assert.ok(rustSymbols.value.some(symbol => symbol.name === 'CrateOnly' && symbol.signature === 'CrateOnly' && !symbol.exported))
     assert.ok(rustSymbols.value.some(symbol => symbol.name === 'Restricted' && symbol.signature === 'Restricted' && !symbol.exported))
     const rustMap = await nativeInvoke('code_map', { repoRoot: rustRoot })
+    const health = await nativeInvoke('code_health', { repoRoot: rustRoot })
+    assert.match(health.value, /repo health/)
     for (const name of ['PublicOne', 'PublicEnum', 'PublicTrait']) {
       const search = await nativeInvoke('code_search', { query: name, repoRoot: rustRoot })
       assert.equal(search.value[0]?.name, name)
