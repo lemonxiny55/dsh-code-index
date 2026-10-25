@@ -1,0 +1,232 @@
+{
+  "version": "0.11.1",
+  "date": "2026-10-24",
+  "status": "RELEASE READY",
+  "baseMain": "bff05f9e2861332ba2ed98f1eda46968aef483a6",
+  "branch": "codex/dsh-rc3-v0.11.1",
+  "package": {
+    "filename": "dsh-code-index-0.11.1.tgz",
+    "bytes": 461291,
+    "sha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846"
+  },
+  "tests": [
+    {
+      "node": "22.23.4",
+      "testsPassed": 253,
+      "testsFailed": 0,
+      "typecheck": "passed",
+      "serverBuild": "passed",
+      "clientBuild": "passed",
+      "logSha256": "95c332a4af126b161269e4f8e0a8475795909e22244787b3c489b37fd2c59f95",
+      "runtimeHashes": [
+        {
+          "path": "dist/index.js",
+          "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "sha256": "382dc91e9ef9f0fb9a2b032a9f77079afd363cb870cd62eef20d222e71d374ca"
+        },
+        {
+          "path": "dist/client.js",
+          "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+        }
+      ]
+    },
+    {
+      "node": "24.19.0",
+      "testsPassed": 253,
+      "testsFailed": 0,
+      "typecheck": "passed",
+      "serverBuild": "passed",
+      "clientBuild": "passed",
+      "logSha256": "472b059705b68746b274d9a30735a3f2bdbcde029253802335150a6e6eeb8cef",
+      "runtimeHashes": [
+        {
+          "path": "dist/index.js",
+          "sha256": "6abc5d0e6dbb5134b6fab748e9eaf5057b186efd121fd178dbf249b3cb2a99e6"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "sha256": "382dc91e9ef9f0fb9a2b032a9f77079afd363cb870cd62eef20d222e71d374ca"
+        },
+        {
+          "path": "dist/client.js",
+          "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+        }
+      ]
+    }
+  ],
+  "packedInstallSmoke": [
+    {
+      "node": 22,
+      "dshTools": "0.2.0-rc.2",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "68439b3b47988da4433300a4ef02e4006786d88f5153632868aef22421bc09f0"
+    },
+    {
+      "node": 22,
+      "dshTools": "0.2.1-rc.2",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "cc8b3a46470ed5355c32b56bcb98fa0e8fdba0d6afdab8ef9c7ff1bcbf3e4af8"
+    },
+    {
+      "node": 22,
+      "dshTools": "0.2.1-rc.3",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "aa02cc7acad69fd252bd3c124a1440358a7d8e337343abbd82a5fdbd1429f36b"
+    },
+    {
+      "node": 24,
+      "dshTools": "0.2.0-rc.2",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "68439b3b47988da4433300a4ef02e4006786d88f5153632868aef22421bc09f0"
+    },
+    {
+      "node": 24,
+      "dshTools": "0.2.1-rc.2",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "cc8b3a46470ed5355c32b56bcb98fa0e8fdba0d6afdab8ef9c7ff1bcbf3e4af8"
+    },
+    {
+      "node": 24,
+      "dshTools": "0.2.1-rc.3",
+      "passed": true,
+      "tarballSha256": "f3c84c692965758288279d761780807aa3da67ab34c22195f4e9b834212b5846",
+      "logSha256": "aa02cc7acad69fd252bd3c124a1440358a7d8e337343abbd82a5fdbd1429f36b"
+    }
+  ],
+  "frozenInstall": {
+    "pnpm": "11.28.5",
+    "passed": true,
+    "lifecycleScripts": false,
+    "lockfileChanged": false,
+    "logSha256": "1894560cb7595729ced61e823ed4554c493d1a58001092810dddf7bea23fcabc"
+  },
+  "host": {
+    "runtime": "0.2.1-rc.3",
+    "method": "Official rc.3 CLI installation and full profile runProfile Host APIs; no LLM request",
+    "loadedTools": [
+      "code_index",
+      "code_symbols",
+      "code_search",
+      "code_map",
+      "code_refs",
+      "code_context",
+      "code_health",
+      "code_change_context"
+    ],
+    "results": [
+      {
+        "name": "code_index",
+        "arguments": {
+          "action": "build",
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_symbols",
+        "arguments": {
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_search",
+        "arguments": {
+          "query": "normalize",
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_map",
+        "arguments": {
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_refs",
+        "arguments": {
+          "symbol": "normalize",
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_context",
+        "arguments": {
+          "task": "Explain normalize",
+          "outputFormat": "pack",
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_health",
+        "arguments": {
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_change_context",
+        "arguments": {
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      },
+      {
+        "name": "code_change_context",
+        "arguments": {
+          "outputFormat": "xray",
+          "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\fixtures\\a"
+        },
+        "isError": false
+      }
+    ],
+    "xray": {
+      "calls": 6,
+      "imports": 3,
+      "tests": 1,
+      "metadataBytes": 10528,
+      "sessionId": "37a15959-ef48-4ce6-81fc-f72531548285"
+    },
+    "logSha256": "0dbd1b8dd33cafc33a17f81496d12079aa502541f1f36f2de8a7cfdabfb9dfdb",
+    "compatibilityExemptions": false
+  },
+  "web": {
+    "method": "Computer-operated real Edge browser against official rc.3 Web/Host, actual Host output saved as session events",
+    "checks": [
+      "card",
+      "node and relationship selection",
+      "source evidence",
+      "native file preview",
+      "expanded view",
+      "English and Chinese",
+      "confidence filtering",
+      "imports",
+      "test leads",
+      "impact paths and step selection",
+      "gaps and limits",
+      "cold-process persisted replay"
+    ],
+    "screenshots": [
+      "assets/release-v0.11.1-rc3-xray-en.png",
+      "assets/release-v0.11.1-rc3-cold-replay-zh.png"
+    ]
+  },
+  "limits": [
+    "No model-driven Agent request",
+    "No rc.3 Electron Desktop UI run",
+    "Older versions checked by installed ToolRuntime smoke; prior Desktop evidence retained"
+  ],
+  "published": false
+}

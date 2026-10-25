@@ -10,10 +10,10 @@
 
 这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件。查看代码变更可能影响的调用者、导入和测试，再点击关系核对真实源码、文件与行号。不确定的匹配和缺失证据会明确显示。
 
-**在 DSH Desktop 0.2.1-rc.2 中试用 v0.11.0**，使用 Desktop 自带的 CLI：
+**在 DSH Desktop 0.2.1-rc.2 中试用 v0.11.1**，使用 Desktop 自带的 CLI：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
+dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
 安装后重启 Desktop。[其他 profile 与兼容范围](#安装)。
@@ -33,7 +33,7 @@ dsh plugin --profile desktop add dsh-code-index@0.11.0
 
 这是既有 `code_change_context` 分析和源码读取能力的交互展示，不是新开发的影响分析算法。
 
-**实测宿主：** DSH Desktop 0.2.1-rc.2 已完成完整 Impact X-Ray UI 验证；0.2.0-rc.2 通过安装及 ToolRuntime 检查，但未完成完整 X-Ray UI 验收。仅声明这两个精确 DSH/dsh-tools 宿主组，每组第一方包必须同版。开发构建使用 Node 22/24 与 pnpm 11。[发布证据与已知限制](RELEASE_EVIDENCE_v0.11.0.md) · [中英文发布说明](RELEASE_NOTES_v0.11.0.md)。
+**实测宿主：** DSH Desktop 0.2.1-rc.2 已完成完整 Impact X-Ray UI 验证；0.2.0-rc.2 通过安装及 ToolRuntime 检查，但未完成完整 X-Ray UI 验收。v0.11.1 新增 DSH Web/Host 0.2.1-rc.3 的全部 8 个工具及 Impact X-Ray 验证（未进行模型驱动的 Agent 运行），详见 [v0.11.1 验证报告](RELEASE_EVIDENCE_v0.11.1.md)。仅声明这三个精确 DSH/dsh-tools 宿主组，每组第一方包必须同版。开发构建使用 Node 22/24 与 pnpm 11。[发布证据与已知限制](RELEASE_EVIDENCE_v0.11.0.md) · [中英文发布说明](RELEASE_NOTES_v0.11.0.md)。
 
 让 Agent 调用 `code_change_context`：
 
@@ -87,16 +87,16 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 
 ## 快速开始
 
-需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2` 或 `0.2.1-rc.2` 宿主版本组。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
+需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2`、`0.2.1-rc.2` 或 `0.2.1-rc.3` 宿主版本组。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
+dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
 安装后重启 Desktop。匹配的 Web profile 可使用：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -148,13 +148,13 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.10.1 引入的兼容范围继续保持 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
+v0.11.1 将兼容范围扩展为 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
 
 Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 明确列举支持组，不依赖版本豁免或无上限范围。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

@@ -11,10 +11,10 @@ English | [中文](README.zh.md)
 
 A local plugin for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness). See which callers, imports and tests may be affected by a code change, then click a relationship to inspect its actual source, file and line. Uncertain matches and missing evidence stay visible.
 
-**Try v0.11.0 in DSH Desktop 0.2.1-rc.2** using Desktop's bundled CLI:
+**Try v0.11.1 in DSH Desktop 0.2.1-rc.2** using Desktop's bundled CLI:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
+dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
 Restart Desktop after installation. [Other profiles and compatibility](#install).
@@ -34,7 +34,7 @@ The recording is the real `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. Later first-
 
 This is an interactive presentation of the existing `code_change_context` analysis, with source from the existing reader. It does not introduce a new impact-analysis engine.
 
-**Verified hosts:** Desktop 0.2.1-rc.2 received full Impact X-Ray UI verification. Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks; its full X-Ray UI was not validated. Only those two exact DSH/dsh-tools host groups are declared; keep each host's first-party packages on the same version. For local development, use Node 22/24 and pnpm 11. [Release evidence and limits](RELEASE_EVIDENCE_v0.11.0.md) · [Bilingual release notes](RELEASE_NOTES_v0.11.0.md).
+**Verified hosts:** Desktop 0.2.1-rc.2 received full Impact X-Ray UI verification. Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks; its full X-Ray UI was not validated. v0.11.1 also verifies DSH Web/Host 0.2.1-rc.3 (all eight tools and Impact X-Ray; no model-driven Agent run). See [v0.11.1 evidence](RELEASE_EVIDENCE_v0.11.1.md). These three exact DSH/dsh-tools host groups are declared; keep each host's first-party packages on the same version. For local development, use Node 22/24 and pnpm 11. [Release evidence and limits](RELEASE_EVIDENCE_v0.11.0.md) · [Bilingual release notes](RELEASE_NOTES_v0.11.0.md).
 
 Ask the Agent to call `code_change_context` with:
 
@@ -88,16 +88,16 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24 and a matching DSH `0.2.0-rc.2` or `0.2.1-rc.2` host group. Install into an existing Desktop profile using its bundled `dsh` CLI:
+Requires Node 22/24 and a matching DSH `0.2.0-rc.2`, `0.2.1-rc.2` or `0.2.1-rc.3` host group. Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.0
+dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
 Restart Desktop after installation. For a matching Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -149,13 +149,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The compatibility range introduced in v0.10.1 remains `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
+v0.11.1 extends the compatibility range to `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
 
 Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerates the supported groups instead of requiring a version exemption or an unbounded range. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
