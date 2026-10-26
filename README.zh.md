@@ -8,32 +8,31 @@
 
 **在 AI 修改代码前，看清潜在影响范围。**
 
-这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件。查看代码变更可能影响的调用者、导入和测试，再点击关系核对真实源码、文件与行号。不确定的匹配和缺失证据会明确显示。
+这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件：把代码 diff 呈现为一张可检查的潜在影响图，列出可能受影响的调用者、导入和测试线索。点击关系即可核对源码文件、行号与证据。
 
-**在 DSH Desktop 0.2.1-rc.2 中试用 v0.11.1**，使用 Desktop 自带的 CLI：
+**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。使用正式稳定版 **v0.11.1**，安装到兼容的 DSH profile：
 
 ```sh
 dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
-安装后重启 Desktop。[其他 profile 与兼容范围](#安装)。
+安装后重启 Desktop。v0.11.1 声明支持 DSH `0.2.0-rc.2`、`0.2.1-rc.2` 和 `0.2.1-rc.3` 宿主版本组；Desktop rc.3 的兼容性提示据反馈已消失，但这不代表 Electron Desktop 全部功能或 Agent 验收通过。[安装说明](#安装) · [v0.11.1 验证与限制](RELEASE_EVIDENCE_v0.11.1.md)。
 
-**30 秒真实 Desktop 演示：**`normalize()` 发生修改 → 查看调用者和测试 → 点击箭头核对源码证据。
+**观看 30 秒真实 Desktop 演示：**`normalize()` 被修改 → 查看调用者与测试线索 → 点击关系查看真实源码位置。
 
 ![真实 DSH Desktop 中的 Impact X-Ray：变更的 normalize、调用者、测试与可点击的源码证据](assets/impact-xray-mvp.gif)
 
-[全尺寸 GIF](assets/impact-xray-mvp.gif) · [MP4 视频](assets/impact-xray-mvp.mp4) · [复现 Demo](assets/impact-xray-mvp-demo.md) · [反馈有帮助或遗漏的上下文](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml)
+[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [从 npm 安装 v0.11.1](https://www.npmjs.com/package/dsh-code-index/v/0.11.1) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
 
-录屏来自真实 Desktop 0.2.1-rc.2 中的 `0.11.0-dev.0` MVP；后续首屏改进另有[真实 Desktop 截图](IMPACT_XRAY_RC.md#首屏与实机操作)。源码小字请打开全尺寸素材查看。
+录屏来自真实 DSH Desktop 0.2.1-rc.2 中的 `0.11.0-dev.0` MVP 操作，展示的是既有分析与源码证据；它不代表模型驱动 Agent 的耗时或成功率。详见[录制来源](assets/impact-xray-mvp-demo.md)。
 
-- **在 AI 修改之前：** 从真实工作区 Git diff、输入 diff，或明确标注的文件/符号选择开始。
-- **看清可能影响什么：** 检查变更声明、直接调用者、间接路径、模块导入和测试候选。
-- **检查真实证据：** 点击节点或箭头，查看纳入原因、关系来源、文件行号及实际源码快照。放大视图中图与证据并排展示，可打开 Desktop 原生文件预览。
-- **了解不确定性：** 黄色点线的 `name-only` 候选、导入范围、未映射行、缺失源码和裁剪均明确呈现；测试线索不证明覆盖率或必然失败。
+- 从 Git diff 或明确选定的文件/符号出发，查看调用者、导入依赖、影响路径和测试候选。
+- 点击关系，查看其来源，以及可用的文件行号和源码快照。
+- 把候选视为线索：`name-only` 匹配可能不确定；测试线索不证明覆盖率或测试失败。
 
-这是既有 `code_change_context` 分析和源码读取能力的交互展示，不是新开发的影响分析算法。
+Impact X-Ray 是既有 `code_change_context` 分析及源码读取能力的交互展示，并未新增影响分析引擎。关系属于静态证据，不保证运行时必然受影响。
 
-**实测宿主：** DSH Desktop 0.2.1-rc.2 已完成完整 Impact X-Ray UI 验证；0.2.0-rc.2 通过安装及 ToolRuntime 检查，但未完成完整 X-Ray UI 验收。v0.11.1 新增 DSH Web/Host 0.2.1-rc.3 的全部 8 个工具及 Impact X-Ray 验证（未进行模型驱动的 Agent 运行），详见 [v0.11.1 验证报告](RELEASE_EVIDENCE_v0.11.1.md)。仅声明这三个精确 DSH/dsh-tools 宿主组，每组第一方包必须同版。开发构建使用 Node 22/24 与 pnpm 11。[发布证据与已知限制](RELEASE_EVIDENCE_v0.11.0.md) · [中英文发布说明](RELEASE_NOTES_v0.11.0.md)。
+**验证范围：** Desktop 0.2.1-rc.2 完成完整 X-Ray UI 验证；Web/Host rc.3 完成全部八个工具及 X-Ray 验证（未运行模型驱动 Agent）；Desktop 0.2.0-rc.2 通过安装和 ToolRuntime 检查，未验证完整 X-Ray UI。宿主中的第一方包须使用同一已声明版本。[v0.11.1 验证与限制](RELEASE_EVIDENCE_v0.11.1.md)。
 
 让 Agent 调用 `code_change_context`：
 
@@ -313,4 +312,5 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 ## 许可证
 
 MIT。与 DeepSeek 无关;基于公开的 `dsh` 插件接口构建。
+
 

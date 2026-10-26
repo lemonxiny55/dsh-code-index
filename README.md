@@ -9,32 +9,31 @@ English | [中文](README.zh.md)
 
 **See the blast radius before your AI edits the code.**
 
-A local plugin for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness). See which callers, imports and tests may be affected by a code change, then click a relationship to inspect its actual source, file and line. Uncertain matches and missing evidence stay visible.
+A local [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugin that turns a code diff into an inspectable map of potentially affected callers, imports and test leads. Click a relationship to check its source file, line and evidence.
 
-**Try v0.11.1 in DSH Desktop 0.2.1-rc.2** using Desktop's bundled CLI:
+**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Install the stable **v0.11.1** in a compatible DSH profile:
 
 ```sh
 dsh plugin --profile desktop add dsh-code-index@0.11.1
 ```
 
-Restart Desktop after installation. [Other profiles and compatibility](#install).
+Restart Desktop after installation. v0.11.1 declares DSH `0.2.0-rc.2`, `0.2.1-rc.2` and `0.2.1-rc.3` host groups; for Desktop rc.3, the compatibility warning was reported gone, but full Electron Desktop feature and Agent acceptance is not claimed. [Install details](#install) · [v0.11.1 verification and limits](RELEASE_EVIDENCE_v0.11.1.md).
 
-**30-second real Desktop demo:** `normalize()` changes → inspect callers and tests → click an arrow for source evidence.
+**Watch the 30-second real Desktop demo:** a change to `normalize()` → inspect callers and a test lead → click a relationship to see the actual source location.
 
 ![Impact X-Ray in actual DSH Desktop: changed normalize function, callers, tests and clickable source evidence](assets/impact-xray-mvp.gif)
 
-[Full-size GIF](assets/impact-xray-mvp.gif) · [MP4](assets/impact-xray-mvp.mp4) · [Reproduce the demo](assets/impact-xray-mvp-demo.md) · [Report what helped or was missing](https://github.com/lemonxiny55/dsh-code-index/issues/new?template=feedback.yml)
+[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [Install v0.11.1 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.11.1) · [Project](https://github.com/lemonxiny55/dsh-code-index)
 
-The recording is the real `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. Later first-screen improvements have separate [real Desktop screenshots](IMPACT_XRAY_RC.md#首屏与实机操作). Open the full-size media to read small source text.
+The recording is an actual DSH Desktop interaction with the `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. It shows existing analysis and source evidence; it is not a model-driven Agent latency or success claim. See [recording provenance](assets/impact-xray-mvp-demo.md).
 
-- **Before AI edits your code:** start from a real working-tree Git diff, a supplied diff, or an explicitly labeled file/symbol selection.
-- **See what may break:** inspect changed declarations, direct callers, indirect paths, module imports and candidate tests.
-- **Inspect the evidence:** select a node or arrow to see its reason, provenance, file, line and actual source snapshot. Expand the view for a graph and evidence side by side; open current files in Desktop's native preview.
-- **Know what remains uncertain:** dotted amber `name-only` candidates, import scope, unmapped ranges, missing source and truncation stay visible. A test lead does not prove coverage or failure.
+- Start from a Git diff or an explicitly selected file/symbol; inspect callers, import dependents, paths and candidate tests.
+- Click a relationship to inspect its provenance and available source snapshot at a file and line.
+- Treat candidates as leads: `name-only` matches can be uncertain, and a test lead does not prove coverage or failure.
 
-This is an interactive presentation of the existing `code_change_context` analysis, with source from the existing reader. It does not introduce a new impact-analysis engine.
+Impact X-Ray is an interactive view of the existing `code_change_context` analysis and source reader; it does not add an impact-analysis engine. Relationships are static evidence, not guaranteed runtime impact.
 
-**Verified hosts:** Desktop 0.2.1-rc.2 received full Impact X-Ray UI verification. Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks; its full X-Ray UI was not validated. v0.11.1 also verifies DSH Web/Host 0.2.1-rc.3 (all eight tools and Impact X-Ray; no model-driven Agent run). See [v0.11.1 evidence](RELEASE_EVIDENCE_v0.11.1.md). These three exact DSH/dsh-tools host groups are declared; keep each host's first-party packages on the same version. For local development, use Node 22/24 and pnpm 11. [Release evidence and limits](RELEASE_EVIDENCE_v0.11.0.md) · [Bilingual release notes](RELEASE_NOTES_v0.11.0.md).
+**Verified:** full X-Ray UI in Desktop 0.2.1-rc.2; Web/Host rc.3 verified for all eight tools and X-Ray (no model-driven Agent run). Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks, not full X-Ray UI. Keep each host's first-party packages on the same declared version. [v0.11.1 evidence and limits](RELEASE_EVIDENCE_v0.11.1.md).
 
 Ask the Agent to call `code_change_context` with:
 
@@ -322,4 +321,5 @@ To make a report actionable, include the approximate repository size and languag
 ## License
 
 MIT. Not affiliated with DeepSeek; built on the public `dsh` plugin surface.
+
 
