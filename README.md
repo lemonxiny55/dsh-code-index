@@ -87,7 +87,7 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24 and a matching DSH `0.2.0-rc.2`, `0.2.1-rc.2` or `0.2.1-rc.3` host group. Install into an existing Desktop profile using its bundled `dsh` CLI:
+Requires Node 22/24. The v0.11.2 candidate allows DSH `>=0.2.0-rc.2`, including prereleases; matching first-party packages should be used. Later versions may attempt to load but have not all been verified. Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
 dsh plugin --profile desktop add dsh-code-index@0.11.1
@@ -148,9 +148,9 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-v0.11.1 extends the compatibility range to `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3`. Use matching DSH/dsh-tools groups, rather than mixing first-party RC packages. The DSH plugin surface remains a preview API; other RCs and future releases are outside this compatibility declaration.
+The v0.11.2 candidate declares `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`, with no upper bound. DSH includes prereleases when checking this range, so future DSH versions may attempt to load the plugin; this does not mean every version has been verified. Use matching DSH/dsh-tools groups. The plugin surface remains a preview API, and future releases may introduce incompatibilities.
 
-Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerates the supported groups instead of requiring a version exemption or an unbounded range. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
+Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 removes that enumeration. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)

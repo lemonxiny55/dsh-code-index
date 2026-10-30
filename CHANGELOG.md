@@ -2,6 +2,10 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.11.2 — DSH compatibility range
+
+- Allow DSH versions from `0.2.0-rc.2` onward, including prereleases, without claiming future versions have been verified.
+
 ## 0.11.1 — DSH rc.3 compatibility
 
 - Add the verified exact `@deepseek-ai/dsh-tools@0.2.1-rc.3` host group; retain `0.2.0-rc.2` and `0.2.1-rc.2` support without exemptions or an open-ended range.
