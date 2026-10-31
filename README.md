@@ -11,19 +11,19 @@ English | [中文](README.zh.md)
 
 A local [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugin that turns a code diff into an inspectable map of potentially affected callers, imports and test leads. Click a relationship to check its source file, line and evidence.
 
-**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Install the stable **v0.11.1** in a compatible DSH profile:
+**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Install the stable **v0.11.2** in a compatible DSH profile:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
-Restart Desktop after installation. v0.11.1 declares DSH `0.2.0-rc.2`, `0.2.1-rc.2` and `0.2.1-rc.3` host groups; for Desktop rc.3, the compatibility warning was reported gone, but full Electron Desktop feature and Agent acceptance is not claimed. [Install details](#install) · [v0.11.1 verification and limits](RELEASE_EVIDENCE_v0.11.1.md).
+Restart Desktop after installation. v0.11.2 allows DSH `>=0.2.0-rc.2`, including prereleases, without an upper bound. rc.5 passed host compatibility checks, plugin loading and basic ToolRuntime calls; full Desktop UI and model-driven Agent validation are not claimed. Future versions may load but have not all been verified. [Install details](#install) · [v0.11.2 release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.2).
 
 **Watch the 30-second real Desktop demo:** a change to `normalize()` → inspect callers and a test lead → click a relationship to see the actual source location.
 
 ![Impact X-Ray in actual DSH Desktop: changed normalize function, callers, tests and clickable source evidence](assets/impact-xray-mvp.gif)
 
-[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [Install v0.11.1 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.11.1) · [Project](https://github.com/lemonxiny55/dsh-code-index)
+[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [Install v0.11.2 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.11.2) · [Project](https://github.com/lemonxiny55/dsh-code-index)
 
 The recording is an actual DSH Desktop interaction with the `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. It shows existing analysis and source evidence; it is not a model-driven Agent latency or success claim. See [recording provenance](assets/impact-xray-mvp-demo.md).
 
@@ -87,16 +87,16 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24. The v0.11.2 candidate allows DSH `>=0.2.0-rc.2`, including prereleases; matching first-party packages should be used. Later versions may attempt to load but have not all been verified. Install into an existing Desktop profile using its bundled `dsh` CLI:
+Requires Node 22/24. The v0.11.2 allows DSH `>=0.2.0-rc.2`, including prereleases; matching first-party packages should be used. Later versions may attempt to load but have not all been verified. Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 Restart Desktop after installation. For a matching Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.2
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -148,13 +148,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The v0.11.2 candidate declares `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`, with no upper bound. DSH includes prereleases when checking this range, so future DSH versions may attempt to load the plugin; this does not mean every version has been verified. Use matching DSH/dsh-tools groups. The plugin surface remains a preview API, and future releases may introduce incompatibilities.
+The v0.11.2 declares `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`, with no upper bound. DSH includes prereleases when checking this range, so future DSH versions may attempt to load the plugin; this does not mean every version has been verified. Use matching DSH/dsh-tools groups. The plugin surface remains a preview API, and future releases may introduce incompatibilities.
 
 Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 removes that enumeration. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.2
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

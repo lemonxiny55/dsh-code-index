@@ -10,19 +10,19 @@
 
 这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件：把代码 diff 呈现为一张可检查的潜在影响图，列出可能受影响的调用者、导入和测试线索。点击关系即可核对源码文件、行号与证据。
 
-**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。使用正式稳定版 **v0.11.1**，安装到兼容的 DSH profile：
+**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。使用正式稳定版 **v0.11.2**，安装到兼容的 DSH profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
-安装后重启 Desktop。v0.11.1 声明支持 DSH `0.2.0-rc.2`、`0.2.1-rc.2` 和 `0.2.1-rc.3` 宿主版本组；Desktop rc.3 的兼容性提示据反馈已消失，但这不代表 Electron Desktop 全部功能或 Agent 验收通过。[安装说明](#安装) · [v0.11.1 验证与限制](RELEASE_EVIDENCE_v0.11.1.md)。
+安装后重启 Desktop。v0.11.2 允许 DSH `>=0.2.0-rc.2`（包括预发布版本），不设置上限。rc.5 已通过宿主兼容检查、插件加载和基本 ToolRuntime 调用；未声称完成完整 Desktop UI 或模型驱动 Agent 验收。未来版本可以尝试加载，但并非全部经过验证。[安装说明](#安装) · [v0.11.2 正式发布](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.11.2)。
 
 **观看 30 秒真实 Desktop 演示：**`normalize()` 被修改 → 查看调用者与测试线索 → 点击关系查看真实源码位置。
 
 ![真实 DSH Desktop 中的 Impact X-Ray：变更的 normalize、调用者、测试与可点击的源码证据](assets/impact-xray-mvp.gif)
 
-[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [从 npm 安装 v0.11.1](https://www.npmjs.com/package/dsh-code-index/v/0.11.1) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
+[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [从 npm 安装 v0.11.2](https://www.npmjs.com/package/dsh-code-index/v/0.11.2) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
 
 录屏来自真实 DSH Desktop 0.2.1-rc.2 中的 `0.11.0-dev.0` MVP 操作，展示的是既有分析与源码证据；它不代表模型驱动 Agent 的耗时或成功率。详见[录制来源](assets/impact-xray-mvp-demo.md)。
 
@@ -86,16 +86,16 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 
 ## 快速开始
 
-需要 Node 22/24。v0.11.2 候选版本允许 DSH `>=0.2.0-rc.2`（包括预发布版本），第一方包应使用配套版本。后续版本可以尝试加载，但并不代表全部经过验证。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
+需要 Node 22/24。v0.11.2 正式版允许 DSH `>=0.2.0-rc.2`（包括预发布版本），第一方包应使用配套版本。后续版本可以尝试加载，但并不代表全部经过验证。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 安装后重启 Desktop。匹配的 Web profile 可使用：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.2
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -147,13 +147,13 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.11.2 候选版本声明 `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`，不设置上限。DSH 检查范围时包含预发布版本，因此未来版本可以尝试加载插件，但这不代表每个版本都经过验证。请使用配套的 DSH/dsh-tools 版本组；插件接口仍是预览 API，未来版本可能产生兼容问题。
+v0.11.2 正式版声明 `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`，不设置上限。DSH 检查范围时包含预发布版本，因此未来版本可以尝试加载插件，但这不代表每个版本都经过验证。请使用配套的 DSH/dsh-tools 版本组；插件接口仍是预览 API，未来版本可能产生兼容问题。
 
 Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 列举了当时支持的版本组；v0.11.2 移除这一枚举。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.2
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
