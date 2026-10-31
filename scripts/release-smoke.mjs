@@ -99,6 +99,9 @@ const smokeDir = mkdtempSync(path.join(os.tmpdir(), 'dsh-code-index-release-'))
 try {
   run(npm, ['init', '--yes'], smokeDir)
   // npm's default peer checks exclude prereleases that DSH explicitly accepts.
+  // --force only prepares this disposable runtime fixture; it does not prove
+  // normal npm peer resolution. The range assertion above uses DSH's rules.
+  console.log('smoke fixture: npm --force bypasses peer resolution; validating DSH range and runtime only')
   run(npm, ['install', '--ignore-scripts', '--no-save', '--force', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
 
   const installedPackage = JSON.parse(
@@ -341,7 +344,7 @@ try {
     for (const dispose of nativeDisposers.reverse()) dispose()
     await nativeContext.fiber.dispose()
   }
-  console.log(`release smoke passed for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
+  console.log(`release smoke passed (DSH range/runtime; npm peer resolution bypassed) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
   if (!suppliedTarball) rmSync(tarball, { force: true })
