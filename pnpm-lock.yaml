@@ -17,9 +17,6 @@ importers:
       ignore:
         specifier: 7.0.5
         version: 7.0.5
-      semver:
-        specifier: ^7.8.5
-        version: 7.8.5
       tree-sitter-wasms:
         specifier: ^0.1.13
         version: 0.1.13
@@ -42,6 +39,9 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      semver:
+        specifier: ^7.8.5
+        version: 7.8.5
       tsup:
         specifier: ^8.5.0
         version: 8.5.1(postcss@8.5.26)(typescript@6.0.3)
