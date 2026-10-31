@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import os from 'node:os'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import semver from 'semver'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -66,10 +67,10 @@ function parseJsonArrayOutput(output, command) {
 
 // A release gate can reuse one immutable candidate across Node versions.
 const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
-// Exercise each supported host group against the same immutable candidate.
+// Exercise a selected host version against the same immutable candidate.
 const toolsVersion = process.argv[3] ?? '0.2.1-rc.3'
-const supportedToolsVersions = packageJson.peerDependencies['@deepseek-ai/dsh-tools'].split(' || ')
-assert.ok(supportedToolsVersions.includes(toolsVersion), 'smoke requires an explicitly supported DSH tools version')
+const toolsRange = packageJson.peerDependencies['@deepseek-ai/dsh-tools']
+assert.ok(semver.satisfies(toolsVersion, toolsRange, { includePrerelease: true }), 'smoke requires a DSH tools version matching the peer range')
 const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
 if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
 const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
@@ -97,7 +98,11 @@ for (const file of expectedFiles) assert.ok(listed.has(file), `tarball is missin
 const smokeDir = mkdtempSync(path.join(os.tmpdir(), 'dsh-code-index-release-'))
 try {
   run(npm, ['init', '--yes'], smokeDir)
-  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
+  // npm's default peer checks exclude prereleases that DSH explicitly accepts.
+  // --force only prepares this disposable runtime fixture; it does not prove
+  // normal npm peer resolution. The range assertion above uses DSH's rules.
+  console.log('smoke fixture: npm --force bypasses peer resolution; validating DSH range and runtime only')
+  run(npm, ['install', '--ignore-scripts', '--no-save', '--force', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
 
   const installedPackage = JSON.parse(
     readFileSync(path.join(smokeDir, 'node_modules', packageJson.name, 'package.json'), 'utf8'),
@@ -108,7 +113,7 @@ try {
   assert.match(installedPackage.engines.node, />=22/)
   assert.equal(installedPackage.license, 'MIT')
   const installedTools = JSON.parse(readFileSync(path.join(smokeDir, 'node_modules', '@deepseek-ai', 'dsh-tools', 'package.json'), 'utf8'))
-  assert.equal(installedTools.version, toolsVersion, 'consumer must use the selected matching RC group')
+  assert.equal(installedTools.version, toolsVersion, 'consumer must use the selected DSH tools version')
 
   const plugin = await import(
     pathToFileURL(path.join(smokeDir, 'node_modules', packageJson.name, 'dist', 'index.js')).href,
@@ -339,7 +344,7 @@ try {
     for (const dispose of nativeDisposers.reverse()) dispose()
     await nativeContext.fiber.dispose()
   }
-  console.log(`release smoke passed for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
+  console.log(`release smoke passed (DSH range/runtime; npm peer resolution bypassed) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
 } finally {
   rmSync(smokeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
   if (!suppliedTarball) rmSync(tarball, { force: true })

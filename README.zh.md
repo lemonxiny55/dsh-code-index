@@ -86,7 +86,7 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 
 ## 快速开始
 
-需要 Node 22/24 与匹配的 DSH `0.2.0-rc.2`、`0.2.1-rc.2` 或 `0.2.1-rc.3` 宿主版本组。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
+需要 Node 22/24。v0.11.2 候选版本允许 DSH `>=0.2.0-rc.2`（包括预发布版本），第一方包应使用配套版本。后续版本可以尝试加载，但并不代表全部经过验证。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
 dsh plugin --profile desktop add dsh-code-index@0.11.1
@@ -147,9 +147,9 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.11.1 将兼容范围扩展为 `@deepseek-ai/dsh-tools: 0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3`。使用配套的 DSH/dsh-tools 版本组，不混装第一方 RC 包。DSH 插件接口仍属于预览 API；其他 RC 和未来版本不在此兼容声明范围内。
+v0.11.2 候选版本声明 `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`，不设置上限。DSH 检查范围时包含预发布版本，因此未来版本可以尝试加载插件，但这不代表每个版本都经过验证。请使用配套的 DSH/dsh-tools 版本组；插件接口仍是预览 API，未来版本可能产生兼容问题。
 
-Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 明确列举支持组，不依赖版本豁免或无上限范围。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
+Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 会被 DSH `0.2.1-rc.2` 拒绝；v0.10.1 列举了当时支持的版本组；v0.11.2 移除这一枚举。开发依赖保留 `0.2.0-rc.2`，继续检查旧版 API。
 
 ```sh
 # 从 npm(预编译)

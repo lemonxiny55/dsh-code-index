@@ -1,6 +1,6 @@
 {
   "name": "dsh-code-index",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "Impact X-Ray for DSH: inspect potential code-change impact, provenance and real source evidence before AI edits.",
   "type": "module",
   "main": "./dist/index.js",
@@ -51,7 +51,7 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-tools": "0.2.0-rc.2 || 0.2.1-rc.2 || 0.2.1-rc.3"
+    "@deepseek-ai/dsh-tools": ">=0.2.0-rc.2"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -64,6 +64,7 @@
     "@types/node": "^26.2.0",
     "@types/react": "^18.3.31",
     "react": "^18.3.1",
+    "semver": "^7.8.5",
     "tsup": "^8.5.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
