@@ -18,6 +18,8 @@ import { searchSymbols, type RankedHit } from './search.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import { selectContextPack, renderContextPack, type ContextPack } from './context-pack.js'
 import { indexIntegrityWarnings } from './integrity.js'
+import { contextTerms, STOP_WORDS } from './context-terms.js'
+export { contextTerms } from './context-terms.js'
 
 export type ContextTaskKind =
   | 'change'
@@ -94,37 +96,9 @@ const TEST_PATH_RE =
   /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\.(?:[cm]?[jt]sx?|ets)$|(^|\/)(?:test_[^/]+\.py|[^/]+_test\.(?:py|go))$/i
 const FILE_TOKEN_RE = /[A-Za-z0-9_./\\-]+\.[A-Za-z0-9]+/g
 const CODE_TOKEN_RE = /[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)?/g
-const STOP_WORDS = new Set(
-  [
-    'a',
-    'an',
-    'and',
-    'are',
-    'be',
-    'by',
-    'does',
-    'for',
-    'from',
-    'how',
-    'in',
-    'is',
-    'it',
-    'my',
-    'of',
-    'on',
-    'or',
-    'the',
-    'this',
-    'to',
-    'what',
-    'where',
-    'why',
-    'with',
-    'src', 'lib', 'test', 'tests', 'spec', 'fix', 'explain', 'please', 'help',
-    'current', 'change', 'changes', 'code',
-  ],
-)
-
+const PROSE_SYMBOL_WORDS = new Set(['config', 'configuration', 'loading', 'startup', 'file', 'files',
+  'path', 'directory', 'index', 'scan', 'tool', 'flow', 'coverage', 'error', 'errors', 'impact', 'source',
+  'keep', 'other', 'behavior', 'scope', 'root'])
 const CHANGE_RE =
   /\b(fix|bug|broken|breaks?|change|changed|current|working\s+tree|regression|impact|modified|duplicate|fails?|failure)\b/i
 const TEST_RE = /\b(test|tests|spec|specs|failing|assert|coverage)\b/i
@@ -132,7 +106,6 @@ const ARCH_RE =
   /\b(architecture|architectural|flow|loading|authentication|authorization|plugin|startup|overview|pipeline|lifecycle|design|works?)\b/i
 const EXPLORE_RE =
   /\b(where|implement|add|feature|introduce|entry\s+point|similar|explore|understand|locate)\b/i
-
 function unique<T>(values: readonly T[], key: (value: T) => string): T[] {
   const seen = new Set<string>()
   const out: T[] = []
@@ -166,17 +139,8 @@ function fileMentionMatches(file: string, mentions: readonly string[]): boolean 
   const lower = file.toLowerCase()
   return mentions.some((mention) => {
     const normalized = mention.replace(/\\/g, '/').toLowerCase()
-    return lower === normalized || lower.endsWith(`/${normalized}`) || lower.includes(normalized)
+    return lower === normalized || lower.endsWith(`/${normalized}`)
   })
-}
-
-/** Small deterministic term normalization; no statistical search model. */
-export function contextTerms(text: string): string[] {
-  return unique(text.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/)
-    .filter(term => term.length >= 3 && !STOP_WORDS.has(term))
-    .flatMap(term => [term, ...(term.length > 5 && term.endsWith('ing') ? [term.slice(0, -3)] : []),
-      ...(term.length > 4 && term.endsWith('s') ? [term.slice(0, -1)] : [])]), term => term)
 }
 
 /** Classify a task and decide which existing primitives should be composed. */
@@ -186,33 +150,63 @@ export function routeTask(task: string, index?: RepoIndex): ContextRoute {
     .map((value) => value.replace(/\\/g, '/'))
     .filter((value) => !index || index.files.some((file) => fileMentionMatches(file.path, [value])))
 
+  // Mask paths before looking for identifiers, including unknown paths and
+  // directory/glob mentions. A separate occurrence outside the path still wins.
+  const identifiers = text.replace(FILE_TOKEN_RE, value =>
+    /[\\/]/.test(value) || /\.(?:[cm]?[jt]sx?|ets|pyi?|go|rs|java|c(?:pp|c|xx)?|h(?:pp|xx)?|json|md|ya?ml|toml)$/i.test(value) ||
+      index?.files.some(file => fileMentionMatches(file.path, [value])) ? ' ' : value)
+    .replace(/(?:[A-Za-z]:)?(?:[A-Za-z0-9_.-]+[\\/])+[A-Za-z0-9_.*?\\/-]*/g, ' ')
+  const explicitlyNamed = (name: string): boolean => {
+    if (!wordBoundary(name).test(identifiers)) return false
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const syntax = new RegExp('`' + escaped + '`|["\u201c\u2018\']' + escaped + '["\u201d\u2019\']|' +
+      `\\b${escaped}\\s*\\(|(?:\\b(?:function|symbol|method)\\s+|(?:函数|符号|方法)\\s*)${escaped}(?=$|[^A-Za-z0-9_$])|` +
+      `(?:\\b(?:find|locate|lookup)\\s+|(?:查找|寻找|定位)\\s*)${escaped}\\s*(?:[?!.。？]|$)|` +
+      `(^|[^A-Za-z0-9_$])${escaped}\\s*(?:函数|符号|方法|function\\b|symbol\\b|method\\b)`, 'i').test(identifiers)
+    if (syntax) return true
+    if (STOP_WORDS.has(name.toLowerCase())) return false
+    // Common task vocabulary in a longer request remains lexical. Other
+    // declaration names retain the existing English exact-name behavior.
+    const words = (identifiers.match(CODE_TOKEN_RE) ?? []).filter(word => !STOP_WORDS.has(word.toLowerCase()))
+    return !PROSE_SYMBOL_WORDS.has(name.toLowerCase()) || words.length <= 1
+  }
   const exactSymbolNames = index
     ? unique(
         index.files.flatMap((file) => file.symbols.map((symbol) => symbol.name)),
         (name) => name,
       )
-        .filter((name) => wordBoundary(name).test(text))
+        .filter(explicitlyNamed)
         .sort((a, b) => b.length - a.length || a.localeCompare(b))
     : []
 
   const codeTokens = unique(
-    (text.match(CODE_TOKEN_RE) ?? [])
+    (identifiers.match(CODE_TOKEN_RE) ?? [])
       .map((token) => token.replace(/^[^A-Za-z_$]+|[^A-Za-z0-9_$]+$/g, ''))
       .filter((token) => token.length >= 3 && !STOP_WORDS.has(token.toLowerCase())),
     (token) => token.toLowerCase(),
   )
   const queries = unique(
-    [...exactSymbolNames, ...contextTerms(text), ...codeTokens.filter((token) => !exactSymbolNames.includes(token))],
+    [...exactSymbolNames, ...contextTerms(identifiers), ...codeTokens.filter((token) => !exactSymbolNames.includes(token))],
     (value) => value.toLowerCase(),
   ).slice(0, 12)
 
-  const kind: ContextTaskKind = TEST_RE.test(text) || mentionedFiles.some(isTestFile)
+  // Chinese action clauses take precedence over incidental test requirements.
+  // A prohibition is not a request to edit (notably the original T1/T3 tasks).
+  const intent = identifiers.replace(/(?:不要|无需|不必|禁止)(?:再|实际)?(?:修改代码|修改|编辑|修复|运行测试|测试|提交|发布)/gu, '')
+  const chineseChange = /修复|排查(?:错误|异常|问题)|修改(?:代码|实现|逻辑)|变更|影响(?:范围|分析)?|回归|报错|异常/u.test(intent)
+  const chineseTest = /(?:查找|寻找|定位|补充|分析|运行|验证)(?:相关|候选|单元|集成)?测试|测试覆盖/u.test(intent)
+  const chineseArchitecture = /架构|调用流程|调用链|工作原理|生命周期/u.test(intent)
+  const chineseExplore = /查找|定位|实现|理解|追踪|分析原因|解释原因/u.test(intent)
+  const kind: ContextTaskKind = chineseChange ? 'change'
+    : chineseTest ? 'test'
+    : TEST_RE.test(text) || mentionedFiles.some(isTestFile)
       ? 'test'
       : CHANGE_RE.test(text)
         ? 'change'
       : exactSymbolNames.length > 0
         ? 'symbol'
-        : EXPLORE_RE.test(text)
+        : chineseArchitecture ? 'architecture'
+        : EXPLORE_RE.test(text) || chineseExplore
           ? 'exploration'
           : ARCH_RE.test(text)
             ? 'architecture'
@@ -242,12 +236,17 @@ export function routeTask(task: string, index?: RepoIndex): ContextRoute {
 }
 
 function routeScore(route: ContextRoute, hit: RankedHit): number {
-  let score = hit.score * 30
-  if (route.exactSymbolNames.includes(hit.name)) score += 100
+  const queryTerms = new Set(route.queries.flatMap(contextTerms))
+  const names = contextTerms(hit.name).filter(term => queryTerms.has(term))
+  const signature = contextTerms(hit.signature).filter(term => queryTerms.has(term) && !names.includes(term))
+  const path = contextTerms(hit.file).filter(term => queryTerms.has(term) && !names.includes(term) && !signature.includes(term))
+  // Definition-name matches dominate incidental type/signature/path words.
+  // Behavioral tasks prefer executable declarations over containers and fields.
+  let score = names.length * 24 + signature.length * 4 + path.length * 2 + hit.score * 5
+  if (route.exactSymbolNames.includes(hit.name)) score += 200
   if (fileMentionMatches(hit.file, route.mentionedFiles)) score += 30
-  if (isTestFile(hit.file) && route.kind !== 'test') score -= 10
-  // Structural importance is deliberately capped: it breaks ties but cannot
-  // displace a task-specific symbol match.
+  if (hit.kind === 'function' || hit.kind === 'method') score += 30
+  if (isTestFile(hit.file) && !fileMentionMatches(hit.file, route.mentionedFiles) && !route.exactSymbolNames.includes(hit.name)) score -= 45
   return score
 }
 
@@ -277,9 +276,10 @@ function gatherPrimarySymbols(
     const overlap = contextTerms(`${hit.name} ${hit.signature} ${hit.file}`).filter(term => queryTerms.has(term)).length
     if (!exact && route.kind === 'ambiguous' && queryTerms.size > 1 && overlap < 2) continue
     let score = routeScore(route, hit)
-    if (changedIds.has(hit.id)) score += 80
-    else if (changedFiles.has(hit.file)) score += 55
-    if (route.kind === 'test' && isTestFile(hit.file)) score += 35
+    const changeRelevant = !isTestFile(hit.file) || route.kind === 'test' || exact || fileMentionMatches(hit.file, route.mentionedFiles)
+    if (changeRelevant && changedIds.has(hit.id)) score += 60
+    else if (changeRelevant && changedFiles.has(hit.file)) score += 8
+    if (route.kind === 'test' && isTestFile(hit.file)) score += 15
     const candidate: ContextSymbol = { symbol: hit, score, provenance: exact ? 'exact' : 'lexical',
       reason: exact ? 'task names this symbol' : 'matches task terms' }
     const previous = byId.get(hit.id)
@@ -305,7 +305,7 @@ function gatherPrimarySymbols(
         if (byId.has(symbol.id)) continue
         byId.set(symbol.id, {
           symbol,
-          score: 70,
+          score: 72,
           provenance: 'lexical',
           reason: 'declaration intersects current change',
         })
@@ -317,6 +317,7 @@ function gatherPrimarySymbols(
     .some(term => queryTerms.has(term))
   const hasDefinitionMatch = [...byId.values()].some(definitionMatch)
   return [...byId.values()]
+    .filter(candidate => candidate.provenance === 'exact' || candidate.score >= 20)
     .filter(candidate => !hasDefinitionMatch || definitionMatch(candidate) ||
       candidate.reason === 'declaration intersects current change' || fileMentionMatches(candidate.symbol.file, route.mentionedFiles))
     .sort(
@@ -455,7 +456,7 @@ export async function buildTaskContext(
         kind: 'git',
         root: index.root,
         baseRef: 'HEAD',
-      })
+      }, { focusFiles: index.files.filter(file => fileMentionMatches(file.path, route.mentionedFiles)).map(file => file.path) })
       warnings.push(...changeContext.warnings)
     } catch (error) {
       warnings.push(`change context unavailable: ${(error as Error).message ?? String(error)}`)
@@ -477,8 +478,15 @@ export async function buildTaskContext(
   if (changeContext && taskFiles.size) {
     const changed = changeContext.changed.filter(row => taskFiles.has(row.symbol.file))
     const changedIds = new Set(changed.map(row => row.symbol.id))
+    const directCallers = changeContext.directCallers.filter(row => changedIds.has(row.via.toId))
+    const reachable = new Set([...changedIds, ...directCallers.map(row => row.symbol.id)])
+    const impact = [...changeContext.impact].sort((a, b) => a.depth - b.depth).filter(row => {
+      if (!reachable.has(row.via.toId)) return false
+      reachable.add(row.symbol.id)
+      return true
+    })
     changeContext = { ...changeContext, changed,
-      directCallers: changeContext.directCallers.filter(row => changedIds.has(row.via.toId)),
+      directCallers, impact,
       tests: collectSeedTests(index, changed.map(row => row.symbol)),
       importDependents: changeContext.importDependents.filter(row => taskFiles.has(row.changedFile)),
       paths: changeContext.paths.filter(row => changedIds.has(row.changed.id)),

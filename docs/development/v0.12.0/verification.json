@@ -1,0 +1,117 @@
+{
+  "scope": "v0.12.0 M0 + M1 only; direct automated plugin checks, not Desktop/Host/model acceptance",
+  "baseCommit": "f61904957c731be6d30aa288f790bc970a2504b5",
+  "branch": "codex/reliable-context-v0.12.0",
+  "packageVersion": "0.11.2",
+  "platform": "win32-x64",
+  "versions": {
+    "node24": "24.22.1",
+    "node22": "22.23.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11",
+    "tsup": "8.5.1"
+  },
+  "testResults": [
+    {
+      "check": "baseline",
+      "node": "v24.22.1",
+      "file": "m0-before-tests.json",
+      "total": 6,
+      "passed": 0,
+      "failed": 6,
+      "skipped": 0,
+      "testFiles": 1,
+      "expectedFailures": 6,
+      "exitCode": 1
+    },
+    {
+      "check": "full-suite-node24",
+      "node": "v24.22.1",
+      "file": "tests-node24.json",
+      "total": 275,
+      "passed": 275,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 29,
+      "expectedFailures": 0,
+      "exitCode": 0
+    },
+    {
+      "check": "full-suite-node22",
+      "node": "v22.23.3",
+      "file": "tests-node22.json",
+      "total": 275,
+      "passed": 275,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 29,
+      "expectedFailures": 0,
+      "exitCode": 0
+    },
+    {
+      "check": "original-full-trials",
+      "node": "v24.22.1",
+      "file": "full-trial-tests.json",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 1,
+      "expectedFailures": 0,
+      "exitCode": 0
+    }
+  ],
+  "commands": {
+    "tests": "node node_modules/vitest/vitest.mjs run --reporter=json --outputFile=...",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "build": [
+      "node node_modules/tsup/dist/cli-default.js",
+      "node node_modules/tsup/dist/cli-default.js --config tsup.client.config.ts"
+    ],
+    "node22Executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe"
+  },
+  "typecheck": [
+    {
+      "node": "24.22.1",
+      "exitCode": 0
+    },
+    {
+      "node": "22.23.3",
+      "exitCode": 0
+    }
+  ],
+  "build": [
+    {
+      "node": "24.22.1",
+      "serverAndDeclarations": 0,
+      "client": 0
+    },
+    {
+      "node": "22.23.3",
+      "serverAndDeclarations": 0,
+      "client": 0
+    }
+  ],
+  "limitations": [
+    "pnpm build wrapper failed with store SQLite permissions; direct identical tsup entrypoints succeeded",
+    "No new Agent/Host/Desktop or coverage verification",
+    "Session model cannot be switched/verified by the available tools",
+    "npm command unavailable in session PATH; npm run build not counted as passed"
+  ],
+  "sha256": {
+    "src/change-context.ts": "dac60f9a9f1dfececc4596f4f2574b478ffdb96c5e588ee63f5604b48f3478e1",
+    "src/context.ts": "c6a3413018b339f47624dc4196b5679258f666748c85c055fcae0c5caae52230",
+    "src/context-pack.ts": "f16844a9f25d8644949009ebdcb9423665a20601174b156d8ed2d997a9997cf9",
+    "src/context-terms.ts": "5f07a3e19c87ea4d156d01c90ee8b73eff47941daf5ca95efabfb1662a0caebe",
+    "tests/context-c-phase.spec.ts": "29cbe1d5245c17f6e4d25a8b2149e90536b60f32f33d8437d4c63f4e8d7ab7d9",
+    "tests/context.spec.ts": "147fa805e4757adb1b11583b9cc6868abd5e0aacb4cfa6b0dc8800c6adbaec9e",
+    "tests/context-quality.spec.ts": "4c32d0e52f7911edc88524c0d58e964ea86d39c1a353d208602228b9300536dc",
+    "tests/tools-execute.spec.ts": "2c92e8fccf98263f2e7f1a103121a2a4694901e22e70a2899715c3f2b3527b6e",
+    "docs/development/v0.12.0/m0-before-tests.json": "ae2d8befcb5b1becd8fa17a1f15956ecfb4d9ae3291f45ac9ea00cbfdd13b0ee",
+    "docs/development/v0.12.0/tests-node24.json": "f5f2170079dedac7674039749c8c62f2568e4beb07ced37642649b512ecfbb1c",
+    "docs/development/v0.12.0/tests-node22.json": "9438ce82e14a12d66b20684b98384aa1da37415dbfc0b5425db9d5afaa4ac4ef",
+    "docs/development/v0.12.0/full-trial-tests.json": "64b2e0dae83debca54c56d537f21d16fd6860816ccfd6225dae6ddf59cebd4ac",
+    "tests/fixtures/context-c-phase/cases.json": "d24b8c625bcfa5b31e667495717bed903e19e504c790e9c582ab157c46b0cafa",
+    "tests/fixtures/context-c-phase/sources.json": "6bcd62929c59ae179620347c3588db0565a07e3cdec7da3a2afc680d1ffcf085"
+  }
+}

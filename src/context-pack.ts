@@ -2,6 +2,8 @@ import { buildReferenceGraph } from './refgraph.js'
 import type { ResolutionLabel } from './refgraph.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import type { TaskContextResult } from './context.js'
+import { contextTerms } from './context-terms.js'
+import { resolveImport } from './repomap.js'
 import { excerptVariants, sourceReader, subtractExcerpt, type SourceExcerpt } from './source-excerpts.js'
 
 export interface ContextPackItem extends Partial<SourceExcerpt> {
@@ -59,43 +61,69 @@ export async function selectContextPack(
 ): Promise<ContextPack> {
   const read = sourceReader(index)
   const graph = buildReferenceGraph(index)
-  const candidates: ContextPackItem[][] = []
+  const candidates: Array<{ variants: ContextPackItem[]; priority: number }> = []
   const seen = new Set<string>()
-  const gaps: string[] = [...context.warnings]
+  const gaps: string[] = ['test candidates are static leads, not verified coverage', ...context.warnings]
   const unavailable = new Set<string>()
+  const queryTerms = new Set(context.route.queries.flatMap(contextTerms))
+  const primaryFiles = new Set(context.primarySymbols.map(seed => seed.symbol.file))
+  const fileSet = new Set(index.files.map(file => file.path))
   const source = async (symbol: SymbolInfo, kind: ContextPackItem['kind'], reason: string,
-    extra: Partial<ContextPackItem> = {}, focus?: number): Promise<void> => {
+    extra: Partial<ContextPackItem> = {}, focus?: number, priority = 50): Promise<void> => {
     const side = extra.side ?? 'current'
     const key = `${side}:${extra.ref ?? ''}:${kind}:${symbol.file}:${symbol.line}:${symbol.name}`
     if (seen.has(key)) return
     seen.add(key)
     const lines = await read(symbol.file, side, extra.ref)
     if (!lines) unavailable.add(`${side}:${symbol.file}`)
-    candidates.push(excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
+    if (side === 'current' && (focus === undefined || focus <= symbol.line + 5) && lines && (symbol.kind === 'function' || symbol.kind === 'method')) {
+      // Prefer a task-relevant call inside a long declaration over its header.
+      // This chooses an excerpt location; it adds no graph relationship.
+      const calls = index.files.find(file => file.path === symbol.file)?.calls ?? []
+      const relevant = calls.filter(call => call.line > symbol.line && call.line <= symbol.endLine)
+        .map(call => {
+          const terms = contextTerms(call.name).filter(term => queryTerms.has(term)).length
+          return { line: call.line, terms, score: terms * 4 +
+            (context.primarySymbols.some(seed => seed.symbol.name === call.name) ? 3 : 0) +
+            (/\b(?:if|return|while)\b/.test(lines[call.line - 1]) ? 2 : 0) }
+        })
+        .filter(call => call.terms > 0).sort((a, b) => b.score - a.score || a.line - b.line)
+      focus = relevant[0]?.line ?? focus
+    }
+    candidates.push({ priority, variants: excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
       ...excerpt, ...(symbol.id === '' && excerpt.mode === 'complete' ? { mode: 'window' as const } : {}),
       kind, name: symbol.name, reason, ...extra,
-    })))
+    })) })
   }
-  for (const primary of context.primarySymbols) {
+  for (const [rank, primary] of context.primarySymbols.entries()) {
     const changed = context.changeContext?.changed.find(row => row.side === 'current' && row.symbol.id === primary.symbol.id)
-    await source(primary.symbol, 'primary', primary.reason, changed ? { change: changed.change } : {}, changed?.focusLine)
+    await source(primary.symbol, 'primary', primary.reason, changed ? { change: changed.change } : {}, changed?.focusLine, rank < 4 ? 100 : 45)
   }
   for (const changed of context.changeContext?.changed ?? []) {
     if (changed.side === 'current' && context.primarySymbols.some(seed => seed.symbol.id === changed.symbol.id)) continue
     await source(changed.symbol, 'change', 'declaration intersects Git change', {
       side: changed.side, ...(changed.side === 'base' ? { ref: context.changeContext!.baseRef } : {}), change: changed.change,
-    }, changed.focusLine)
+    }, changed.focusLine, changed.side === 'current' ? 80 : 40)
   }
-  for (const test of context.testEvidence) {
+  const stem = (file: string): string => file.split('/').at(-1)!.replace(/\.(?:spec|test)(?=\.)/i, '').replace(/\.[^.]+$/, '')
+  const seedStems = new Set([...primaryFiles].map(stem))
+  const sortedTests = [...context.testEvidence].sort((a, b) => Number(seedStems.has(stem(b.file))) - Number(seedStems.has(stem(a.file))))
+  for (const [rank, test] of sortedTests.entries()) {
     const file = index.files.find(row => row.path === test.file)!
     const seedNames = new Set(context.primarySymbols.map(seed => seed.symbol.name))
+    for (const imported of file.importDetails ?? []) if (primaryFiles.has(resolveImport(imported.specifier, file.path, fileSet) ?? '')) {
+      for (const binding of imported.bindings) seedNames.add(binding.local)
+    }
     const call = file.calls?.find(call => seedNames.has(call.name))
     const lines = await read(file.path, 'current')
     const symbol = file.symbols.find(symbol => call && symbol.line <= call.line && symbol.endLine >= call.line)
+    const changedTest = context.changeContext?.changed.some(row => row.side === 'current' && row.symbol.file === test.file)
+    const reason = test.reason === 'imports-changed-file' ? 'test imports primary seed file' :
+      test.reason === 'changed-test' ? (changedTest ? 'test declaration intersects Git change' : 'primary seed is a test file') : test.reason
     await source(symbol ?? { id: '', name: test.file, file: test.file, line: Math.max(1, (call?.line ?? 1) - 3),
       endLine: Math.min(lines?.length ?? 1, (call?.line ?? 1) + 5), signature: '', scope: [], ordinal: 1, kind: 'function', exported: false },
-      'test', test.reason === 'imports-changed-file' ? 'test imports primary seed file' : test.reason,
-      { resolution: test.resolution, provenance: test.reason }, call?.line)
+      'test', `candidate test (not verified coverage): ${reason}`,
+      { resolution: test.resolution, provenance: test.reason === 'changed-test' && !changedTest ? 'primary seed file; not Git change evidence' : test.reason }, call?.line, rank < 2 ? 60 : 30)
   }
   for (const primary of context.primarySymbols.slice(0, 4)) {
     for (const direction of ['caller', 'callee'] as const) {
@@ -106,7 +134,7 @@ export async function selectContextPack(
         const symbol = graph.symbolsById.get(direction === 'caller' ? edge.sourceId ?? '' : edge.targetId)
         if (symbol && !context.primarySymbols.some(seed => seed.symbol.id === symbol.id)) {
           await source(symbol, direction, `direct ${direction} of ${primary.symbol.name}`,
-            { resolution: edge.resolution, provenance: edge.provenance }, direction === 'caller' ? edge.callSite.line : symbol.line)
+            { resolution: edge.resolution, provenance: edge.provenance }, direction === 'caller' ? edge.callSite.line : symbol.line, 75)
         }
       }
     }
@@ -122,16 +150,32 @@ export async function selectContextPack(
       const endLine = offset < 0 ? imported.line : imported.line + offset
       await source({ ...primary.symbol, ...(offset < 0 ? { id: '' } : {}), name: imported.specifier,
         line: imported.line, endLine, signature: '' },
-        'import', `import binding referenced in primary source ${primary.symbol.file}`, { resolution: 'import-scoped', provenance: 'import statement' })
+        'import', `import binding referenced in primary source ${primary.symbol.file}`, { resolution: 'import-scoped', provenance: 'import statement' }, undefined, 35)
     }
   }
-  for (const relation of context.relationships) candidates.push([{
+  // Reuse the already bounded impact walk. A strong immediate hop can justify
+  // reading a caller declaration even when an earlier hop weakens the path;
+  // retain that weakest path label rather than claiming a verified call chain.
+  const mentioned = (file: string): boolean => context.route.mentionedFiles.some(path =>
+    file.toLowerCase() === path.toLowerCase() || file.toLowerCase().endsWith(`/${path.toLowerCase()}`))
+  const isTest = (file: string): boolean => /(^|\/)(tests?|__tests__)(\/|$)|\.(?:spec|test)\./i.test(file)
+  const impactSources = (context.changeContext?.impact ?? []).filter(row => row.via.resolution !== 'name-only')
+    .sort((a, b) => Number(mentioned(b.symbol.file)) - Number(mentioned(a.symbol.file)) ||
+      Number(isTest(a.symbol.file)) - Number(isTest(b.symbol.file)) || a.depth - b.depth)
+  for (const row of impactSources.slice(0, 4)) {
+    if (!context.primarySymbols.some(seed => seed.symbol.id === row.symbol.id)) {
+      await source(row.symbol, 'caller', `candidate transitive caller at depth ${row.depth}; weakest path: ${row.resolution}`, {
+        resolution: row.resolution, provenance: row.via.reason,
+      }, row.via.callSite.line, 70)
+    }
+  }
+  for (const relation of context.relationships) candidates.push({ priority: 20, variants: [{
     kind: 'relationship', text: relation.text, reason: 'bounded primary graph neighborhood',
     resolution: relation.resolution, provenance: relation.provenance,
-  }])
+  }] })
   // Architecture fallback is explicitly a file lead; never dump whole files.
   if (!context.primarySymbols.length) for (const file of context.relevantFiles.slice(0, 4)) {
-    candidates.push([{ kind: 'file', file: file.path, reason: file.reason }])
+    candidates.push({ priority: 10, variants: [{ kind: 'file', file: file.path, reason: file.reason }] })
   }
   if (!context.primarySymbols.length) gaps.push('no strong primary symbol; specify a symbol, path, or failing behavior')
   if (!context.testEvidence.length) gaps.push('no related indexed test found')
@@ -146,9 +190,13 @@ export async function selectContextPack(
   if (!fits()) { pack.task = ''; fits() }
   if (!fits()) { pack.gaps = pack.gaps.filter(gap => gap.startsWith('index incomplete')); fits() }
   if (!fits()) throw new Error('budget too small for repository identity')
-  for (const variants of candidates) {
+  for (const { variants } of candidates.sort((a, b) => b.priority - a.priority)) {
     let added = false
     for (const candidate of variants) {
+      // Many broad matches must leave room for source relations and tests.
+      // This caps an individual excerpt, not the final text/DTO hard budget.
+      if (context.primarySymbols.length > 4 && candidate.code !== undefined &&
+        JSON.stringify(candidate).length > Math.max(600, Math.floor(budgetChars / 8))) continue
       const fragments = candidate.code !== undefined
         ? subtractExcerpt(candidate as SourceExcerpt, pack.items.filter(item => item.code !== undefined) as SourceExcerpt[])
           .map(fragment => ({ ...candidate, ...fragment }))

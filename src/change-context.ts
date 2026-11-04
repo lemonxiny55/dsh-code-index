@@ -127,6 +127,8 @@ export interface ChangeContextOptions {
   maxImpact?: number
   maxPaths?: number
   maxTests?: number
+  /** Context Pack selection hint only; does not change graph resolution/walk limits. */
+  focusFiles?: readonly string[]
 }
 
 /** Normalized input: exactly one selection mode. */
@@ -390,7 +392,22 @@ export async function buildChangeContext(
       frontier = next
     }
   }
-  const allImpact = [...impactById.values()].sort(compareByDepthThenSymbol)
+  const focusFiles = new Set(options.focusFiles ?? [])
+  const focusIds = new Set<SymbolId>()
+  if (focusFiles.size) {
+    const impactAncestors = new Map([...allCallers, ...impactById.values()].map(row => [row.symbol.id, row]))
+    for (const row of impactById.values()) if (focusFiles.has(row.symbol.file)) {
+      // Keep the already discovered intermediate hops with the requested file.
+      // Otherwise a generic name crowd can trim the parent and orphan its lead.
+      let cursor: ImpactRow | undefined = row
+      for (let depth = 0; cursor && depth < maxDepth; depth++) {
+        focusIds.add(cursor.symbol.id)
+        cursor = impactAncestors.get(cursor.via.toId)
+      }
+    }
+  }
+  const allImpact = [...impactById.values()].sort((a, b) =>
+    Number(focusIds.has(b.symbol.id)) - Number(focusIds.has(a.symbol.id)) || compareByDepthThenSymbol(a, b))
 
   // Shortest reverse-call paths from entry points to each changed symbol.
   const allPaths: SymbolPath[] = []
