@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-evidence-fbBu5G",
+  "task": "Explain idle",
+  "route": "symbol",
+  "items": [
+    {
+      "file": "src/core.ts",
+      "side": "current",
+      "startLine": 4,
+      "endLine": 4,
+      "mode": "complete",
+      "code": "export function idle() { return 0 }",
+      "kind": "primary",
+      "name": "idle",
+      "reason": "task names this symbol"
+    },
+    {
+      "file": "tests/core.spec.ts",
+      "side": "current",
+      "startLine": 1,
+      "endLine": 3,
+      "mode": "window",
+      "code": "import { target } from '../src/core'\ntest('candidate only', () => target())\n",
+      "kind": "test",
+      "name": "tests/core.spec.ts",
+      "reason": "candidate test (not verified coverage): test imports primary seed file",
+      "resolution": "import-scoped",
+      "provenance": "imports-changed-file"
+    }
+  ],
+  "gaps": [
+    "indexed static only",
+    "test candidates are static leads, not verified coverage"
+  ],
+  "budget": {
+    "budgetChars": 5000,
+    "usedChars": 982,
+    "packChars": 1179,
+    "truncated": false
+  },
+  "evidence": {
+    "scope": "indexed-static-only",
+    "basis": "context-pack",
+    "index": {
+      "parsed": 5,
+      "partial": 0,
+      "failed": 0,
+      "unknown": 0
+    },
+    "relationships": {
+      "exact": 0,
+      "import-scoped": 0,
+      "name-only": 0
+    },
+    "tests": {
+      "candidates": 1,
+      "verification": "not-run"
+    },
+    "callers": {
+      "checkedSymbols": 1,
+      "zero": [
+        {
+          "file": "src/core.ts",
+          "line": 4,
+          "name": "idle"
+        }
+      ]
+    }
+  }
+}

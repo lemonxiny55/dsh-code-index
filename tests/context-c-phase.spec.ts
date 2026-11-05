@@ -61,6 +61,7 @@ describe('C phase six real Context Pack inputs', () => {
       recalled, missing: sample.requiredSource.filter(name => !recalled.includes(name)), unrelatedPrimary: noise,
       route: pack.route, textChars: text.length, packChars: JSON.stringify(pack).length,
       budgetChars: pack.budget.budgetChars, gaps: pack.gaps,
+      evidence: pack.evidence,
       items: pack.items.map(({ kind, name, file, startLine, endLine, code, mode, reason, resolution, provenance, change }) =>
         ({ kind, name, file, startLine, endLine, code, mode, reason, resolution, provenance, change })),
     })

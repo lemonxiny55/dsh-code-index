@@ -1,4 +1,5 @@
-import { buildReferenceGraph } from './refgraph.js'
+import { buildReferenceGraph, type ReferenceGraph } from './refgraph.js'
+import { compactEvidence, renderEvidenceSummary, summarizeEvidence, type EvidenceGap, type EvidenceSummary } from './evidence-summary.js'
 import type { ResolutionLabel } from './refgraph.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import type { TaskContextResult } from './context.js'
@@ -25,6 +26,7 @@ export interface ContextPack {
   items: ContextPackItem[]
   gaps: string[]
   budget: { budgetChars: number; usedChars: number; packChars: number; truncated: boolean }
+  evidence?: EvidenceSummary
 }
 
 export function renderContextPack(pack: ContextPack): string {
@@ -41,8 +43,9 @@ export function renderContextPack(pack: ContextPack): string {
     }
     else if (item.mode === 'signature') rows.push(`Signature only: ${item.signature || '(source unavailable within budget)'}`)
   }
+  if (pack.evidence) rows.push(`\n${renderEvidenceSummary(pack.evidence)}`)
   if (pack.gaps.length) rows.push(`\nGaps: ${pack.gaps.join('; ')}`)
-  rows.push(`Budget: ${pack.budget.usedChars} / ${pack.budget.budgetChars} chars${pack.budget.truncated ? ' (trimmed low-priority context)' : ''}`)
+  rows.push(`Budget: ${pack.budget.usedChars} / ${pack.budget.budgetChars} chars${pack.budget.truncated ? ' (bounded output; see evidence/gaps)' : ''}`)
   return rows.join('\n')
 }
 
@@ -58,10 +61,12 @@ function account(pack: ContextPack): void {
 
 export async function selectContextPack(
   index: RepoIndex, context: Omit<TaskContextResult, 'budget' | 'pack'>, budgetChars: number, maxFiles = 12,
+  graph: ReferenceGraph = buildReferenceGraph(index),
 ): Promise<ContextPack> {
   const read = sourceReader(index)
-  const graph = buildReferenceGraph(index)
-  const candidates: Array<{ variants: ContextPackItem[]; priority: number }> = []
+  interface Candidate { variants: ContextPackItem[]; priority: number; protected?: boolean; range?: { start: number; end: number } }
+  const candidates: Candidate[] = []
+  const selection = new Map<ContextPackItem, Candidate>()
   const seen = new Set<string>()
   const gaps: string[] = ['test candidates are static leads, not verified coverage', ...context.warnings]
   const unavailable = new Set<string>()
@@ -90,7 +95,13 @@ export async function selectContextPack(
         .filter(call => call.terms > 0).sort((a, b) => b.score - a.score || a.line - b.line)
       focus = relevant[0]?.line ?? focus
     }
-    candidates.push({ priority, variants: excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
+    candidates.push({ priority, range: { start: symbol.line, end: symbol.endLine },
+      protected: (kind === 'primary' && (symbol.kind === 'function' || symbol.kind === 'method' ||
+      context.route.exactSymbolNames.includes(symbol.name))) || kind === 'change' ||
+      ((kind === 'caller' || kind === 'callee') && (priority >= 75 || context.route.mentionedFiles.some(file =>
+        symbol.file.toLowerCase() === file.toLowerCase() || symbol.file.toLowerCase().endsWith(`/${file.toLowerCase()}`)))) ||
+      (kind === 'test' && priority >= 60),
+      variants: excerptVariants(lines, symbol, side, extra.ref, focus).map(excerpt => ({
       ...excerpt, ...(symbol.id === '' && excerpt.mode === 'complete' ? { mode: 'window' as const } : {}),
       kind, name: symbol.name, reason, ...extra,
     })) })
@@ -180,23 +191,29 @@ export async function selectContextPack(
   if (!context.primarySymbols.length) gaps.push('no strong primary symbol; specify a symbol, path, or failing behavior')
   if (!context.testEvidence.length) gaps.push('no related indexed test found')
   gaps.push(...context.warnings)
+  const initialGaps: string[] = []
+  if (context.warnings.some(warning => warning.startsWith('index incomplete:'))) initialGaps.push('index incomplete; inspect code_index')
+  if (context.route.includeChangeContext && !context.changeContext) initialGaps.push('change context unavailable; source: change-analysis')
+  if (!initialGaps.length) initialGaps.push('indexed static only')
   const pack: ContextPack = {
     version: 1, root: index.root, task: context.task.slice(0, 120), route: context.route.kind,
-    items: [], gaps: context.warnings.some(warning => warning.startsWith('index incomplete:'))
-      ? ['index incomplete; inspect code_index'] : ['budget omitted some evidence'],
+    items: [], gaps: initialGaps,
     budget: { budgetChars, usedChars: 0, packChars: 0, truncated: context.task.length > 120 },
   }
   const fits = (): boolean => { account(pack); return Math.max(pack.budget.usedChars, pack.budget.packChars) <= budgetChars }
   if (!fits()) { pack.task = ''; fits() }
   if (!fits()) { pack.gaps = pack.gaps.filter(gap => gap.startsWith('index incomplete')); fits() }
   if (!fits()) throw new Error('budget too small for repository identity')
-  for (const { variants } of candidates.sort((a, b) => b.priority - a.priority)) {
+  let budgetLimited = false
+  let fileLimited = false
+  for (const entry of candidates.sort((a, b) => b.priority - a.priority)) {
+    const { variants } = entry
     let added = false
     for (const candidate of variants) {
       // Many broad matches must leave room for source relations and tests.
       // This caps an individual excerpt, not the final text/DTO hard budget.
       if (context.primarySymbols.length > 4 && candidate.code !== undefined &&
-        JSON.stringify(candidate).length > Math.max(600, Math.floor(budgetChars / 8))) continue
+        JSON.stringify(candidate).length > Math.max(600, Math.floor(budgetChars / 8))) { budgetLimited = true; continue }
       const fragments = candidate.code !== undefined
         ? subtractExcerpt(candidate as SourceExcerpt, pack.items.filter(item => item.code !== undefined) as SourceExcerpt[])
           .map(fragment => ({ ...candidate, ...fragment }))
@@ -204,14 +221,19 @@ export async function selectContextPack(
       if (!fragments.length) continue // retain reason/role via signature fallback
       pack.items.push(...fragments)
       const fileCount = new Set(pack.items.flatMap(item => item.file ? [item.file] : [])).size
-      if (fits() && fileCount <= maxFiles) { added = true; if (candidate.mode === 'signature') pack.budget.truncated = true; break }
+      const withinBudget = fits()
+      if (withinBudget && fileCount <= maxFiles) {
+        for (const item of fragments) selection.set(item, entry)
+        added = true; if (candidate.mode === 'signature') pack.budget.truncated = true; break
+      }
+      if (!withinBudget) budgetLimited = true
+      if (fileCount > maxFiles) fileLimited = true
       pack.items.splice(pack.items.length - fragments.length)
     }
     if (!added) pack.budget.truncated = true
   }
-  if (!pack.budget.truncated) pack.gaps = pack.gaps.filter(gap => gap.startsWith('index incomplete'))
   for (const item of pack.items) if (item.file && unavailable.has(`${item.side}:${item.file}`)) {
-    gaps.push(`source unavailable or changed after indexing: ${item.file} (${item.side})`)
+    gaps.push(`source unavailable (reader rejected): ${item.file} (${item.side})`)
   }
   for (const gap of [...new Set(gaps)].slice(0, 4)) {
     pack.gaps.push(gap.slice(0, 140))
@@ -220,7 +242,67 @@ export async function selectContextPack(
   account(pack)
   // Tiny budgets/root paths may leave only the header. Never slice code.
   while (Math.max(pack.budget.usedChars, pack.budget.packChars) > budgetChars && pack.items.length) {
-    pack.items.pop(); pack.budget.truncated = true; account(pack)
+    pack.items.pop(); budgetLimited = true; pack.budget.truncated = true; account(pack)
   }
+  const summary = (): EvidenceSummary => {
+    const detected: EvidenceGap[] = []
+    if (!context.primarySymbols.length) detected.push({ kind: 'not-found', code: 'no-primary-symbol', source: 'task-selection' })
+    if (!context.testEvidence.length) detected.push({ kind: 'not-found', code: 'no-test-candidates', source: 'indexed-test-discovery' })
+    if (context.route.includeChangeContext && !context.changeContext) detected.push({ kind: 'unavailable', code: 'change-context-unavailable', source: 'change-analysis' })
+    if (context.task.length > 120) detected.push({ kind: 'selection-limit', code: 'task-summary-shortened', source: 'task-summary' })
+    if (fileLimited) detected.push({ kind: 'selection-limit', code: 'max-files', source: 'pack-selection' })
+    if (budgetLimited) detected.push({ kind: 'budget', code: 'pack-selection-trimmed', source: 'text-and-json-budget' })
+    const missingWindowLines = pack.items.some(item => {
+      const range = selection.get(item)?.range
+      if (item.mode !== 'window' || !range) return false
+      let next = range.start
+      const covered = pack.items.filter(other => other.code !== undefined && other.file === item.file &&
+        other.side === item.side && other.ref === item.ref).sort((a, b) => a.startLine! - b.startLine!)
+      for (const other of covered) {
+        if (other.startLine! > next) break
+        next = Math.max(next, other.endLine! + 1)
+      }
+      return next <= range.end
+    })
+    if (missingWindowLines) detected.push({ kind: 'selection-limit', code: 'bounded-source-window', source: 'source-excerpts' })
+    for (const item of pack.items) if (item.file && unavailable.has(`${item.side}:${item.file}`)) detected.push({
+      kind: 'unavailable', code: 'source-reader-rejected', source: 'source-reader', file: item.file, side: item.side,
+    })
+    const seeds = context.primarySymbols.filter(seed => pack.items.some(item => item.kind === 'primary' &&
+      item.file === seed.symbol.file && item.name === seed.symbol.name && item.side === 'current')).map(seed => seed.symbol)
+    return summarizeEvidence(index, { graph: context.route.includeRelationships ? graph : undefined, seeds,
+      resolutions: pack.items.flatMap(item => item.resolution && item.kind !== 'test' ? [item.resolution] : []),
+      testFiles: pack.items.flatMap(item => item.kind === 'test' && item.file ? [item.file] : []), gaps: detected })
+  }
+  // Summary uses the same budget. Preserve primary source, explicit declarations
+  // and direct/focused neighbors; low-priority leads may make room for it.
+  const removable = [...pack.items].filter(item => !selection.get(item)?.protected)
+    .sort((a, b) => (selection.get(a)?.priority ?? 0) - (selection.get(b)?.priority ?? 0))
+  const originalItems = [...pack.items]
+  const originalTruncated = pack.budget.truncated
+  const originalBudgetLimited = budgetLimited
+  pack.evidence = summary()
+  if (!fits()) pack.evidence = compactEvidence(summary())
+  while (!fits() && removable.length) {
+    const item = removable.shift()!
+    pack.items.splice(pack.items.indexOf(item), 1)
+    budgetLimited = true; pack.budget.truncated = true
+    pack.evidence = compactEvidence(summary())
+  }
+  if (!fits()) {
+    delete pack.evidence
+    pack.items = originalItems; pack.budget.truncated = originalTruncated; budgetLimited = originalBudgetLimited
+    if (pack.items.some(item => item.kind === 'test' && item.reason.includes('not verified coverage'))) {
+      pack.gaps = pack.gaps.filter(gap => gap !== 'test candidates are static leads, not verified coverage')
+    }
+    const note = 'budget: summary omitted'
+    pack.gaps.push(note)
+    if (!fits()) pack.gaps.pop()
+  } else {
+    const compact = pack.evidence
+    pack.evidence = summary()
+    if (!fits()) pack.evidence = compact
+  }
+  account(pack)
   return pack
 }

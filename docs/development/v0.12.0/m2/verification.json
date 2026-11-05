@@ -1,0 +1,149 @@
+{
+  "phase": "v0.12.0 M2 Context Evidence Summary",
+  "date": "2026-11-05",
+  "timezone": "Asia/Shanghai",
+  "baseCommit": "52da07c",
+  "branch": "codex/reliable-context-v0.12.0",
+  "packageVersion": "0.11.2",
+  "platform": "Windows x64",
+  "versions": {
+    "node24": "24.19.0",
+    "node22": "22.23.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11",
+    "tsup": "8.5.1"
+  },
+  "method": "Automated direct production/tool-handler tests using local dependencies, in normal local OS execution; not Desktop/Host/model acceptance.",
+  "testResults": [
+    {
+      "file": "before-tests.json",
+      "node": "24.19.0",
+      "total": 14,
+      "passed": 3,
+      "failed": 11,
+      "skipped": 0,
+      "testFiles": 1,
+      "exitCode": 1,
+      "baseline": true
+    },
+    {
+      "file": "tests-node24.json",
+      "node": "24.19.0",
+      "total": 289,
+      "passed": 289,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 30,
+      "exitCode": 0,
+      "baseline": false
+    },
+    {
+      "file": "tests-node22.json",
+      "node": "22.23.3",
+      "total": 289,
+      "passed": 289,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 30,
+      "exitCode": 0,
+      "baseline": false
+    },
+    {
+      "file": "full-trial-tests.json",
+      "node": "24.19.0",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "testFiles": 1,
+      "exitCode": 0,
+      "baseline": false
+    }
+  ],
+  "typecheck": [
+    {
+      "node": "24.19.0",
+      "exitCode": 0
+    },
+    {
+      "node": "22.23.3",
+      "exitCode": 0
+    }
+  ],
+  "build": [
+    {
+      "node": "24.19.0",
+      "server": 0,
+      "declarations": 0,
+      "client": 0
+    },
+    {
+      "node": "22.23.3",
+      "server": 0,
+      "declarations": 0,
+      "client": 0
+    }
+  ],
+  "commands": {
+    "tests": "node node_modules/vitest/vitest.mjs run --reporter=json --outputFile=...",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "build": [
+      "node node_modules/tsup/dist/cli-default.js",
+      "node node_modules/tsup/dist/cli-default.js --config tsup.client.config.ts"
+    ],
+    "pnpmBuild": "not executed; direct equivalent entrypoints used",
+    "node22": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe"
+  },
+  "environmentObservations": [
+    {
+      "condition": "Sandbox temp-file rename EPERM and dependency declaration access errors",
+      "classification": "environment",
+      "testsExecutedInAffectedRun": 0,
+      "resolution": "One normal-OS isolation succeeded; remaining checks used normal OS. No dependency/host/profile changes."
+    },
+    {
+      "condition": "Original C3 Git repositories owned by CodexSandboxOnline; normal OS Git refused dubious ownership",
+      "classification": "environment",
+      "initialFullTrialOutcome": {
+        "passed": 4,
+        "failed": 2
+      },
+      "resolution": "Six exact safe.directory entries supplied only via child-process GIT_CONFIG_* environment; no global configuration or trial edits. Final 6/6 passed."
+    }
+  ],
+  "limits": {
+    "packSummary": "Optional; compacted or omitted under the original text/JSON hard cap. Missing summary does not mean no gaps.",
+    "scope": "Current indexed static analysis only; parsed does not prove semantic or scan completeness.",
+    "testCoverage": "Candidate tests were not executed by context analysis; regression suite results are separate.",
+    "model": "No verifiable session model identifier or model-switch tool available."
+  },
+  "sampleBudget": {
+    "budgetChars": 5000,
+    "usedChars": 982,
+    "packChars": 1179,
+    "truncated": false
+  },
+  "sha256": {
+    "src/evidence-summary.ts": "e16e509d6c26f90a685d802ca9f36ff54a732fe25b360d06b2f839bcf4eae0e1",
+    "src/context-pack.ts": "54a1210a42688c19ea8b2796ab20c60f0633b90b6764de2472bc1ee3dc005002",
+    "src/context.ts": "06f82d08331b4394e81b7e3363f077337087e45c07eaedb1d2b01e98c3deccfa",
+    "src/change-context.ts": "b426b8b9f852951978d606730034c3fa399287095b9f1447d6cd067af879c4a0",
+    "src/tools.ts": "efb6374db237f65821c890929cae043f5732907a97ab5b5f154a563ae0b81be8",
+    "src/impact-xray.ts": "c7bee7b5ec21c7418df1a0c9ea13a74de4109f5247f61a6a1d8acde21e8afea7",
+    "src/impact-xray-model.ts": "c0c2fb1073d14e89b19502ae6806622b2c84ef556c15900f636e5fc9121cf058",
+    "src/index.ts": "8b931ace5f1f5311f8a48ca9b338062b4e90620900f33417b61eb4410ade245a",
+    "tests/evidence-summary.spec.ts": "da6fb82561fddcaea43b50e3290094010cf31bd7159c358309334f3d4b059964",
+    "tests/context-c-phase.spec.ts": "318b6da54ffbe61894dfeea945cf541259a4d6c602e7f31a44193434752416b4",
+    "docs/development/v0.12.0/m2/before-tests.json": "3d35c3f6510ab3c087269017303a5dee43c2aaa12a076b0f16526bbd131dc45d",
+    "docs/development/v0.12.0/m2/change-example.txt": "35941db78151d9564c707bba29844f10253fa94da1909fa8d216e9d07aabb671",
+    "docs/development/v0.12.0/m2/context-example.txt": "a7e16af7586fa98412f6f8e4bbff6f03adb6134523dcf923724f3094ef12c2f3",
+    "docs/development/v0.12.0/m2/full-trial-m0-m1-after.json": "e3fd7051dc02031457ec38f7d6efd5ca92e4e34726f497475820472f7a990eb9",
+    "docs/development/v0.12.0/m2/full-trial-tests.json": "98e984b6d446ababcf96c41811e9235793d07872e9dae66ebc620ec1235c5048",
+    "docs/development/v0.12.0/m2/m0-m1-after.json": "281b43157c045c836611ed75cc115a62e8d286ac73caaaaea983d0da588fd8c3",
+    "docs/development/v0.12.0/m2/pack-example.json": "649658a3d28b890cd3d6b0ea92442dfce60bc70d3d9c7e2dcd734396e5e44c70",
+    "docs/development/v0.12.0/m2/tests-node22.json": "8f6523a562da05c97f60e2039d368025ed0bcb63e8f20bc51ed4c55690c51a79",
+    "docs/development/v0.12.0/m2/tests-node24.json": "9a4bf39ec4476ca14631b58cbdb7a1c015623995916daccd9485beb986a45fa8",
+    "docs/development/v0.12.0/M2.zh-CN.md": "7959fe8d86df1efcb1b947a1ed6e5b6ae07779f4e580e3d9e68c28d553163a52",
+    "docs/development/v0.12.0/REPORT.zh-CN.md": "c3744c930455f4c6aa5ba00a24dc93dc4b1e37a2143690c126ac778bb9485519"
+  }
+}

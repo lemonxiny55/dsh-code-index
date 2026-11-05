@@ -1,5 +1,8 @@
 # v0.12.0 开发记录：Reliable Context & Evidence
 
+2026-11-05：M2 Context Evidence Summary 已实现，见 [M2 开发与验证记录](M2.zh-CN.md)。
+以下保留 2026-11-04 的 M0/M1 原始记录与当时的阶段边界。
+
 日期：2026-11-04（Asia/Shanghai）。本轮完成 M0 + M1；没有实现 M2。
 起点为 `f61904957c731be6d30aa288f790bc970a2504b5`，本地开发分支
 `codex/reliable-context-v0.12.0`。`package.json` 仍为 `0.11.2`。

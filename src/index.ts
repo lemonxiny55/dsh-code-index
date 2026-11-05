@@ -65,6 +65,8 @@ export type {
 export type { DiffHunk, FileChange } from './git-diff.js'
 export { renderContextPack } from './context-pack.js'
 export type { ContextPack, ContextPackItem } from './context-pack.js'
+export type { EvidenceSummary, EvidenceGap, EvidenceLocation } from './evidence-summary.js'
+export { renderEvidenceSummary } from './evidence-summary.js'
 export {
   buildChangeContext,
   changeContextInputFromArgs,

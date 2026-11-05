@@ -530,12 +530,13 @@ export async function buildTaskContext(
     confidence,
     warnings,
   }
-  const pack = await selectContextPack(index, partial, budgetChars, maxFiles)
+  const pack = await selectContextPack(index, partial, budgetChars, maxFiles, graph ?? undefined)
   const selected = (file: string, name?: string, kind?: string): boolean => pack.items.some(item =>
     item.file === file && (!name || item.name === name) && (!kind || item.kind === kind))
   const selectedRelationships = relationships.filter(row => pack.items.some(item => item.text === row.text))
   const selectedChange = changeContext ? {
     ...changeContext,
+    evidence: pack.evidence,
     changed: changeContext.changed.filter(row => pack.items.some(item => item.file === row.symbol.file &&
       item.name === row.symbol.name && item.side === row.side && item.change === row.change)),
     unmapped: [], directCallers: [], importDependents: [], paths: [], impact: [],

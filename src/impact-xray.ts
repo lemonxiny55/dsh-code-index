@@ -2,6 +2,7 @@ import type { ChangeContextResult, ImpactHop } from './change-context.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import { sourceReader } from './source-excerpts.js'
 import { resolveImport } from './repomap.js'
+import { renderEvidenceSummary } from './evidence-summary.js'
 import { XRAY_LIMITS, type ImpactXray, type XrayNode, type XrayEvidence } from './impact-xray-model.js'
 export * from './impact-xray-model.js'
 
@@ -12,6 +13,10 @@ export async function buildImpactXray(index: RepoIndex, result: ChangeContextRes
     bounds: { analysis: { ...result.truncated }, projection: false, totals: { changed: result.changed.length, callers: result.directCallers.length,
       impact: result.impact.length, imports: result.importDependents.length, tests: result.tests.length, paths: result.paths.length, unmapped: result.unmapped.length } } }
   const read = sourceReader(index)
+  if (result.evidence) {
+    view.evidence = result.evidence
+    view.gaps.push(...renderEvidenceSummary(result.evidence).split('\n'))
+  }
   const files = new Map(index.files.map(f => [f.path, f]))
   const symbols = new Map(index.files.flatMap(f => f.symbols.map(s => [s.id, s] as const)))
   const changedFiles = new Set(result.changed.map(r => r.symbol.file).concat(result.unmapped.map(r => r.file)))

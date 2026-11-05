@@ -359,7 +359,7 @@ export const tools = [
 
         if (direction === 'callers' || direction === 'both') {
           lines.push('', `callers (${refs.callers.length}):`)
-          if (refs.callers.length === 0) lines.push('  (none)')
+          if (refs.callers.length === 0) lines.push('  (none found in current index/static resolution; not proof of no callers)')
           for (const caller of refs.callers) {
             lines.push(`  ${caller.file}:${caller.line}${caller.from ? ` in ${caller.from}` : ''}`)
           }
@@ -371,7 +371,7 @@ export const tools = [
           for (const callee of refs.callees) {
             const target = callee.targets[0]
             lines.push(
-              `  ${callee.name} :${callee.line}${target ? ` → ${target.file}:${target.line}` : ' (external)'}`,
+              `  ${callee.name} :${callee.line}${target ? ` → ${target.file}:${target.line}` : ' (unresolved in current index; external not established)'}`,
             )
           }
         }
