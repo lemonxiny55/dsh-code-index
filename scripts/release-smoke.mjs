@@ -75,6 +75,7 @@ const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
 const toolsVersion = process.argv[3] ?? '0.2.1-rc.3'
 const toolsRange = packageJson.peerDependencies['@deepseek-ai/dsh-tools']
 assert.ok(semver.satisfies(toolsVersion, toolsRange, { includePrerelease: true }), 'smoke requires a DSH tools version matching the peer range')
+assert.ok(semver.satisfies(toolsVersion, toolsRange), 'smoke requires normal npm prerelease peer compatibility')
 const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
 if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
 const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
@@ -103,11 +104,8 @@ const smokeDir = mkdtempSync(path.join(os.tmpdir(), 'dsh-code-index-release-'))
 let nativeCalls = 0
 try {
   run(npm, ['init', '--yes'], smokeDir)
-  // npm's default peer checks exclude prereleases that DSH explicitly accepts.
-  // --force only prepares this disposable runtime fixture; it does not prove
-  // normal npm peer resolution. The range assertion above uses DSH's rules.
-  console.log('smoke fixture: npm --force bypasses peer resolution; validating DSH range and runtime only')
-  run(npm, ['install', '--ignore-scripts', '--no-save', '--force', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
+  console.log('smoke fixture: normal npm peer resolution; no force or legacy-peer-deps')
+  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
 
   const installedPackage = JSON.parse(
     readFileSync(path.join(smokeDir, 'node_modules', packageJson.name, 'package.json'), 'utf8'),
@@ -372,12 +370,12 @@ try {
     for (const dispose of nativeDisposers.reverse()) dispose()
     await nativeContext.fiber.dispose()
   }
-  console.log(`release smoke passed (DSH range/runtime; npm peer resolution bypassed) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
+  console.log(`release smoke passed (normal npm peer resolution and DSH runtime) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
   if (process.env.CIX_SMOKE_RECORD) writeFileSync(process.env.CIX_SMOKE_RECORD, JSON.stringify({
     node: process.version, version: installedPackage.version, toolsVersion, nativeCalls,
     tarball, sha256: createHash('sha256').update(readFileSync(tarball)).digest('hex'),
     installedRoot: path.join(smokeDir, 'node_modules', packageJson.name),
-    methods: ['clean npm install --ignore-scripts --force', 'plugin apply/dispose', 'real ToolRuntime dispatch'],
+    methods: ['clean npm install --ignore-scripts; normal peer resolution', 'plugin apply/dispose', 'real ToolRuntime dispatch'],
     evidence: true, budgets: [300, 500, 5000], passed: true,
   }, null, 2) + '\n')
 } finally {

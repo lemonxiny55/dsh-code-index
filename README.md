@@ -5,9 +5,9 @@
 
 English | [中文](README.zh.md)
 
-## v0.12.0 release candidate — not published
+## v0.12.0 release preparation — not published
 
-**Reliable Context & Evidence** is being validated on the local development branch. The candidate archive is built from that branch; the stable installation instructions below are historical release instructions, not a claim that v0.12.0 is available on npm.
+**Reliable Context & Evidence** is prepared on the local development branch. The package version is 0.12.0, but it has not been published. The current public stable release is v0.11.2; the installation examples below still refer to that release.
 
 - Deterministic Chinese task routing, path-aware identifier detection and source-first candidate selection improve Context Packs while retaining English task regressions.
 - Optional `ContextPack.evidence` describes indexed-file diagnostics, static relationship grades, candidate tests and detected gaps. `parsed` is not semantic completeness; zero static callers does not prove there are no callers.
@@ -16,16 +16,18 @@ English | [中文](README.zh.md)
 
 See the [candidate integration record](docs/development/v0.12.0/INTEGRATION.zh-CN.md) and [M2 evidence contract](docs/development/v0.12.0/M2.zh-CN.md) for actual methods, outcomes and limits.
 
+The [final release-blocker check](docs/development/v0.12.0/RELEASE_READINESS.zh-CN.md) records normal npm peer resolution and bounded real-Agent rechecks. Future RC groups are not automatically treated as verified.
+
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**
 
 A local [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugin that turns a code diff into an inspectable map of potentially affected callers, imports and test leads. Click a relationship to check its source file, line and evidence.
 
-**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Install the stable **v0.11.1** in a compatible DSH profile:
+**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Until v0.12.0 is published, install the stable **v0.11.2** in a compatible DSH profile:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 Restart Desktop after installation. v0.11.1 declares DSH `0.2.0-rc.2`, `0.2.1-rc.2` and `0.2.1-rc.3` host groups; for Desktop rc.3, the compatibility warning was reported gone, but full Electron Desktop feature and Agent acceptance is not claimed. [Install details](#install) · [v0.11.1 verification and limits](RELEASE_EVIDENCE_v0.11.1.md).
@@ -101,13 +103,13 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 Requires Node 22/24. The v0.11.2 candidate allows DSH `>=0.2.0-rc.2`, including prereleases; matching first-party packages should be used. Later versions may attempt to load but have not all been verified. Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 Restart Desktop after installation. For a matching Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.2
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -165,7 +167,7 @@ Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-r
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.2
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

@@ -1,0 +1,59 @@
+[
+  {
+    "mode": "auto-peer",
+    "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-npm-TBJoPh",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "install",
+      "--no-audit",
+      "--no-fund",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 30985,
+    "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz",
+    "sha256": "318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b",
+    "bypass": false,
+    "environment": {
+      "registry": "https://registry.npmjs.org",
+      "userconfig": "empty disposable file",
+      "globalconfig": "empty disposable file",
+      "cache": "reuse verified download cache; fresh project/node_modules/lockfile"
+    },
+    "installed": {
+      "plugin": "0.12.0",
+      "tools": "0.2.2-rc.1",
+      "cordis": "4.1.0"
+    }
+  },
+  {
+    "mode": "host-rc1",
+    "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-npm-FbAGXZ",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "install",
+      "--no-audit",
+      "--no-fund",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz",
+      "@deepseek-ai/dsh-tools@0.2.2-rc.1"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 37391,
+    "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz",
+    "sha256": "318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b",
+    "bypass": false,
+    "environment": {
+      "registry": "https://registry.npmjs.org",
+      "userconfig": "empty disposable file",
+      "globalconfig": "empty disposable file",
+      "cache": "reuse verified download cache; fresh project/node_modules/lockfile"
+    },
+    "installed": {
+      "plugin": "0.12.0",
+      "tools": "0.2.2-rc.1",
+      "cordis": "4.1.0"
+    }
+  }
+]

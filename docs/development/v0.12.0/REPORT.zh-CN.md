@@ -1,5 +1,7 @@
 # v0.12.0 开发记录：Reliable Context & Evidence
 
+2026-11-08 最后一轮：修复正常 npm RC peer 阻断，两项真实 Agent 有限复验均完成；本地版本准备为 0.12.0，尚未发布。最新结论、双语 Release Notes 和 PR 草稿见 [发布就绪记录](RELEASE_READINESS.zh-CN.md)。
+
 2026-11-08：最终集成验收及本地候选准备见 [集成报告](INTEGRATION.zh-CN.md) 和 [候选检查清单](CANDIDATE_CHECKLIST.zh-CN.md)。其中真实 Agent 未完成项单独保留，不算通过。
 
 2026-11-05：M2 Context Evidence Summary 已实现，见 [M2 开发与验证记录](M2.zh-CN.md)。

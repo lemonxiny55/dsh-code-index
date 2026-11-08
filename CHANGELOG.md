@@ -2,7 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.12.0-rc.0 — Reliable Context & Evidence (unpublished candidate)
+## 0.12.0 — Reliable Context & Evidence (prepared, not published)
+
+- Fix normal npm prerelease peer resolution for the verified DSH 0.2.1 and 0.2.2 RC groups; installation no longer needs --force. Keep the existing stable-version range and DSH runtime behavior.
+- Complete bounded real-Agent rechecks for change impact/candidate tests and zero static callers; retain earlier token, Host permission and transport failures in the evidence history.
+- Prepare local version metadata, bilingual Release Notes and PR text. Publication still requires final approval.
 
 - Improve deterministic Chinese task routing, distinguish path components from explicit identifiers, and prioritize task-relevant implementation source without increasing default budgets or graph limits.
 - Add optional bounded Evidence Summary to Context Packs and change context, with minimal X-Ray metadata reuse. Preserve exact / import-scoped / name-only and clearly label candidate tests, unknown targets and indexed-static scope.

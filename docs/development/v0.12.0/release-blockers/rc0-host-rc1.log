@@ -1,0 +1,24 @@
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: normal-peer-smoke@1.0.0
+npm error Found: @deepseek-ai/dsh-tools@0.2.2-rc.1
+npm error node_modules/@deepseek-ai/dsh-tools
+npm error   @deepseek-ai/dsh-tools@"0.2.2-rc.1" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer @deepseek-ai/dsh-tools@">=0.2.0-rc.2" from dsh-code-index@0.12.0-rc.0
+npm error node_modules/dsh-code-index
+npm error   dsh-code-index@"file:D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/dsh-code-index-0.12.0-rc.0.tgz" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\18439\AppData\Local\Temp\cix-normal-npm-dLuVW7\cache\_logs\2026-11-08T15_25_51_987Z-eresolve-report.txt
+npm notice
+npm notice New major version of npm available! 11.17.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+npm error A complete log of this run can be found in: C:\Users\18439\AppData\Local\Temp\cix-normal-npm-dLuVW7\cache\_logs\2026-11-08T15_25_51_987Z-debug-0.log

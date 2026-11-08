@@ -1,0 +1,176 @@
+{
+  "version": "0.12.0",
+  "published": false,
+  "basedOn": "69981b575d1ce1da3d11f0a1804d3b54de63ee29",
+  "binding": "HEAD plus recorded package/docs/smoke edits; application source and dist match tested rc.0 exactly",
+  "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz",
+  "sha256": "318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b",
+  "integrity": "sha512-983FD9Rp1yqfva0O9lprhJkk1c5NS5T3HpxqwrwKMXX6dSMY/hRLjuB6B6YFvYvbz08fXgLl1Kbu9uPgvOeQDw==",
+  "node": "v24.19.0",
+  "command": {
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "pack",
+      "--ignore-scripts",
+      "--json",
+      "--pack-destination",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-release-22KAPw\\stage",
+    "exitCode": 0
+  },
+  "peers": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3"
+  },
+  "sourceChecks": [
+    {
+      "file": "src/context.ts",
+      "sha256": "5f7388a02c53a1cd8e1114e9d93490632ac094b15fe48f3399cdc14ecbf7d666"
+    },
+    {
+      "file": "src/context-pack.ts",
+      "sha256": "54a1210a42688c19ea8b2796ab20c60f0633b90b6764de2472bc1ee3dc005002"
+    },
+    {
+      "file": "src/context-terms.ts",
+      "sha256": "5f07a3e19c87ea4d156d01c90ee8b73eff47941daf5ca95efabfb1662a0caebe"
+    },
+    {
+      "file": "src/evidence-summary.ts",
+      "sha256": "e16e509d6c26f90a685d802ca9f36ff54a732fe25b360d06b2f839bcf4eae0e1"
+    },
+    {
+      "file": "src/change-context.ts",
+      "sha256": "b426b8b9f852951978d606730034c3fa399287095b9f1447d6cd067af879c4a0"
+    },
+    {
+      "file": "src/tools.ts",
+      "sha256": "efb6374db237f65821c890929cae043f5732907a97ab5b5f154a563ae0b81be8"
+    }
+  ],
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 21699,
+      "sha256": "af32232b5d75c5d6e25e442ab21d2836d03a00dfa51f3be0552d8cd3fa025e60"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1083,
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "README.md",
+      "size": 27143,
+      "sha256": "16b1c97b152f0a4352225c70a5f04e667a735bf9057496284ae2a84d5edcb524"
+    },
+    {
+      "path": "README.zh.md",
+      "size": 24772,
+      "sha256": "d2443de304d7cc63263a2aeeabd48a4f01f1abdf8c0cbc420f6635ba285bef8d"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 207,
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "dist/client.js",
+      "size": 62174,
+      "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+    },
+    {
+      "path": "dist/client.js.map",
+      "size": 80791,
+      "sha256": "0a1ae5ed3c83584343328ddf5f279ac4214e9be4972ba2bfeff3a56edf11981b"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "size": 30187,
+      "sha256": "23f7851d67fd776857657736c931e20a8830df6e1e7cc9fbe017cac09836da77"
+    },
+    {
+      "path": "dist/index.js",
+      "size": 205023,
+      "sha256": "58476ae3d5b83567acc5f5e5db835743f255b560535740b2da04a66b50ad1d8a"
+    },
+    {
+      "path": "dist/index.js.map",
+      "size": 433071,
+      "sha256": "918a7bd1740fd31d1c46e29b49ce88dc560a56cc9103dfcedce6fdad8af513bd"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "size": 2154,
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "size": 1566,
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "size": 2430659,
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "package.json",
+      "size": 2346,
+      "sha256": "d81fef338423f94020a9d17de666f18972b4617d1f5d02f3d6b3d59176cd1418"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "size": 4980,
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "size": 4994,
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/impact-xray-benchmark.mjs",
+      "size": 2791,
+      "sha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb"
+    },
+    {
+      "path": "scripts/impact-xray-demo.mjs",
+      "size": 2437,
+      "sha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7"
+    },
+    {
+      "path": "scripts/impact-xray-poc.mjs",
+      "size": 2126,
+      "sha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b"
+    },
+    {
+      "path": "scripts/impact-xray-rc-benchmark.mjs",
+      "size": 5529,
+      "sha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "size": 3579,
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/process-impact-xray-demo.mjs",
+      "size": 2490,
+      "sha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "size": 20547,
+      "sha256": "92e16846131e579f14aa86b33a94bc172ecab32f38056e78b13d7b70179f1bc3"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "size": 6638,
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ],
+  "unpacked": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-release-22KAPw\\unpack\\package"
+}

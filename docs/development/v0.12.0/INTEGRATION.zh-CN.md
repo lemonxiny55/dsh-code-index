@@ -1,5 +1,7 @@
 # v0.12.0 最终集成验收与候选准备
 
+后续状态更新：最后一轮正常 npm 解析和两项真实 Agent 复验已完成，版本本地准备为 0.12.0；最新发布决定见 [RELEASE_READINESS.zh-CN.md](RELEASE_READINESS.zh-CN.md)。下文保留 rc.0 阶段原始结果，不改写历史失败。
+
 日期：2026-11-08（Asia/Shanghai）。分支：`codex/reliable-context-v0.12.0`。
 基础提交：M0/M1 `52da07c`，M2 `0afb59b`。本轮没有增加产品功能。
 

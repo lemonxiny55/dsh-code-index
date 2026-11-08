@@ -1,8 +1,8 @@
 # dsh-code-index
 
-## v0.12.0 发布候选——尚未发布
+## v0.12.0 发布准备——尚未发布
 
-**Reliable Context & Evidence** 正在本地开发分支进行集成验收。候选归档由该分支构建；下文稳定版安装说明属于此前版本，不代表 npm 已提供 v0.12.0。
+**Reliable Context & Evidence** 已在本地开发分支准备，package 版本更新为 0.12.0，但尚未发布。当前公开正式版为 v0.11.2，下文安装示例仍指向该版本。
 
 - 确定性中文任务路由、路径与显式符号区分、源码优先的候选选择改进 Context Pack，并保留英文任务回归。
 - 可选 `ContextPack.evidence` 说明已索引文件诊断、静态关系等级、候选测试及实际检测到的缺口。parsed 不等于语义完整；零静态调用者不能证明不存在调用者。
@@ -10,6 +10,8 @@
 - 测试关联只是线索，不代表已执行、通过或覆盖已验证。真实 Agent 是单独的验收项，未运行或受阻的项目不会计为通过。
 
 实际方法、结果和边界见[候选集成验收记录](docs/development/v0.12.0/INTEGRATION.zh-CN.md)及 [M2 证据契约](docs/development/v0.12.0/M2.zh-CN.md)。
+
+[最后一轮阻断检查](docs/development/v0.12.0/RELEASE_READINESS.zh-CN.md)记录正常 npm peer 解析和有限真实 Agent 复验；未验证的未来 RC 版本组不会自动视为已验证。
 
 [English](README.md) | 中文
 
@@ -21,10 +23,10 @@
 
 这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件：把代码 diff 呈现为一张可检查的潜在影响图，列出可能受影响的调用者、导入和测试线索。点击关系即可核对源码文件、行号与证据。
 
-**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。使用正式稳定版 **v0.11.1**，安装到兼容的 DSH profile：
+**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。v0.12.0 发布前仍使用正式稳定版 **v0.11.2**，安装到兼容的 DSH profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 安装后重启 Desktop。v0.11.1 声明支持 DSH `0.2.0-rc.2`、`0.2.1-rc.2` 和 `0.2.1-rc.3` 宿主版本组；Desktop rc.3 的兼容性提示据反馈已消失，但这不代表 Electron Desktop 全部功能或 Agent 验收通过。[安装说明](#安装) · [v0.11.1 验证与限制](RELEASE_EVIDENCE_v0.11.1.md)。
@@ -100,13 +102,13 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 需要 Node 22/24。v0.11.2 候选版本允许 DSH `>=0.2.0-rc.2`（包括预发布版本），第一方包应使用配套版本。后续版本可以尝试加载，但并不代表全部经过验证。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.1
+dsh plugin --profile desktop add dsh-code-index@0.11.2
 ```
 
 安装后重启 Desktop。匹配的 Web profile 可使用：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.2
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -164,7 +166,7 @@ Desktop 在激活前检查 DSH peer 约束。v0.10.0 的精确 `0.2.0-rc.2` pin 
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.1
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.2
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index

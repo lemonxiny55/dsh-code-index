@@ -18,5 +18,5 @@
 - [x] 主体本地提交 2df84b2；完整 SHA 和文件清单在 commit-record.json，原有未跟踪文件保留。
 - [x] 不推送、PR、合并、npm 发布、正式 Tag；root package 仍 0.11.2。
 
-保留为未发布候选；建议补齐未通过的真实 Agent 项后决定正式发布。
+以上是 rc.0 阶段检查清单。后续普通 npm 解析阻断已修复，两个真实 Agent 项已在有限复验中完成；最新结论为 RELEASE READY，尚未执行发布。见 [最后一轮发布就绪检查](RELEASE_READINESS.zh-CN.md)。
 详细方法、原始证据与限制见 [集成报告](INTEGRATION.zh-CN.md)。
