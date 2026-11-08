@@ -1,0 +1,43 @@
+smoke fixture: npm --force bypasses peer resolution; validating DSH range and runtime only
+npm warn using --force Recommended protections disabled.
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: dsh-code-index@0.12.0-rc.0
+npm warn Found: @deepseek-ai/dsh-tools@0.2.1-rc.3
+npm warn node_modules/@deepseek-ai/dsh-tools
+npm warn   @deepseek-ai/dsh-tools@"0.2.1-rc.3" from the root project
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer @deepseek-ai/dsh-tools@">=0.2.0-rc.2" from dsh-code-index@0.12.0-rc.0
+npm warn node_modules/dsh-code-index
+npm warn   dsh-code-index@"file:D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/dsh-code-index-0.12.0-rc.0.tgz" from the root project
+npm warn
+npm warn Conflicting peer dependency: @deepseek-ai/dsh-tools@0.2.0-rc.2
+npm warn node_modules/@deepseek-ai/dsh-tools
+npm warn   peer @deepseek-ai/dsh-tools@">=0.2.0-rc.2" from dsh-code-index@0.12.0-rc.0
+npm warn   node_modules/dsh-code-index
+npm warn     dsh-code-index@"file:D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/dsh-code-index-0.12.0-rc.0.tgz" from the root project
+[dsh-code-index] plugin loaded
+[dsh-code-index] registered tool: code_index
+[dsh-code-index] registered tool: code_symbols
+[dsh-code-index] registered tool: code_search
+[dsh-code-index] registered tool: code_map
+[dsh-code-index] registered tool: code_refs
+[dsh-code-index] registered tool: code_change_context
+[dsh-code-index] registered tool: code_context
+[dsh-code-index] registered tool: code_health
+[dsh-code-index] plugin unloaded
+[dsh-code-index] plugin loaded
+[dsh-code-index] registered tool: code_index
+[dsh-code-index] registered tool: code_context
+[dsh-code-index] registered tool: code_health
+[dsh-code-index] plugin unloaded
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/loose.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/scoped.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/startup.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/core.test.js', LF will be replaced by CRLF the next time Git touches it
+Impact X-Ray installed runtime: default text, call/import/test/path provenance and source windows passed
+release smoke passed (DSH range/runtime; npm peer resolution bypassed) for dsh-code-index@0.12.0-rc.0 with dsh-tools@0.2.1-rc.3
+retained isolated smoke directory: C:\Users\18439\AppData\Local\Temp\dsh-code-index-release-q295zp

@@ -2,6 +2,14 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.12.0-rc.0 — Reliable Context & Evidence (unpublished candidate)
+
+- Improve deterministic Chinese task routing, distinguish path components from explicit identifiers, and prioritize task-relevant implementation source without increasing default budgets or graph limits.
+- Add optional bounded Evidence Summary to Context Packs and change context, with minimal X-Ray metadata reuse. Preserve exact / import-scoped / name-only and clearly label candidate tests, unknown targets and indexed-static scope.
+- Allow optional evidence to shrink or be omitted under the existing text/JSON cap; absence is not proof that no evidence gaps exist. Keep tool names, parameters and canonical string output compatible.
+- Fix English intent words inside source paths triggering unrelated change/test analysis; retain actual English change requests and explicit test-path routing.
+- Establish six historical quality regressions and record package, runtime and Agent gates separately. This entry prepares a local RC only; no publication or successful real-Agent acceptance is implied. See `docs/development/v0.12.0/INTEGRATION.zh-CN.md`.
+
 ## 0.11.2 — DSH compatibility range
 
 - Allow DSH versions from `0.2.0-rc.2` onward, including prereleases, without claiming future versions have been verified.

@@ -1,2 +1,4 @@
 # Preserve pinned parser fixture bytes/hashes across Windows/Linux checkouts.
 tests/fixtures/arkts/official/** -text -whitespace
+# Preserve captured command output, including Windows CRLF and progress spacing.
+docs/development/v0.12.0/integration/**/*.log -text -whitespace

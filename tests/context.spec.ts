@@ -43,6 +43,18 @@ async function fixtureRepo(): Promise<string> {
 }
 
 describe('task-aware router', () => {
+  it('does not read English intent keywords from source-path components', async () => {
+    const root = await fixtureRepo()
+    for (const name of ['change', 'current', 'failure', 'coverage']) {
+      await writeFile(path.join(root, `src/${name}.ts`), `export function ${name}Marker() { return 1 }\n`)
+    }
+    const index = await buildIndex(root)
+    for (const name of ['change', 'current', 'failure', 'coverage']) {
+      expect(routeTask(`Explain src/${name}.ts`, index).includeChangeContext, name).toBe(false)
+    }
+    expect(routeTask('Fix failing tests/config.spec.ts', index).kind).toBe('test')
+    expect(routeTask('Review current changes in src/change.ts', index).kind).toBe('change')
+  })
   it.each([
     ['修复错误', 'Fix a bug', 'change'],
     ['排查异常', 'Fix failure', 'change'],

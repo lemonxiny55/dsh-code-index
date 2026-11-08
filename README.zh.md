@@ -1,5 +1,16 @@
 # dsh-code-index
 
+## v0.12.0 发布候选——尚未发布
+
+**Reliable Context & Evidence** 正在本地开发分支进行集成验收。候选归档由该分支构建；下文稳定版安装说明属于此前版本，不代表 npm 已提供 v0.12.0。
+
+- 确定性中文任务路由、路径与显式符号区分、源码优先的候选选择改进 Context Pack，并保留英文任务回归。
+- 可选 `ContextPack.evidence` 说明已索引文件诊断、静态关系等级、候选测试及实际检测到的缺口。parsed 不等于语义完整；零静态调用者不能证明不存在调用者。
+- evidence 可在同一 text/JSON 预算内缩减或省略；字段缺省表示**未提供**，不能解释为没有缺口。默认 5000、300～20000 字符边界不变。
+- 测试关联只是线索，不代表已执行、通过或覆盖已验证。真实 Agent 是单独的验收项，未运行或受阻的项目不会计为通过。
+
+实际方法、结果和边界见[候选集成验收记录](docs/development/v0.12.0/INTEGRATION.zh-CN.md)及 [M2 证据契约](docs/development/v0.12.0/M2.zh-CN.md)。
+
 [English](README.md) | 中文
 
 ## Impact X-Ray

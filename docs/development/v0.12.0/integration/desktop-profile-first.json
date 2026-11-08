@@ -1,0 +1,14 @@
+{
+  "target": "C:\\Users\\18439\\.dsh\\profiles\\desktop\\cordis.patch.yml",
+  "backup": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\desktop-patch.original",
+  "installedRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-q295zp\\node_modules\\dsh-code-index",
+  "package": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "originalHash": "dce24767c874c2861ab4713bf5af90b7d77c36fe792b038f4746adf210c57624",
+  "temporaryHash": "b7f24b196d6c818f1a468e50ec176357271e5947e0552c75a2114b891df3bc96",
+  "restored": true,
+  "started": "2026-11-08T08:40:40.826Z",
+  "probe": true,
+  "restoredHash": "dce24767c874c2861ab4713bf5af90b7d77c36fe792b038f4746adf210c57624",
+  "restoredAt": "2026-11-08T08:52:50.945Z"
+}

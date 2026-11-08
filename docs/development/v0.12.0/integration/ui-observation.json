@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-08",
+  "method": "Agent-driven UI inspection of actual pages through browser/native accessibility and screenshots; not an automated UI test suite",
+  "desktop": {
+    "runtime": "0.2.2-rc.1",
+    "sessionId": "44d5554d-5c0d-477f-89f9-8f9a54608404",
+    "source": "Actual Desktop Host API replay explicitly labelled 非模型 Agent; results from installed candidate",
+    "status": "PASS-rendering",
+    "observed": [
+      "Task context — symbol; lonelyMarker src/idle.js:1, complete source",
+      "Evidence indexed static scope; unscanned files not assessed",
+      "0 callers: none found in current index/static resolution; not proof of no callers",
+      "Tests: 0 candidate(s), not run; not verified coverage",
+      "Impact X-Ray region and title; declaration source inspector",
+      "name-only / import-scoped / exact relationship controls",
+      "缺口与边界 and 了解仍不确定的部分 controls"
+    ],
+    "notClaimed": [
+      "No model request was made by this replay",
+      "Desktop relationship-click and expand-uncertainty interactions were not separately completed before the application closed",
+      "Screenshots were visible in tool transcript but no standalone Desktop screenshot artifact was saved"
+    ]
+  },
+  "web": {
+    "runtime": "0.2.1-rc.3",
+    "sessionId": "53ed13ca-4263-47e5-bd2e-d0de718fed9f",
+    "status": "PASS-rendering-and-source-inspection",
+    "observed": [
+      "Context evidence text and canonical Pack rendering",
+      "Impact X-Ray: 6 call edges, 3 import edges, 1 test lead",
+      "Selected scopedUsage -> normalize import-scoped relationship",
+      "Inspector showed src/scoped.js:2 and actual namespace-import call source",
+      "Expanded uncertainty text: exact is indexed structural resolution, not runtime guarantee; test leads do not prove coverage"
+    ]
+  }
+}

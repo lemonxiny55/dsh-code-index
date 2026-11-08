@@ -1,0 +1,2067 @@
+{
+  "method": "actual installed candidate + official DSH Host API, not model Agent",
+  "runtime": "0.2.1-rc.3",
+  "node": "v24.19.0",
+  "package": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "checks": [
+    "eight tools registered",
+    "text/JSON budgets 300/500/5000; zero callers; change/X-Ray evidence",
+    "A/B/A and worktree isolation with change context",
+    "external child process add/edit/delete freshness",
+    "actual Cordis load/dispose/reload: 8/0/8/0 tools"
+  ],
+  "names": [
+    "code_change_context",
+    "code_context",
+    "code_health",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\home",
+  "repos": {
+    "a": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+    "b": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b",
+    "wt": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\worktree"
+  },
+  "url": "http://127.0.0.1:50685",
+  "sessionId": "53ed13ca-4263-47e5-bd2e-d0de718fed9f",
+  "results": [
+    {
+      "callId": "rc-host:0",
+      "name": "code_index",
+      "arguments": {
+        "action": "build",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nfiles indexed: 7\nsymbols: 8\nlanguages: javascript\nindex up to date"
+          }
+        ],
+        "value": "repo: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nfiles indexed: 7\nsymbols: 8\nlanguages: javascript\nindex up to date"
+      }
+    },
+    {
+      "callId": "rc-host:1",
+      "name": "code_symbols",
+      "arguments": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function normalize(input) [0.40] — src/core.js:1"
+          },
+          {
+            "type": "text",
+            "text": "export function checkNormalize() [0.40] — tests/core.test.js:4"
+          },
+          {
+            "type": "text",
+            "text": "export function startup() [0.40] — src/startup.js:2"
+          },
+          {
+            "type": "text",
+            "text": "export function localUsage() [0.40] — src/core.js:4"
+          },
+          {
+            "type": "text",
+            "text": "export function lonelyMarker() [0.40] — src/idle.js:1"
+          },
+          {
+            "type": "text",
+            "text": "export function looseUsage() [0.40] — src/loose.js:2"
+          },
+          {
+            "type": "text",
+            "text": "export function main() [0.40] — src/main.js:2"
+          },
+          {
+            "type": "text",
+            "text": "export function scopedUsage() [0.40] — src/scoped.js:2"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "src/core.js",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function normalize(input)"
+                },
+                {
+                  "lineNumber": 4,
+                  "line": "function localUsage()"
+                }
+              ]
+            },
+            {
+              "path": "tests/core.test.js",
+              "matches": [
+                {
+                  "lineNumber": 4,
+                  "line": "function checkNormalize()"
+                }
+              ]
+            },
+            {
+              "path": "src/startup.js",
+              "matches": [
+                {
+                  "lineNumber": 2,
+                  "line": "function startup()"
+                }
+              ]
+            },
+            {
+              "path": "src/idle.js",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function lonelyMarker()"
+                }
+              ]
+            },
+            {
+              "path": "src/loose.js",
+              "matches": [
+                {
+                  "lineNumber": 2,
+                  "line": "function looseUsage()"
+                }
+              ]
+            },
+            {
+              "path": "src/main.js",
+              "matches": [
+                {
+                  "lineNumber": 2,
+                  "line": "function main()"
+                }
+              ]
+            },
+            {
+              "path": "src/scoped.js",
+              "matches": [
+                {
+                  "lineNumber": 2,
+                  "line": "function scopedUsage()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 8
+        },
+        "value": [
+          {
+            "name": "normalize",
+            "kind": "function",
+            "line": 1,
+            "endLine": 3,
+            "exported": true,
+            "signature": "normalize(input)",
+            "file": "src/core.js",
+            "id": "sym:v1:src%2Fcore.js#function:normalize@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "checkNormalize",
+            "kind": "function",
+            "line": 4,
+            "endLine": 4,
+            "exported": true,
+            "signature": "checkNormalize()",
+            "file": "tests/core.test.js",
+            "id": "sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "startup",
+            "kind": "function",
+            "line": 2,
+            "endLine": 2,
+            "exported": true,
+            "signature": "startup()",
+            "file": "src/startup.js",
+            "id": "sym:v1:src%2Fstartup.js#function:startup@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "localUsage",
+            "kind": "function",
+            "line": 4,
+            "endLine": 4,
+            "exported": true,
+            "signature": "localUsage()",
+            "file": "src/core.js",
+            "id": "sym:v1:src%2Fcore.js#function:localUsage@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "lonelyMarker",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "lonelyMarker()",
+            "file": "src/idle.js",
+            "id": "sym:v1:src%2Fidle.js#function:lonelyMarker@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "looseUsage",
+            "kind": "function",
+            "line": 2,
+            "endLine": 2,
+            "exported": true,
+            "signature": "looseUsage()",
+            "file": "src/loose.js",
+            "id": "sym:v1:src%2Floose.js#function:looseUsage@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "main",
+            "kind": "function",
+            "line": 2,
+            "endLine": 2,
+            "exported": true,
+            "signature": "main()",
+            "file": "src/main.js",
+            "id": "sym:v1:src%2Fmain.js#function:main@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "scopedUsage",
+            "kind": "function",
+            "line": 2,
+            "endLine": 2,
+            "exported": true,
+            "signature": "scopedUsage()",
+            "file": "src/scoped.js",
+            "id": "sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:2",
+      "name": "code_search",
+      "arguments": {
+        "query": "normalize",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function normalize(input) — src/core.js:1"
+          },
+          {
+            "type": "text",
+            "text": "export function checkNormalize() [0.50] — tests/core.test.js:4"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "src/core.js",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function normalize(input)"
+                }
+              ]
+            },
+            {
+              "path": "tests/core.test.js",
+              "matches": [
+                {
+                  "lineNumber": 4,
+                  "line": "function checkNormalize()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 2
+        },
+        "value": [
+          {
+            "name": "normalize",
+            "kind": "function",
+            "line": 1,
+            "endLine": 3,
+            "exported": true,
+            "signature": "normalize(input)",
+            "file": "src/core.js",
+            "id": "sym:v1:src%2Fcore.js#function:normalize@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          },
+          {
+            "name": "checkNormalize",
+            "kind": "function",
+            "line": 4,
+            "endLine": 4,
+            "exported": true,
+            "signature": "checkNormalize()",
+            "file": "tests/core.test.js",
+            "id": "sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:3",
+      "name": "code_map",
+      "arguments": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "# repo map\n## src/core.js (2)\n  function normalize(input) :1\n  function localUsage() :4\n## src/startup.js (1)\n  function startup() :2\n## src/idle.js (1)\n  function lonelyMarker() :1\n## src/loose.js (1)\n  function looseUsage() :2\n## src/main.js (1)\n  function main() :2\n## src/scoped.js (1)\n  function scopedUsage() :2\n## tests/core.test.js (1)\n  function checkNormalize() :4"
+          }
+        ],
+        "value": "# repo map\n## src/core.js (2)\n  function normalize(input) :1\n  function localUsage() :4\n## src/startup.js (1)\n  function startup() :2\n## src/idle.js (1)\n  function lonelyMarker() :1\n## src/loose.js (1)\n  function looseUsage() :2\n## src/main.js (1)\n  function main() :2\n## src/scoped.js (1)\n  function scopedUsage() :2\n## tests/core.test.js (1)\n  function checkNormalize() :4"
+      }
+    },
+    {
+      "callId": "rc-host:4",
+      "name": "code_refs",
+      "arguments": {
+        "symbol": "normalize",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "definitions:\n  function normalize(input) — src/core.js:1\n\ncallers (5):\n  src/core.js:4 in localUsage\n  src/loose.js:2 in looseUsage\n  src/scoped.js:2 in scopedUsage\n  src/startup.js:2 in startup\n  tests/core.test.js:4 in checkNormalize\n\ncallees (2):\n  toUpperCase :2 (unresolved in current index; external not established)\n  trim :2 (unresolved in current index; external not established)"
+          }
+        ],
+        "value": "definitions:\n  function normalize(input) — src/core.js:1\n\ncallers (5):\n  src/core.js:4 in localUsage\n  src/loose.js:2 in looseUsage\n  src/scoped.js:2 in scopedUsage\n  src/startup.js:2 in startup\n  tests/core.test.js:4 in checkNormalize\n\ncallees (2):\n  toUpperCase :2 (unresolved in current index; external not established)\n  trim :2 (unresolved in current index; external not established)"
+      }
+    },
+    {
+      "callId": "rc-host:5",
+      "name": "code_health",
+      "arguments": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "repo health — 7 files\n\ncircular dependencies (0):\n  (none)\n\norphan modules (2):\n  src/idle.js\n  src/loose.js"
+          }
+        ],
+        "value": "repo health — 7 files\n\ncircular dependencies (0):\n  (none)\n\norphan modules (2):\n  src/idle.js\n  src/loose.js"
+      }
+    },
+    {
+      "callId": "rc-host:6",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 300,
+        "outputFormat": "text",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nGaps: indexed static only\nBudget: 242 / 300 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nGaps: indexed static only\nBudget: 242 / 300 chars (bounded output; see evidence/gaps)"
+      }
+    },
+    {
+      "callId": "rc-host:7",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 300,
+        "outputFormat": "pack",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nGaps: indexed static only\nBudget: 242 / 300 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+          "task": "理解 lonelyMarker 的实现和静态调用者",
+          "route": "symbol",
+          "items": [],
+          "gaps": [
+            "indexed static only"
+          ],
+          "budget": {
+            "budgetChars": 300,
+            "usedChars": 242,
+            "packChars": 288,
+            "truncated": true
+          }
+        }
+      }
+    },
+    {
+      "callId": "rc-host:8",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 500,
+        "outputFormat": "text",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nGaps: indexed static only\nBudget: 350 / 500 chars"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nGaps: indexed static only\nBudget: 350 / 500 chars"
+      }
+    },
+    {
+      "callId": "rc-host:9",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 500,
+        "outputFormat": "pack",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nGaps: indexed static only\nBudget: 350 / 500 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+          "task": "理解 lonelyMarker 的实现和静态调用者",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "src/idle.js",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function lonelyMarker() { return 77 }",
+              "kind": "primary",
+              "name": "lonelyMarker",
+              "reason": "task names this symbol"
+            }
+          ],
+          "gaps": [
+            "indexed static only"
+          ],
+          "budget": {
+            "budgetChars": 500,
+            "usedChars": 350,
+            "packChars": 499,
+            "truncated": false
+          }
+        }
+      }
+    },
+    {
+      "callId": "rc-host:10",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 5000,
+        "outputFormat": "text",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 836 / 5000 chars"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 836 / 5000 chars"
+      }
+    },
+    {
+      "callId": "rc-host:11",
+      "name": "code_context",
+      "arguments": {
+        "task": "理解 lonelyMarker 的实现和静态调用者",
+        "budgetChars": 5000,
+        "outputFormat": "pack",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 理解 lonelyMarker 的实现和静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 836 / 5000 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+          "task": "理解 lonelyMarker 的实现和静态调用者",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "src/idle.js",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function lonelyMarker() { return 77 }",
+              "kind": "primary",
+              "name": "lonelyMarker",
+              "reason": "task names this symbol"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage",
+            "no related indexed test found"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 836,
+            "packChars": 1009,
+            "truncated": false
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 7,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 0,
+              "import-scoped": 0,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 1,
+              "zero": [
+                {
+                  "file": "src/idle.js",
+                  "line": 1,
+                  "name": "lonelyMarker"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "callId": "rc-host:12",
+      "name": "code_change_context",
+      "arguments": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base b29af922548704e939dc695d946f2ad3f511ae5d): 2 changed symbol(s)\nCHANGED:\n  modified function normalize(input) src/core.js:1 [exact]\n  added function lonelyMarker() src/idle.js:1 [exact]\nDIRECT CALLERS:\n  function localUsage() src/core.js:4 (called at src/core.js:4) [name-only]\n  function looseUsage() src/loose.js:2 (called at src/loose.js:2) [name-only]\n  function scopedUsage() src/scoped.js:2 (called at src/scoped.js:2) [import-scoped]\n  function startup() src/startup.js:2 (called at src/startup.js:2) [exact]\n  function checkNormalize() tests/core.test.js:4 (called at tests/core.test.js:4) [exact]\nIMPORT DEPENDENTS:\n  src/scoped.js imports src/core.js ('./core.js') [import-scoped]\n  src/startup.js imports src/core.js ('./core.js') [import-scoped]\n  tests/core.test.js imports src/core.js ('../src/core.js') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/core.js:4 function localUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/loose.js:2 function looseUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/main.js:2 function main() → src/core.js:1 function normalize(input) (2 hop(s)) [exact]\n  src/scoped.js:2 function scopedUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [import-scoped]\n  src/startup.js:2 function startup() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\n  tests/core.test.js:4 function checkNormalize() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\nTRANSITIVE IMPACT:\n  depth 2: function main() src/main.js:2 (reached via src/main.js:2) [exact]\nLIKELY AFFECTED TESTS:\n  tests/core.test.js (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 6, import-scoped 5, name-only 4.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nUnresolved call sites: 2; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base b29af922548704e939dc695d946f2ad3f511ae5d): 2 changed symbol(s)\nCHANGED:\n  modified function normalize(input) src/core.js:1 [exact]\n  added function lonelyMarker() src/idle.js:1 [exact]\nDIRECT CALLERS:\n  function localUsage() src/core.js:4 (called at src/core.js:4) [name-only]\n  function looseUsage() src/loose.js:2 (called at src/loose.js:2) [name-only]\n  function scopedUsage() src/scoped.js:2 (called at src/scoped.js:2) [import-scoped]\n  function startup() src/startup.js:2 (called at src/startup.js:2) [exact]\n  function checkNormalize() tests/core.test.js:4 (called at tests/core.test.js:4) [exact]\nIMPORT DEPENDENTS:\n  src/scoped.js imports src/core.js ('./core.js') [import-scoped]\n  src/startup.js imports src/core.js ('./core.js') [import-scoped]\n  tests/core.test.js imports src/core.js ('../src/core.js') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/core.js:4 function localUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/loose.js:2 function looseUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/main.js:2 function main() → src/core.js:1 function normalize(input) (2 hop(s)) [exact]\n  src/scoped.js:2 function scopedUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [import-scoped]\n  src/startup.js:2 function startup() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\n  tests/core.test.js:4 function checkNormalize() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\nTRANSITIVE IMPACT:\n  depth 2: function main() src/main.js:2 (reached via src/main.js:2) [exact]\nLIKELY AFFECTED TESTS:\n  tests/core.test.js (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 6, import-scoped 5, name-only 4.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nUnresolved call sites: 2; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "callId": "rc-host:13",
+      "name": "code_change_context",
+      "arguments": {
+        "outputFormat": "xray",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base b29af922548704e939dc695d946f2ad3f511ae5d): 2 changed symbol(s)\nCHANGED:\n  modified function normalize(input) src/core.js:1 [exact]\n  added function lonelyMarker() src/idle.js:1 [exact]\nDIRECT CALLERS:\n  function localUsage() src/core.js:4 (called at src/core.js:4) [name-only]\n  function looseUsage() src/loose.js:2 (called at src/loose.js:2) [name-only]\n  function scopedUsage() src/scoped.js:2 (called at src/scoped.js:2) [import-scoped]\n  function startup() src/startup.js:2 (called at src/startup.js:2) [exact]\n  function checkNormalize() tests/core.test.js:4 (called at tests/core.test.js:4) [exact]\nIMPORT DEPENDENTS:\n  src/scoped.js imports src/core.js ('./core.js') [import-scoped]\n  src/startup.js imports src/core.js ('./core.js') [import-scoped]\n  tests/core.test.js imports src/core.js ('../src/core.js') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/core.js:4 function localUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/loose.js:2 function looseUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/main.js:2 function main() → src/core.js:1 function normalize(input) (2 hop(s)) [exact]\n  src/scoped.js:2 function scopedUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [import-scoped]\n  src/startup.js:2 function startup() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\n  tests/core.test.js:4 function checkNormalize() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\nTRANSITIVE IMPACT:\n  depth 2: function main() src/main.js:2 (reached via src/main.js:2) [exact]\nLIKELY AFFECTED TESTS:\n  tests/core.test.js (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 6, import-scoped 5, name-only 4.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nUnresolved call sites: 2; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "name": "normalize",
+              "kind": "function",
+              "file": "src/core.js",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "src/core.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:src%2Fidle.js#function:lonelyMarker@1",
+              "name": "lonelyMarker",
+              "kind": "function",
+              "file": "src/idle.js",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "src/idle.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function lonelyMarker() { return 77 }\n"
+              },
+              "change": "added"
+            },
+            {
+              "id": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+              "name": "localUsage",
+              "kind": "function",
+              "file": "src/core.js",
+              "line": 4,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "local-unique",
+              "evidence": {
+                "file": "src/core.js",
+                "line": 4,
+                "startLine": 2,
+                "side": "current",
+                "type": "declaration",
+                "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+              "name": "looseUsage",
+              "kind": "function",
+              "file": "src/loose.js",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "global-name",
+              "evidence": {
+                "file": "src/loose.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+              "name": "scopedUsage",
+              "kind": "function",
+              "file": "src/scoped.js",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "namespace-import",
+              "evidence": {
+                "file": "src/scoped.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+              "name": "startup",
+              "kind": "function",
+              "file": "src/startup.js",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/startup.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+              "name": "checkNormalize",
+              "kind": "function",
+              "file": "tests/core.test.js",
+              "line": 4,
+              "changed": false,
+              "category": "test",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.js",
+                "line": 4,
+                "startLine": 2,
+                "side": "current",
+                "type": "declaration",
+                "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:src%2Fmain.js#function:main@1",
+              "name": "main",
+              "kind": "function",
+              "file": "src/main.js",
+              "line": 2,
+              "changed": false,
+              "category": "impact",
+              "depth": 2,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/main.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+              }
+            },
+            {
+              "id": "file:current:src/scoped.js",
+              "name": "src/scoped.js",
+              "kind": "module",
+              "file": "src/scoped.js",
+              "line": 1,
+              "changed": false,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "src/scoped.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+              }
+            },
+            {
+              "id": "file:current:src/core.js",
+              "name": "src/core.js",
+              "kind": "module",
+              "file": "src/core.js",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "src/core.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+              }
+            },
+            {
+              "id": "file:current:src/startup.js",
+              "name": "src/startup.js",
+              "kind": "module",
+              "file": "src/startup.js",
+              "line": 1,
+              "changed": false,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "src/startup.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+              }
+            },
+            {
+              "id": "file:current:tests/core.test.js",
+              "name": "tests/core.test.js",
+              "kind": "module",
+              "file": "tests/core.test.js",
+              "line": 3,
+              "changed": false,
+              "category": "test",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.js",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+              },
+              "resolution": "import-scoped"
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+              "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "kind": "call",
+              "resolution": "name-only",
+              "reason": "local-unique",
+              "evidence": {
+                "file": "src/core.js",
+                "line": 4,
+                "startLine": 2,
+                "side": "current",
+                "type": "call-site",
+                "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+              }
+            },
+            {
+              "id": "call:1",
+              "from": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+              "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "kind": "call",
+              "resolution": "name-only",
+              "reason": "global-name",
+              "evidence": {
+                "file": "src/loose.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+              }
+            },
+            {
+              "id": "call:2",
+              "from": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+              "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "kind": "call",
+              "resolution": "import-scoped",
+              "reason": "namespace-import",
+              "evidence": {
+                "file": "src/scoped.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+              }
+            },
+            {
+              "id": "call:3",
+              "from": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+              "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/startup.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+              }
+            },
+            {
+              "id": "call:4",
+              "from": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+              "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.js",
+                "line": 4,
+                "startLine": 2,
+                "side": "current",
+                "type": "call-site",
+                "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+              }
+            },
+            {
+              "id": "call:5",
+              "from": "current:sym:v1:src%2Fmain.js#function:main@1",
+              "to": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/main.js",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+              }
+            },
+            {
+              "id": "import:6",
+              "from": "file:current:src/scoped.js",
+              "to": "file:current:src/core.js",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "src/scoped.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+              }
+            },
+            {
+              "id": "import:7",
+              "from": "file:current:src/startup.js",
+              "to": "file:current:src/core.js",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "src/startup.js",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+              }
+            },
+            {
+              "id": "import:8",
+              "from": "file:current:tests/core.test.js",
+              "to": "file:current:src/core.js",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.js",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+              }
+            }
+          ],
+          "tests": [
+            {
+              "file": "tests/core.test.js",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "distance": 1,
+              "nodeId": "file:current:tests/core.test.js"
+            }
+          ],
+          "imports": [
+            {
+              "file": "src/scoped.js",
+              "changedFile": "src/core.js",
+              "specifier": "./core.js",
+              "resolution": "import-scoped",
+              "edgeId": "import:6"
+            },
+            {
+              "file": "src/startup.js",
+              "changedFile": "src/core.js",
+              "specifier": "./core.js",
+              "resolution": "import-scoped",
+              "edgeId": "import:7"
+            },
+            {
+              "file": "tests/core.test.js",
+              "changedFile": "src/core.js",
+              "specifier": "../src/core.js",
+              "resolution": "import-scoped",
+              "edgeId": "import:8"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "localUsage",
+              "to": "normalize",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "name-only",
+              "omitted": false
+            },
+            {
+              "id": "path:1",
+              "from": "looseUsage",
+              "to": "normalize",
+              "edgeIds": [
+                "call:1"
+              ],
+              "resolution": "name-only",
+              "omitted": false
+            },
+            {
+              "id": "path:2",
+              "from": "main",
+              "to": "normalize",
+              "edgeIds": [
+                "call:5",
+                "call:3"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            },
+            {
+              "id": "path:3",
+              "from": "scopedUsage",
+              "to": "normalize",
+              "edgeIds": [
+                "call:2"
+              ],
+              "resolution": "import-scoped",
+              "omitted": false
+            },
+            {
+              "id": "path:4",
+              "from": "startup",
+              "to": "normalize",
+              "edgeIds": [
+                "call:3"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            },
+            {
+              "id": "path:5",
+              "from": "checkNormalize",
+              "to": "normalize",
+              "edgeIds": [
+                "call:4"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 7 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 6, import-scoped 5, name-only 4.",
+            "Tests: 1 candidate(s), not run; not verified coverage.",
+            "0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.",
+            "Unresolved call sites: 2; target unknown, external not established.",
+            "Evidence gaps: not-found/unresolved-call-targets."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 2,
+              "callers": 5,
+              "impact": 1,
+              "imports": 3,
+              "tests": 1,
+              "paths": 6,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 7,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 6,
+              "import-scoped": 5,
+              "name-only": 4
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "src/idle.js",
+                  "line": 1,
+                  "name": "lonelyMarker"
+                }
+              ]
+            },
+            "unresolved": {
+              "count": 2,
+              "sites": [
+                {
+                  "file": "src/core.js",
+                  "line": 2,
+                  "name": "toUpperCase"
+                },
+                {
+                  "file": "src/core.js",
+                  "line": 2,
+                  "name": "trim"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "unresolved-call-targets",
+                "source": "indexed-call-sites"
+              }
+            ]
+          }
+        },
+        "value": {
+          "text": "change context — source: git (base b29af922548704e939dc695d946f2ad3f511ae5d): 2 changed symbol(s)\nCHANGED:\n  modified function normalize(input) src/core.js:1 [exact]\n  added function lonelyMarker() src/idle.js:1 [exact]\nDIRECT CALLERS:\n  function localUsage() src/core.js:4 (called at src/core.js:4) [name-only]\n  function looseUsage() src/loose.js:2 (called at src/loose.js:2) [name-only]\n  function scopedUsage() src/scoped.js:2 (called at src/scoped.js:2) [import-scoped]\n  function startup() src/startup.js:2 (called at src/startup.js:2) [exact]\n  function checkNormalize() tests/core.test.js:4 (called at tests/core.test.js:4) [exact]\nIMPORT DEPENDENTS:\n  src/scoped.js imports src/core.js ('./core.js') [import-scoped]\n  src/startup.js imports src/core.js ('./core.js') [import-scoped]\n  tests/core.test.js imports src/core.js ('../src/core.js') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/core.js:4 function localUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/loose.js:2 function looseUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/main.js:2 function main() → src/core.js:1 function normalize(input) (2 hop(s)) [exact]\n  src/scoped.js:2 function scopedUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [import-scoped]\n  src/startup.js:2 function startup() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\n  tests/core.test.js:4 function checkNormalize() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\nTRANSITIVE IMPACT:\n  depth 2: function main() src/main.js:2 (reached via src/main.js:2) [exact]\nLIKELY AFFECTED TESTS:\n  tests/core.test.js (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 6, import-scoped 5, name-only 4.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nUnresolved call sites: 2; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)",
+          "xray": {
+            "card": "impact-xray",
+            "version": 2,
+            "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+            "source": "git",
+            "nodes": [
+              {
+                "id": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "name": "normalize",
+                "kind": "function",
+                "file": "src/core.js",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "src/core.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+                },
+                "change": "modified"
+              },
+              {
+                "id": "current:sym:v1:src%2Fidle.js#function:lonelyMarker@1",
+                "name": "lonelyMarker",
+                "kind": "function",
+                "file": "src/idle.js",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "src/idle.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function lonelyMarker() { return 77 }\n"
+                },
+                "change": "added"
+              },
+              {
+                "id": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+                "name": "localUsage",
+                "kind": "function",
+                "file": "src/core.js",
+                "line": 4,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "local-unique",
+                "evidence": {
+                  "file": "src/core.js",
+                  "line": 4,
+                  "startLine": 2,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+                "name": "looseUsage",
+                "kind": "function",
+                "file": "src/loose.js",
+                "line": 2,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "global-name",
+                "evidence": {
+                  "file": "src/loose.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+                "name": "scopedUsage",
+                "kind": "function",
+                "file": "src/scoped.js",
+                "line": 2,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "namespace-import",
+                "evidence": {
+                  "file": "src/scoped.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+                "name": "startup",
+                "kind": "function",
+                "file": "src/startup.js",
+                "line": 2,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "src/startup.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+                "name": "checkNormalize",
+                "kind": "function",
+                "file": "tests/core.test.js",
+                "line": 4,
+                "changed": false,
+                "category": "test",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.js",
+                  "line": 4,
+                  "startLine": 2,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:src%2Fmain.js#function:main@1",
+                "name": "main",
+                "kind": "function",
+                "file": "src/main.js",
+                "line": 2,
+                "changed": false,
+                "category": "impact",
+                "depth": 2,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "src/main.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+                }
+              },
+              {
+                "id": "file:current:src/scoped.js",
+                "name": "src/scoped.js",
+                "kind": "module",
+                "file": "src/scoped.js",
+                "line": 1,
+                "changed": false,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "src/scoped.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+                }
+              },
+              {
+                "id": "file:current:src/core.js",
+                "name": "src/core.js",
+                "kind": "module",
+                "file": "src/core.js",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "changed-module",
+                "evidence": {
+                  "file": "src/core.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function normalize(input) {\n  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }"
+                }
+              },
+              {
+                "id": "file:current:src/startup.js",
+                "name": "src/startup.js",
+                "kind": "module",
+                "file": "src/startup.js",
+                "line": 1,
+                "changed": false,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "src/startup.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+                }
+              },
+              {
+                "id": "file:current:tests/core.test.js",
+                "name": "tests/core.test.js",
+                "kind": "module",
+                "file": "tests/core.test.js",
+                "line": 3,
+                "changed": false,
+                "category": "test",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.js",
+                  "line": 3,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+                },
+                "resolution": "import-scoped"
+              }
+            ],
+            "edges": [
+              {
+                "id": "call:0",
+                "from": "current:sym:v1:src%2Fcore.js#function:localUsage@1",
+                "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "kind": "call",
+                "resolution": "name-only",
+                "reason": "local-unique",
+                "evidence": {
+                  "file": "src/core.js",
+                  "line": 4,
+                  "startLine": 2,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "  return input.trim().toUpperCase()\n}\nexport function localUsage() { return normalize(\" local \") }\n"
+                }
+              },
+              {
+                "id": "call:1",
+                "from": "current:sym:v1:src%2Floose.js#function:looseUsage@1",
+                "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "kind": "call",
+                "resolution": "name-only",
+                "reason": "global-name",
+                "evidence": {
+                  "file": "src/loose.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "// Deliberately unresolved name: a candidate, not a verified executable path.\nexport function looseUsage() { return normalize(\" loose \") }\n"
+                }
+              },
+              {
+                "id": "call:2",
+                "from": "current:sym:v1:src%2Fscoped.js#function:scopedUsage@1",
+                "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "kind": "call",
+                "resolution": "import-scoped",
+                "reason": "namespace-import",
+                "evidence": {
+                  "file": "src/scoped.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+                }
+              },
+              {
+                "id": "call:3",
+                "from": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+                "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "src/startup.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+                }
+              },
+              {
+                "id": "call:4",
+                "from": "current:sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+                "to": "current:sym:v1:src%2Fcore.js#function:normalize@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.js",
+                  "line": 4,
+                  "startLine": 2,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+                }
+              },
+              {
+                "id": "call:5",
+                "from": "current:sym:v1:src%2Fmain.js#function:main@1",
+                "to": "current:sym:v1:src%2Fstartup.js#function:startup@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "src/main.js",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { startup } from \"./startup.js\"\nexport function main() { return startup() }\n"
+                }
+              },
+              {
+                "id": "import:6",
+                "from": "file:current:src/scoped.js",
+                "to": "file:current:src/core.js",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "src/scoped.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import * as core from \"./core.js\"\nexport function scopedUsage() { return core.normalize(\" scoped \") }\n"
+                }
+              },
+              {
+                "id": "import:7",
+                "from": "file:current:src/startup.js",
+                "to": "file:current:src/core.js",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "src/startup.js",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { normalize } from \"./core.js\"\nexport function startup() { return normalize(\" startup \") }\n"
+                }
+              },
+              {
+                "id": "import:8",
+                "from": "file:current:tests/core.test.js",
+                "to": "file:current:src/core.js",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.js",
+                  "line": 3,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import test from \"node:test\"\nimport assert from \"node:assert/strict\"\nimport { normalize } from \"../src/core.js\"\nexport function checkNormalize() { return normalize(\" test \") }\ntest(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n"
+                }
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.js",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1,
+                "nodeId": "file:current:tests/core.test.js"
+              }
+            ],
+            "imports": [
+              {
+                "file": "src/scoped.js",
+                "changedFile": "src/core.js",
+                "specifier": "./core.js",
+                "resolution": "import-scoped",
+                "edgeId": "import:6"
+              },
+              {
+                "file": "src/startup.js",
+                "changedFile": "src/core.js",
+                "specifier": "./core.js",
+                "resolution": "import-scoped",
+                "edgeId": "import:7"
+              },
+              {
+                "file": "tests/core.test.js",
+                "changedFile": "src/core.js",
+                "specifier": "../src/core.js",
+                "resolution": "import-scoped",
+                "edgeId": "import:8"
+              }
+            ],
+            "paths": [
+              {
+                "id": "path:0",
+                "from": "localUsage",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:0"
+                ],
+                "resolution": "name-only",
+                "omitted": false
+              },
+              {
+                "id": "path:1",
+                "from": "looseUsage",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:1"
+                ],
+                "resolution": "name-only",
+                "omitted": false
+              },
+              {
+                "id": "path:2",
+                "from": "main",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:5",
+                  "call:3"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              },
+              {
+                "id": "path:3",
+                "from": "scopedUsage",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:2"
+                ],
+                "resolution": "import-scoped",
+                "omitted": false
+              },
+              {
+                "id": "path:4",
+                "from": "startup",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:3"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              },
+              {
+                "id": "path:5",
+                "from": "checkNormalize",
+                "to": "normalize",
+                "edgeIds": [
+                  "call:4"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              }
+            ],
+            "unmapped": [],
+            "gaps": [
+              "Evidence (indexed static scope; unscanned files not assessed):",
+              "Index: 7 parsed, 0 partial, 0 failed, 0 unknown.",
+              "Selected relationship items: exact 6, import-scoped 5, name-only 4.",
+              "Tests: 1 candidate(s), not run; not verified coverage.",
+              "0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.",
+              "Unresolved call sites: 2; target unknown, external not established.",
+              "Evidence gaps: not-found/unresolved-call-targets."
+            ],
+            "truncated": false,
+            "bounds": {
+              "analysis": {
+                "callers": false,
+                "dependents": false,
+                "paths": false,
+                "impact": false,
+                "tests": false
+              },
+              "projection": false,
+              "totals": {
+                "changed": 2,
+                "callers": 5,
+                "impact": 1,
+                "imports": 3,
+                "tests": 1,
+                "paths": 6,
+                "unmapped": 0
+              }
+            },
+            "evidence": {
+              "scope": "indexed-static-only",
+              "basis": "change-analysis",
+              "index": {
+                "parsed": 7,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              },
+              "relationships": {
+                "exact": 6,
+                "import-scoped": 5,
+                "name-only": 4
+              },
+              "tests": {
+                "candidates": 1,
+                "verification": "not-run"
+              },
+              "callers": {
+                "checkedSymbols": 2,
+                "zero": [
+                  {
+                    "file": "src/idle.js",
+                    "line": 1,
+                    "name": "lonelyMarker"
+                  }
+                ]
+              },
+              "unresolved": {
+                "count": 2,
+                "sites": [
+                  {
+                    "file": "src/core.js",
+                    "line": 2,
+                    "name": "toUpperCase"
+                  },
+                  {
+                    "file": "src/core.js",
+                    "line": 2,
+                    "name": "trim"
+                  }
+                ]
+              },
+              "gaps": [
+                {
+                  "kind": "not-found",
+                  "code": "unresolved-call-targets",
+                  "source": "indexed-call-sites"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "callId": "rc-host:14",
+      "name": "code_search",
+      "arguments": {
+        "query": "B_ONLY_MARKER",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function B_ONLY_MARKER() — b.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "b.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function B_ONLY_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "B_ONLY_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "B_ONLY_MARKER()",
+            "file": "b.ts",
+            "id": "sym:v1:b.ts#function:B_ONLY_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:15",
+      "name": "code_search",
+      "arguments": {
+        "query": "B_ONLY_MARKER",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"
+      },
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "callId": "rc-host:16",
+      "name": "code_search",
+      "arguments": {
+        "query": "WORKTREE_ONLY_MARKER",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\worktree"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function WORKTREE_ONLY_MARKER() — b.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "b.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function WORKTREE_ONLY_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "WORKTREE_ONLY_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "WORKTREE_ONLY_MARKER()",
+            "file": "b.ts",
+            "id": "sym:v1:b.ts#function:WORKTREE_ONLY_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:17",
+      "name": "code_search",
+      "arguments": {
+        "query": "WORKTREE_ONLY_MARKER",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "callId": "rc-host:18",
+      "name": "code_change_context",
+      "arguments": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\worktree"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base 08b8cc999d36a26fdde212d605762d2cd8a252bf): 2 changed symbol(s)\nCHANGED:\n  deleted base function B_ONLY_MARKER() b.ts:1 [exact]\n  added function WORKTREE_ONLY_MARKER() b.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_ONLY_MARKER (b.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base 08b8cc999d36a26fdde212d605762d2cd8a252bf): 2 changed symbol(s)\nCHANGED:\n  deleted base function B_ONLY_MARKER() b.ts:1 [exact]\n  added function WORKTREE_ONLY_MARKER() b.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_ONLY_MARKER (b.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "callId": "rc-host:19",
+      "name": "code_search",
+      "arguments": {
+        "query": "EXTERNAL_ONE",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function EXTERNAL_ONE() — external.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "external.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function EXTERNAL_ONE()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "EXTERNAL_ONE",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "EXTERNAL_ONE()",
+            "file": "external.ts",
+            "id": "sym:v1:external.ts#function:EXTERNAL_ONE@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:20",
+      "name": "code_search",
+      "arguments": {
+        "query": "EXTERNAL_TWO",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function EXTERNAL_TWO() — external.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "external.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function EXTERNAL_TWO()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "EXTERNAL_TWO",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "EXTERNAL_TWO()",
+            "file": "external.ts",
+            "id": "sym:v1:external.ts#function:EXTERNAL_TWO@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "callId": "rc-host:21",
+      "name": "code_search",
+      "arguments": {
+        "query": "EXTERNAL_ONE",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "callId": "rc-host:22",
+      "name": "code_search",
+      "arguments": {
+        "query": "EXTERNAL_TWO",
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\b"
+      },
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    }
+  ]
+}

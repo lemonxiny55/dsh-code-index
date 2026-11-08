@@ -1,0 +1,9 @@
+{
+  "method": "actual Desktop Cordis API: dispose target fiber, mount installed candidate in temporary probe scope",
+  "stableEntry": "dsh-code-index",
+  "candidateEntry": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-q295zp\\node_modules\\dsh-code-index\\dist\\index.js",
+  "package": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "targetToolsAfterUnload": 0,
+  "restoreNeedsRestart": true
+}

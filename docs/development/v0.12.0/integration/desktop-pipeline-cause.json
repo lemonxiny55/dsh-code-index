@@ -1,0 +1,37 @@
+{
+  "method": "actual running Desktop Host ctx.tools API, no model request",
+  "node": "v24.21.0",
+  "pid": 38628,
+  "started": "2026-11-08T08:59:48.097Z",
+  "results": [],
+  "names": [
+    "code_change_context",
+    "code_context",
+    "code_health",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "candidateLoad": {
+    "method": "actual Desktop Cordis API: dispose target fiber, mount installed candidate in temporary probe scope",
+    "stableEntry": "dsh-code-index",
+    "candidateEntry": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-q295zp\\node_modules\\dsh-code-index\\dist\\index.js",
+    "package": "0.12.0-rc.0",
+    "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+    "targetToolsAfterUnload": 0,
+    "restoreNeedsRestart": true
+  },
+  "status": "FAIL",
+  "error": {
+    "name": "ToolBatchExecutionError",
+    "message": "Tool batch execution failed",
+    "stack": "ToolBatchExecutionError: Tool batch execution failed\n    at executeToolBatch (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tools/lib/pipeline.js:60:9)\n    at NativeToolExecutor.execute (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tool-executor-native/lib/index.js:16:10)\n    at Proxy.execute (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tools/lib/index.js:642:43)\n    at Object.apply (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/cordis/lib/index.js:122:36)\n    at invoke (file:///D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/desktop-probe.mjs?installed-candidate-1794128387055:19:40)\n    at Timeout._onTimeout (file:///D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/desktop-probe.mjs?installed-candidate-1794128387055:25:224)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)",
+    "cause": {
+      "name": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'map')",
+      "stack": "TypeError: Cannot read properties of undefined (reading 'map')\n    at executeToolBatch (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tools/lib/pipeline.js:33:29)\n    at NativeToolExecutor.execute (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tool-executor-native/lib/index.js:16:10)\n    at Proxy.execute (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/dsh-tools/lib/index.js:642:43)\n    at Object.apply (file:///E:/DeepSeek%20Harness/resources/app.asar/dsh/node_modules/@deepseek-ai/cordis/lib/index.js:122:36)\n    at invoke (file:///D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/desktop-probe.mjs?installed-candidate-1794128387055:19:40)\n    at Timeout._onTimeout (file:///D:/ChatGPTProjects/dsh-code-index/docs/development/v0.12.0/integration/desktop-probe.mjs?installed-candidate-1794128387055:25:224)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "node": "v22.23.3",
+  "version": "0.12.0-rc.0",
+  "toolsVersion": "0.2.1-rc.3",
+  "nativeCalls": 19,
+  "tarball": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "installedRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-kqwNGQ\\node_modules\\dsh-code-index",
+  "methods": [
+    "clean npm install --ignore-scripts --force",
+    "plugin apply/dispose",
+    "real ToolRuntime dispatch"
+  ],
+  "evidence": true,
+  "budgets": [
+    300,
+    500,
+    5000
+  ],
+  "passed": true
+}

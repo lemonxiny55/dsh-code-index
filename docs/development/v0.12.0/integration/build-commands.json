@@ -1,0 +1,79 @@
+[
+  {
+    "label": "pnpm-build",
+    "executable": "pnpm.cmd",
+    "args": [
+      "build"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": null,
+    "signal": null,
+    "error": "spawnSync pnpm.cmd EINVAL"
+  },
+  {
+    "label": "node24-typecheck",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--noEmit"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  },
+  {
+    "label": "node24-server-dts",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "node_modules/tsup/dist/cli-default.js"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  },
+  {
+    "label": "node24-client",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "node_modules/tsup/dist/cli-default.js",
+      "--config",
+      "tsup.client.config.ts"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  },
+  {
+    "label": "node22-typecheck",
+    "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+    "args": [
+      "node_modules/typescript/bin/tsc",
+      "--noEmit"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  },
+  {
+    "label": "node22-server-dts",
+    "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+    "args": [
+      "node_modules/tsup/dist/cli-default.js"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  },
+  {
+    "label": "node22-client",
+    "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+    "args": [
+      "node_modules/tsup/dist/cli-default.js",
+      "--config",
+      "tsup.client.config.ts"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "signal": null
+  }
+]

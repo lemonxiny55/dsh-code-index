@@ -5,6 +5,17 @@
 
 English | [中文](README.zh.md)
 
+## v0.12.0 release candidate — not published
+
+**Reliable Context & Evidence** is being validated on the local development branch. The candidate archive is built from that branch; the stable installation instructions below are historical release instructions, not a claim that v0.12.0 is available on npm.
+
+- Deterministic Chinese task routing, path-aware identifier detection and source-first candidate selection improve Context Packs while retaining English task regressions.
+- Optional `ContextPack.evidence` describes indexed-file diagnostics, static relationship grades, candidate tests and detected gaps. `parsed` is not semantic completeness; zero static callers does not prove there are no callers.
+- Evidence may be compacted or omitted under the same text/JSON budget. Missing optional evidence means **not provided**, not “no gaps.” Default 5000 and 300–20000 character bounds remain unchanged.
+- Test associations are leads, not execution, passing tests or verified coverage. Real Agent validation is a separate release gate; unexecuted or blocked runs are never counted as passed.
+
+See the [candidate integration record](docs/development/v0.12.0/INTEGRATION.zh-CN.md) and [M2 evidence contract](docs/development/v0.12.0/M2.zh-CN.md) for actual methods, outcomes and limits.
+
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**

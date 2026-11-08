@@ -199,16 +199,16 @@ export function routeTask(task: string, index?: RepoIndex): ContextRoute {
   const chineseExplore = /查找|定位|实现|理解|追踪|分析原因|解释原因/u.test(intent)
   const kind: ContextTaskKind = chineseChange ? 'change'
     : chineseTest ? 'test'
-    : TEST_RE.test(text) || mentionedFiles.some(isTestFile)
+    : TEST_RE.test(intent) || mentionedFiles.some(isTestFile)
       ? 'test'
-      : CHANGE_RE.test(text)
+      : CHANGE_RE.test(intent)
         ? 'change'
       : exactSymbolNames.length > 0
         ? 'symbol'
         : chineseArchitecture ? 'architecture'
-        : EXPLORE_RE.test(text) || chineseExplore
+        : EXPLORE_RE.test(intent) || chineseExplore
           ? 'exploration'
-          : ARCH_RE.test(text)
+          : ARCH_RE.test(intent)
             ? 'architecture'
             : 'ambiguous'
 

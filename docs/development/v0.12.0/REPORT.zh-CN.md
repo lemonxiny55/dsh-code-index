@@ -1,5 +1,7 @@
 # v0.12.0 开发记录：Reliable Context & Evidence
 
+2026-11-08：最终集成验收及本地候选准备见 [集成报告](INTEGRATION.zh-CN.md) 和 [候选检查清单](CANDIDATE_CHECKLIST.zh-CN.md)。其中真实 Agent 未完成项单独保留，不算通过。
+
 2026-11-05：M2 Context Evidence Summary 已实现，见 [M2 开发与验证记录](M2.zh-CN.md)。
 以下保留 2026-11-04 的 M0/M1 原始记录与当时的阶段边界。
 
