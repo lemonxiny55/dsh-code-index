@@ -15,7 +15,7 @@
 - [ ] Agent 0 callers：TRANSPORT 后最终为空，不能视为通过。
 - [x] 仅一次无插件隔离；未改全局网络、代理、认证配置。
 - [x] README/中文 README/CHANGELOG 说明静态边界、optional evidence 和预算。
-- [ ] 本地提交 SHA 与最终状态（收尾补记）。
+- [x] 主体本地提交 2df84b2；完整 SHA 和文件清单在 commit-record.json，原有未跟踪文件保留。
 - [x] 不推送、PR、合并、npm 发布、正式 Tag；root package 仍 0.11.2。
 
 保留为未发布候选；建议补齐未通过的真实 Agent 项后决定正式发布。

@@ -6,7 +6,7 @@
 **结论：包级与 Host API 验证通过，暂不建议正式发布。** 三个真实 Agent 任务只有第一项完整成功；
 第二项未完成，第三项传输失败。Host API 回放不能替代模型最终回答。
 没有推送、PR、合并、Tag 或 npm 发布。root `package.json` 保持 `0.11.2`，
-仅隔离打包副本使用 `0.12.0-rc.0`。本轮主体提交 SHA 在本地提交后补记。
+仅隔离打包副本使用 `0.12.0-rc.0`。本轮主体提交：`2df84b2ce1ffebb45e1f3e8a8b4344a7ca1342db`。
 
 ## 范围与结果
 
@@ -85,6 +85,7 @@ SHA-256：`15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752`。
 没有 node_modules、env、实验或无关未跟踪文件。通过 sourcemap 核对 context/context-pack/context-terms/
 evidence-summary/change-context/tools 与当前源码，并检查 JS 静态证据标记及 DTS optional 字段。
 Node 22/24 smoke 和 Host/Desktop 均用该归档的实际 npm 安装目录，不以旧 npm 包代替。
+打包时 HEAD 为 0afb59b，包含本轮尚未提交的路径修复；源码溯源哈希和最终 dist 字节已与主体提交核对。
 
 --force 只用于隔离的 prerelease SDK 消费环境；DSH includePrerelease semver 和实际运行另行断言。
 此结果证明安装内容和运行时兼容性，不证明 npm 常规 peer 自动解析。
@@ -156,4 +157,8 @@ Windows EINVAL，这是启动方式错误；后续实际 PowerShell pnpm build �
 没有对认证文件执行写操作。证据见 `integration/desktop-restored-runtime.json`、`desktop-profile.json`
 及 `verification.json`。验收生成的本地会话保留并标注方法，未改写用户已有会话。
 
-本地主体提交 SHA 在本地提交后补记；最终文档提交 SHA 由交付回复提供。
+主体提交共 69 文件；生产修改仅 src/context.ts，配套 tests/context.spec.ts、release-smoke、
+README/中文 README/CHANGELOG、开发报告、验收脚本及原始结果。完整文件清单见
+`integration/commit-record.json`。.gitattributes 仅使原始验收日志保持捕获的 CRLF 字节。
+最终文档提交 SHA 由交付回复提供。受管工作区收尾时无未提交修改，原有无关未跟踪文件保留；
+tarball 作为 Git 忽略的本地产物保留。不读取或修改 HANDOFF_PROMPT.md 内容。
