@@ -58,6 +58,10 @@ grantWrite / Win32 5 属于宿主 shell 权限；TRANSPORT 属于模型传输失
 SHA-256：`318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b`。
 完整 npm integrity、文件哈希及 pack 命令见 `release-artifact.json`；提交绑定见 `artifact-commit.json`。
 
+发布载荷提交：`a371481c4aef07b5ecdb4484ebf85eb69d621dd4`。绑定检查核对 19 个包内 Git 文件和 28 个 sourcemap 源项；构建产物逐字节核对。后续收尾提交只增加绑定证据及文档/验证脚本，不改变归档。
+独立工作树：`D:\ChatGPTProjects\dsh-code-index\node_modules\.v012-release-ready`。
+原目录 `D:\ChatGPTProjects\dsh-code-index` 仍在 `69981b5`、版本 0.11.2，稳定链接安装不随发布准备升版。
+
 本轮源码与 dist（含 DTS、客户端、sourcemap）和原已验证 rc.0 逐字节一致，因此沿用此前 Node 22/24
 全量各 290/290、构建、六例完整复放、rc.3 Host 和真实 Desktop 0.2.2-rc.1 的结果；没有虚报重新执行。
 新增 6 项 peer 测试单独记录，不能写成“本轮全量 296 项已运行”。

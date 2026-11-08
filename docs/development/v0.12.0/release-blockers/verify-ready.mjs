@@ -6,7 +6,7 @@ import path from 'node:path'
 const out = import.meta.dirname, repo = path.resolve(out, '../../../..'), stable = process.env.CIX_STABLE_WORKSPACE ?? 'D:/ChatGPTProjects/dsh-code-index'
 const read = f => JSON.parse(readFileSync(path.join(out, f), 'utf8'))
 const hash = bytes => createHash('sha256').update(bytes).digest('hex'), norm = bytes => bytes.toString('utf8').replace(/\r\n/g, '\n')
-const git = (...args) => execFileSync('git', args, { cwd: repo })
+const git = (...args) => execFileSync('git', args, { cwd: repo, maxBuffer: 16 * 1024 * 1024 })
 const artifact = read('release-artifact.json'), npm = read('release-npm.json'), agent = read('agent-recheck.json')
 assert.equal(hash(readFileSync(artifact.archive)), artifact.sha256)
 assert.ok(npm.length === 2 && npm.every(r => r.exitCode === 0 && !r.bypass && r.installed.plugin === '0.12.0' && r.sha256 === artifact.sha256))
