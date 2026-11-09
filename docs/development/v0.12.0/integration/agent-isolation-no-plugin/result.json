@@ -1,0 +1,34 @@
+{
+  "id": "isolation-no-plugin",
+  "method": "actual official headless CLI model request",
+  "withPlugin": false,
+  "model": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\agent-j4Xmgc\\home",
+  "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+  "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+  "args": [
+    "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+    "--profile",
+    "headless",
+    "--json",
+    "-"
+  ],
+  "prompt": "只回复 RC_OK，不调用任何工具。",
+  "started": "2026-11-08T08:33:06.415Z",
+  "retryPolicy": {
+    "mode": "normal",
+    "maxRetries": 0
+  },
+  "exitCode": 0,
+  "elapsedMs": 3802,
+  "toolCalls": 0,
+  "final": {
+    "type": "final",
+    "text": "RC_OK"
+  },
+  "transportFailure": false
+}

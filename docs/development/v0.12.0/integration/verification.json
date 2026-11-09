@@ -1,0 +1,519 @@
+{
+  "date": "2026-11-08",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/reliable-context-v0.12.0",
+  "basedOn": "0afb59b53712c6d72ee12e08d02d36e204a29592",
+  "packageVersion": "0.11.2",
+  "candidate": {
+    "version": "0.12.0-rc.0",
+    "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+    "files": 24,
+    "published": false
+  },
+  "codexModel": "Not selectable/verifiable through session tools; no guessed model ID",
+  "tests": [
+    {
+      "label": "node24",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--reporter=json",
+        "--outputFile=D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\tests-node24.json"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "elapsedMs": 20984,
+      "testFiles": 30,
+      "total": 290,
+      "passed": 290,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "label": "node22",
+      "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--reporter=json",
+        "--outputFile=D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\tests-node22.json"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "elapsedMs": 18863,
+      "testFiles": 30,
+      "total": 290,
+      "passed": 290,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "builds": [
+    {
+      "label": "pnpm-build",
+      "executable": "pnpm.cmd",
+      "args": [
+        "build"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": null,
+      "signal": null,
+      "error": "spawnSync pnpm.cmd EINVAL"
+    },
+    {
+      "label": "node24-typecheck",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "node24-server-dts",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "node_modules/tsup/dist/cli-default.js"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "node24-client",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "node_modules/tsup/dist/cli-default.js",
+        "--config",
+        "tsup.client.config.ts"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "node22-typecheck",
+      "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "node22-server-dts",
+      "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+      "args": [
+        "node_modules/tsup/dist/cli-default.js"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "label": "node22-client",
+      "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+      "args": [
+        "node_modules/tsup/dist/cli-default.js",
+        "--config",
+        "tsup.client.config.ts"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+      "exitCode": 0,
+      "signal": null
+    }
+  ],
+  "groups": [
+    {
+      "file": "arkts.spec.ts",
+      "tests": 15,
+      "status": "passed"
+    },
+    {
+      "file": "buildIndex.spec.ts",
+      "tests": 6,
+      "status": "passed"
+    },
+    {
+      "file": "change-context.spec.ts",
+      "tests": 26,
+      "status": "passed"
+    },
+    {
+      "file": "client-locale.spec.ts",
+      "tests": 2,
+      "status": "passed"
+    },
+    {
+      "file": "compat.spec.ts",
+      "tests": 1,
+      "status": "passed"
+    },
+    {
+      "file": "config.spec.ts",
+      "tests": 3,
+      "status": "passed"
+    },
+    {
+      "file": "context-c-phase.spec.ts",
+      "tests": 6,
+      "status": "passed"
+    },
+    {
+      "file": "context-quality.spec.ts",
+      "tests": 18,
+      "status": "passed"
+    },
+    {
+      "file": "context.spec.ts",
+      "tests": 25,
+      "status": "passed"
+    },
+    {
+      "file": "evidence-summary.spec.ts",
+      "tests": 14,
+      "status": "passed"
+    },
+    {
+      "file": "extract.spec.ts",
+      "tests": 24,
+      "status": "passed"
+    },
+    {
+      "file": "git-diff.spec.ts",
+      "tests": 14,
+      "status": "passed"
+    },
+    {
+      "file": "gitignore-tools.spec.ts",
+      "tests": 1,
+      "status": "passed"
+    },
+    {
+      "file": "health.spec.ts",
+      "tests": 7,
+      "status": "passed"
+    },
+    {
+      "file": "ids.spec.ts",
+      "tests": 20,
+      "status": "passed"
+    },
+    {
+      "file": "impact-xray-client.spec.ts",
+      "tests": 1,
+      "status": "passed"
+    },
+    {
+      "file": "impact-xray.spec.ts",
+      "tests": 10,
+      "status": "passed"
+    },
+    {
+      "file": "index.spec.ts",
+      "tests": 3,
+      "status": "passed"
+    },
+    {
+      "file": "provenance.spec.ts",
+      "tests": 25,
+      "status": "passed"
+    },
+    {
+      "file": "refgraph.spec.ts",
+      "tests": 7,
+      "status": "passed"
+    },
+    {
+      "file": "repo-context.spec.ts",
+      "tests": 5,
+      "status": "passed"
+    },
+    {
+      "file": "repomap.spec.ts",
+      "tests": 16,
+      "status": "passed"
+    },
+    {
+      "file": "rust.spec.ts",
+      "tests": 7,
+      "status": "passed"
+    },
+    {
+      "file": "scan.spec.ts",
+      "tests": 3,
+      "status": "passed"
+    },
+    {
+      "file": "search.spec.ts",
+      "tests": 7,
+      "status": "passed"
+    },
+    {
+      "file": "settings.spec.ts",
+      "tests": 2,
+      "status": "passed"
+    },
+    {
+      "file": "source-excerpts.spec.ts",
+      "tests": 2,
+      "status": "passed"
+    },
+    {
+      "file": "store.spec.ts",
+      "tests": 8,
+      "status": "passed"
+    },
+    {
+      "file": "tools-execute.spec.ts",
+      "tests": 6,
+      "status": "passed"
+    },
+    {
+      "file": "tools.spec.ts",
+      "tests": 6,
+      "status": "passed"
+    }
+  ],
+  "shellBuild": {
+    "command": "pnpm build *> docs/development/v0.12.0/integration/pnpm-build-shell.log",
+    "shell": "PowerShell 7.6",
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "note": "Actual command completion observed; initial spawnSync(pnpm.cmd) EINVAL is separately preserved in build-commands.json"
+  },
+  "packageSmoke": [
+    {
+      "node": "v22.23.3",
+      "version": "0.12.0-rc.0",
+      "toolsVersion": "0.2.1-rc.3",
+      "nativeCalls": 19,
+      "tarball": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+      "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+      "installedRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-kqwNGQ\\node_modules\\dsh-code-index",
+      "methods": [
+        "clean npm install --ignore-scripts --force",
+        "plugin apply/dispose",
+        "real ToolRuntime dispatch"
+      ],
+      "evidence": true,
+      "budgets": [
+        300,
+        500,
+        5000
+      ],
+      "passed": true,
+      "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\stage\\scripts\\release-smoke.mjs",
+        "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+        "0.2.1-rc.3"
+      ],
+      "exitCode": 0,
+      "env": {
+        "CIX_NPM_CLI": "C:/Users/18439/AppData/Local/Programs/node-v24.19.0/node_modules/npm/bin/npm-cli.js",
+        "npm_config_registry": "https://registry.npmjs.org"
+      },
+      "npmPeerAutoResolution": "not verified; --force used"
+    },
+    {
+      "node": "v24.19.0",
+      "version": "0.12.0-rc.0",
+      "toolsVersion": "0.2.1-rc.3",
+      "nativeCalls": 19,
+      "tarball": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+      "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+      "installedRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-q295zp\\node_modules\\dsh-code-index",
+      "methods": [
+        "clean npm install --ignore-scripts --force",
+        "plugin apply/dispose",
+        "real ToolRuntime dispatch"
+      ],
+      "evidence": true,
+      "budgets": [
+        300,
+        500,
+        5000
+      ],
+      "passed": true,
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\stage\\scripts\\release-smoke.mjs",
+        "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+        "0.2.1-rc.3"
+      ],
+      "exitCode": 0,
+      "env": {
+        "CIX_NPM_CLI": "C:/Users/18439/AppData/Local/Programs/node-v24.19.0/node_modules/npm/bin/npm-cli.js",
+        "npm_config_registry": "https://registry.npmjs.org"
+      },
+      "npmPeerAutoResolution": "not verified; --force used"
+    }
+  ],
+  "fullTrials": {
+    "command": "node node_modules/vitest/vitest.mjs run tests/context-c-phase.spec.ts --reporter=json --outputFile=docs/development/v0.12.0/integration/full-trial-tests.json",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "total": 6,
+    "passed": 6,
+    "env": {
+      "CONTEXT_QUALITY_TRIALS_DIR": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials",
+      "CONTEXT_QUALITY_REPORT": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\full-trial-quality.json",
+      "GIT_CONFIG_COUNT": "6",
+      "safeDirectoryScope": "six C3 sample paths, process environment only"
+    }
+  },
+  "host": {
+    "method": "actual installed candidate + official DSH Host API, not model Agent",
+    "runtime": "0.2.1-rc.3",
+    "calls": 23,
+    "status": "PASS",
+    "command": "node docs/development/v0.12.0/integration/host-gate.mjs",
+    "exitCode": null,
+    "note": "Long-running isolated Web Host: assertions completed, not reported as normal process exit"
+  },
+  "desktop": {
+    "method": "actual running Desktop Host ctx.tools API, no model request",
+    "runtime": "0.2.2-rc.1",
+    "node": "v24.21.0",
+    "pid": 38628,
+    "calls": 22,
+    "status": "PASS",
+    "sessionId": "44d5554d-5c0d-477f-89f9-8f9a54608404",
+    "command": "Temporary local Cordis plugin in actual Desktop; ctx.tools.execute({ calls: [...] })",
+    "exitCode": null
+  },
+  "agent": [
+    {
+      "id": "1",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+        "--profile",
+        "headless",
+        "--json",
+        "-"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+      "model": {
+        "provider": "deepseek-official",
+        "model": "deepseek-flash",
+        "reasoningEffort": "high"
+      },
+      "exitCode": 0,
+      "toolCalls": 7,
+      "elapsedMs": 22962,
+      "transportFailure": false,
+      "final": {
+        "type": "final",
+        "text": "已按要求先用 `code_context`、再用 `code_search` 核实，仅读取当前仓库，未修改文件。\n\n## 1. `normalize` 的实现\n\n源码位于 **`src/core.js:1-3`**：\n\n```js\n1: export function normalize(input) {\n2:   return input.trim().toUpperCase()\n3: }\n```\n\n实现行为：\n\n1. 调用 `input.trim()` 去除首尾空白；\n2. 调用 `.toUpperCase()` 转为大写；\n3. 返回转换后的字符串。\n\n注意：这里直接调用了 `input.trim()`，因此假定传入值是字符串，没有做 `null`/`undefined` 防护。\n\n## 2. `code_search` 的核实结果\n\n`code_search(\"normalize\")` 返回：\n\n```text\nexport function normalize(input) — src/core.js:1\nexport function checkNormalize() [0.50] — tests/core.test.js:4\n```\n\n这独立确认了声明位置是 **`src/core.js:1`**，函数名为 `normalize`，参数为 `input`。\n\n## 3. 调用点及证据强度\n\n| 文件:行号 | 源码证据 | 关系 |\n|---|---|---|\n| `src/startup.js:1-2` | `import { normalize } from \"./core.js\"`；`return normalize(\" startup \")` | 精确、显式导入绑定 |\n| `src/scoped.js:1-2` | `import * as core from \"./core.js\"`；`core.normalize(\" scoped \")` | 导入范围可确认、命名空间导入 |\n| `src/core.js:4` | `localUsage() { return normalize(\" local \") }` | 同文件本地调用 |\n| `tests/core.test.js:3-4` | 导入 `normalize`；`checkNormalize() { return normalize(\" test \") }` | 精确、显式导入绑定 |\n| `src/loose.js:2` | `return normalize(\" loose \")`，但文件内没有 `import` | 仅名称匹配；`code_context` 标为 `name-only` / `global-name`，属于未解析候选，不能当作已验证调用路径 |\n\n`src/startup.js:1-2` 的完整源码：\n\n```js\n1: import { normalize } from \"./core.js\"\n2: export function startup() { return normalize(\" startup \") }\n```\n\n## 4. 顺带发现的测试行为不一致\n\n`tests/core.test.js:5`：\n\n```js\n5: test(\"normalization preserves letter case\", () => assert.equal(checkNormalize(), \"test\"))\n```\n\n`normalize(\" test \")` 实际返回 **`\"TEST\"`**，而测试期望 **`\"test\"`**，两者不一致；若运行该测试，预计会失败。以上只是对源码的静态核对，未执行测试。"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "2",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+        "--profile",
+        "headless",
+        "--json",
+        "-"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+      "model": {
+        "provider": "deepseek-official",
+        "model": "deepseek-flash",
+        "reasoningEffort": "high"
+      },
+      "exitCode": 1,
+      "toolCalls": 11,
+      "elapsedMs": 33600,
+      "transportFailure": false,
+      "final": {
+        "type": "final",
+        "text": "已"
+      },
+      "status": "FAIL-incomplete"
+    },
+    {
+      "id": "3",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+        "--profile",
+        "headless",
+        "--json",
+        "-"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+      "model": {
+        "provider": "deepseek-official",
+        "model": "deepseek-flash",
+        "reasoningEffort": "high"
+      },
+      "exitCode": 1,
+      "toolCalls": 11,
+      "elapsedMs": 22261,
+      "transportFailure": true,
+      "final": {
+        "type": "final",
+        "text": ""
+      },
+      "status": "BLOCKED-transport"
+    },
+    {
+      "id": "isolation-no-plugin",
+      "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+      "args": [
+        "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+        "--profile",
+        "headless",
+        "--json",
+        "-"
+      ],
+      "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+      "model": {
+        "provider": "deepseek-official",
+        "model": "deepseek-flash",
+        "reasoningEffort": "high"
+      },
+      "exitCode": 0,
+      "toolCalls": 0,
+      "elapsedMs": 3802,
+      "transportFailure": false,
+      "final": {
+        "type": "final",
+        "text": "RC_OK"
+      },
+      "status": "PASS"
+    }
+  ],
+  "restoration": {
+    "runtime": "PASS",
+    "originalTools": 7,
+    "originalSearch": "PASS",
+    "profileByteExact": true,
+    "protectedFiles": [
+      {
+        "file": "C:\\Users\\18439\\.dsh\\profiles\\desktop\\package.json",
+        "unchanged": true
+      },
+      {
+        "file": "C:\\Users\\18439\\.dsh\\profiles\\desktop\\cordis.patch.yml",
+        "unchanged": true
+      },
+      {
+        "file": "C:\\Users\\18439\\.dsh\\.credentials.yaml",
+        "unchanged": true
+      }
+    ]
+  },
+  "recommendation": "Keep unpublished RC; complete the two unfinished real Agent tasks before formal release"
+}

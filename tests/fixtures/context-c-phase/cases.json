@@ -1,0 +1,142 @@
+[
+  {
+    "id": "T1-C3-r1",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r1",
+      "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T1-C3-r1/context.txt",
+    "sha256": "d0f08936bebfaf04bafad7e067e794b2f5e7c485e7d63c8f7d5c996fd2d3825a",
+    "expectedRoute": "exploration",
+    "requiredSource": [
+      "isGitIgnoredPath",
+      "scanRepo",
+      "buildIndex",
+      "buildIndexWithCache",
+      "getIndex"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  },
+  {
+    "id": "T2-C3-r1",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r1",
+      "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T2-C3-r1/context.txt",
+    "sha256": "52ddc5fb19a06e96aff3206cca37fe139082c2168173eb7aeebc9c767a3e8506",
+    "expectedRoute": "change",
+    "requiredSource": [
+      "isGitIgnoredPath",
+      "scanRepo",
+      "attachWatcher"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  },
+  {
+    "id": "T3-C3-r1",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r1",
+      "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T3-C3-r1/context.txt",
+    "sha256": "4ca5018c2d4f5e9fb99e0a966fd80e8eda22fcd5c91cf6f6d1e9d3f6ec61d123",
+    "expectedRoute": "change",
+    "requiredSource": [
+      "ignoredByGitLayers",
+      "isGitIgnoredPath",
+      "scanRepo",
+      "attachWatcher",
+      "refresh"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  },
+  {
+    "id": "T1-C3-r2",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r2",
+      "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T1-C3-r2/context.txt",
+    "sha256": "cd6cfe05e6f3252555af62603f0e98160dc490dcee75037f5e6fe90c0d51c48c",
+    "expectedRoute": "exploration",
+    "requiredSource": [
+      "isGitIgnoredPath",
+      "scanRepo",
+      "buildIndex",
+      "buildIndexWithCache",
+      "getIndex"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  },
+  {
+    "id": "T2-C3-r2",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r2",
+      "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T2-C3-r2/context.txt",
+    "sha256": "5859c2267c62e980581c0f69ccebd06b5054109b56e988c4567273143882bdb7",
+    "expectedRoute": "change",
+    "requiredSource": [
+      "isGitIgnoredPath",
+      "scanRepo",
+      "attachWatcher"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  },
+  {
+    "id": "T3-C3-r2",
+    "input": {
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r2",
+      "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+      "budgetChars": 8000,
+      "outputFormat": "text"
+    },
+    "historical": "runs/T3-C3-r2/context.txt",
+    "sha256": "9dd3005aa4235113b08140660687d6d099c50ad2d33609f8047565cf7df89aa4",
+    "expectedRoute": "change",
+    "requiredSource": [
+      "ignoredByGitLayers",
+      "isGitIgnoredPath",
+      "scanRepo",
+      "attachWatcher",
+      "refresh"
+    ],
+    "forbiddenPrimaryFiles": [
+      "tests/change-context.spec.ts",
+      "tests/context-quality.spec.ts",
+      "tests/provenance.spec.ts"
+    ]
+  }
+]

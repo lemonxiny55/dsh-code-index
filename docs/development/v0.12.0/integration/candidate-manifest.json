@@ -1,0 +1,171 @@
+{
+  "name": "dsh-code-index",
+  "version": "0.12.0-rc.0",
+  "published": false,
+  "basedOn": "0afb59b53712c6d72ee12e08d02d36e204a29592",
+  "sourceChecks": [
+    {
+      "file": "src/context.ts",
+      "sha256": "5f7388a02c53a1cd8e1114e9d93490632ac094b15fe48f3399cdc14ecbf7d666"
+    },
+    {
+      "file": "src/context-pack.ts",
+      "sha256": "54a1210a42688c19ea8b2796ab20c60f0633b90b6764de2472bc1ee3dc005002"
+    },
+    {
+      "file": "src/context-terms.ts",
+      "sha256": "5f07a3e19c87ea4d156d01c90ee8b73eff47941daf5ca95efabfb1662a0caebe"
+    },
+    {
+      "file": "src/evidence-summary.ts",
+      "sha256": "e16e509d6c26f90a685d802ca9f36ff54a732fe25b360d06b2f839bcf4eae0e1"
+    },
+    {
+      "file": "src/change-context.ts",
+      "sha256": "b426b8b9f852951978d606730034c3fa399287095b9f1447d6cd067af879c4a0"
+    },
+    {
+      "file": "src/tools.ts",
+      "sha256": "efb6374db237f65821c890929cae043f5732907a97ab5b5f154a563ae0b81be8"
+    }
+  ],
+  "node": "v24.19.0",
+  "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "integrity": "sha512-3O2pg7YetVApzxnm+sYqTvjGEaPbx19nTNpC0fubHItakNV+yF2GdhVjoZWlhVwSbBycRaNPkQVvfliCnTJ/uQ==",
+  "command": {
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "pack",
+      "--ignore-scripts",
+      "--json",
+      "--pack-destination",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\stage",
+    "exitCode": 0
+  },
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 21208,
+      "sha256": "bfb06eda3f812537cbd89118fc911c7b291885f9a64b204dfbffaf928ee39fbe"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1083,
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "README.md",
+      "size": 26910,
+      "sha256": "04a2bc2d9fedfc1a7c34e551f6eeb3a1e7bc9e37d9f2cca124ffc0471465f1c1"
+    },
+    {
+      "path": "README.zh.md",
+      "size": 24553,
+      "sha256": "507f9caf8aaefe30981a4f386824c62fc3f5dff19888f0f36710c17c9598ac1e"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "size": 207,
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "dist/client.js",
+      "size": 62174,
+      "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553"
+    },
+    {
+      "path": "dist/client.js.map",
+      "size": 80791,
+      "sha256": "0a1ae5ed3c83584343328ddf5f279ac4214e9be4972ba2bfeff3a56edf11981b"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "size": 30187,
+      "sha256": "23f7851d67fd776857657736c931e20a8830df6e1e7cc9fbe017cac09836da77"
+    },
+    {
+      "path": "dist/index.js",
+      "size": 205023,
+      "sha256": "58476ae3d5b83567acc5f5e5db835743f255b560535740b2da04a66b50ad1d8a"
+    },
+    {
+      "path": "dist/index.js.map",
+      "size": 433071,
+      "sha256": "918a7bd1740fd31d1c46e29b49ce88dc560a56cc9103dfcedce6fdad8af513bd"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "size": 2154,
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "size": 1566,
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "size": 2430659,
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "package.json",
+      "size": 2305,
+      "sha256": "bc06c5acf502cc590420433e1bb1dd8cfb5be30c769c3b3c54e8a9d1973aafaf"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "size": 4980,
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "size": 4994,
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/impact-xray-benchmark.mjs",
+      "size": 2791,
+      "sha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb"
+    },
+    {
+      "path": "scripts/impact-xray-demo.mjs",
+      "size": 2437,
+      "sha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7"
+    },
+    {
+      "path": "scripts/impact-xray-poc.mjs",
+      "size": 2126,
+      "sha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b"
+    },
+    {
+      "path": "scripts/impact-xray-rc-benchmark.mjs",
+      "size": 5529,
+      "sha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "size": 3579,
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/process-impact-xray-demo.mjs",
+      "size": 2490,
+      "sha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "size": 20688,
+      "sha256": "44eb1b1e37c218104e4229fbcddb58ca8aeff2ba09ed1320fe4659445d8f5a62"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "size": 6638,
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ]
+}

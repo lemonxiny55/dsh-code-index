@@ -1,0 +1,6 @@
+
+added 24 packages in 37s
+npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn allow-scripts   dsh-code-index@0.12.0 (prepare: tsup && tsup --config tsup.client.config.ts)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.

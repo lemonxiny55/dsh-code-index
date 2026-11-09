@@ -1,0 +1,38 @@
+[
+  {
+    "label": "node24",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "--reporter=json",
+      "--outputFile=D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\tests-node24.json"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "elapsedMs": 20984,
+    "testFiles": 30,
+    "total": 290,
+    "passed": 290,
+    "failed": 0,
+    "skipped": 0
+  },
+  {
+    "label": "node22",
+    "executable": "D:/DevCache/npm/_npx/d18f28baf1132559/node_modules/node/bin/node.exe",
+    "args": [
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "--reporter=json",
+      "--outputFile=D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\tests-node22.json"
+    ],
+    "cwd": "D:\\ChatGPTProjects\\dsh-code-index",
+    "exitCode": 0,
+    "elapsedMs": 18863,
+    "testFiles": 30,
+    "total": 290,
+    "passed": 290,
+    "failed": 0,
+    "skipped": 0
+  }
+]

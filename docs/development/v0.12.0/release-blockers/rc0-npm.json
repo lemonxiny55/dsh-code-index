@@ -1,0 +1,55 @@
+[
+  {
+    "mode": "auto-peer",
+    "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-npm-VLaYLN",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "install",
+      "--no-audit",
+      "--no-fund",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 217138,
+    "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+    "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+    "bypass": false,
+    "environment": {
+      "registry": "https://registry.npmjs.org",
+      "userconfig": "empty disposable file",
+      "globalconfig": "empty disposable file",
+      "cache": "fresh disposable cache"
+    },
+    "installed": {
+      "plugin": "0.12.0-rc.0",
+      "tools": "0.2.0-rc.2",
+      "cordis": "4.0.5"
+    }
+  },
+  {
+    "mode": "host-rc1",
+    "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-npm-dLuVW7",
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "install",
+      "--no-audit",
+      "--no-fund",
+      "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+      "@deepseek-ai/dsh-tools@0.2.2-rc.1"
+    ],
+    "exitCode": 1,
+    "elapsedMs": 80237,
+    "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\integration\\dsh-code-index-0.12.0-rc.0.tgz",
+    "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+    "bypass": false,
+    "environment": {
+      "registry": "https://registry.npmjs.org",
+      "userconfig": "empty disposable file",
+      "globalconfig": "empty disposable file",
+      "cache": "fresh disposable cache"
+    },
+    "failure": "ERESOLVE"
+  }
+]

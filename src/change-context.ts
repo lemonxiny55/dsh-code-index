@@ -23,6 +23,7 @@ import {
 } from './git-diff.js'
 import type { IndexedFile, RepoIndex, SymbolId, SymbolInfo, SymbolKind } from './types.js'
 import { indexIntegrityWarnings } from './integrity.js'
+import { renderEvidenceSummary, summarizeEvidence, type EvidenceGap, type EvidenceSummary } from './evidence-summary.js'
 
 /* -------------------------------------------------------------------------- */
 /* Types (design §3)                                                          */
@@ -100,6 +101,7 @@ export interface ChangeContextResult {
   impact: ImpactRow[]
   tests: AffectedTest[]
   warnings: string[]
+  evidence?: EvidenceSummary
   truncated: {
     callers: boolean
     dependents: boolean
@@ -127,6 +129,8 @@ export interface ChangeContextOptions {
   maxImpact?: number
   maxPaths?: number
   maxTests?: number
+  /** Context Pack selection hint only; does not change graph resolution/walk limits. */
+  focusFiles?: readonly string[]
 }
 
 /** Normalized input: exactly one selection mode. */
@@ -390,7 +394,22 @@ export async function buildChangeContext(
       frontier = next
     }
   }
-  const allImpact = [...impactById.values()].sort(compareByDepthThenSymbol)
+  const focusFiles = new Set(options.focusFiles ?? [])
+  const focusIds = new Set<SymbolId>()
+  if (focusFiles.size) {
+    const impactAncestors = new Map([...allCallers, ...impactById.values()].map(row => [row.symbol.id, row]))
+    for (const row of impactById.values()) if (focusFiles.has(row.symbol.file)) {
+      // Keep the already discovered intermediate hops with the requested file.
+      // Otherwise a generic name crowd can trim the parent and orphan its lead.
+      let cursor: ImpactRow | undefined = row
+      for (let depth = 0; cursor && depth < maxDepth; depth++) {
+        focusIds.add(cursor.symbol.id)
+        cursor = impactAncestors.get(cursor.via.toId)
+      }
+    }
+  }
+  const allImpact = [...impactById.values()].sort((a, b) =>
+    Number(focusIds.has(b.symbol.id)) - Number(focusIds.has(a.symbol.id)) || compareByDepthThenSymbol(a, b))
 
   // Shortest reverse-call paths from entry points to each changed symbol.
   const allPaths: SymbolPath[] = []
@@ -425,7 +444,7 @@ export async function buildChangeContext(
     tests: allTests.length > maxTests,
   }
 
-  return {
+  const result: ChangeContextResult = {
     root: index.root,
     source: input.kind,
     ...(baseRef !== undefined ? { baseRef } : {}),
@@ -439,6 +458,19 @@ export async function buildChangeContext(
     warnings,
     truncated,
   }
+  const gaps: EvidenceGap[] = []
+  if (!changedSymbols.length) gaps.push({ kind: 'not-found', code: 'no-changed-symbols', source: 'diff-or-selection' })
+  if (!allTests.length) gaps.push({ kind: 'not-found', code: 'no-test-candidates', source: 'indexed-test-discovery' })
+  if (Object.values(truncated).some(Boolean)) gaps.push({ kind: 'selection-limit', code: 'analysis-row-cap', source: 'change-analysis' })
+  for (const entry of result.unmapped.slice(0, 3)) gaps.push({
+    kind: entry.reason === 'base-content-unavailable' ? 'unavailable' : 'not-found', code: entry.reason,
+    source: entry.reason === 'base-content-unavailable' ? 'baseline-content' : 'diff-symbol-mapping', file: entry.file, side: entry.side,
+  })
+  result.evidence = summarizeEvidence(index, { graph, basis: 'change-analysis',
+    seeds: changedSymbols.filter(row => row.side === 'current').map(row => row.symbol),
+    resolutions: [...result.directCallers, ...result.impact, ...result.importDependents, ...result.paths].map(row => row.resolution),
+    testFiles: result.tests.map(row => row.file), gaps })
+  return result
 }
 
 function hopOf(edge: {
@@ -924,7 +956,7 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
       title: 'LIKELY AFFECTED TESTS',
       rows: result.tests.map(
         (test) =>
-          `${test.file} (${test.reason}${test.distance !== undefined ? `, distance ${test.distance}` : ''}) [${test.resolution}]`,
+          `${test.file} (candidate; not run; coverage unverified; ${test.reason}${test.distance !== undefined ? `, distance ${test.distance}` : ''}) [${test.resolution}]`,
       ),
     },
     {
@@ -940,12 +972,13 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
     result.baseRef !== undefined ? ` (base ${result.baseRef})` : ''
   }: ${result.changed.length} changed symbol(s)`
   const warningLines = result.warnings.map((warning) => `- ${warning}`)
+  let evidenceText = result.evidence ? renderEvidenceSummary(result.evidence) : ''
 
   const render = (kept: readonly number[]): string => {
     const lines: string[] = [summary]
     sections.forEach((section, index) => {
       if (section.rows.length === 0) {
-        lines.push(`${section.title}: (none)`)
+        lines.push(`${section.title}: ${section.title === 'DIRECT CALLERS' ? '(none found in current indexed static scope)' : '(none)'}`)
         return
       }
       lines.push(`${section.title}:`)
@@ -953,6 +986,7 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
       for (let row = 0; row < take; row++) lines.push(`  ${section.rows[row]}`)
       if (take < section.rows.length) lines.push(`  … (${section.rows.length - take} more)`)
     })
+    if (evidenceText) lines.push(evidenceText)
     lines.push('WARNINGS:')
     if (warningLines.length === 0) lines.push('  (none)')
     else for (const warning of warningLines) lines.push(`  ${warning}`)
@@ -971,6 +1005,9 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
   }
 
   const total = flattened.length
+  // Keep the existing minimum skeleton at small caps; summary details are
+  // optional and charged before row selection, never appended outside the cap.
+  if (render(countsFor(0)).length > maxChars) evidenceText = ''
   const full = render(sections.map((section) => section.rows.length))
   if (full.length <= maxChars) return full
 

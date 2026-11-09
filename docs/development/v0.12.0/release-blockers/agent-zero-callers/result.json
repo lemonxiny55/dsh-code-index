@@ -1,0 +1,67 @@
+{
+  "id": "zero-callers",
+  "withPlugin": true,
+  "model": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+  "args": [
+    "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+    "--profile",
+    "headless",
+    "--json",
+    "-"
+  ],
+  "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+  "prompt": "只调用 code_refs(symbol=\"lonelyMarker\") 和 code_context(task=\"解释 lonelyMarker 的实现及静态调用者\", budgetChars=3000)。随后直接用不超过150字解释 0 callers 只指当前索引及静态解析范围未发现调用者，不能推断运行时绝对无人调用。不要调用其他工具，不读取父目录，不修改文件。",
+  "maxTokens": 8192,
+  "maxRetries": 0,
+  "candidate": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-final-agent-JZcW3b",
+  "started": "2026-11-08T15:27:39.576Z",
+  "exitCode": 0,
+  "elapsedMs": 5143,
+  "calls": [
+    {
+      "type": "tool_call",
+      "callId": "call_00_jJacHxzUgdtjkUDMC1fh9976",
+      "tool": "code_refs",
+      "input": {
+        "symbol": "lonelyMarker"
+      }
+    },
+    {
+      "type": "tool_call",
+      "callId": "call_01_qQzzU34GxKIc1QGwE9QN6330",
+      "tool": "code_context",
+      "input": {
+        "task": "解释 lonelyMarker 的实现及静态调用者",
+        "budgetChars": 3000
+      }
+    }
+  ],
+  "results": [
+    {
+      "type": "tool_result",
+      "callId": "call_00_jJacHxzUgdtjkUDMC1fh9976",
+      "status": "completed",
+      "result": "definitions:\n  function lonelyMarker() — src/idle.js:1\n\ncallers (0):\n  (none found in current index/static resolution; not proof of no callers)\n\ncallees (0):\n  (none)"
+    },
+    {
+      "type": "tool_result",
+      "callId": "call_01_qQzzU34GxKIc1QGwE9QN6330",
+      "status": "completed",
+      "result": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a\nTask: 解释 lonelyMarker 的实现及静态调用者\n\nprimary: lonelyMarker src/idle.js:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function lonelyMarker() { return 77 }\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 836 / 3000 chars"
+    }
+  ],
+  "final": "lonelyMarker 定义于 src/idle.js:1，实现为无参数、直接 `return 77` 的导出函数，没有内部调用其他函数。静态解析显示 0 个调用者，但这只代表当前索引及静态解析范围内未发现调用者；索引外的文件、动态调用或字符串反射等运行时路径都能绕过静态分析，不能据此推断运行时绝对无人调用。",
+  "termination": {
+    "kind": "completed"
+  },
+  "transport": false,
+  "hostPermission": false,
+  "pluginErrors": []
+}

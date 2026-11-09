@@ -43,6 +43,99 @@ async function fixtureRepo(): Promise<string> {
 }
 
 describe('task-aware router', () => {
+  it('does not read English intent keywords from source-path components', async () => {
+    const root = await fixtureRepo()
+    for (const name of ['change', 'current', 'failure', 'coverage']) {
+      await writeFile(path.join(root, `src/${name}.ts`), `export function ${name}Marker() { return 1 }\n`)
+    }
+    const index = await buildIndex(root)
+    for (const name of ['change', 'current', 'failure', 'coverage']) {
+      expect(routeTask(`Explain src/${name}.ts`, index).includeChangeContext, name).toBe(false)
+    }
+    expect(routeTask('Fix failing tests/config.spec.ts', index).kind).toBe('test')
+    expect(routeTask('Review current changes in src/change.ts', index).kind).toBe('change')
+  })
+  it.each([
+    ['修复错误', 'Fix a bug', 'change'],
+    ['排查异常', 'Fix failure', 'change'],
+    ['修改代码', 'Change code', 'change'],
+    ['分析变更影响', 'Review change impact', 'change'],
+    ['查找测试', 'Find tests', 'test'],
+    ['分析测试覆盖', 'Analyze test coverage', 'test'],
+    ['查找函数', 'Where is the function?', 'exploration'],
+    ['定位实现', 'Locate implementation', 'exploration'],
+    ['理解架构', 'Explain architecture', 'architecture'],
+    ['分析调用流程', 'Explain call flow', 'architecture'],
+  ])('routes %s like %s', (chinese, english, kind) => {
+    expect(routeTask(chinese).kind).toBe(kind)
+    expect(routeTask(english).kind).toBe(kind)
+  })
+
+  it('separates path components, ordinary words, and explicit identifiers', async () => {
+    const root = await fixtureRepo()
+    await writeFile(path.join(root, 'src/repo-context.ts'), 'export function refreshIndex() { return 1 }\n')
+    await writeFile(path.join(root, 'src/helpers.ts'), 'function repo() { return 0 }\nfunction src() { return 1 }\nfunction git() { return 2 }\nfunction normalize() { return 3 }\n')
+    const index = await buildIndex(root)
+    for (const task of ['Analyze src/repo-context.ts', '定位 D:\\repo\\src\\repo-context.ts',
+      'Explain missing/repo-context.ts', 'Explain repo and src in a git repository']) {
+      expect(routeTask(task, index).exactSymbolNames).toEqual([])
+    }
+    for (const task of ['Explain `repo`', 'Find repo()', 'Find repo', 'Find function repo', '定位 repo 函数', 'Explain Namespace.repo()']) {
+      expect(routeTask(task, index).exactSymbolNames).toContain('repo')
+    }
+    expect(routeTask('Find `src` in src/repo-context.ts', index).exactSymbolNames).toContain('src')
+    expect(routeTask('Explain src/repo-context.ts and `repo`', index).exactSymbolNames).toEqual(['repo'])
+    expect(routeTask('Explain src/repo-context.tsx', index).mentionedFiles).toEqual([])
+    expect(routeTask('Explain normalize behavior', index)).toMatchObject({ kind: 'symbol', exactSymbolNames: ['normalize'] })
+    const result = await buildTaskContext(index, 'Explain `repo`', { maxSymbols: 1 })
+    expect(result.primarySymbols[0].symbol.name).toBe('repo')
+  })
+
+  it('retrieves equivalent Chinese and English config tasks without test-helper noise', async () => {
+    const root = await fixtureRepo()
+    await writeFile(path.join(root, 'tests/noise.spec.ts'), 'function config() { return "UNRELATED_SETUP" }\n')
+    const index = await buildIndex(root)
+    for (const task of ['修复配置加载错误，不要提交', 'Fix config loading bug']) {
+      const result = await buildTaskContext(index, task)
+      expect(result.route.kind).toBe('change')
+      expect(result.pack.items.some(item => item.file === 'src/config.ts' && item.code?.includes('return parseConfig()'))).toBe(true)
+      expect(JSON.stringify(result.pack)).not.toContain('UNRELATED_SETUP')
+    }
+  })
+
+  it('does not interpret a prohibition as a request to change code', () => {
+    expect(routeTask('定位并解释原因，不要修改代码').kind).toBe('exploration')
+    expect(routeTask('查找测试，无需修改代码').kind).toBe('test')
+    expect(routeTask('修复配置加载，补充测试，不要提交').kind).toBe('change')
+  })
+
+  it('keeps default and boundary budgets for text and structured output', async () => {
+    const index = await buildIndex(await fixtureRepo())
+    for (const [requested, normalized] of [[undefined, 5000], [-1, 300], [300, 300], [20_001, 20_000], [NaN, 5000], [Infinity, 5000]]) {
+      const result = await buildTaskContext(index, 'Explain loadConfig', { budgetChars: requested })
+      expect(result.pack.budget.budgetChars).toBe(normalized)
+      expect(renderTaskContext(result).length).toBeLessThanOrEqual(normalized!)
+      expect(JSON.stringify(result.pack).length).toBeLessThanOrEqual(normalized!)
+    }
+  })
+
+  it('distinguishes a test seed from a test declaration changed in Git', async () => {
+    const root = await fixtureRepo()
+    const file = path.join(root, 'tests/seed.spec.ts')
+    await writeFile(file, 'function selectedFixture() { return 1 }\n')
+    execFileSync('git', ['-C', root, 'add', '.'])
+    execFileSync('git', ['-C', root, 'commit', '-qm', 'test seed'])
+    const seed = await buildTaskContext(await buildIndex(root), 'Explain selectedFixture')
+    const seedTest = seed.pack.items.find(item => item.kind === 'test' && item.file === 'tests/seed.spec.ts')!
+    expect(seedTest.reason).toContain('not verified coverage')
+    expect(seedTest.reason).toContain('primary seed')
+    expect(seedTest.provenance).toContain('not Git change evidence')
+    await writeFile(file, 'function selectedFixture() { return 2 }\n')
+    const changed = await buildTaskContext(await buildIndex(root), 'Fix selectedFixture')
+    expect(changed.pack.items.find(item => item.kind === 'test' && item.file === 'tests/seed.spec.ts')).toMatchObject({
+      provenance: 'changed-test', reason: expect.stringContaining('test declaration intersects Git change'),
+    })
+  })
   it('matches camel/snake, path and signature terms for natural-language tasks', async () => {
     const root = await fixtureRepo()
     expect(contextTerms('loadConfig parse_config loading configs')).toEqual(expect.arrayContaining(['load', 'config', 'parse']))

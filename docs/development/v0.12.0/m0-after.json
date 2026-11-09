@@ -1,0 +1,1025 @@
+{
+  "method": "direct buildTaskContext on reduced frozen historical source; not Agent/Host",
+  "environment": {
+    "node": "v24.22.1",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "fixture": {
+    "before": "84412472b80c4d9a4edb00243e687df7731219bf",
+    "after": "e4c5808121c33740a56c35e131bc12372221538b",
+    "fileCount": 9
+  },
+  "measurements": [
+    {
+      "id": "T1-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r1",
+        "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "recalled": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "exploration",
+      "textChars": 6870,
+      "packChars": 7916,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "test candidates are static leads, not verified coverage"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 31,
+          "endLine": 35,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 126,
+          "endLine": 134,
+          "code": "    }\n    const ignoredByGit = (relativePath: string): boolean => layers.some(({ base, matcher }) => {\n      const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n      return scoped !== '..' && !scoped.startsWith('../') && matcher.ignores(scoped)\n    })\n    let entries\n    try {\n      entries = await readdir(absDir, { withFileTypes: true })\n    } catch {",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 88,
+          "endLine": 94,
+          "code": "      }\n    }\n    const scoped = base ? path.posix.relative(base, rel) : rel\n    if (matcher?.ignores(scoped)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "getIndex",
+          "file": "src/tools.ts",
+          "startLine": 48,
+          "endLine": 52,
+          "code": "export function getIndex(root: string, force = false): Promise<RepoIndex> {\n  return activeRepoContexts\n    ? activeRepoContexts.get(root, force)\n    : buildIndexWithCache(root, indexOptions(), undefined, force ? new Set(['*']) : undefined)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "caller",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 157,
+          "endLine": 165,
+          "code": "      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)\n    }\n    const watcher = chokidar.watch(context.root, {\n      ignored,\n      ignoreInitial: true,\n      persistent: true,",
+          "mode": "window",
+          "reason": "direct caller of isGitIgnoredPath",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 32,
+          "endLine": 40,
+          "code": "  })\n\n  it('indexes ts+js, skips node_modules and unsupported exts', async () => {\n    const index = await buildIndex(dir)\n    expect(index.files.map((f) => f.path)).toEqual(['lib/util.js', 'src/greet.ts'])\n    expect(index.files[1].symbols.map((s) => s.name)).toEqual(['greet', 'Util', 'run'])\n    expect(index.files[1].symbols[0].exported).toBe(true)\n    expect(index.files[0].symbols.map((s) => s.name)).toEqual(['helper'])\n",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "invalidateIndexCache",
+          "file": "src/tools.ts",
+          "startLine": 54,
+          "endLine": 56,
+          "code": "export function invalidateIndexCache(): void {\n  // Context ownership is scoped to plugin apply/dispose; no global snapshot survives reload.\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndexWithCache",
+          "file": "src/buildIndex.ts",
+          "startLine": 99,
+          "endLine": 107,
+          "code": "    }\n  }\n  const reusable = prev && cacheKeyForRoot(prev.root) === cacheKeyForRoot(root) ? prev : null\n  const fresh = await buildIndex(root, options, reusable, forcePaths)\n  if (prev && indexesEqual(prev, fresh)) {\n    if (loadedLegacy) await saveIndex(cachePath, fresh)\n    return loadedLegacy ? fresh : prev\n  }\n  await saveIndex(cachePath, fresh)",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "indexesEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 111,
+          "endLine": 116,
+          "code": "function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {\n  if (left.schemaVersion !== right.schemaVersion) return false\n  if (cacheKeyForRoot(left.root) !== cacheKeyForRoot(right.root)) return false\n  if (left.files.length !== right.files.length) return false\n  if (left.excludedDirs.length !== right.excludedDirs.length) return false\n  if (left.excludedDirs.some((value, index) => value !== right.excludedDirs[index])) return false",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "importsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 154,
+          "endLine": 180,
+          "code": "function importsEqual(\n  left: IndexedFile['importDetails'],\n  right: IndexedFile['importDetails'],\n): boolean {\n  const a = left ?? []\n  const b = right ?? []\n  if (a.length !== b.length) return false\n  return a.every((info, index) => {\n    const other = b[index]\n    if (\n      !other ||\n      info.specifier !== other.specifier ||\n      info.line !== other.line ||\n      info.kind !== other.kind ||\n      info.bindings.length !== other.bindings.length\n    ) {\n      return false\n    }\n    return info.bindings.every((binding, bindingIndex) => {\n      const candidate = other.bindings[bindingIndex]\n      return candidate !== undefined\n        && binding.imported === candidate.imported\n        && binding.local === candidate.local\n        && binding.kind === candidate.kind\n    })\n  })\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "callsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 186,
+          "endLine": 186,
+          "mode": "signature",
+          "reason": "matches task terms"
+        }
+      ]
+    },
+    {
+      "id": "T2-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r1",
+        "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "recalled": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "change",
+      "textChars": 6957,
+      "packChars": 7996,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 31,
+          "endLine": 35,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 126,
+          "endLine": 134,
+          "code": "    }\n    const ignoredByGit = (relativePath: string): boolean => layers.some(({ base, matcher }) => {\n      const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n      return scoped !== '..' && !scoped.startsWith('../') && matcher.ignores(scoped)\n    })\n    let entries\n    try {\n      entries = await readdir(absDir, { withFileTypes: true })\n    } catch {",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 88,
+          "endLine": 94,
+          "code": "      }\n    }\n    const scoped = base ? path.posix.relative(base, rel) : rel\n    if (matcher?.ignores(scoped)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "caller",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 157,
+          "endLine": 165,
+          "code": "      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)\n    }\n    const watcher = chokidar.watch(context.root, {\n      ignored,\n      ignoreInitial: true,\n      persistent: true,",
+          "mode": "window",
+          "reason": "direct caller of isGitIgnoredPath",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 32,
+          "endLine": 40,
+          "code": "  })\n\n  it('indexes ts+js, skips node_modules and unsupported exts', async () => {\n    const index = await buildIndex(dir)\n    expect(index.files.map((f) => f.path)).toEqual(['lib/util.js', 'src/greet.ts'])\n    expect(index.files[1].symbols.map((s) => s.name)).toEqual(['greet', 'Util', 'run'])\n    expect(index.files[1].symbols[0].exported).toBe(true)\n    expect(index.files[0].symbols.map((s) => s.name)).toEqual(['helper'])\n",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndexWithCache",
+          "file": "src/buildIndex.ts",
+          "startLine": 99,
+          "endLine": 107,
+          "code": "    }\n  }\n  const reusable = prev && cacheKeyForRoot(prev.root) === cacheKeyForRoot(root) ? prev : null\n  const fresh = await buildIndex(root, options, reusable, forcePaths)\n  if (prev && indexesEqual(prev, fresh)) {\n    if (loadedLegacy) await saveIndex(cachePath, fresh)\n    return loadedLegacy ? fresh : prev\n  }\n  await saveIndex(cachePath, fresh)",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "getIndex",
+          "file": "src/tools.ts",
+          "startLine": 48,
+          "endLine": 52,
+          "code": "export function getIndex(root: string, force = false): Promise<RepoIndex> {\n  return activeRepoContexts\n    ? activeRepoContexts.get(root, force)\n    : buildIndexWithCache(root, indexOptions(), undefined, force ? new Set(['*']) : undefined)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "invalidateIndexCache",
+          "file": "src/tools.ts",
+          "startLine": 54,
+          "endLine": 56,
+          "code": "export function invalidateIndexCache(): void {\n  // Context ownership is scoped to plugin apply/dispose; no global snapshot survives reload.\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "indexesEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 111,
+          "endLine": 116,
+          "code": "function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {\n  if (left.schemaVersion !== right.schemaVersion) return false\n  if (cacheKeyForRoot(left.root) !== cacheKeyForRoot(right.root)) return false\n  if (left.files.length !== right.files.length) return false\n  if (left.excludedDirs.length !== right.excludedDirs.length) return false\n  if (left.excludedDirs.some((value, index) => value !== right.excludedDirs[index])) return false",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "importsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 154,
+          "endLine": 180,
+          "code": "function importsEqual(\n  left: IndexedFile['importDetails'],\n  right: IndexedFile['importDetails'],\n): boolean {\n  const a = left ?? []\n  const b = right ?? []\n  if (a.length !== b.length) return false\n  return a.every((info, index) => {\n    const other = b[index]\n    if (\n      !other ||\n      info.specifier !== other.specifier ||\n      info.line !== other.line ||\n      info.kind !== other.kind ||\n      info.bindings.length !== other.bindings.length\n    ) {\n      return false\n    }\n    return info.bindings.every((binding, bindingIndex) => {\n      const candidate = other.bindings[bindingIndex]\n      return candidate !== undefined\n        && binding.imported === candidate.imported\n        && binding.local === candidate.local\n        && binding.kind === candidate.kind\n    })\n  })\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "callsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 186,
+          "endLine": 188,
+          "code": "function callsEqual(left: IndexedFile['calls'], right: IndexedFile['calls']): boolean {\n  const a = left ?? []\n  const b = right ?? []",
+          "mode": "window",
+          "reason": "matches task terms"
+        }
+      ]
+    },
+    {
+      "id": "T3-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r1",
+        "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "recalled": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "change",
+      "textChars": 6988,
+      "packChars": 7966,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "test candidates are static leads, not verified coverage"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredByGitLayers",
+          "file": "src/scan.ts",
+          "startLine": 64,
+          "endLine": 73,
+          "code": "function ignoredByGitLayers(layers: IgnoreLayer[], relativePath: string, isDirectory: boolean): boolean {\n  let ignored = false\n  for (const { base, matcher } of layers) {\n    const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n    if (!scoped || scoped === '..' || scoped.startsWith('../')) continue\n    const result = matcher.test(isDirectory ? `${scoped.replace(/\\/$/, '')}/` : scoped)\n    if (result.ignored || result.unignored) ignored = result.ignored\n  }\n  return ignored\n}",
+          "mode": "complete",
+          "reason": "matches task terms",
+          "change": "added"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 101,
+          "endLine": 107,
+          "code": "    // Reject ignored ancestors before reading their nested rules: Git cannot\n    // re-include a child while its parent directory remains excluded.\n    const probe = parts.slice(0, depth + 1).join('/')\n    if (ignoredByGitLayers(layers, probe, depth < parts.length - 1 || isDirectory)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 173,
+          "endLine": 181,
+          "code": "    watcher.on('all', (event, absolute) => {\n      if (context.disposed || !['add', 'change', 'unlink'].includes(event)) return\n      const rel = path.relative(context.root, absolute).split(path.sep).join('/')\n      if (!rel || ignoredRelativePath(rel, this.options.indexOptions())\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)) return\n      if (!SUPPORTED_EXTS.has(path.extname(rel).toLowerCase())) return\n      context.dirtyFiles.add(rel)\n      this.scheduleRefresh(context)\n    })",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 147,
+          "endLine": 155,
+          "code": "      const rel = relDir ? `${relDir}/${entry.name}` : entry.name\n      if (entry.isDirectory()) {\n        if (excluded.has(entry.name)) continue\n        if (!ignoredByGitLayers(layers, rel, true)) queue.push([abs, rel, layers])\n      } else if (entry.isFile() && !ignoredByGitLayers(layers, rel, false) && SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())) {\n        try {\n          const st = await stat(abs)\n          results.push({ abs, rel, mtimeMs: st.mtimeMs })\n        } catch {",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "caller",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "direct caller of scanRepo",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "caller",
+          "name": "refresh",
+          "file": "src/repo-context.ts",
+          "startLine": 134,
+          "endLine": 142,
+          "code": "    const generation = context.generation\n    const dirty = force ? new Set(['*']) : new Set(context.dirtyFiles)\n    context.dirtyFiles.clear()\n    const promise = buildIndexWithCache(context.root, this.options.indexOptions(), undefined, dirty)\n      .then((index) => {\n        if (!context.disposed && context.generation === generation) {\n          context.index = index\n          context.lastRefreshAt = Date.now()\n          this.options.onRefresh?.(context.root, index)",
+          "mode": "window",
+          "reason": "candidate transitive caller at depth 3; weakest path: name-only",
+          "resolution": "name-only",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 114,
+          "endLine": 122,
+          "code": "      await writeFile(path.join(root, 'src', 'local', 'hidden.ts'), 'export function hidden() {}\\n')\n      await writeFile(path.join(root, 'secrets', 'token.ts'), 'export function secret() {}\\n')\n\n      expect((await scanRepo(root)).map((file) => file.rel)).toEqual(['src/keep.generated.ts'])\n    } finally {\n      await rm(root, { recursive: true, force: true })\n    }\n  })\n})",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "IgnoreLayer",
+          "file": "src/scan.ts",
+          "startLine": 61,
+          "endLine": 61,
+          "code": "type IgnoreLayer = { base: string; matcher: ReturnType<typeof ignore> }",
+          "mode": "complete",
+          "reason": "matches task terms",
+          "change": "added"
+        },
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 32,
+          "endLine": 36,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManager",
+          "file": "src/repo-context.ts",
+          "startLine": 154,
+          "endLine": 162,
+          "code": "  private attachWatcher(context: RepoContext): void {\n    if (!this.options.watch) return\n    const options = this.options.indexOptions()\n    const ignored = (absolute: string, stats?: Stats): boolean => {\n      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        // Chokidar probes once before stat and again with the entry type.\n        // Wait for that type so a !dir/ whitelist cannot be pruned as a file.",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "canonicalRepoRoot",
+          "file": "src/repo-context.ts",
+          "startLine": 38,
+          "endLine": 41,
+          "code": "export async function canonicalRepoRoot(root: string): Promise<string> {\n  const resolved = await realpath(path.resolve(root))\n  return path.normalize(resolved)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        }
+      ]
+    },
+    {
+      "id": "T1-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r2",
+        "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "recalled": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "exploration",
+      "textChars": 6870,
+      "packChars": 7916,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "test candidates are static leads, not verified coverage"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 31,
+          "endLine": 35,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 126,
+          "endLine": 134,
+          "code": "    }\n    const ignoredByGit = (relativePath: string): boolean => layers.some(({ base, matcher }) => {\n      const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n      return scoped !== '..' && !scoped.startsWith('../') && matcher.ignores(scoped)\n    })\n    let entries\n    try {\n      entries = await readdir(absDir, { withFileTypes: true })\n    } catch {",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 88,
+          "endLine": 94,
+          "code": "      }\n    }\n    const scoped = base ? path.posix.relative(base, rel) : rel\n    if (matcher?.ignores(scoped)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "getIndex",
+          "file": "src/tools.ts",
+          "startLine": 48,
+          "endLine": 52,
+          "code": "export function getIndex(root: string, force = false): Promise<RepoIndex> {\n  return activeRepoContexts\n    ? activeRepoContexts.get(root, force)\n    : buildIndexWithCache(root, indexOptions(), undefined, force ? new Set(['*']) : undefined)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "caller",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 157,
+          "endLine": 165,
+          "code": "      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)\n    }\n    const watcher = chokidar.watch(context.root, {\n      ignored,\n      ignoreInitial: true,\n      persistent: true,",
+          "mode": "window",
+          "reason": "direct caller of isGitIgnoredPath",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 32,
+          "endLine": 40,
+          "code": "  })\n\n  it('indexes ts+js, skips node_modules and unsupported exts', async () => {\n    const index = await buildIndex(dir)\n    expect(index.files.map((f) => f.path)).toEqual(['lib/util.js', 'src/greet.ts'])\n    expect(index.files[1].symbols.map((s) => s.name)).toEqual(['greet', 'Util', 'run'])\n    expect(index.files[1].symbols[0].exported).toBe(true)\n    expect(index.files[0].symbols.map((s) => s.name)).toEqual(['helper'])\n",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "invalidateIndexCache",
+          "file": "src/tools.ts",
+          "startLine": 54,
+          "endLine": 56,
+          "code": "export function invalidateIndexCache(): void {\n  // Context ownership is scoped to plugin apply/dispose; no global snapshot survives reload.\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndexWithCache",
+          "file": "src/buildIndex.ts",
+          "startLine": 99,
+          "endLine": 107,
+          "code": "    }\n  }\n  const reusable = prev && cacheKeyForRoot(prev.root) === cacheKeyForRoot(root) ? prev : null\n  const fresh = await buildIndex(root, options, reusable, forcePaths)\n  if (prev && indexesEqual(prev, fresh)) {\n    if (loadedLegacy) await saveIndex(cachePath, fresh)\n    return loadedLegacy ? fresh : prev\n  }\n  await saveIndex(cachePath, fresh)",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "indexesEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 111,
+          "endLine": 116,
+          "code": "function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {\n  if (left.schemaVersion !== right.schemaVersion) return false\n  if (cacheKeyForRoot(left.root) !== cacheKeyForRoot(right.root)) return false\n  if (left.files.length !== right.files.length) return false\n  if (left.excludedDirs.length !== right.excludedDirs.length) return false\n  if (left.excludedDirs.some((value, index) => value !== right.excludedDirs[index])) return false",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "importsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 154,
+          "endLine": 180,
+          "code": "function importsEqual(\n  left: IndexedFile['importDetails'],\n  right: IndexedFile['importDetails'],\n): boolean {\n  const a = left ?? []\n  const b = right ?? []\n  if (a.length !== b.length) return false\n  return a.every((info, index) => {\n    const other = b[index]\n    if (\n      !other ||\n      info.specifier !== other.specifier ||\n      info.line !== other.line ||\n      info.kind !== other.kind ||\n      info.bindings.length !== other.bindings.length\n    ) {\n      return false\n    }\n    return info.bindings.every((binding, bindingIndex) => {\n      const candidate = other.bindings[bindingIndex]\n      return candidate !== undefined\n        && binding.imported === candidate.imported\n        && binding.local === candidate.local\n        && binding.kind === candidate.kind\n    })\n  })\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "callsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 186,
+          "endLine": 186,
+          "mode": "signature",
+          "reason": "matches task terms"
+        }
+      ]
+    },
+    {
+      "id": "T2-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r2",
+        "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "recalled": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "change",
+      "textChars": 6957,
+      "packChars": 7996,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 31,
+          "endLine": 35,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 126,
+          "endLine": 134,
+          "code": "    }\n    const ignoredByGit = (relativePath: string): boolean => layers.some(({ base, matcher }) => {\n      const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n      return scoped !== '..' && !scoped.startsWith('../') && matcher.ignores(scoped)\n    })\n    let entries\n    try {\n      entries = await readdir(absDir, { withFileTypes: true })\n    } catch {",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 88,
+          "endLine": 94,
+          "code": "      }\n    }\n    const scoped = base ? path.posix.relative(base, rel) : rel\n    if (matcher?.ignores(scoped)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "caller",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 157,
+          "endLine": 165,
+          "code": "      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)\n    }\n    const watcher = chokidar.watch(context.root, {\n      ignored,\n      ignoreInitial: true,\n      persistent: true,",
+          "mode": "window",
+          "reason": "direct caller of isGitIgnoredPath",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 32,
+          "endLine": 40,
+          "code": "  })\n\n  it('indexes ts+js, skips node_modules and unsupported exts', async () => {\n    const index = await buildIndex(dir)\n    expect(index.files.map((f) => f.path)).toEqual(['lib/util.js', 'src/greet.ts'])\n    expect(index.files[1].symbols.map((s) => s.name)).toEqual(['greet', 'Util', 'run'])\n    expect(index.files[1].symbols[0].exported).toBe(true)\n    expect(index.files[0].symbols.map((s) => s.name)).toEqual(['helper'])\n",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "buildIndexWithCache",
+          "file": "src/buildIndex.ts",
+          "startLine": 99,
+          "endLine": 107,
+          "code": "    }\n  }\n  const reusable = prev && cacheKeyForRoot(prev.root) === cacheKeyForRoot(root) ? prev : null\n  const fresh = await buildIndex(root, options, reusable, forcePaths)\n  if (prev && indexesEqual(prev, fresh)) {\n    if (loadedLegacy) await saveIndex(cachePath, fresh)\n    return loadedLegacy ? fresh : prev\n  }\n  await saveIndex(cachePath, fresh)",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "getIndex",
+          "file": "src/tools.ts",
+          "startLine": 48,
+          "endLine": 52,
+          "code": "export function getIndex(root: string, force = false): Promise<RepoIndex> {\n  return activeRepoContexts\n    ? activeRepoContexts.get(root, force)\n    : buildIndexWithCache(root, indexOptions(), undefined, force ? new Set(['*']) : undefined)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "invalidateIndexCache",
+          "file": "src/tools.ts",
+          "startLine": 54,
+          "endLine": 56,
+          "code": "export function invalidateIndexCache(): void {\n  // Context ownership is scoped to plugin apply/dispose; no global snapshot survives reload.\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "indexesEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 111,
+          "endLine": 116,
+          "code": "function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {\n  if (left.schemaVersion !== right.schemaVersion) return false\n  if (cacheKeyForRoot(left.root) !== cacheKeyForRoot(right.root)) return false\n  if (left.files.length !== right.files.length) return false\n  if (left.excludedDirs.length !== right.excludedDirs.length) return false\n  if (left.excludedDirs.some((value, index) => value !== right.excludedDirs[index])) return false",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "importsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 154,
+          "endLine": 180,
+          "code": "function importsEqual(\n  left: IndexedFile['importDetails'],\n  right: IndexedFile['importDetails'],\n): boolean {\n  const a = left ?? []\n  const b = right ?? []\n  if (a.length !== b.length) return false\n  return a.every((info, index) => {\n    const other = b[index]\n    if (\n      !other ||\n      info.specifier !== other.specifier ||\n      info.line !== other.line ||\n      info.kind !== other.kind ||\n      info.bindings.length !== other.bindings.length\n    ) {\n      return false\n    }\n    return info.bindings.every((binding, bindingIndex) => {\n      const candidate = other.bindings[bindingIndex]\n      return candidate !== undefined\n        && binding.imported === candidate.imported\n        && binding.local === candidate.local\n        && binding.kind === candidate.kind\n    })\n  })\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "callsEqual",
+          "file": "src/buildIndex.ts",
+          "startLine": 186,
+          "endLine": 188,
+          "code": "function callsEqual(left: IndexedFile['calls'], right: IndexedFile['calls']): boolean {\n  const a = left ?? []\n  const b = right ?? []",
+          "mode": "window",
+          "reason": "matches task terms"
+        }
+      ]
+    },
+    {
+      "id": "T3-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r2",
+        "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "recalled": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "missing": [],
+      "unrelatedPrimary": [],
+      "route": "change",
+      "textChars": 6988,
+      "packChars": 7966,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "test candidates are static leads, not verified coverage"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "ignoredByGitLayers",
+          "file": "src/scan.ts",
+          "startLine": 64,
+          "endLine": 73,
+          "code": "function ignoredByGitLayers(layers: IgnoreLayer[], relativePath: string, isDirectory: boolean): boolean {\n  let ignored = false\n  for (const { base, matcher } of layers) {\n    const scoped = base ? path.posix.relative(base, relativePath) : relativePath\n    if (!scoped || scoped === '..' || scoped.startsWith('../')) continue\n    const result = matcher.test(isDirectory ? `${scoped.replace(/\\/$/, '')}/` : scoped)\n    if (result.ignored || result.unignored) ignored = result.ignored\n  }\n  return ignored\n}",
+          "mode": "complete",
+          "reason": "matches task terms",
+          "change": "added"
+        },
+        {
+          "kind": "primary",
+          "name": "isGitIgnoredPath",
+          "file": "src/scan.ts",
+          "startLine": 101,
+          "endLine": 107,
+          "code": "    // Reject ignored ancestors before reading their nested rules: Git cannot\n    // re-include a child while its parent directory remains excluded.\n    const probe = parts.slice(0, depth + 1).join('/')\n    if (ignoredByGitLayers(layers, probe, depth < parts.length - 1 || isDirectory)) return true\n  }\n  return false\n}",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "attachWatcher",
+          "file": "src/repo-context.ts",
+          "startLine": 173,
+          "endLine": 181,
+          "code": "    watcher.on('all', (event, absolute) => {\n      if (context.disposed || !['add', 'change', 'unlink'].includes(event)) return\n      const rel = path.relative(context.root, absolute).split(path.sep).join('/')\n      if (!rel || ignoredRelativePath(rel, this.options.indexOptions())\n        || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)) return\n      if (!SUPPORTED_EXTS.has(path.extname(rel).toLowerCase())) return\n      context.dirtyFiles.add(rel)\n      this.scheduleRefresh(context)\n    })",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "scanRepo",
+          "file": "src/scan.ts",
+          "startLine": 147,
+          "endLine": 155,
+          "code": "      const rel = relDir ? `${relDir}/${entry.name}` : entry.name\n      if (entry.isDirectory()) {\n        if (excluded.has(entry.name)) continue\n        if (!ignoredByGitLayers(layers, rel, true)) queue.push([abs, rel, layers])\n      } else if (entry.isFile() && !ignoredByGitLayers(layers, rel, false) && SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())) {\n        try {\n          const st = await stat(abs)\n          results.push({ abs, rel, mtimeMs: st.mtimeMs })\n        } catch {",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "caller",
+          "name": "buildIndex",
+          "file": "src/buildIndex.ts",
+          "startLine": 25,
+          "endLine": 33,
+          "code": "  previous: RepoIndex | null = null,\n  forcePaths: ReadonlySet<string> = new Set(),\n): Promise<RepoIndex> {\n  const scanned = await scanRepo(root, options)\n\n  // Index stale/current state from the previous run by rel path.\n  const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))\n  const prevMtime = new Map((previous?.files ?? []).map((f) => [f.path, f.mtimeMs]))\n",
+          "mode": "window",
+          "reason": "direct caller of scanRepo",
+          "resolution": "exact",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "caller",
+          "name": "refresh",
+          "file": "src/repo-context.ts",
+          "startLine": 134,
+          "endLine": 142,
+          "code": "    const generation = context.generation\n    const dirty = force ? new Set(['*']) : new Set(context.dirtyFiles)\n    context.dirtyFiles.clear()\n    const promise = buildIndexWithCache(context.root, this.options.indexOptions(), undefined, dirty)\n      .then((index) => {\n        if (!context.disposed && context.generation === generation) {\n          context.index = index\n          context.lastRefreshAt = Date.now()\n          this.options.onRefresh?.(context.root, index)",
+          "mode": "window",
+          "reason": "candidate transitive caller at depth 3; weakest path: name-only",
+          "resolution": "name-only",
+          "provenance": "explicit-import-binding"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 41,
+          "endLine": 49,
+          "code": "  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {\n    const root = await repo()\n    const refreshed = vi.fn()\n    const manager = new RepoContextManager({\n      indexOptions: () => ({ excludeDirs: ['secrets'] }),\n      debounceMs: 100,\n      onRefresh: refreshed,\n    })\n    try {",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "test",
+          "name": "tests/buildIndex.spec.ts",
+          "file": "tests/buildIndex.spec.ts",
+          "startLine": 114,
+          "endLine": 122,
+          "code": "      await writeFile(path.join(root, 'src', 'local', 'hidden.ts'), 'export function hidden() {}\\n')\n      await writeFile(path.join(root, 'secrets', 'token.ts'), 'export function secret() {}\\n')\n\n      expect((await scanRepo(root)).map((file) => file.rel)).toEqual(['src/keep.generated.ts'])\n    } finally {\n      await rm(root, { recursive: true, force: true })\n    }\n  })\n})",
+          "mode": "window",
+          "reason": "candidate test (not verified coverage): test imports primary seed file",
+          "resolution": "import-scoped",
+          "provenance": "imports-changed-file"
+        },
+        {
+          "kind": "primary",
+          "name": "IgnoreLayer",
+          "file": "src/scan.ts",
+          "startLine": 61,
+          "endLine": 61,
+          "code": "type IgnoreLayer = { base: string; matcher: ReturnType<typeof ignore> }",
+          "mode": "complete",
+          "reason": "matches task terms",
+          "change": "added"
+        },
+        {
+          "kind": "primary",
+          "name": "ignoredRelativePath",
+          "file": "src/repo-context.ts",
+          "startLine": 32,
+          "endLine": 36,
+          "code": "function ignoredRelativePath(rel: string, options: IndexOptions): boolean {\n  const components = rel.split(/[\\\\/]+/).filter(Boolean)\n  const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])\n  return components.some((component) => excluded.has(component))\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManager",
+          "file": "src/repo-context.ts",
+          "startLine": 154,
+          "endLine": 162,
+          "code": "  private attachWatcher(context: RepoContext): void {\n    if (!this.options.watch) return\n    const options = this.options.indexOptions()\n    const ignored = (absolute: string, stats?: Stats): boolean => {\n      const rel = path.relative(context.root, absolute)\n      return rel === '..' || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)\n        || ignoredRelativePath(rel, options)\n        // Chokidar probes once before stat and again with the entry type.\n        // Wait for that type so a !dir/ whitelist cannot be pruned as a file.",
+          "mode": "window",
+          "reason": "matches task terms",
+          "change": "modified"
+        },
+        {
+          "kind": "primary",
+          "name": "canonicalRepoRoot",
+          "file": "src/repo-context.ts",
+          "startLine": 38,
+          "endLine": 41,
+          "code": "export async function canonicalRepoRoot(root: string): Promise<string> {\n  const resolved = await realpath(path.resolve(root))\n  return path.normalize(resolved)\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        }
+      ]
+    }
+  ]
+}

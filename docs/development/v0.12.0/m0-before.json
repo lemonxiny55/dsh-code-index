@@ -1,0 +1,601 @@
+{
+  "method": "direct buildTaskContext on reduced frozen historical source; not Agent/Host",
+  "environment": {
+    "node": "v24.22.1",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "fixture": {
+    "before": "84412472b80c4d9a4edb00243e687df7731219bf",
+    "after": "e4c5808121c33740a56c35e131bc12372221538b",
+    "fileCount": 9
+  },
+  "measurements": [
+    {
+      "id": "T1-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r1",
+        "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "recalled": [],
+      "missing": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "unrelatedPrimary": [],
+      "route": "ambiguous",
+      "textChars": 592,
+      "packChars": 707,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "no strong primary symbol; specify a symbol, path, or failing behavior",
+        "no related indexed test found"
+      ],
+      "items": [
+        {
+          "kind": "file",
+          "file": "src/tools.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/repo-context.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/scan.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/buildIndex.ts",
+          "reason": "repo map"
+        }
+      ]
+    },
+    {
+      "id": "T2-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r1",
+        "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "recalled": [],
+      "missing": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "unrelatedPrimary": [],
+      "route": "ambiguous",
+      "textChars": 592,
+      "packChars": 707,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "no strong primary symbol; specify a symbol, path, or failing behavior",
+        "no related indexed test found"
+      ],
+      "items": [
+        {
+          "kind": "file",
+          "file": "src/tools.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/repo-context.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/scan.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/buildIndex.ts",
+          "reason": "repo map"
+        }
+      ]
+    },
+    {
+      "id": "T3-C3-r1",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r1",
+        "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "recalled": [],
+      "missing": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "unrelatedPrimary": [
+        "tests/change-context.spec.ts:repo",
+        "tests/context-quality.spec.ts:repo",
+        "tests/provenance.spec.ts:repo"
+      ],
+      "route": "symbol",
+      "textChars": 6743,
+      "packChars": 7877,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/change-context.spec.ts",
+          "startLine": 83,
+          "endLine": 91,
+          "code": "function repo(files: IndexedFile[]): RepoIndex {\n  return {\n    schemaVersion: REPO_INDEX_SCHEMA_VERSION,\n    root: '/repo',\n    generatedAt: 0,\n    excludedDirs: [],\n    files,\n  }\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/context-quality.spec.ts",
+          "startLine": 15,
+          "endLine": 25,
+          "code": "async function repo(marker = 'loadConfig'): Promise<string> {\n  const root = await mkdtemp(path.join(os.tmpdir(), 'cix-quality-')); roots.push(root)\n  await mkdir(path.join(root, 'src')); await mkdir(path.join(root, 'tests'))\n  await writeFile(path.join(root, 'src/config.ts'), `export function ${marker}(config_path: string) {\\n  return config_path.trim()\\n}\\nexport function removed() { return 'old' }\\n`)\n  await writeFile(path.join(root, 'src/startup.ts'), `import { ${marker} } from './config'\\nexport function startup() { return ${marker}('input') }\\n`)\n  await writeFile(path.join(root, 'tests/config.spec.ts'), `import { ${marker} } from '../src/config'\\ntest('config whitespace', () => ${marker}(' input '))\\n`)\n  await writeFile(path.join(root, 'src/noise.ts'), 'export function unrelatedWidget() { return \"FORBIDDEN_WIDGET\" }\\n')\n  git(root, 'init', '-q'); git(root, 'config', 'user.email', 'test@example.invalid'); git(root, 'config', 'user.name', 'quality fixture')\n  git(root, 'add', '.'); git(root, 'commit', '-qm', 'baseline')\n  return root\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/provenance.spec.ts",
+          "startLine": 92,
+          "endLine": 100,
+          "code": "function repo(files: IndexedFile[]): RepoIndex {\n  return {\n    schemaVersion: REPO_INDEX_SCHEMA_VERSION,\n    root: '/repo',\n    generatedAt: 0,\n    excludedDirs: [],\n    files,\n  }\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 15,
+          "endLine": 21,
+          "code": "async function repo(): Promise<string> {\n  const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-watch-'))\n  roots.push(root)\n  await mkdir(path.join(root, '.git'))\n  await mkdir(path.join(root, 'src'))\n  return root\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContext",
+          "file": "src/repo-context.ts",
+          "startLine": 10,
+          "endLine": 22,
+          "code": "export interface RepoContext {\n  readonly root: string\n  index: RepoIndex | null\n  lastRefreshAt: number\n  readonly dirtyFiles: Set<string>\n  readonly ignoreMatcherCache: GitIgnoreMatcherCache\n  watcher: FSWatcher | null\n  debounceTimer: ReturnType<typeof setTimeout> | null\n  refresh: Promise<RepoIndex> | null\n  disposed: boolean\n  generation: number\n  lastUsedAt: number\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManagerOptions",
+          "file": "src/repo-context.ts",
+          "startLine": 24,
+          "endLine": 30,
+          "code": "export interface RepoContextManagerOptions {\n  indexOptions: () => IndexOptions\n  watch?: boolean\n  debounceMs?: number\n  maxContexts?: number\n  onRefresh?: (root: string, index: RepoIndex) => void\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManager",
+          "file": "src/repo-context.ts",
+          "startLine": 47,
+          "endLine": 52,
+          "code": "export class RepoContextManager {\n  private readonly contexts = new Map<string, RepoContext>()\n  private readonly options: Required<Omit<RepoContextManagerOptions, 'onRefresh'>> &\n    Pick<RepoContextManagerOptions, 'onRefresh'>\n  private disposed = false\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "contexts",
+          "file": "src/repo-context.ts",
+          "startLine": 48,
+          "endLine": 48,
+          "mode": "signature",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "GitIgnoreMatcherCache",
+          "file": "src/scan.ts",
+          "startLine": 55,
+          "endLine": 59,
+          "code": "export type GitIgnoreMatcherCache = Map<string, {\n  mtimeMs: number\n  size: number\n  matcher: ReturnType<typeof ignore>\n}>",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "ScannedFile",
+          "file": "src/scan.ts",
+          "startLine": 109,
+          "endLine": 115,
+          "code": "export interface ScannedFile {\n  /** Absolute path on disk. */\n  abs: string\n  /** Repo-relative path (forward-slash). */\n  rel: string\n  mtimeMs: number\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "test",
+          "name": "fixture",
+          "file": "tests/change-context.spec.ts",
+          "startLine": 110,
+          "endLine": 121,
+          "code": "const fixture = repo([\n  file(CORE, [helper, main], [call('helper', 6, main.id, 'main')]),\n  file(USE, [run], [call('main', 2, run.id, 'run')], [imp('./core', 'main')]),\n  file(DEEP, [deep], [call('run', 2, deep.id, 'deep')], [imp('./use', 'run')]),\n  file(CORE_TEST, [testHelper], [call('helper', 2, testHelper.id, 'testHelper')], [\n    imp('./core', 'helper'),\n  ]),\n  file(USE_SPEC, [sym(USE_SPEC, 'useSpec', 'function', 1)], [], [imp('./use')]),\n  file(DEEP_SPEC, [sym(DEEP_SPEC, 'deepSpec', 'function', 1)], [], [imp('./deep')]),\n  file(REF_TEST, [testRef], [call('helper', 2, testRef.id, 'testRef')]),\n  file(CORE_SPEC, [specFn]),\n])",
+          "mode": "complete",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/context-quality.spec.ts",
+          "file": "tests/context-quality.spec.ts",
+          "startLine": 70,
+          "endLine": 78,
+          "code": "    { name: 'ambiguous task', task: 'Please help', contract: contract({ mustInclude: ['no strong primary symbol'], forbiddenNoise: ['FORBIDDEN_WIDGET'], requiredReason: [], expectedSource: [] }) },\n    { name: 'hard budget', task: 'Explain loadConfig', contract: contract({ requiredProvenance: [], expectedSource: [], requiredReason: [], budget: 500 }) },\n  ]) it(fixture.name, async () => {\n    const root = await repo()\n    const result = await buildTaskContext(await buildIndex(root), fixture.task, { budgetChars: fixture.contract.budget })\n    await check(result.pack, fixture.contract)\n    expect(renderTaskContext(result).length).toBeLessThanOrEqual(fixture.contract.budget)\n    expect(result.budget.usedChars).toBe(renderTaskContext(result).length)\n  })",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/provenance.spec.ts",
+          "file": "tests/provenance.spec.ts",
+          "startLine": 108,
+          "endLine": 116,
+          "code": "      [sym('src/a.ts', 'helper', 'function', 1)],\n      [call('helper', 5)],\n    )\n    const index = repo([source])\n    const edges = resolveCallTargets(index, source, source.calls![0]!, buildSymbolTable(index), 8)\n    expect(edges).toHaveLength(1)\n    expect(edges[0]).toMatchObject({\n      targetId: 'sym:v1:src%2Fa.ts#function:helper@1',\n      provenance: 'local-unique',",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 39,
+          "endLine": 41,
+          "code": "\ndescribe('live RepoContext freshness', () => {\n  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        }
+      ]
+    },
+    {
+      "id": "T1-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T1-C3-r2",
+        "task": "用户反馈：Git 认为白名单目录下的源码没有被忽略，但代码索引查不到这些文件。根 .gitignore 使用 /extensions/*、!/extensions/keep/、!/extensions/keep/**，目录内还有嵌套规则。请在当前真实源码中定位并解释原因，追踪从工具到文件扫描的路径，给出文件行号与证据；区分已证实结论和推测。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "recalled": [],
+      "missing": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "buildIndex",
+        "buildIndexWithCache",
+        "getIndex"
+      ],
+      "unrelatedPrimary": [],
+      "route": "ambiguous",
+      "textChars": 592,
+      "packChars": 707,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "no strong primary symbol; specify a symbol, path, or failing behavior",
+        "no related indexed test found"
+      ],
+      "items": [
+        {
+          "kind": "file",
+          "file": "src/tools.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/repo-context.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/scan.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/buildIndex.ts",
+          "reason": "repo map"
+        }
+      ]
+    },
+    {
+      "id": "T2-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T2-C3-r2",
+        "task": "修复当前源码中 Gitignore 目录白名单与嵌套规则导致索引遗漏的问题：/extensions/*、!/extensions/keep/、!/extensions/keep/** 应保留 keep 内源码，排除 other；被排除父目录的子项不能单独恢复，嵌套规则及修改删除也必须正确。保持现有接口，补充或复用测试并实际运行相关测试。请报告根因、修改、测试命令及真实结果。不要提交或发布。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "recalled": [],
+      "missing": [
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher"
+      ],
+      "unrelatedPrimary": [],
+      "route": "ambiguous",
+      "textChars": 592,
+      "packChars": 707,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence",
+        "no strong primary symbol; specify a symbol, path, or failing behavior",
+        "no related indexed test found"
+      ],
+      "items": [
+        {
+          "kind": "file",
+          "file": "src/tools.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/repo-context.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/scan.ts",
+          "reason": "repo map"
+        },
+        {
+          "kind": "file",
+          "file": "src/buildIndex.ts",
+          "reason": "repo map"
+        }
+      ]
+    },
+    {
+      "id": "T3-C3-r2",
+      "input": {
+        "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.c-phase-2026-11-04-pom2YH\\trials\\T3-C3-r2",
+        "task": "当前工作区有一项 src/scan.ts 与 src/repo-context.ts 的真实 Gitignore 修复变更。请分析影响范围：识别直接调用者、间接工具入口、依赖和候选测试，并引用真实文件行号。区分静态关系、可能受影响和已经测试证明的行为，不要将同名命中视为确定调用，也不要将候选测试视为覆盖证明。不要修改代码。",
+        "budgetChars": 8000,
+        "outputFormat": "text"
+      },
+      "expectedSource": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "recalled": [],
+      "missing": [
+        "ignoredByGitLayers",
+        "isGitIgnoredPath",
+        "scanRepo",
+        "attachWatcher",
+        "refresh"
+      ],
+      "unrelatedPrimary": [
+        "tests/change-context.spec.ts:repo",
+        "tests/context-quality.spec.ts:repo",
+        "tests/provenance.spec.ts:repo"
+      ],
+      "route": "symbol",
+      "textChars": 6743,
+      "packChars": 7877,
+      "budgetChars": 8000,
+      "gaps": [
+        "budget omitted some evidence"
+      ],
+      "items": [
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/change-context.spec.ts",
+          "startLine": 83,
+          "endLine": 91,
+          "code": "function repo(files: IndexedFile[]): RepoIndex {\n  return {\n    schemaVersion: REPO_INDEX_SCHEMA_VERSION,\n    root: '/repo',\n    generatedAt: 0,\n    excludedDirs: [],\n    files,\n  }\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/context-quality.spec.ts",
+          "startLine": 15,
+          "endLine": 25,
+          "code": "async function repo(marker = 'loadConfig'): Promise<string> {\n  const root = await mkdtemp(path.join(os.tmpdir(), 'cix-quality-')); roots.push(root)\n  await mkdir(path.join(root, 'src')); await mkdir(path.join(root, 'tests'))\n  await writeFile(path.join(root, 'src/config.ts'), `export function ${marker}(config_path: string) {\\n  return config_path.trim()\\n}\\nexport function removed() { return 'old' }\\n`)\n  await writeFile(path.join(root, 'src/startup.ts'), `import { ${marker} } from './config'\\nexport function startup() { return ${marker}('input') }\\n`)\n  await writeFile(path.join(root, 'tests/config.spec.ts'), `import { ${marker} } from '../src/config'\\ntest('config whitespace', () => ${marker}(' input '))\\n`)\n  await writeFile(path.join(root, 'src/noise.ts'), 'export function unrelatedWidget() { return \"FORBIDDEN_WIDGET\" }\\n')\n  git(root, 'init', '-q'); git(root, 'config', 'user.email', 'test@example.invalid'); git(root, 'config', 'user.name', 'quality fixture')\n  git(root, 'add', '.'); git(root, 'commit', '-qm', 'baseline')\n  return root\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/provenance.spec.ts",
+          "startLine": 92,
+          "endLine": 100,
+          "code": "function repo(files: IndexedFile[]): RepoIndex {\n  return {\n    schemaVersion: REPO_INDEX_SCHEMA_VERSION,\n    root: '/repo',\n    generatedAt: 0,\n    excludedDirs: [],\n    files,\n  }\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "repo",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 15,
+          "endLine": 21,
+          "code": "async function repo(): Promise<string> {\n  const root = await mkdtemp(path.join(os.tmpdir(), 'dsh-code-index-watch-'))\n  roots.push(root)\n  await mkdir(path.join(root, '.git'))\n  await mkdir(path.join(root, 'src'))\n  return root\n}",
+          "mode": "complete",
+          "reason": "task names this symbol"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContext",
+          "file": "src/repo-context.ts",
+          "startLine": 10,
+          "endLine": 22,
+          "code": "export interface RepoContext {\n  readonly root: string\n  index: RepoIndex | null\n  lastRefreshAt: number\n  readonly dirtyFiles: Set<string>\n  readonly ignoreMatcherCache: GitIgnoreMatcherCache\n  watcher: FSWatcher | null\n  debounceTimer: ReturnType<typeof setTimeout> | null\n  refresh: Promise<RepoIndex> | null\n  disposed: boolean\n  generation: number\n  lastUsedAt: number\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManagerOptions",
+          "file": "src/repo-context.ts",
+          "startLine": 24,
+          "endLine": 30,
+          "code": "export interface RepoContextManagerOptions {\n  indexOptions: () => IndexOptions\n  watch?: boolean\n  debounceMs?: number\n  maxContexts?: number\n  onRefresh?: (root: string, index: RepoIndex) => void\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "RepoContextManager",
+          "file": "src/repo-context.ts",
+          "startLine": 47,
+          "endLine": 52,
+          "code": "export class RepoContextManager {\n  private readonly contexts = new Map<string, RepoContext>()\n  private readonly options: Required<Omit<RepoContextManagerOptions, 'onRefresh'>> &\n    Pick<RepoContextManagerOptions, 'onRefresh'>\n  private disposed = false\n",
+          "mode": "window",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "contexts",
+          "file": "src/repo-context.ts",
+          "startLine": 48,
+          "endLine": 48,
+          "mode": "signature",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "GitIgnoreMatcherCache",
+          "file": "src/scan.ts",
+          "startLine": 55,
+          "endLine": 59,
+          "code": "export type GitIgnoreMatcherCache = Map<string, {\n  mtimeMs: number\n  size: number\n  matcher: ReturnType<typeof ignore>\n}>",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "primary",
+          "name": "ScannedFile",
+          "file": "src/scan.ts",
+          "startLine": 109,
+          "endLine": 115,
+          "code": "export interface ScannedFile {\n  /** Absolute path on disk. */\n  abs: string\n  /** Repo-relative path (forward-slash). */\n  rel: string\n  mtimeMs: number\n}",
+          "mode": "complete",
+          "reason": "matches task terms"
+        },
+        {
+          "kind": "test",
+          "name": "fixture",
+          "file": "tests/change-context.spec.ts",
+          "startLine": 110,
+          "endLine": 121,
+          "code": "const fixture = repo([\n  file(CORE, [helper, main], [call('helper', 6, main.id, 'main')]),\n  file(USE, [run], [call('main', 2, run.id, 'run')], [imp('./core', 'main')]),\n  file(DEEP, [deep], [call('run', 2, deep.id, 'deep')], [imp('./use', 'run')]),\n  file(CORE_TEST, [testHelper], [call('helper', 2, testHelper.id, 'testHelper')], [\n    imp('./core', 'helper'),\n  ]),\n  file(USE_SPEC, [sym(USE_SPEC, 'useSpec', 'function', 1)], [], [imp('./use')]),\n  file(DEEP_SPEC, [sym(DEEP_SPEC, 'deepSpec', 'function', 1)], [], [imp('./deep')]),\n  file(REF_TEST, [testRef], [call('helper', 2, testRef.id, 'testRef')]),\n  file(CORE_SPEC, [specFn]),\n])",
+          "mode": "complete",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/context-quality.spec.ts",
+          "file": "tests/context-quality.spec.ts",
+          "startLine": 70,
+          "endLine": 78,
+          "code": "    { name: 'ambiguous task', task: 'Please help', contract: contract({ mustInclude: ['no strong primary symbol'], forbiddenNoise: ['FORBIDDEN_WIDGET'], requiredReason: [], expectedSource: [] }) },\n    { name: 'hard budget', task: 'Explain loadConfig', contract: contract({ requiredProvenance: [], expectedSource: [], requiredReason: [], budget: 500 }) },\n  ]) it(fixture.name, async () => {\n    const root = await repo()\n    const result = await buildTaskContext(await buildIndex(root), fixture.task, { budgetChars: fixture.contract.budget })\n    await check(result.pack, fixture.contract)\n    expect(renderTaskContext(result).length).toBeLessThanOrEqual(fixture.contract.budget)\n    expect(result.budget.usedChars).toBe(renderTaskContext(result).length)\n  })",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/provenance.spec.ts",
+          "file": "tests/provenance.spec.ts",
+          "startLine": 108,
+          "endLine": 116,
+          "code": "      [sym('src/a.ts', 'helper', 'function', 1)],\n      [call('helper', 5)],\n    )\n    const index = repo([source])\n    const edges = resolveCallTargets(index, source, source.calls![0]!, buildSymbolTable(index), 8)\n    expect(edges).toHaveLength(1)\n    expect(edges[0]).toMatchObject({\n      targetId: 'sym:v1:src%2Fa.ts#function:helper@1',\n      provenance: 'local-unique',",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        },
+        {
+          "kind": "test",
+          "name": "tests/repo-context.spec.ts",
+          "file": "tests/repo-context.spec.ts",
+          "startLine": 39,
+          "endLine": 41,
+          "code": "\ndescribe('live RepoContext freshness', () => {\n  it('coalesces external add/change/rename/delete events and respects ignored paths', async () => {",
+          "mode": "window",
+          "reason": "changed-test",
+          "resolution": "exact",
+          "provenance": "changed-test"
+        }
+      ]
+    }
+  ]
+}

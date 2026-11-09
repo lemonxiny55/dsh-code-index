@@ -6,6 +6,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import semver from 'semver'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { createHash } from 'node:crypto'
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 const packageJson = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'))
@@ -16,6 +17,9 @@ function shellQuote(value) {
 }
 
 function run(command, args, cwd) {
+  if (command === npm && process.env.CIX_NPM_CLI) return execFileSync(process.execPath, [process.env.CIX_NPM_CLI, ...args], {
+    cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'],
+  })
   const invocation = [command, ...args].map(shellQuote).join(' ')
   const commandArgs = process.platform === 'win32'
     ? ['/d', '/s', '/c', invocation]
@@ -71,6 +75,7 @@ const suppliedTarball = process.argv[2] ? path.resolve(process.argv[2]) : null
 const toolsVersion = process.argv[3] ?? '0.2.1-rc.3'
 const toolsRange = packageJson.peerDependencies['@deepseek-ai/dsh-tools']
 assert.ok(semver.satisfies(toolsVersion, toolsRange, { includePrerelease: true }), 'smoke requires a DSH tools version matching the peer range')
+assert.ok(semver.satisfies(toolsVersion, toolsRange), 'smoke requires normal npm prerelease peer compatibility')
 const packed = suppliedTarball ? null : parseJsonArrayOutput(run(npm, ['pack', '--ignore-scripts', '--json'], root), 'npm pack')
 if (packed) assert.equal(packed.length, 1, 'npm pack must produce exactly one artifact')
 const tarball = suppliedTarball ?? path.resolve(root, packed[0].filename)
@@ -96,13 +101,11 @@ const expectedFiles = [
 for (const file of expectedFiles) assert.ok(listed.has(file), `tarball is missing ${file}`)
 
 const smokeDir = mkdtempSync(path.join(os.tmpdir(), 'dsh-code-index-release-'))
+let nativeCalls = 0
 try {
   run(npm, ['init', '--yes'], smokeDir)
-  // npm's default peer checks exclude prereleases that DSH explicitly accepts.
-  // --force only prepares this disposable runtime fixture; it does not prove
-  // normal npm peer resolution. The range assertion above uses DSH's rules.
-  console.log('smoke fixture: npm --force bypasses peer resolution; validating DSH range and runtime only')
-  run(npm, ['install', '--ignore-scripts', '--no-save', '--force', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
+  console.log('smoke fixture: normal npm peer resolution; no force or legacy-peer-deps')
+  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
 
   const installedPackage = JSON.parse(
     readFileSync(path.join(smokeDir, 'node_modules', packageJson.name, 'package.json'), 'utf8'),
@@ -173,6 +176,26 @@ try {
   assert.ok(contextPack.items.some(item => item.kind === 'primary' && item.name === 'buildIndex'))
   assert.ok(contextPack.items.some(item => item.code !== undefined))
   assert.ok(JSON.stringify(contextPack).length <= 5000)
+  const evidenceRoot = path.join(smokeDir, 'evidence')
+  mkdirSync(path.join(evidenceRoot, '.git'), { recursive: true })
+  writeFileSync(path.join(evidenceRoot, 'core.ts'), 'export function lonelyMarker() { return 7 }\n')
+  for (const budgetChars of [300, 500, 5000]) {
+    const args = { repoRoot: evidenceRoot, task: '定位 lonelyMarker 的实现，不要修改代码', budgetChars }
+    const pack = await invoke('code_context', { ...args, outputFormat: 'pack' })
+    const text = await invoke('code_context', args)
+    assert.equal(pack.version, 1)
+    assert.ok(JSON.stringify(pack).length <= budgetChars)
+    assert.ok(text.length <= budgetChars)
+    assert.equal(text, plugin.renderContextPack(pack))
+    if (budgetChars === 5000) {
+      assert.equal(pack.evidence.scope, 'indexed-static-only')
+      assert.equal(pack.evidence.tests.verification, 'not-run')
+      assert.equal(pack.evidence.callers.zero[0].name, 'lonelyMarker')
+      assert.match(text, /not proof of no callers/)
+    }
+  }
+  assert.match(await invoke('code_refs', { repoRoot: evidenceRoot, symbol: 'lonelyMarker' }), /not proof of no callers/)
+  assert.match(await invoke('code_change_context', { repoRoot: evidenceRoot, files: ['core.ts'] }), /Evidence \(indexed static scope/)
   assert.match(await invoke('code_health', { repoRoot: root }), /repo health/)
 
   // Issue #2 must also be fixed in the installed tarball, not just TS sources.
@@ -280,6 +303,7 @@ try {
         signal: new AbortController().signal,
       })
       assert.equal(result.isError, false, JSON.stringify(result.content))
+      nativeCalls++
       return result
     }
     await nativeInvoke('code_index', { action: 'build', repoRoot: arkRoot })
@@ -323,6 +347,8 @@ try {
     assert.equal(xray.meta.edges.filter(e => e.kind === 'call').length, 6)
     assert.equal(xray.meta.edges.filter(e => e.kind === 'import').length, 3)
     assert.equal(xray.meta.tests.length, 1)
+    assert.equal(xray.meta.evidence.scope, 'indexed-static-only')
+    assert.equal(xray.meta.evidence.tests.verification, 'not-run')
     assert.deepEqual(new Set(xray.meta.edges.map(e => e.resolution)), new Set(['exact', 'import-scoped', 'name-only']))
     assert.ok(xray.meta.paths.some(p => p.edgeIds.length === 2 && p.resolution === 'exact' && !p.omitted))
     assert.ok(Buffer.byteLength(JSON.stringify(xray.meta)) <= plugin.XRAY_LIMITS.metadataBytes)
@@ -344,8 +370,20 @@ try {
     for (const dispose of nativeDisposers.reverse()) dispose()
     await nativeContext.fiber.dispose()
   }
-  console.log(`release smoke passed (DSH range/runtime; npm peer resolution bypassed) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
+  console.log(`release smoke passed (normal npm peer resolution and DSH runtime) for ${packageJson.name}@${packageJson.version} with dsh-tools@${toolsVersion}`)
+  if (process.env.CIX_SMOKE_RECORD) writeFileSync(process.env.CIX_SMOKE_RECORD, JSON.stringify({
+    node: process.version, version: installedPackage.version, toolsVersion, nativeCalls,
+    tarball, sha256: createHash('sha256').update(readFileSync(tarball)).digest('hex'),
+    installedRoot: path.join(smokeDir, 'node_modules', packageJson.name),
+    methods: ['clean npm install --ignore-scripts; normal peer resolution', 'plugin apply/dispose', 'real ToolRuntime dispatch'],
+    evidence: true, budgets: [300, 500, 5000], passed: true,
+  }, null, 2) + '\n')
 } finally {
-  rmSync(smokeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
+  if (process.env.CIX_SMOKE_KEEP === '1') console.log(`retained isolated smoke directory: ${smokeDir}`)
+  else {
+    assert.equal(path.dirname(path.resolve(smokeDir)), path.resolve(os.tmpdir()))
+    assert.ok(path.basename(smokeDir).startsWith('dsh-code-index-release-'))
+    rmSync(smokeDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
+  }
   if (!suppliedTarball) rmSync(tarball, { force: true })
 }

@@ -1,0 +1,22 @@
+{
+  "executable": "E:/DeepSeek Harness/DeepSeek Harness.exe",
+  "args": [
+    "--user-data-dir=D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\desktop-izOyaJ\\electron-user-data"
+  ],
+  "pid": 5132,
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\desktop-izOyaJ\\home",
+  "userData": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\desktop-izOyaJ\\electron-user-data",
+  "profile": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\desktop-izOyaJ\\home\\profiles\\desktop",
+  "installedRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\dsh-code-index-release-q295zp\\node_modules\\dsh-code-index",
+  "package": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "copiedHostReplay": "53ed13ca-4263-47e5-bd2e-d0de718fed9f",
+  "protectedBefore": {
+    "C:\\Users\\18439\\.dsh\\profiles\\desktop\\package.json": "42575ec0f83813bdb07242af54735b0f66bb126f4fa30653f1ad072f1b4912e4",
+    "C:\\Users\\18439\\.dsh\\profiles\\desktop\\cordis.patch.yml": "dce24767c874c2861ab4713bf5af90b7d77c36fe792b038f4746adf210c57624",
+    "C:\\Users\\18439\\.dsh\\.credentials.yaml": "963bde2b7b3011fbb8dfb558819d9745b29688052500382466db3cd3050fff44"
+  },
+  "method": "actual installed Desktop; isolated DSH_HOME and Electron userData, no stable profile changes",
+  "started": "2026-11-08T08:33:06.877Z",
+  "exitCode": 0
+}

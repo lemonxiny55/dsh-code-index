@@ -1,0 +1,222 @@
+{
+  "method": "bundle unchanged HEAD context.ts in isolated scratch; compare installed candidate routeTask; no workspace source replacement",
+  "node": "v24.19.0",
+  "baseline": "0afb59b",
+  "command": {
+    "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+    "args": [
+      "docs/development/v0.12.0/integration/router-comparison.mjs"
+    ],
+    "exitCode": 0
+  },
+  "measurements": [
+    {
+      "task": "Explain src/change.ts",
+      "before": {
+        "kind": "change",
+        "queries": [],
+        "mentionedFiles": [
+          "src/change.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "ambiguous",
+        "queries": [],
+        "mentionedFiles": [
+          "src/change.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "repo map",
+          "file relevance"
+        ],
+        "includeChangeContext": false,
+        "includeRelationships": false
+      }
+    },
+    {
+      "task": "Explain src/current.ts",
+      "before": {
+        "kind": "change",
+        "queries": [],
+        "mentionedFiles": [
+          "src/current.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "ambiguous",
+        "queries": [],
+        "mentionedFiles": [
+          "src/current.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "repo map",
+          "file relevance"
+        ],
+        "includeChangeContext": false,
+        "includeRelationships": false
+      }
+    },
+    {
+      "task": "Explain src/failure.ts",
+      "before": {
+        "kind": "change",
+        "queries": [],
+        "mentionedFiles": [
+          "src/failure.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "ambiguous",
+        "queries": [],
+        "mentionedFiles": [
+          "src/failure.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "repo map",
+          "file relevance"
+        ],
+        "includeChangeContext": false,
+        "includeRelationships": false
+      }
+    },
+    {
+      "task": "Explain src/coverage.ts",
+      "before": {
+        "kind": "test",
+        "queries": [],
+        "mentionedFiles": [
+          "src/coverage.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "ambiguous",
+        "queries": [],
+        "mentionedFiles": [
+          "src/coverage.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "repo map",
+          "file relevance"
+        ],
+        "includeChangeContext": false,
+        "includeRelationships": false
+      }
+    },
+    {
+      "task": "Fix failing tests/config.spec.ts",
+      "before": {
+        "kind": "test",
+        "queries": [
+          "failing",
+          "fail"
+        ],
+        "mentionedFiles": [
+          "tests/config.spec.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "ranked search",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "test",
+        "queries": [
+          "failing",
+          "fail"
+        ],
+        "mentionedFiles": [
+          "tests/config.spec.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "ranked search",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      }
+    },
+    {
+      "task": "Review current changes in src/change.ts",
+      "before": {
+        "kind": "change",
+        "queries": [
+          "review"
+        ],
+        "mentionedFiles": [
+          "src/change.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "ranked search",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      },
+      "after": {
+        "kind": "change",
+        "queries": [
+          "review"
+        ],
+        "mentionedFiles": [
+          "src/change.ts"
+        ],
+        "exactSymbolNames": [],
+        "sources": [
+          "change context",
+          "ranked search",
+          "call graph",
+          "file relevance"
+        ],
+        "includeChangeContext": true,
+        "includeRelationships": true
+      }
+    }
+  ]
+}

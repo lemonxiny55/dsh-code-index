@@ -1,0 +1,89 @@
+{
+  "method": "verify original entry and native search in actual Desktop; Entry.init fallback only if not active; no persistence API",
+  "status": "PASS",
+  "pid": 27404,
+  "node": "v24.21.0",
+  "entry": "dsh-code-index",
+  "state": 2,
+  "toolsBeforeOriginalInit": 7,
+  "names": [
+    "code_change_context",
+    "code_context",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "search": {
+    "callId": "restore:search",
+    "result": {
+      "isError": false,
+      "content": [
+        {
+          "type": "text",
+          "text": "export function normalize(input) — src/core.js:1"
+        },
+        {
+          "type": "text",
+          "text": "export function checkNormalize() [0.50] — tests/core.test.js:4"
+        }
+      ],
+      "meta": {
+        "shape": "matches",
+        "files": [
+          {
+            "path": "src/core.js",
+            "matches": [
+              {
+                "lineNumber": 1,
+                "line": "function normalize(input)"
+              }
+            ]
+          },
+          {
+            "path": "tests/core.test.js",
+            "matches": [
+              {
+                "lineNumber": 4,
+                "line": "function checkNormalize()"
+              }
+            ]
+          }
+        ],
+        "truncated": false,
+        "total": 2
+      },
+      "value": [
+        {
+          "name": "normalize",
+          "kind": "function",
+          "line": 1,
+          "endLine": 3,
+          "exported": true,
+          "signature": "normalize(input)",
+          "file": "src/core.js",
+          "id": "sym:v1:src%2Fcore.js#function:normalize@1",
+          "scope": [],
+          "ordinal": 1,
+          "score": 1
+        },
+        {
+          "name": "checkNormalize",
+          "kind": "function",
+          "line": 4,
+          "endLine": 4,
+          "exported": true,
+          "signature": "checkNormalize()",
+          "file": "tests/core.test.js",
+          "id": "sym:v1:tests%2Fcore.test.js#function:checkNormalize@1",
+          "scope": [],
+          "ordinal": 1,
+          "score": 0.5
+        }
+      ]
+    }
+  },
+  "at": "2026-11-08T15:05:51.028Z",
+  "note": "Recovery verified in new Desktop PID 27404 after prior Desktop PID 38628 exited; seven default tools were present before restoration fallback."
+}

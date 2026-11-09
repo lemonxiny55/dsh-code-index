@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -92,11 +92,15 @@ describe('tool execute — full tool path', () => {
     expect(searchB[0].file).toBe('src/core.ts')
   })
 
-  it('auto-resolves a null cwd to a git repo near the process cwd or reports a missing index', async () => {
-    // No session cwd: resolveRoot falls back to process.cwd(). We cannot rely
-    // on what that is under vitest, but the tool must not throw a raw error.
-    const out = (await tool('code_index').execute({}, {} as unknown as never)) as string
-    expect(typeof out).toBe('string')
-    expect(out.length).toBeGreaterThan(0)
+  it('auto-resolves a missing session cwd from the process cwd', async () => {
+    const root = await fixtureRepo()
+    // Keep this fallback check independent of a developer's untracked trees.
+    // Mock only cwd; root discovery, scanning and indexing still execute.
+    const cwd = vi.spyOn(process, 'cwd').mockReturnValue(root)
+    try {
+      const out = (await tool('code_index').execute({}, {} as unknown as never)) as string
+      expect(out).toContain(`repo: ${path.resolve(root)}`)
+      expect(out).toContain('files indexed: 2')
+    } finally { cwd.mockRestore() }
   })
 })

@@ -1,0 +1,56 @@
+{
+  "id": "impact",
+  "withPlugin": true,
+  "model": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "executable": "C:\\Users\\18439\\AppData\\Local\\Programs\\node-v24.19.0\\node.exe",
+  "args": [
+    "D:\\ChatGPTProjects\\dsh-code-index\\.rc3\\host\\node_modules\\@deepseek-ai\\dsh\\lib\\bin.js",
+    "--profile",
+    "headless",
+    "--json",
+    "-"
+  ],
+  "cwd": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a",
+  "prompt": "只使用一次 code_change_context（默认文本输出）分析当前小仓库修改。随后直接用不超过200字说明主要修改、潜在影响和候选测试，明确候选未执行、覆盖未验证。不要调用 read、pwsh、grep 或其他工具，不访问父目录，不修改文件，不运行测试。",
+  "maxTokens": 8192,
+  "maxRetries": 0,
+  "candidate": "0.12.0-rc.0",
+  "sha256": "15d2dd53f99cf5450e7ce40065010af15217ba0345ef68cfa9776e797a4c0752",
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-final-agent-Gbo1Jq",
+  "started": "2026-11-08T15:27:05.745Z",
+  "exitCode": 0,
+  "elapsedMs": 33818,
+  "calls": [
+    {
+      "type": "tool_call",
+      "callId": "call_00_J9VTEys3Xk7tj7OY4q646138",
+      "tool": "code_change_context",
+      "input": {
+        "outputFormat": "text",
+        "maxDepth": 3,
+        "maxPaths": 10,
+        "maxTests": 20,
+        "maxImpact": 40
+      }
+    }
+  ],
+  "results": [
+    {
+      "type": "tool_result",
+      "callId": "call_00_J9VTEys3Xk7tj7OY4q646138",
+      "status": "completed",
+      "result": "change context — source: git (base b29af922548704e939dc695d946f2ad3f511ae5d): 2 changed symbol(s)\nCHANGED:\n  modified function normalize(input) src/core.js:1 [exact]\n  added function lonelyMarker() src/idle.js:1 [exact]\nDIRECT CALLERS:\n  function localUsage() src/core.js:4 (called at src/core.js:4) [name-only]\n  function looseUsage() src/loose.js:2 (called at src/loose.js:2) [name-only]\n  function scopedUsage() src/scoped.js:2 (called at src/scoped.js:2) [import-scoped]\n  function startup() src/startup.js:2 (called at src/startup.js:2) [exact]\n  function checkNormalize() tests/core.test.js:4 (called at tests/core.test.js:4) [exact]\nIMPORT DEPENDENTS:\n  src/scoped.js imports src/core.js ('./core.js') [import-scoped]\n  src/startup.js imports src/core.js ('./core.js') [import-scoped]\n  tests/core.test.js imports src/core.js ('../src/core.js') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/core.js:4 function localUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/loose.js:2 function looseUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [name-only]\n  src/main.js:2 function main() → src/core.js:1 function normalize(input) (2 hop(s)) [exact]\n  src/scoped.js:2 function scopedUsage() → src/core.js:1 function normalize(input) (1 hop(s)) [import-scoped]\n  src/startup.js:2 function startup() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\n  tests/core.test.js:4 function checkNormalize() → src/core.js:1 function normalize(input) (1 hop(s)) [exact]\nTRANSITIVE IMPACT:\n  depth 2: function main() src/main.js:2 (reached via src/main.js:2) [exact]\nLIKELY AFFECTED TESTS:\n  tests/core.test.js (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 6, import-scoped 5, name-only 4.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for lonelyMarker (src/idle.js:1): none found in current index/static resolution; not proof of no callers.\nUnresolved call sites: 2; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+    }
+  ],
+  "final": "本次修改共两处：`src/core.js` 的 `normalize` 被修改，`src/idle.js` 新增 `lonelyMarker`，后者未发现调用者，不过这并不证明它确实没有调用者。\n\n影响：`normalize` 的直接调用方有 `src/core.js` 内部的 `localUsage`、`src/loose.js` 的 `looseUsage`、`src/scoped.js` 的 `scopedUsage`、`src/startup.js` 的 `startup`、`tests/core.test.js`，并且可传递影响到 `src/main.js` 的 `main`。这些调用关系到程序入口路径；其中的关系判定涉及 exact、import-scoped、name-only 三种标注，其中名称匹配的关系还需要进一步确认。\n\n候选测试是 `tests/core.test.js`；它尚未执行，也未验证覆盖情况。",
+  "termination": {
+    "kind": "completed"
+  },
+  "transport": false,
+  "hostPermission": false,
+  "pluginErrors": []
+}

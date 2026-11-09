@@ -1,0 +1,1 @@
+spawnSync pnpm.cmd EINVAL

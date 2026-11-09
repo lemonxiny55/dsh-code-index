@@ -1,4 +1,5 @@
 import type { ChangeContextResult, ImpactHop } from './change-context.js'
+import type { EvidenceSummary } from './evidence-summary.js'
 
 /** Browser-safe presentation contract. Persisted v1 PoCs remain readable. */
 export const XRAY_LIMITS = { nodes: 32, edges: 48, paths: 12, evidenceChars: 900, metadataBytes: 96_000 } as const
@@ -57,4 +58,6 @@ export interface ImpactXray {
   bounds?: { analysis: ChangeContextResult['truncated']; projection: boolean; text?: boolean; totals: { changed: number; callers: number; impact: number; imports: number; tests: number; paths: number; unmapped: number } }
   gaps: string[]
   truncated: boolean
+  /** Analysis boundary; projected row limits remain in bounds. */
+  evidence?: EvidenceSummary
 }

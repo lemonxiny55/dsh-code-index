@@ -1,0 +1,267 @@
+{
+  "decision": "RELEASE READY",
+  "releasePayloadCommit": "a371481c4aef07b5ecdb4484ebf85eb69d621dd4",
+  "packageVersion": "0.12.0",
+  "archive": "D:\\ChatGPTProjects\\dsh-code-index\\docs\\development\\v0.12.0\\release-blockers\\dsh-code-index-0.12.0.tgz",
+  "sha256": "318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b",
+  "payloadRefs": [
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "871e0e4e8880e2c4ae6da95f972c84627552e523",
+      "packageSha256": "af32232b5d75c5d6e25e442ab21d2836d03a00dfa51f3be0552d8cd3fa025e60"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "e2ebf23b577950a0c8b920ba86ed8e6023c11a38",
+      "packageSha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18"
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "de2da20f3e0995f0233fca5f323b552b6b4f35f2",
+      "packageSha256": "16b1c97b152f0a4352225c70a5f04e667a735bf9057496284ae2a84d5edcb524"
+    },
+    {
+      "path": "README.zh.md",
+      "gitBlob": "cdeb9f3381d688a3e94e5d9a6c0e2805dd93de7e",
+      "packageSha256": "d2443de304d7cc63263a2aeeabd48a4f01f1abdf8c0cbc420f6635ba285bef8d"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "gitBlob": "dd43b84d4a8f78174392b5f2d3e87c7314e9b8c6",
+      "packageSha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "gitBlob": "7da2fb887e32a2847be151d8163eb4c44fcc69ea",
+      "packageSha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca"
+    },
+    {
+      "path": "grammars/README.md",
+      "gitBlob": "f62442e183c74cf8f73008971c9d5ff4fac6a031",
+      "packageSha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "gitBlob": "b2932c4cf45b569423b1e418b22286d9cabd0cb5",
+      "packageSha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446"
+    },
+    {
+      "path": "package.json",
+      "gitBlob": "dd29099b4dcb460c1008f262ee6e6b6b491b4400",
+      "packageSha256": "d81fef338423f94020a9d17de666f18972b4617d1f5d02f3d6b3d59176cd1418"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "gitBlob": "e773113ed8da4284493a3879ac0d27d998f907a8",
+      "packageSha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "gitBlob": "864e140536ea1d63cefec3c83cb7f7023976e291",
+      "packageSha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a"
+    },
+    {
+      "path": "scripts/impact-xray-benchmark.mjs",
+      "gitBlob": "6edc058d75873ed28b9116cb4a1dc3e5c38e732b",
+      "packageSha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb"
+    },
+    {
+      "path": "scripts/impact-xray-demo.mjs",
+      "gitBlob": "6f7cf67e71139f27b30185ff1bc5cc75f9efd390",
+      "packageSha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7"
+    },
+    {
+      "path": "scripts/impact-xray-poc.mjs",
+      "gitBlob": "e12b49642bde34f8f350d318ece582f3ed046372",
+      "packageSha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b"
+    },
+    {
+      "path": "scripts/impact-xray-rc-benchmark.mjs",
+      "gitBlob": "37a927c38735b34e8ad2e1c8197696458055b3b7",
+      "packageSha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "gitBlob": "91c53486f6997be369339814efae979b329d9222",
+      "packageSha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811"
+    },
+    {
+      "path": "scripts/process-impact-xray-demo.mjs",
+      "gitBlob": "39dc43b9c179476548410de09c7d13e1ef881d73",
+      "packageSha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "gitBlob": "cb244b21cd59bd4efeeafe7081700758963d6bce",
+      "packageSha256": "92e16846131e579f14aa86b33a94bc172ecab32f38056e78b13d7b70179f1bc3"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "gitBlob": "305c3ec19da1b48bbb239a3acfd800123e17953e",
+      "packageSha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "path": "src/client/index.tsx",
+      "gitBlob": "9cd5e4c76299ad10cf9950cb4fb05e5327c93be8"
+    },
+    {
+      "path": "src/client/impact-xray.tsx",
+      "gitBlob": "6bc97d81144815215bb66a1b0ebf476aef9263a1"
+    },
+    {
+      "path": "src/impact-xray-model.ts",
+      "gitBlob": "8bde0b68c8301602a6c4fbda9ad4c86fe97d430b"
+    },
+    {
+      "path": "src/client/xray-locales.ts",
+      "gitBlob": "e788a675fda14217efdb59dd669a5b3e57c6cbe5"
+    },
+    {
+      "path": "src/buildIndex.ts",
+      "gitBlob": "58d4e802e5282384b802de2191fd8ec5cee96932"
+    },
+    {
+      "path": "src/extract.ts",
+      "gitBlob": "e74581989a414e595720b4812c217ffc99db69c9"
+    },
+    {
+      "path": "src/scan.ts",
+      "gitBlob": "ba87b57d2e36b2f1e964cc77d4fadf868dbfd1fd"
+    },
+    {
+      "path": "src/store.ts",
+      "gitBlob": "4d4f8c440ade9211a47bab69cf9207ca946c6e6b"
+    },
+    {
+      "path": "src/types.ts",
+      "gitBlob": "b9b3eaafc4cbd1ef159bb236231b112df4e72bbf"
+    },
+    {
+      "path": "src/integrity.ts",
+      "gitBlob": "093ac2458ec08c8c0aca5d761a1b58e41a6fc831"
+    },
+    {
+      "path": "src/repomap.ts",
+      "gitBlob": "9d15205c8198b0ab58ae21472363ba72c044f994"
+    },
+    {
+      "path": "src/refgraph.ts",
+      "gitBlob": "3621fa4ffa76fd993d33558fbc90162d74216759"
+    },
+    {
+      "path": "src/search.ts",
+      "gitBlob": "ede632f6e4d0356913e0cfb8358a2309df653cad"
+    },
+    {
+      "path": "src/health.ts",
+      "gitBlob": "55fcef70861e4e3c7fd37f0526bc7ecfe7afcd01"
+    },
+    {
+      "path": "src/git-diff.ts",
+      "gitBlob": "49c577c8519bc899a4cd4423673e9d0f6a42647d"
+    },
+    {
+      "path": "src/change-context.ts",
+      "gitBlob": "52f32bf85fd3c800fcf0a6c8fac7203230f281c2"
+    },
+    {
+      "path": "src/evidence-summary.ts",
+      "gitBlob": "58f80f7203c3a05759f4d6f45c5d7f3fc4d66b0f"
+    },
+    {
+      "path": "src/context-terms.ts",
+      "gitBlob": "b63c24f1274398c6bacdae1f557d1e37f561f402"
+    },
+    {
+      "path": "src/source-excerpts.ts",
+      "gitBlob": "0059c02b440bdd5c52cc7f0807180363a2f6b7af"
+    },
+    {
+      "path": "src/context-pack.ts",
+      "gitBlob": "23f16d9d1d0d6cc5321d2a5e038a34aadfd05957"
+    },
+    {
+      "path": "src/context.ts",
+      "gitBlob": "0fc2ce39d8460087023d14a4c2026e995fdea813"
+    },
+    {
+      "path": "src/tools.ts",
+      "gitBlob": "c46ee12aa173fd74519c0d7588dc1e073d6131b0"
+    },
+    {
+      "path": "src/config.ts",
+      "gitBlob": "4ed576011c45dcd9c380b35e5b468b0ca0d71ff8"
+    },
+    {
+      "path": "src/repo-context.ts",
+      "gitBlob": "232330c7d3b72769f04731cf67784b00090313b9"
+    },
+    {
+      "path": "src/impact-xray-model.ts",
+      "gitBlob": "8bde0b68c8301602a6c4fbda9ad4c86fe97d430b"
+    },
+    {
+      "path": "src/impact-xray.ts",
+      "gitBlob": "1725a9a4813ca74102ebafb5e7f92a137b2369ea"
+    },
+    {
+      "path": "src/settings.ts",
+      "gitBlob": "d894f82832688e6d8af32dcc4546be6030786d2e"
+    },
+    {
+      "path": "src/index.ts",
+      "gitBlob": "435d8ed5a205250ba5cd8f896b300ae4538d2190"
+    }
+  ],
+  "normalNpm": [
+    {
+      "mode": "auto-peer",
+      "exitCode": 0,
+      "installed": {
+        "plugin": "0.12.0",
+        "tools": "0.2.2-rc.1",
+        "cordis": "4.1.0"
+      }
+    },
+    {
+      "mode": "host-rc1",
+      "exitCode": 0,
+      "installed": {
+        "plugin": "0.12.0",
+        "tools": "0.2.2-rc.1",
+        "cordis": "4.1.0"
+      }
+    }
+  ],
+  "realAgentRechecks": [
+    {
+      "id": "impact",
+      "exitCode": 0,
+      "calls": 1,
+      "termination": {
+        "kind": "completed"
+      }
+    },
+    {
+      "id": "zero-callers",
+      "exitCode": 0,
+      "calls": 2,
+      "termination": {
+        "kind": "completed"
+      }
+    }
+  ],
+  "peerTests": "6/6",
+  "typecheck": 0,
+  "fullSuite": "Previous 290/290 on Node22 and Node24 retained; not rerun this round",
+  "stable": {
+    "root": "D:/ChatGPTProjects/dsh-code-index",
+    "packageVersion": "0.11.2",
+    "manifestMatchesOriginal": true,
+    "distMatchesRc0": true,
+    "desktopProfileAndAuthenticationUnchanged": true
+  },
+  "published": false
+}

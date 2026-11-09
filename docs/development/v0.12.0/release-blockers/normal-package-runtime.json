@@ -1,0 +1,122 @@
+{
+  "method": "normally installed package; real Cordis/SystemPrompt/ToolRuntime and public shared execution pipeline",
+  "installed": {
+    "plugin": "0.12.0",
+    "tools": "0.2.2-rc.1",
+    "cordis": "4.1.0"
+  },
+  "archiveSha256": "318d91bdd82d75b683fe1d1f9635f45169b059248fefdc246d1d2f088bb1296b",
+  "names": [
+    "code_change_context",
+    "code_context",
+    "code_health",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "results": [
+    {
+      "name": "code_context",
+      "args": {
+        "task": "解释 normalNpmMarker 的实现和静态调用者",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-runtime-BPyEBl\nTask: 解释 normalNpmMarker 的实现和静态调用者\n\nprimary: normalNpmMarker core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function normalNpmMarker() { return 12 }\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for normalNpmMarker (core.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 813 / 5000 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\cix-normal-runtime-BPyEBl",
+          "task": "解释 normalNpmMarker 的实现和静态调用者",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function normalNpmMarker() { return 12 }",
+              "kind": "primary",
+              "name": "normalNpmMarker",
+              "reason": "task names this symbol"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage",
+            "no related indexed test found"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 813,
+            "packChars": 984,
+            "truncated": false
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 1,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 0,
+              "import-scoped": 0,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 1,
+              "zero": [
+                {
+                  "file": "core.ts",
+                  "line": 1,
+                  "name": "normalNpmMarker"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "code_refs",
+      "args": {
+        "symbol": "normalNpmMarker"
+      },
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "definitions:\n  function normalNpmMarker() — core.ts:1\n\ncallers (0):\n  (none found in current index/static resolution; not proof of no callers)\n\ncallees (0):\n  (none)"
+          }
+        ],
+        "value": "definitions:\n  function normalNpmMarker() — core.ts:1\n\ncallers (0):\n  (none found in current index/static resolution; not proof of no callers)\n\ncallees (0):\n  (none)"
+      }
+    }
+  ],
+  "disposedToolCount": 0,
+  "status": "PASS"
+}

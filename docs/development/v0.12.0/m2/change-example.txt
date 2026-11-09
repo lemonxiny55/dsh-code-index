@@ -1,0 +1,24 @@
+change context — source: files: 2 changed symbol(s)
+CHANGED:
+  modified function target() src/core.ts:3 [exact]
+  modified function idle() src/core.ts:4 [exact]
+DIRECT CALLERS:
+  function target() src/core.ts:3 (called at src/core.ts:3) [exact]
+  function weak() src/weak.ts:1 (called at src/weak.ts:1) [name-only]
+IMPORT DEPENDENTS:
+  tests/core.spec.ts imports src/core.ts ('../src/core') [import-scoped]
+SHORTEST PATHS TO ENTRY POINTS:
+  src/weak.ts:1 function weak() → src/core.ts:3 function target() (1 hop(s)) [name-only]
+TRANSITIVE IMPACT: (none)
+LIKELY AFFECTED TESTS:
+  tests/core.spec.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]
+UNMAPPED: (none)
+Evidence (indexed static scope; unscanned files not assessed):
+Index: 5 parsed, 0 partial, 0 failed, 0 unknown.
+Selected relationship items: exact 1, import-scoped 1, name-only 2.
+Tests: 1 candidate(s), not run; not verified coverage.
+0 callers for idle (src/core.ts:4): none found in current index/static resolution; not proof of no callers.
+Unresolved call sites: 1; target unknown, external not established.
+Evidence gaps: not-found/unresolved-call-targets.
+WARNINGS:
+  (none)

@@ -1,0 +1,25 @@
+Task context — symbol
+Repo/worktree: C:\Users\18439\AppData\Local\Temp\cix-evidence-fbBu5G
+Task: Explain idle
+
+primary: idle src/core.ts:4-4 [current]
+Reason: task names this symbol
+Source (complete):
+export function idle() { return 0 }
+
+test: tests/core.spec.ts tests/core.spec.ts:1-3 [current]
+Reason: candidate test (not verified coverage): test imports primary seed file
+Relationship provenance: import-scoped; imports-changed-file
+Source (window):
+import { target } from '../src/core'
+test('candidate only', () => target())
+
+
+Evidence (indexed static scope; unscanned files not assessed):
+Index: 5 parsed, 0 partial, 0 failed, 0 unknown.
+Selected relationship items: exact 0, import-scoped 0, name-only 0.
+Tests: 1 candidate(s), not run; not verified coverage.
+0 callers for idle (src/core.ts:4): none found in current index/static resolution; not proof of no callers.
+
+Gaps: indexed static only; test candidates are static leads, not verified coverage
+Budget: 982 / 5000 chars

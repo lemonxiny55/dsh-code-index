@@ -1,0 +1,8 @@
+{"type":"session","sessionId":"session-af91f178-e3ef-42bb-b963-db668d9fdc85","cwd":"D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v012-rc-7g2zpb\\host-run-b8nRbM\\repos\\a"}
+{"type":"status","phase":"turn_start","turn":1}
+{"type":"status","phase":"step_start","turn":1,"step":1}
+{"type":"thinking","text":""}
+{"type":"text","text":"RC_OK"}
+{"type":"status","phase":"step_end","turn":1,"step":1,"usage":{"inputTokens":6111,"outputTokens":3,"cacheReadTokens":640,"cacheWriteTokens":0,"totalTokens":6754}}
+{"type":"status","phase":"turn_end","turn":1,"reason":{"kind":"completed"}}
+{"type":"final","text":"RC_OK"}

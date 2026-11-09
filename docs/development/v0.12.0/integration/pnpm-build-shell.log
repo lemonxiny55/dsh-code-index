@@ -1,0 +1,68 @@
+✓ Lockfile passes supply-chain policies (verified 8d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1
++
+Progress: resolved 1, reused 1, downloaded 0, added 1, done
+
+devDependencies:
++ semver 7.8.5
+
+. prepare$ tsup && tsup --config tsup.client.config.ts
+. prepare: CLI Building entry: src/index.ts
+. prepare: CLI Using tsconfig: tsconfig.json
+. prepare: CLI tsup v8.5.1
+. prepare: CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\tsup.config.ts
+. prepare: CLI Target: node22
+. prepare: CLI Cleaning output folder
+. prepare: ESM Build start
+. prepare: ESM dist\index.js     199.91 KB
+. prepare: ESM dist\index.js.map 422.42 KB
+. prepare: ESM ⚡️ Build success in 37ms
+. prepare: DTS Build start
+. prepare: DTS ⚡️ Build success in 1658ms
+. prepare: DTS dist\index.d.ts 29.46 KB
+. prepare: CLI Building entry: {"client":"src/client/index.tsx"}
+. prepare: CLI Using tsconfig: tsconfig.json
+. prepare: CLI tsup v8.5.1
+. prepare: CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\tsup.client.config.ts
+. prepare: CLI Target: es2022
+. prepare: CJS Build start
+. prepare: CJS dist\client.js     60.72 KB
+. prepare: CJS dist\client.js.map 76.57 KB
+. prepare: CJS ⚡️ Build success in 15ms
+. prepare: Done
+Done in 3.8s using pnpm v11.22.0
+[WARN] Request took 12325ms: https://registry.npmjs.org/pnpm
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 11.22.0 → 12.18.0.      │
+   │     Changelog: https://pnpm.io/v/12.18.0      │
+   │   To update, run: corepack use pnpm@12.18.0   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+$ tsup && tsup --config tsup.client.config.ts
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\tsup.config.ts
+CLI Target: node22
+CLI Cleaning output folder
+ESM Build start
+ESM dist\index.js     199.91 KB
+ESM dist\index.js.map 422.42 KB
+ESM ⚡️ Build success in 31ms
+DTS Build start
+DTS ⚡️ Build success in 1558ms
+DTS dist\index.d.ts 29.46 KB
+CLI Building entry: {"client":"src/client/index.tsx"}
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\tsup.client.config.ts
+CLI Target: es2022
+CJS Build start
+CJS dist\client.js     60.72 KB
+CJS dist\client.js.map 76.57 KB
+CJS ⚡️ Build success in 12ms

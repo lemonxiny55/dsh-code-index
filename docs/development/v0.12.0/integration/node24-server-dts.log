@@ -1,0 +1,13 @@
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: D:\ChatGPTProjects\dsh-code-index\tsup.config.ts
+CLI Target: node22
+CLI Cleaning output folder
+ESM Build start
+ESM dist\index.js     199.91 KB
+ESM dist\index.js.map 422.42 KB
+ESM ⚡️ Build success in 30ms
+DTS Build start
+DTS ⚡️ Build success in 2140ms
+DTS dist\index.d.ts 29.46 KB

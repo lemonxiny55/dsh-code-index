@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { buildIndex } from '../src/buildIndex.js'
+import { buildChangeContext } from '../src/change-context.js'
 import { buildTaskContext, renderTaskContext } from '../src/context.js'
 import type { ContextPack } from '../src/context-pack.js'
 import { RepoContextManager } from '../src/repo-context.js'
@@ -60,6 +61,36 @@ const contract = (overrides: Partial<QualityContract> = {}): QualityContract => 
 })
 
 describe('Context Pack quality contracts', () => {
+  it('keeps task-file transitive evidence before a generic name crowd exhausts the impact cap', async () => {
+    const root = await repo()
+    await writeFile(path.join(root, 'src/scan.ts'), 'export function scanRepo() { return 1 }\n')
+    await writeFile(path.join(root, 'src/indexing.ts'), "import { scanRepo } from './scan'\nexport function buildIndex() { return scanRepo() }\nexport function buildIndexWithCache() { return buildIndex() }\n")
+    const manager = "import { buildIndexWithCache } from './indexing'\nexport class Manager {\n  attachWatcher() { return 1 }\n  get() { return this.attachWatcher() }\n  refresh() { return buildIndexWithCache() }\n}\n"
+    await writeFile(path.join(root, 'src/repo-context.ts'), manager)
+    await writeFile(path.join(root, 'src/crowd.ts'), Array.from({ length: 55 }, (_, i) =>
+      `export function crowd${i}(cache: Map<string, string>) { return cache.get('FORBIDDEN_CROWD') }`).join('\n'))
+    git(root, 'add', '.'); git(root, 'commit', '-qm', 'bounded impact baseline')
+    await writeFile(path.join(root, 'src/scan.ts'), 'export function scanRepo() { return 2 }\n')
+    await writeFile(path.join(root, 'src/repo-context.ts'), manager.replace('return 1', 'return 2'))
+    const index = await buildIndex(root)
+    const input = { kind: 'git' as const, root, baseRef: 'HEAD' }
+    const unfocused = await buildChangeContext(index, input)
+    const focused = await buildChangeContext(index, input, { focusFiles: ['src/scan.ts', 'src/repo-context.ts'] })
+    expect(unfocused.impact.some(row => row.symbol.name === 'refresh')).toBe(false)
+    expect(focused.impact.length).toBeLessThanOrEqual(40)
+    expect(focused.impact).toContainEqual(expect.objectContaining({
+      symbol: expect.objectContaining({ name: 'refresh', file: 'src/repo-context.ts' }),
+      depth: 3, resolution: 'name-only', via: expect.objectContaining({ resolution: 'exact' }),
+    }))
+    const result = await buildTaskContext(index, '分析 src/scan.ts 与 src/repo-context.ts 的变更影响', { maxSymbols: 2 })
+    expect(result.pack.items).toContainEqual(expect.objectContaining({
+      name: 'refresh', kind: 'caller', resolution: 'name-only',
+    }))
+    // A containing class may already supply these lines; preserve its source
+    // once and the caller role as metadata instead of duplicating the body.
+    expect(result.pack.items.some(item => item.file === 'src/repo-context.ts' && item.code?.includes('return buildIndexWithCache()'))).toBe(true)
+    expect(JSON.stringify(result.pack)).not.toContain('FORBIDDEN_CROWD')
+  }, 15_000)
   for (const fixture of [
     { name: 'exact symbol', task: 'Explain loadConfig', contract: contract({ forbiddenNoise: ['FORBIDDEN_WIDGET', 'removed'], requiredProvenance: ['exact'] }) },
     { name: 'natural-language bug', task: 'Fix config loading whitespace bug', contract: contract({ requiredReason: ['matches task terms'] }) },
