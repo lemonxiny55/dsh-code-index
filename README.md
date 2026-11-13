@@ -5,18 +5,19 @@
 
 English | [中文](README.zh.md)
 
-## v0.12.0 release preparation — not published
+## v0.12.0 released — Reliable Context & Evidence
 
-**Reliable Context & Evidence** is prepared on the local development branch. The package version is 0.12.0, but it has not been published. The current public stable release is v0.11.2; the installation examples below still refer to that release.
+**dsh-code-index v0.12.0 is now available**, released on 2026-11-09. Better code context, more trustworthy evidence. [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.12.0) · [npm v0.12.0](https://www.npmjs.com/package/dsh-code-index/v/0.12.0).
 
 - Deterministic Chinese task routing, path-aware identifier detection and source-first candidate selection improve Context Packs while retaining English task regressions.
-- Optional `ContextPack.evidence` describes indexed-file diagnostics, static relationship grades, candidate tests and detected gaps. `parsed` is not semantic completeness; zero static callers does not prove there are no callers.
+- Optional **Evidence Summary** (`ContextPack.evidence`) describes indexed-file diagnostics, static relationship grades, candidate tests and detected gaps. `parsed` is not semantic completeness; zero static callers does not prove there are no callers.
 - Evidence may be compacted or omitted under the same text/JSON budget. Missing optional evidence means **not provided**, not “no gaps.” Default 5000 and 300–20000 character bounds remain unchanged.
-- Test associations are leads, not execution, passing tests or verified coverage. Real Agent validation is a separate release gate; unexecuted or blocked runs are never counted as passed.
+- Test associations are leads, not execution, passing tests or verified coverage. Static relationships are not guaranteed runtime behavior.
+- npm peer compatibility is fixed for the declared DSH 0.2.1 / 0.2.2 RC groups under normal npm resolution, without `--force` or `--legacy-peer-deps`; this does not verify every future SDK or host.
 
-See the [candidate integration record](docs/development/v0.12.0/INTEGRATION.zh-CN.md) and [M2 evidence contract](docs/development/v0.12.0/M2.zh-CN.md) for actual methods, outcomes and limits.
+Historical validation: the [candidate integration record](docs/development/v0.12.0/INTEGRATION.zh-CN.md), [M2 evidence contract](docs/development/v0.12.0/M2.zh-CN.md) and [final release-readiness checks](docs/development/v0.12.0/RELEASE_READINESS.zh-CN.md) retain their original methods, failures and limits. Their pre-publication status describes that stage; the [published release record](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.12.0) records publication and public-install verification.
 
-The [final release-blocker check](docs/development/v0.12.0/RELEASE_READINESS.zh-CN.md) records normal npm peer resolution and bounded real-Agent rechecks. Future RC groups are not automatically treated as verified.
+**Validation boundaries:** public-install verification used SDK 0.2.2-rc.1 / Cordis 4.1.0 (8 tools registered, 7 pipeline calls passed, no registrations after disposal). This was SDK/runtime smoke, not a repeated Desktop UI gate. Earlier Desktop 0.2.2-rc.1 checks covered graph/text rendering; extra edge-click interactions were tested in Web. Two focused real-Agent rechecks completed with a temporary 8192-token cap and only the requested code tools; they do not establish unrestricted shell access, arbitrary task success or model/network reliability.
 
 ## Impact X-Ray
 
@@ -24,19 +25,19 @@ The [final release-blocker check](docs/development/v0.12.0/RELEASE_READINESS.zh-
 
 A local [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) plugin that turns a code diff into an inspectable map of potentially affected callers, imports and test leads. Click a relationship to check its source file, line and evidence.
 
-**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Until v0.12.0 is published, install the stable **v0.11.2** in a compatible DSH profile:
+**For DSH users working with existing code:** inspect likely ripple effects before asking an AI agent to edit. Install the released **v0.12.0** in a compatible DSH profile:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.2
+dsh plugin --profile desktop add dsh-code-index@0.12.0
 ```
 
-Restart Desktop after installation. v0.11.1 declares DSH `0.2.0-rc.2`, `0.2.1-rc.2` and `0.2.1-rc.3` host groups; for Desktop rc.3, the compatibility warning was reported gone, but full Electron Desktop feature and Agent acceptance is not claimed. [Install details](#install) · [v0.11.1 verification and limits](RELEASE_EVIDENCE_v0.11.1.md).
+Restart Desktop after installation and keep its first-party DSH packages on a matched version group. See [install requirements](#install) and the [v0.12.0 release evidence](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.12.0) for the separate SDK, Desktop and Agent validation boundaries.
 
 **Watch the 30-second real Desktop demo:** a change to `normalize()` → inspect callers and a test lead → click a relationship to see the actual source location.
 
 ![Impact X-Ray in actual DSH Desktop: changed normalize function, callers, tests and clickable source evidence](assets/impact-xray-mvp.gif)
 
-[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [Install v0.11.1 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.11.1) · [Project](https://github.com/lemonxiny55/dsh-code-index)
+[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [Install v0.12.0 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.12.0) · [Project](https://github.com/lemonxiny55/dsh-code-index)
 
 The recording is an actual DSH Desktop interaction with the `0.11.0-dev.0` MVP in Desktop 0.2.1-rc.2. It shows existing analysis and source evidence; it is not a model-driven Agent latency or success claim. See [recording provenance](assets/impact-xray-mvp-demo.md).
 
@@ -46,7 +47,7 @@ The recording is an actual DSH Desktop interaction with the `0.11.0-dev.0` MVP i
 
 Impact X-Ray is an interactive view of the existing `code_change_context` analysis and source reader; it does not add an impact-analysis engine. Relationships are static evidence, not guaranteed runtime impact.
 
-**Verified:** full X-Ray UI in Desktop 0.2.1-rc.2; Web/Host rc.3 verified for all eight tools and X-Ray (no model-driven Agent run). Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks, not full X-Ray UI. Keep each host's first-party packages on the same declared version. [v0.11.1 evidence and limits](RELEASE_EVIDENCE_v0.11.1.md).
+**Historical v0.11.1 verification:** full X-Ray UI in Desktop 0.2.1-rc.2; Web/Host rc.3 verified for all eight tools and X-Ray (no model-driven Agent run). Desktop 0.2.0-rc.2 passed installation and ToolRuntime checks, not full X-Ray UI. Keep each host's first-party packages on the same declared version. [v0.11.1 evidence and limits](RELEASE_EVIDENCE_v0.11.1.md).
 
 Ask the Agent to call `code_change_context` with:
 
@@ -82,7 +83,7 @@ Give your [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ag
 - **Evidence you can inspect:** inclusion reasons are separate from `exact` / `import-scoped` / `name-only` relationship provenance. No probability or confidence estimate is invented.
 - **Local and current:** isolated repo/worktree indexes, external add/change/delete freshness, no external indexing API key. Existing full/compact surfaces and v0.8 configuration remain supported.
 
-Introduced in [v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and retained in v0.11.0: ArkTS `.ets` files use a dedicated, pinned parser to find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The installed package passed real DSH Desktop Agent verification and Node 22/24 release checks. Partial or failed parses report bounded diagnostics.
+Introduced in [v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) and retained in v0.12.0: ArkTS `.ets` files use a dedicated, pinned parser to find component structs, methods, fields and decorators, navigate statically identifiable ETS/TS references, and retrieve actual source in bounded Context Packs. The v0.10.0 installed package passed real DSH Desktop Agent verification and Node 22/24 release checks; those are historical checks, not a new v0.12.0 ArkTS acceptance run. Partial or failed parses report bounded diagnostics.
 
 This supports syntax and static code context, without full HarmonyOS SDK semantics, HAR/module-alias resolution or state-update/UI rerender graphs. See [release evidence](RELEASE_EVIDENCE_v0.10.0.md), [ArkTS PoC](ARKTS_POC_v0.10.0.md) and [the bilingual announcement](assets/v0.10.0-announcement.md). The v0.9.1 Gitignore directory whitelist fix remains included.
 
@@ -100,16 +101,16 @@ This supports syntax and static code context, without full HarmonyOS SDK semanti
 
 ## Quick start
 
-Requires Node 22/24. The v0.11.2 candidate allows DSH `>=0.2.0-rc.2`, including prereleases; matching first-party packages should be used. Later versions may attempt to load but have not all been verified. Install into an existing Desktop profile using its bundled `dsh` CLI:
+Requires Node ≥22; Node 22/24 are the documented validation environments. Use matching first-party DSH packages and the [declared peer requirements](#install). Install into an existing Desktop profile using its bundled `dsh` CLI:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.11.2
+dsh plugin --profile desktop add dsh-code-index@0.12.0
 ```
 
 Restart Desktop after installation. For a matching Web profile:
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.11.2
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.12.0
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -161,13 +162,13 @@ Plus an optional **auto-injected system prompt section** (`code-index:repo-map`,
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-The v0.11.2 candidate declares `@deepseek-ai/dsh-tools: >=0.2.0-rc.2`, with no upper bound. DSH includes prereleases when checking this range, so future DSH versions may attempt to load the plugin; this does not mean every version has been verified. Use matching DSH/dsh-tools groups. The plugin surface remains a preview API, and future releases may introduce incompatibilities.
+v0.12.0 declares `@deepseek-ai/dsh-tools: >=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3` and optional `@deepseek-ai/cordis: ^4.0.1`. The added RC ranges fix normal npm peer resolution for those version groups. DSH host checks include prereleases, while npm uses its default prerelease rules; a version allowed to load is not necessarily verified. Keep DSH/dsh-tools and other first-party packages matched. The plugin API remains a preview API.
 
-Desktop checks DSH peer requirements before activation. v0.10.0's exact `0.2.0-rc.2` pin is rejected by DSH `0.2.1-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 removes that enumeration. Its development dependency stays on `0.2.0-rc.2` for backward API checks.
+Compatibility history: v0.10.0 pinned `0.2.0-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 broadened the host range. v0.12.0 adds explicit RC ranges for npm peer resolution. The development dependency remains `0.2.0-rc.2` for backward API checks; it does not describe the SDK used in every runtime check.
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.11.2
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.12.0
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
