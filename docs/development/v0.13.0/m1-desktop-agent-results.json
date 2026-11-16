@@ -1,0 +1,40 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "sessionId": "review-v013-1794854429283",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 0,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "error",
+      "error": {
+        "message": "DeepSeek Messages transport failed",
+        "code": "TRANSPORT"
+      }
+    }
+  },
+  "final": null,
+  "events": [
+    {
+      "type": "turn/end",
+      "seq": 31,
+      "time": 1794854444999,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "error",
+          "error": {
+            "message": "DeepSeek Messages transport failed",
+            "code": "TRANSPORT"
+          }
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true
+}

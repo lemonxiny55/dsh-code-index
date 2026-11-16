@@ -112,7 +112,9 @@ export interface ChangeContextResult {
 }
 
 export interface CodeChangeContextArgs {
-  outputFormat?: 'text' | 'xray'
+  outputFormat?: 'text' | 'xray' | 'review'
+  /** Applies only to the full Review Brief envelope; text/xray retain their contracts. */
+  budgetChars?: number
   repoRoot?: string
   diff?: string
   baseRef?: string

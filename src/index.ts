@@ -89,6 +89,8 @@ export type {
 export { tools } from './tools.js'
 export { buildImpactXray, XRAY_LIMITS } from './impact-xray.js'
 export type { ImpactXray, XrayNode, XrayEdge, XrayPath, XrayEvidence } from './impact-xray-model.js'
+export { buildReviewBrief, renderReviewBrief, REVIEW_LIMITS } from './review-brief.js'
+export type { ReviewBrief, ReviewBriefV1, OmittedReviewBrief, ReviewOutput, ReviewRepository, ReviewChange, ReviewRelation } from './review-brief.js'
 export { Config } from './config.js'
 
 import { activateRepoContextManager, clearRepoContextManager, getIndex, invalidateIndexCache, tools } from './tools.js'

@@ -2,6 +2,8 @@
 
 日期：2026-11-16（Asia/Shanghai）。主题：**Review-Ready Context — Agent-Ready Context & Change Review**。
 
+2026-11-17 更新：用户已恢复开发，[M1 Review Brief](M1_REVIEW_BRIEF.zh-CN.md) 已接入 `code_change_context(outputFormat: "review")`，开发版本0.13.0-dev.0；自动AgentTeam交接继续暂缓。最终接续worktree为 `.worktrees/v0.13.0`，分支 `codex/review-ready-context-v0.13.0-m1`，原开发树保留。下文保留第一阶段的原始草案和当时边界，最终接口/实测以M1记录为准。
+
 ## 当前状态
 
 已完成公开源码竞争调研、rc.3 分层兼容检查和 Review Brief 内部原型。建议下一阶段正式实现可选 Review Brief；自动 AgentTeam 上下文交接保留为研究项。本轮没有向用户工具注册 `review` 输出，也没有把原型计作已交付的公共功能。

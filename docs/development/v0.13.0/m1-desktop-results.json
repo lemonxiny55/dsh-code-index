@@ -1,0 +1,188 @@
+{
+  "status": "PASS",
+  "method": "existing Desktop official Inspector + temporary candidate alias through native Host pipeline",
+  "stablePluginReplaced": false,
+  "namesBefore": [
+    "code_change_context",
+    "code_context",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "namesAfter": [
+    "code_change_context",
+    "code_context",
+    "code_index",
+    "code_map",
+    "code_refs",
+    "code_search",
+    "code_symbols"
+  ],
+  "aliasRemoved": true,
+  "clientRenderingVerified": false,
+  "results": [
+    {
+      "budgetChars": 5000,
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-w0XpAa\\a\nHEAD: df99b9e0352399502d5d175c3f7bffb7d4d73871; base: df99b9e0352399502d5d175c3f7bffb7d4d73871; dirty: true\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3202/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-w0XpAa\\a\nHEAD: df99b9e0352399502d5d175c3f7bffb7d4d73871; base: df99b9e0352399502d5d175c3f7bffb7d4d73871; dirty: true\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3202/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-w0XpAa\\a",
+              "head": "df99b9e0352399502d5d175c3f7bffb7d4d73871",
+              "baseRef": "df99b9e0352399502d5d175c3f7bffb7d4d73871",
+              "dirty": true,
+              "indexedAt": 1794855340961,
+              "observedAt": 1794855364998,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function ALPHA_MARKER() { return 43 }",
+                "name": "ALPHA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 3202
+            }
+          }
+        }
+      }
+    },
+    {
+      "budgetChars": 300,
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief omitted: budget. Static only; tests not run."
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief omitted: budget. Static only; tests not run.",
+          "brief": {
+            "version": 1,
+            "status": "omitted",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "gaps": [
+              "budget: all evidence and repository metadata omitted"
+            ],
+            "budget": {
+              "limit": 300,
+              "usedChars": 267
+            }
+          }
+        }
+      }
+    }
+  ]
+}

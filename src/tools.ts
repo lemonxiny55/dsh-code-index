@@ -19,6 +19,7 @@ import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
 import { indexIntegrityWarnings } from './integrity.js'
 import { buildImpactXray } from './impact-xray.js'
+import { buildReviewBrief } from './review-brief.js'
 
 /** Minimal structural types for the harness surfaces we touch. */
 interface ToolCwdContext {
@@ -389,8 +390,12 @@ export const tools = [
       'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Every relation is labeled exact / import-scoped / name-only, so confidence is explicit. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
     parameters: {
       outputFormat: {
-        type: 'string', enum: ['text', 'xray'],
-        description: 'Default text preserves the canonical string. xray requests the experimental bounded Impact X-Ray evidence snapshot.',
+        type: 'string', enum: ['text', 'xray', 'review'],
+        description: 'Default text preserves the canonical string. xray requests Impact X-Ray. review requests a bounded Review Brief with source, static impact, candidate tests and evidence gaps.',
+      },
+      budgetChars: {
+        type: 'number',
+        description: 'Review output only: full {text, brief} JSON character budget, 300..20000 (default 5000). Does not change text/xray.',
       },
       repoRoot: {
         type: 'string',
@@ -398,7 +403,7 @@ export const tools = [
       },
       diff: {
         type: 'string',
-        description: 'Caller-supplied unified diff text; when present no git command runs.',
+        description: 'Caller-supplied unified diff text; without baseRef no Git commands run, including review metadata. An explicit baseRef requests Git baseline reads.',
       },
       baseRef: {
         type: 'string',
@@ -449,7 +454,8 @@ export const tools = [
     }),
     async execute(
       args: {
-        outputFormat?: 'text' | 'xray'
+        outputFormat?: 'text' | 'xray' | 'review'
+        budgetChars?: number
         repoRoot?: string
         diff?: string
         baseRef?: string
@@ -472,6 +478,9 @@ export const tools = [
           maxPaths: args.maxPaths,
           maxTests: args.maxTests,
         })
+        if (args.outputFormat === 'review') {
+          return JSON.parse(JSON.stringify(await buildReviewBrief(index, result, args.budgetChars))) as Record<string, JsonValue>
+        }
         if (args.outputFormat === 'xray') {
           const xray = await buildImpactXray(index, result)
           let text = renderChangeContext(result)

@@ -2,6 +2,12 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.13.0-dev.0 — Review-Ready Context (unreleased)
+
+- Add opt-in `code_change_context(outputFormat: "review")`, returning a versioned Review Brief with source excerpts, static callers/import dependents, candidate tests, repository observations and explicit evidence omissions.
+- Bound the complete `{text, brief}` JSON envelope to 5000 characters by default (300–20000). Reserve a relation and candidate test before filling source excerpts; preserve whole source lines and baseline-side deletion evidence.
+- Keep default text, X-Ray and original Context Pack behavior. Tests remain not-run; HEAD/dirty metadata is a non-atomic observation, not a safe AgentTeam handoff token. No automatic AgentTeam integration is included.
+
 ## 0.12.0 — Reliable Context & Evidence (prepared, not published)
 
 - Fix normal npm prerelease peer resolution for the verified DSH 0.2.1 and 0.2.2 RC groups; installation no longer needs --force. Keep the existing stable-version range and DSH runtime behavior.

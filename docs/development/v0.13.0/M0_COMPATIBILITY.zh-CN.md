@@ -2,6 +2,8 @@
 
 日期：2026-11-16（Asia/Shanghai）。按用户要求在本阶段暂停；不继续公共功能接入。
 
+2026-11-17：用户已恢复开发，后续工具接入、最终候选和分层验证见 [M1记录](M1_REVIEW_BRIEF.zh-CN.md)。下文保留M0当时的版本、路径和证据边界。
+
 ## 结论和最小验收范围
 
 **已发布 v0.12.0 的普通 npm 安装、rc.3 原生工具管线和真实 headless Agent 通过；现有 Desktop Host API 通过。目标 X-Ray 卡片最终渲染尚未完成核查。** 不扩大为“全部 Desktop UI / 所有 SDK / 全部 AgentTeam 兼容”。
