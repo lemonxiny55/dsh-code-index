@@ -1,0 +1,1299 @@
+{
+  "status": "PASS",
+  "method": "npm installed package + real Cordis/ToolsService; no model, no Desktop",
+  "node": "v24.19.0",
+  "versions": {
+    "dsh-code-index": "0.12.0",
+    "@deepseek-ai/dsh": "0.2.2-rc.3",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.3",
+    "@deepseek-ai/cordis": "4.1.0"
+  },
+  "entrySha256": "58476ae3d5b83567acc5f5e5db835743f255b560535740b2da04a66b50ad1d8a",
+  "checks": [
+    "all eight tools through native rc.3 batch pipeline",
+    "source and pack budgets 300/500/5000/20000",
+    "text/X-Ray content compatibility and test not-run metadata",
+    "A/B/A and linked-worktree change isolation",
+    "external child-process add/delete freshness",
+    "load/dispose/reload: 8/0/8/0"
+  ],
+  "calls": 24,
+  "repos": {
+    "a": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+    "b": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+    "wt": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\wt"
+  },
+  "results": [
+    {
+      "name": "code_search",
+      "args": {
+        "query": "ALPHA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function ALPHA_MARKER() — core.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function ALPHA_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "ALPHA_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "ALPHA_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_index",
+      "args": {
+        "action": "build"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "repo: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nfiles indexed: 2\nsymbols: 2\nlanguages: typescript\nindex up to date"
+          }
+        ],
+        "value": "repo: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nfiles indexed: 2\nsymbols: 2\nlanguages: typescript\nindex up to date"
+      }
+    },
+    {
+      "name": "code_symbols",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function ALPHA_MARKER() [0.40] — core.ts:1"
+          },
+          {
+            "type": "text",
+            "text": "export function callAlpha() [0.40] — caller.ts:2"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function ALPHA_MARKER()"
+                }
+              ]
+            },
+            {
+              "path": "caller.ts",
+              "matches": [
+                {
+                  "lineNumber": 2,
+                  "line": "function callAlpha()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 2
+        },
+        "value": [
+          {
+            "name": "ALPHA_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "ALPHA_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          },
+          {
+            "name": "callAlpha",
+            "kind": "function",
+            "line": 2,
+            "endLine": 2,
+            "exported": true,
+            "signature": "callAlpha()",
+            "file": "caller.ts",
+            "id": "sym:v1:caller.ts#function:callAlpha@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 0.4
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_map",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "# repo map\n## core.ts (1)\n  function ALPHA_MARKER() :1\n## caller.ts (1)\n  function callAlpha() :2"
+          }
+        ],
+        "value": "# repo map\n## core.ts (1)\n  function ALPHA_MARKER() :1\n## caller.ts (1)\n  function callAlpha() :2"
+      }
+    },
+    {
+      "name": "code_refs",
+      "args": {
+        "symbol": "ALPHA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "definitions:\n  function ALPHA_MARKER() — core.ts:1\n\ncallers (1):\n  caller.ts:2 in callAlpha\n\ncallees (0):\n  (none)"
+          }
+        ],
+        "value": "definitions:\n  function ALPHA_MARKER() — core.ts:1\n\ncallers (1):\n  caller.ts:2 in callAlpha\n\ncallees (0):\n  (none)"
+      }
+    },
+    {
+      "name": "code_health",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "repo health — 2 files\n\ncircular dependencies (0):\n  (none)\n\norphan modules (0):\n  (none)"
+          }
+        ],
+        "value": "repo health — 2 files\n\ncircular dependencies (0):\n  (none)\n\norphan modules (0):\n  (none)"
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 300,
+        "outputFormat": "text"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: \n\nGaps: indexed static only\nBudget: 234 / 300 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: \n\nGaps: indexed static only\nBudget: 234 / 300 chars (bounded output; see evidence/gaps)"
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 300,
+        "outputFormat": "pack"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: \n\nGaps: indexed static only\nBudget: 234 / 300 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "task": "",
+          "route": "symbol",
+          "items": [],
+          "gaps": [
+            "indexed static only"
+          ],
+          "budget": {
+            "budgetChars": 300,
+            "usedChars": 234,
+            "packChars": 281,
+            "truncated": true
+          }
+        }
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 500,
+        "outputFormat": "text"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSignature only: ALPHA_MARKER()\n\nGaps: indexed static only\nBudget: 360 / 500 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSignature only: ALPHA_MARKER()\n\nGaps: indexed static only\nBudget: 360 / 500 chars (bounded output; see evidence/gaps)"
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 500,
+        "outputFormat": "pack"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSignature only: ALPHA_MARKER()\n\nGaps: indexed static only\nBudget: 360 / 500 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "task": "理解 ALPHA_MARKER 的实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "signature",
+              "signature": "ALPHA_MARKER()",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            }
+          ],
+          "gaps": [
+            "indexed static only"
+          ],
+          "budget": {
+            "budgetChars": 500,
+            "usedChars": 360,
+            "packChars": 482,
+            "truncated": true
+          }
+        }
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 5000,
+        "outputFormat": "text"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1412 / 5000 chars"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1412 / 5000 chars"
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 5000,
+        "outputFormat": "pack"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1412 / 5000 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "task": "理解 ALPHA_MARKER 的实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function ALPHA_MARKER() { return 43 }",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function callAlpha() { return ALPHA_MARKER() }",
+              "kind": "primary",
+              "name": "callAlpha",
+              "reason": "matches task terms"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "import { ALPHA_MARKER } from './core'",
+              "kind": "import",
+              "name": "./core",
+              "reason": "import binding referenced in primary source caller.ts",
+              "resolution": "import-scoped",
+              "provenance": "import statement"
+            },
+            {
+              "kind": "relationship",
+              "text": "callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage",
+            "no related indexed test found"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 1412,
+            "packChars": 1749,
+            "truncated": false
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 2,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 1,
+              "import-scoped": 1,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "name": "callAlpha"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 20000,
+        "outputFormat": "text"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1413 / 20000 chars"
+          }
+        ],
+        "value": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1413 / 20000 chars"
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "budgetChars": 20000,
+        "outputFormat": "pack"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1413 / 20000 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "task": "理解 ALPHA_MARKER 的实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function ALPHA_MARKER() { return 43 }",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function callAlpha() { return ALPHA_MARKER() }",
+              "kind": "primary",
+              "name": "callAlpha",
+              "reason": "matches task terms"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "import { ALPHA_MARKER } from './core'",
+              "kind": "import",
+              "name": "./core",
+              "reason": "import binding referenced in primary source caller.ts",
+              "resolution": "import-scoped",
+              "provenance": "import statement"
+            },
+            {
+              "kind": "relationship",
+              "text": "callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage",
+            "no related indexed test found"
+          ],
+          "budget": {
+            "budgetChars": 20000,
+            "usedChars": 1413,
+            "packChars": 1750,
+            "truncated": false
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 2,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 1,
+              "import-scoped": 1,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "name": "callAlpha"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "xray"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:caller.ts#function:callAlpha@1",
+              "name": "callAlpha",
+              "kind": "function",
+              "file": "caller.ts",
+              "line": 2,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              },
+              "change": "added"
+            },
+            {
+              "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "name": "ALPHA_MARKER",
+              "kind": "function",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "file:current:caller.ts",
+              "name": "caller.ts",
+              "kind": "module",
+              "file": "caller.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:core.ts",
+              "name": "core.ts",
+              "kind": "module",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:caller.ts#function:callAlpha@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:1",
+              "from": "file:current:caller.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            }
+          ],
+          "tests": [],
+          "imports": [
+            {
+              "file": "caller.ts",
+              "changedFile": "core.ts",
+              "specifier": "./core",
+              "resolution": "import-scoped",
+              "edgeId": "import:1"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "callAlpha",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 2 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 2, import-scoped 1, name-only 0.",
+            "Tests: 0 candidate(s), not run; not verified coverage.",
+            "0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.",
+            "Evidence gaps: not-found/no-test-candidates."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 2,
+              "callers": 1,
+              "impact": 0,
+              "imports": 1,
+              "tests": 0,
+              "paths": 1,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 2,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 2,
+              "import-scoped": 1,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "name": "callAlpha"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        },
+        "value": {
+          "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)",
+          "xray": {
+            "card": "impact-xray",
+            "version": 2,
+            "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+            "source": "git",
+            "nodes": [
+              {
+                "id": "current:sym:v1:caller.ts#function:callAlpha@1",
+                "name": "callAlpha",
+                "kind": "function",
+                "file": "caller.ts",
+                "line": 2,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                },
+                "change": "added"
+              },
+              {
+                "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "name": "ALPHA_MARKER",
+                "kind": "function",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                },
+                "change": "modified"
+              },
+              {
+                "id": "file:current:caller.ts",
+                "name": "caller.ts",
+                "kind": "module",
+                "file": "caller.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:core.ts",
+                "name": "core.ts",
+                "kind": "module",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "changed-module",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "id": "call:0",
+                "from": "current:sym:v1:caller.ts#function:callAlpha@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:1",
+                "from": "file:current:caller.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              }
+            ],
+            "tests": [],
+            "imports": [
+              {
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped",
+                "edgeId": "import:1"
+              }
+            ],
+            "paths": [
+              {
+                "id": "path:0",
+                "from": "callAlpha",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:0"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              }
+            ],
+            "unmapped": [],
+            "gaps": [
+              "Evidence (indexed static scope; unscanned files not assessed):",
+              "Index: 2 parsed, 0 partial, 0 failed, 0 unknown.",
+              "Selected relationship items: exact 2, import-scoped 1, name-only 0.",
+              "Tests: 0 candidate(s), not run; not verified coverage.",
+              "0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.",
+              "Evidence gaps: not-found/no-test-candidates."
+            ],
+            "truncated": false,
+            "bounds": {
+              "analysis": {
+                "callers": false,
+                "dependents": false,
+                "paths": false,
+                "impact": false,
+                "tests": false
+              },
+              "projection": false,
+              "totals": {
+                "changed": 2,
+                "callers": 1,
+                "impact": 0,
+                "imports": 1,
+                "tests": 0,
+                "paths": 1,
+                "unmapped": 0
+              }
+            },
+            "evidence": {
+              "scope": "indexed-static-only",
+              "basis": "change-analysis",
+              "index": {
+                "parsed": 2,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              },
+              "relationships": {
+                "exact": 2,
+                "import-scoped": 1,
+                "name-only": 0
+              },
+              "tests": {
+                "candidates": 0,
+                "verification": "not-run"
+              },
+              "callers": {
+                "checkedSymbols": 2,
+                "zero": [
+                  {
+                    "file": "caller.ts",
+                    "line": 2,
+                    "name": "callAlpha"
+                  }
+                ]
+              },
+              "gaps": [
+                {
+                  "kind": "not-found",
+                  "code": "no-test-candidates",
+                  "source": "indexed-test-discovery"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "BETA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function BETA_MARKER() — core.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function BETA_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "BETA_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "BETA_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:BETA_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "BETA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "WORKTREE_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\wt",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function WORKTREE_MARKER() — core.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function WORKTREE_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "WORKTREE_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "WORKTREE_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:WORKTREE_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "WORKTREE_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\wt",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base f6d0490772ca4da2bf70522eb809f94d42cdbc30): 2 changed symbol(s)\nCHANGED:\n  deleted base function BETA_MARKER() core.ts:1 [exact]\n  added function WORKTREE_MARKER() core.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_MARKER (core.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base f6d0490772ca4da2bf70522eb809f94d42cdbc30): 2 changed symbol(s)\nCHANGED:\n  deleted base function BETA_MARKER() core.ts:1 [exact]\n  added function WORKTREE_MARKER() core.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_MARKER (core.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "EXTERNAL_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function EXTERNAL_MARKER() — external.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "external.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function EXTERNAL_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "EXTERNAL_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "EXTERNAL_MARKER()",
+            "file": "external.ts",
+            "id": "sym:v1:external.ts#function:EXTERNAL_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "EXTERNAL_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "ALPHA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function ALPHA_MARKER() — core.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function ALPHA_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "ALPHA_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "ALPHA_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    }
+  ]
+}

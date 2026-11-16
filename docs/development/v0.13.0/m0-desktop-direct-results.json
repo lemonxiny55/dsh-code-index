@@ -1,0 +1,663 @@
+{
+  "status": "PASS",
+  "method": "existing user Desktop Host API through its already-enabled official Inspector; no UI automation",
+  "names": [
+    "code_index",
+    "code_symbols",
+    "code_search",
+    "code_map",
+    "code_refs",
+    "code_change_context",
+    "code_context"
+  ],
+  "calls": [
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的真实实现",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a\nTask: 理解 ALPHA_MARKER 的真实实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: callAlpha caller.ts:2-2 [current]\nReason: matches task terms\nSource (complete):\nexport function callAlpha() { return ALPHA_MARKER() }\n\nimport: ./core caller.ts:1-1 [current]\nReason: import binding referenced in primary source caller.ts\nRelationship provenance: import-scoped; import statement\nSource (complete):\nimport { ALPHA_MARKER } from './core'\n\nrelationship: callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 1, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage; no related indexed test found\nBudget: 1414 / 5000 chars"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "task": "理解 ALPHA_MARKER 的真实实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function ALPHA_MARKER() { return 43 }",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function callAlpha() { return ALPHA_MARKER() }",
+              "kind": "primary",
+              "name": "callAlpha",
+              "reason": "matches task terms"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "import { ALPHA_MARKER } from './core'",
+              "kind": "import",
+              "name": "./core",
+              "reason": "import binding referenced in primary source caller.ts",
+              "resolution": "import-scoped",
+              "provenance": "import statement"
+            },
+            {
+              "kind": "relationship",
+              "text": "callAlpha (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage",
+            "no related indexed test found"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 1414,
+            "packChars": 1751,
+            "truncated": false
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 2,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 1,
+              "import-scoped": 1,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "name": "callAlpha"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "xray"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:caller.ts#function:callAlpha@1",
+              "name": "callAlpha",
+              "kind": "function",
+              "file": "caller.ts",
+              "line": 2,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              },
+              "change": "added"
+            },
+            {
+              "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "name": "ALPHA_MARKER",
+              "kind": "function",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "file:current:caller.ts",
+              "name": "caller.ts",
+              "kind": "module",
+              "file": "caller.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:core.ts",
+              "name": "core.ts",
+              "kind": "module",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:caller.ts#function:callAlpha@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:1",
+              "from": "file:current:caller.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+              }
+            }
+          ],
+          "tests": [],
+          "imports": [
+            {
+              "file": "caller.ts",
+              "changedFile": "core.ts",
+              "specifier": "./core",
+              "resolution": "import-scoped",
+              "edgeId": "import:1"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "callAlpha",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 2 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 2, import-scoped 1, name-only 0.",
+            "Tests: 0 candidate(s), not run; not verified coverage.",
+            "0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.",
+            "Evidence gaps: not-found/no-test-candidates."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 2,
+              "callers": 1,
+              "impact": 0,
+              "imports": 1,
+              "tests": 0,
+              "paths": 1,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 2,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 2,
+              "import-scoped": 1,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "name": "callAlpha"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        },
+        "value": {
+          "text": "change context — source: git (base 76eb15cd0e3b6ab2fb7755870ca90eb01edca4e3): 2 changed symbol(s)\nCHANGED:\n  added function callAlpha() caller.ts:2 [exact]\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function callAlpha() caller.ts:2 (called at caller.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function callAlpha() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 2 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 1, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)",
+          "xray": {
+            "card": "impact-xray",
+            "version": 2,
+            "root": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+            "source": "git",
+            "nodes": [
+              {
+                "id": "current:sym:v1:caller.ts#function:callAlpha@1",
+                "name": "callAlpha",
+                "kind": "function",
+                "file": "caller.ts",
+                "line": 2,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                },
+                "change": "added"
+              },
+              {
+                "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "name": "ALPHA_MARKER",
+                "kind": "function",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                },
+                "change": "modified"
+              },
+              {
+                "id": "file:current:caller.ts",
+                "name": "caller.ts",
+                "kind": "module",
+                "file": "caller.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:core.ts",
+                "name": "core.ts",
+                "kind": "module",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "changed-module",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                }
+              }
+            ],
+            "edges": [
+              {
+                "id": "call:0",
+                "from": "current:sym:v1:caller.ts#function:callAlpha@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:1",
+                "from": "file:current:caller.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function callAlpha() { return ALPHA_MARKER() }\n"
+                }
+              }
+            ],
+            "tests": [],
+            "imports": [
+              {
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped",
+                "edgeId": "import:1"
+              }
+            ],
+            "paths": [
+              {
+                "id": "path:0",
+                "from": "callAlpha",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:0"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              }
+            ],
+            "unmapped": [],
+            "gaps": [
+              "Evidence (indexed static scope; unscanned files not assessed):",
+              "Index: 2 parsed, 0 partial, 0 failed, 0 unknown.",
+              "Selected relationship items: exact 2, import-scoped 1, name-only 0.",
+              "Tests: 0 candidate(s), not run; not verified coverage.",
+              "0 callers for callAlpha (caller.ts:2): none found in current index/static resolution; not proof of no callers.",
+              "Evidence gaps: not-found/no-test-candidates."
+            ],
+            "truncated": false,
+            "bounds": {
+              "analysis": {
+                "callers": false,
+                "dependents": false,
+                "paths": false,
+                "impact": false,
+                "tests": false
+              },
+              "projection": false,
+              "totals": {
+                "changed": 2,
+                "callers": 1,
+                "impact": 0,
+                "imports": 1,
+                "tests": 0,
+                "paths": 1,
+                "unmapped": 0
+              }
+            },
+            "evidence": {
+              "scope": "indexed-static-only",
+              "basis": "change-analysis",
+              "index": {
+                "parsed": 2,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              },
+              "relationships": {
+                "exact": 2,
+                "import-scoped": 1,
+                "name-only": 0
+              },
+              "tests": {
+                "candidates": 0,
+                "verification": "not-run"
+              },
+              "callers": {
+                "checkedSymbols": 2,
+                "zero": [
+                  {
+                    "file": "caller.ts",
+                    "line": 2,
+                    "name": "callAlpha"
+                  }
+                ]
+              },
+              "gaps": [
+                {
+                  "kind": "not-found",
+                  "code": "no-test-candidates",
+                  "source": "indexed-test-discovery"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "BETA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\b",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "export function BETA_MARKER() — core.ts:1"
+          }
+        ],
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "core.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function BETA_MARKER()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        },
+        "value": [
+          {
+            "name": "BETA_MARKER",
+            "kind": "function",
+            "line": 1,
+            "endLine": 1,
+            "exported": true,
+            "signature": "BETA_MARKER()",
+            "file": "core.ts",
+            "id": "sym:v1:core.ts#function:BETA_MARKER@1",
+            "scope": [],
+            "ordinal": 1,
+            "score": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "code_search",
+      "args": {
+        "query": "BETA_MARKER"
+      },
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\a",
+      "result": {
+        "isError": false,
+        "content": [],
+        "meta": {
+          "shape": "matches",
+          "files": [],
+          "truncated": false,
+          "total": 0
+        },
+        "value": []
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {},
+      "repoRoot": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\native-fixtures-PdyFAu\\wt",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base f6d0490772ca4da2bf70522eb809f94d42cdbc30): 2 changed symbol(s)\nCHANGED:\n  deleted base function BETA_MARKER() core.ts:1 [exact]\n  added function WORKTREE_MARKER() core.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_MARKER (core.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base f6d0490772ca4da2bf70522eb809f94d42cdbc30): 2 changed symbol(s)\nCHANGED:\n  deleted base function BETA_MARKER() core.ts:1 [exact]\n  added function WORKTREE_MARKER() core.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 1 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for WORKTREE_MARKER (core.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+      }
+    }
+  ],
+  "services": {
+    "subagents": "function",
+    "sendMessage": "function",
+    "teamMode": "function",
+    "teamTask": "function"
+  },
+  "clientRenderingVerified": false
+}

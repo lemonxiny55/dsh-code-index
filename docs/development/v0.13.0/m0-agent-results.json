@@ -1,0 +1,25 @@
+[
+  {
+    "method": "real rc.3 headless CLI + configured model; synthetic repo only",
+    "withPlugin": true,
+    "route": {
+      "provider": "deepseek-official",
+      "model": "deepseek-flash",
+      "reasoningEffort": "high"
+    },
+    "exitCode": 0,
+    "timedOut": false,
+    "elapsedMs": 36816,
+    "toolCalls": 2,
+    "final": {
+      "type": "final",
+      "sessionId": "session-6bb74cd8-c294-4e62-a7ea-9f0bde059b4b",
+      "reason": {
+        "kind": "completed"
+      },
+      "text": "已按要求只使用 `code_context` 和 `code_change_context`（xray）这两个只读工具，未调用 shell，也未修改任何文件。\n\n## 1. ALPHA_MARKER 的真实实现（来自 code_context）\n\n**文件：`core.ts`，第 1 行**\n\n```ts\nexport function ALPHA_MARKER() { return 43 }\n```\n\n- 符号：`function ALPHA_MARKER()`，位置 `core.ts:1-1`，状态为 `[current]`\n- 这是函数声明，返回值是一个数字常量 `43`；它没有参数，也没有可观察的副作用。\n\n## 2. 变更分析（code_change_context，xray）\n\n- 对比基线：git base `76eb15c`\n- 索引范围：2 个文件已解析，0 个 partial，0 个 failed，0 个 unknown。\n\n**CHANGED（2 个符号）**\n\n| 变更类型 | 符号 | 位置 |\n|---|---|---|\n| added | `function callAlpha()` | `caller.ts:2` `[exact]` |\n| modified | `function ALPHA_MARKER()` | `core.ts:1` `[exact]` |\n\n**相关源码行（由静态索引还原）**\n\n- `caller.ts:1` — `import { ALPHA_MARKER } from './core'`\n- `caller.ts:2` — `export function callAlpha() { return ALPHA_MARKER() }`\n\n**关系与影响**\n\n- DIRECT CALLERS：`ALPHA_MARKER` 有 1 个直接调用者，即 `callAlpha()`（`caller.ts:2`），关系类型为 `[exact]`（显式 import 绑定）。\n- IMPORT DEPENDENTS：`caller.ts` 依赖 `core.ts`（`./core`），关系类型为 `[import-scoped]`。\n- SHORTEST PATHS TO ENTRY POINTS：`callAlpha`（`caller.ts:2`）→ `ALPHA_MARKER`（`core.ts:1`），1 跳，`[exact]`。\n- TRANSITIVE IMPACT：无超出上述范围的下游影响。\n- UNMAPPED：无。\n- 对 `callAlpha` 本身：静态索引中 0 个调用者（这不等于没有调用者，只是未解析到）。\n- 变更传播：修改 `core.ts:1` 的返回值时，唯一会直接受影响的行为方是 `callAlpha()`；由于 `callAlpha` 没有被任何被索引符号调用，影响链在索引可见范围内到此终止。\n\n## 3. 潜在影响（静态推断）\n\n1. **值语义变化**：`ALPHA_MARKER` 被标记为 `modified`，而 `callAlpha` 被标记为 `added`。`callAlpha` 的返回值完全由 `ALPHA_MARKER()` 决定，因此该修改会直接改变 `callAlpha()` 的返回值。xray 输出没有返回具体 diff hunk，xray 只声明了 “modified”，没有给出改动后的旧值或新值对比，因此我不能断言具体从哪个值改成了哪个值。\n2. **调用链范围很小**：从 `core.ts` 到 `caller.ts` 的单跳调用是唯一一条已解析的路径；没有其他直接调用者，也没有传递性下游。\n3. **零副作用**：该实现只返回常量，不会产生 I/O、状态或异常路径方面的风险。\n\n## 4. 明确声明的方法学边界（重要）\n\n- **候选测试：0 个，且一个都没有执行。** 输出明确为 `Tests: 0 candidate(s), not run; not verified coverage`，因此上述内容不构成任何测试覆盖证据。\n- **静态关系不等于运行时证明。** 上述调用边、import 边均来自索引的静态解析（`exact` / `import-scoped`），只能说明 “索引可见的代码中存在这种绑定与调用”，不能证明运行时一定会走到该路径，也不能排除动态调用、反射、字符串拼接导入、未被索引的文件或构建期替换等情况。\n- “0 callers”“无传递影响” 是索引范围内的否定性结论，不是不存在性的证明；`transitive impact (none)` 与 `likely affected tests (none)` 同理。"
+    },
+    "transportFailure": false,
+    "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\agent-UDEg72\\home"
+  }
+]
