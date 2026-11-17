@@ -19,6 +19,7 @@ import { RepoContextManager } from './repo-context.js'
 import type { RepoIndex } from './types.js'
 import { indexIntegrityWarnings } from './integrity.js'
 import { buildImpactXray } from './impact-xray.js'
+import { buildReviewBrief } from './review-brief.js'
 
 /** Minimal structural types for the harness surfaces we touch. */
 interface ToolCwdContext {
@@ -193,7 +194,7 @@ export const tools = [
       render: (_args, value: JsonValue[]): TextBlock[] =>
         value.map((v) => ({
           type: 'text' as const,
-          text: renderHit(v as unknown as Parameters<typeof renderHit>[0]),
+          text: `${renderHit(v as unknown as Parameters<typeof renderHit>[0])}\n  id: ${String((v as Record<string, JsonValue>).id)}`,
         })),
       presentationMeta: (_args, value) => hitsToSearchMeta(value),
     },
@@ -386,11 +387,15 @@ export const tools = [
   defineTool({
     name: 'code_change_context',
     description:
-      'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Every relation is labeled exact / import-scoped / name-only, so confidence is explicit. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
+      'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Relations are labeled exact / import-scoped / name-only and are bounded static evidence, not proven runtime impact; a direct caller calls a selected changed symbol at the reported call site. Candidate tests are not run and coverage is not verified. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
     parameters: {
       outputFormat: {
-        type: 'string', enum: ['text', 'xray'],
-        description: 'Default text preserves the canonical string. xray requests the experimental bounded Impact X-Ray evidence snapshot.',
+        type: 'string', enum: ['text', 'xray', 'review'],
+        description: 'Default text preserves the canonical string. xray requests Impact X-Ray. review requests a bounded Review Brief with source, static impact, candidate tests and evidence gaps.',
+      },
+      budgetChars: {
+        type: 'number',
+        description: 'Review output only: full {text, brief} JSON character budget, 300..20000 (default 5000). This is not a model token limit and excludes host/tool overhead. Does not change text/xray.',
       },
       repoRoot: {
         type: 'string',
@@ -398,7 +403,7 @@ export const tools = [
       },
       diff: {
         type: 'string',
-        description: 'Caller-supplied unified diff text; when present no git command runs.',
+        description: 'Caller-supplied unified diff text; without baseRef no Git commands run, including review metadata. An explicit baseRef requests Git baseline reads.',
       },
       baseRef: {
         type: 'string',
@@ -412,7 +417,7 @@ export const tools = [
       symbols: {
         type: 'array',
         items: { type: 'string' },
-        description: 'SymbolInfo ids to treat as changed (mutually exclusive with diff/files).',
+        description: 'Exact SymbolInfo.id values returned by code_symbols (sym:v1:...), not names or file::name; mutually exclusive with diff/files. Omit to use the working tree diff.',
       },
       maxDepth: {
         type: 'number',
@@ -449,7 +454,8 @@ export const tools = [
     }),
     async execute(
       args: {
-        outputFormat?: 'text' | 'xray'
+        outputFormat?: 'text' | 'xray' | 'review'
+        budgetChars?: number
         repoRoot?: string
         diff?: string
         baseRef?: string
@@ -472,6 +478,9 @@ export const tools = [
           maxPaths: args.maxPaths,
           maxTests: args.maxTests,
         })
+        if (args.outputFormat === 'review') {
+          return JSON.parse(JSON.stringify(await buildReviewBrief(index, result, args.budgetChars))) as Record<string, JsonValue>
+        }
         if (args.outputFormat === 'xray') {
           const xray = await buildImpactXray(index, result)
           let text = renderChangeContext(result)

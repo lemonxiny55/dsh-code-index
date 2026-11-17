@@ -1,0 +1,131 @@
+{
+  "version": "0.13.0-rc.1",
+  "tarballSha256": "cb32938de45a17f84e152e9d5cc764c9357bf537fcdb09421ebe670e76e589cf",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "e006688019d77bb2332aad66d191eea7ebe0cd47ae2901251f2a6e4373c32689",
+      "kind": "repository"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "1572a948f3791011906314939e6f1537f63297892ce764c8f313696c22669a18",
+      "kind": "repository"
+    },
+    {
+      "path": "README.md",
+      "sha256": "a88a2b866bc6619628bd9fb9eee2402422c979523a2e6dfba2555dbc4f597ee0",
+      "kind": "repository"
+    },
+    {
+      "path": "README.zh.md",
+      "sha256": "281f8c229265087befae7e76309b165b71fc1db335de78065abf3fdecdc6a28b",
+      "kind": "repository"
+    },
+    {
+      "path": "cordis.patch.yml",
+      "sha256": "6efaad7f5b9167cc2c92bee5c7d8c4c4708c618584bedf536377d086fa940a07",
+      "kind": "repository"
+    },
+    {
+      "path": "dist/client.js",
+      "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553",
+      "kind": "generated"
+    },
+    {
+      "path": "dist/client.js.map",
+      "sha256": "0a1ae5ed3c83584343328ddf5f279ac4214e9be4972ba2bfeff3a56edf11981b",
+      "kind": "generated"
+    },
+    {
+      "path": "dist/index.d.ts",
+      "sha256": "a7233984301b6a754d5e3890d9750dd44c5263e8d982fe21fb93e3cb1e1442ef",
+      "kind": "generated"
+    },
+    {
+      "path": "dist/index.js",
+      "sha256": "4b8ca31e91f7a568cf0261bf48a2a9597e4eb05bd6130fff0283157a5841e7a0",
+      "kind": "generated"
+    },
+    {
+      "path": "dist/index.js.map",
+      "sha256": "f9960a4c4fcac5f0259942806968fd0145dc8d0602a172309a2dd8dccc2203ce",
+      "kind": "generated"
+    },
+    {
+      "path": "grammars/ARKTS-LICENSE",
+      "sha256": "048e4dcb7a71fb725495ebb3e7052d0e76dcb6705b828af8b9b461df10bcd8ca",
+      "kind": "repository"
+    },
+    {
+      "path": "grammars/README.md",
+      "sha256": "f36fc7157e5bd091acaa57b7b9bb05180ee9c1fe62c29805e58b9fee23f37a79",
+      "kind": "repository"
+    },
+    {
+      "path": "grammars/tree-sitter-arkts.wasm",
+      "sha256": "a5fbf24b2eeab43cf60e9fcdbde99e9089f7ceae43134d24e1d5cc166d285446",
+      "kind": "repository"
+    },
+    {
+      "path": "package.json",
+      "sha256": "39a1f947522a0941d698368ca00d7ac59b23f92ff4f18d49f5903209ba2684b5",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/context-pack-demo.mjs",
+      "sha256": "778abb24aafabe382caf4851edf17d076ccff31ae76931029bad31ccd09d3149",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/create-review-demo.mjs",
+      "sha256": "7fe04c28868b6c2f569933b89aa22e4e6cd076f6e010b7c073205d9867f6fd7f",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/fix-wsl-links.mjs",
+      "sha256": "dc7ff03ab950d9942ec48aa0cabbfc9bc28c7295f25c3f4838ec12da07c9687a",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/impact-xray-benchmark.mjs",
+      "sha256": "93d0004186d914435c19f402766c0029cd2e3206abcd0801b1d7f585df4e93cb",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/impact-xray-demo.mjs",
+      "sha256": "d802f0bfdba9154b4252c9784b78297d5319499bfd9fc0488e6e77fd9f70c2c7",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/impact-xray-poc.mjs",
+      "sha256": "453db734cd795b793332e0032951664ae50f7b8b67fb8680ee7bdbe6d430868b",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/impact-xray-rc-benchmark.mjs",
+      "sha256": "2895032b9b4ef943a835687539d78c3345563d3329bd1e03482cae88219e7921",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/process-desktop-demo.py",
+      "sha256": "4289e669c6b290bd0f736fc06af828bf25a2dce1223629fc94a51239b1d99811",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/process-impact-xray-demo.mjs",
+      "sha256": "db0fb49a21d25bcbb7adcdaf2a5ccaccc6bd8385040a9a8fdcb1ff2b346847c7",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/release-smoke.mjs",
+      "sha256": "c7f031a0f1e9d770d7918e8abdd49bfee6201ebfa35c6a796bca20209c1a3899",
+      "kind": "repository"
+    },
+    {
+      "path": "scripts/render-agent-demo.py",
+      "sha256": "c1559e609559daf0c4f161ea496eb165a1ead3b4f04835dd8568f945256f1863",
+      "kind": "repository"
+    }
+  ]
+}

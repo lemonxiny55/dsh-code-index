@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-16",
+  "timezone": "Asia/Shanghai",
+  "competitors": [
+    {
+      "repository": "colbymchenry/codegraph",
+      "commit": "b300cceaee1cc577be72e7bad1e4efef84647e53",
+      "reviewedFiles": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/colbymchenry/codegraph/blob/b300cceaee1cc577be72e7bad1e4efef84647e53/README.md"
+        },
+        {
+          "path": "src/context/index.ts",
+          "url": "https://github.com/colbymchenry/codegraph/blob/b300cceaee1cc577be72e7bad1e4efef84647e53/src/context/index.ts"
+        },
+        {
+          "path": "src/sync/worktree.ts",
+          "url": "https://github.com/colbymchenry/codegraph/blob/b300cceaee1cc577be72e7bad1e4efef84647e53/src/sync/worktree.ts"
+        },
+        {
+          "path": "site/src/content/docs/core-concepts/resolution.md",
+          "url": "https://github.com/colbymchenry/codegraph/blob/b300cceaee1cc577be72e7bad1e4efef84647e53/site/src/content/docs/core-concepts/resolution.md"
+        }
+      ],
+      "method": "public README and source inspection, not installation or comparative benchmark"
+    },
+    {
+      "repository": "abhigyanpatwari/GitNexus",
+      "commit": "2e8f01304eed5384f1ac2ec8a2efee1e1fddf55f",
+      "reviewedFiles": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/abhigyanpatwari/GitNexus/blob/2e8f01304eed5384f1ac2ec8a2efee1e1fddf55f/README.md"
+        },
+        {
+          "path": "gitnexus/src/mcp/tools.ts",
+          "url": "https://github.com/abhigyanpatwari/GitNexus/blob/2e8f01304eed5384f1ac2ec8a2efee1e1fddf55f/gitnexus/src/mcp/tools.ts"
+        }
+      ],
+      "method": "public README and source inspection, not installation or comparative benchmark"
+    },
+    {
+      "repository": "DeusData/codebase-memory-mcp",
+      "commit": "cdfdf26483fa56f4f7d9d85e7c4c3924133b458b",
+      "reviewedFiles": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/DeusData/codebase-memory-mcp/blob/cdfdf26483fa56f4f7d9d85e7c4c3924133b458b/README.md"
+        },
+        {
+          "path": "src/mcp/test_impact.h",
+          "url": "https://github.com/DeusData/codebase-memory-mcp/blob/cdfdf26483fa56f4f7d9d85e7c4c3924133b458b/src/mcp/test_impact.h"
+        },
+        {
+          "path": "src/daemon/project_lock.c",
+          "url": "https://github.com/DeusData/codebase-memory-mcp/blob/cdfdf26483fa56f4f7d9d85e7c4c3924133b458b/src/daemon/project_lock.c"
+        }
+      ],
+      "method": "public README and source inspection, not installation or comparative benchmark"
+    }
+  ],
+  "dsh": {
+    "ref": "dsh-v0.2.2-rc.3",
+    "release": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.3",
+    "comparedRelease": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.2",
+    "reviewedFiles": [
+      "packages/sdk/README.md",
+      "packages/sdk/client/README.md",
+      "packages/subagent/README.md",
+      "packages/subagent/subagent/README.md",
+      "packages/subagent/subagent/src/index.ts",
+      "packages/subagent/tool-subagent/README.md",
+      "packages/subagent/tool-subagent-control/README.md",
+      "packages/team/README.md",
+      "packages/team/agent-team/README.md",
+      "packages/team/tool-agent-team/README.md"
+    ],
+    "installedDeclarations": [
+      "@deepseek-ai/dsh-subagent/lib/types/index.d.ts",
+      "@deepseek-ai/dsh-subagent/lib/types/types.d.ts",
+      "@deepseek-ai/dsh-agent-team/lib/types/index.d.ts",
+      "@deepseek-ai/dsh-tools/lib/types/index.d.ts"
+    ]
+  }
+}

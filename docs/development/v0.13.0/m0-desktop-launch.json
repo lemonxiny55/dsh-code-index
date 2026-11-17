@@ -1,0 +1,17 @@
+{
+  "executable": "E:/DeepSeek Harness/DeepSeek Harness.exe",
+  "args": [
+    "--user-data-dir=D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\desktop-T1Qw9F\\electron-user-data"
+  ],
+  "pid": 42040,
+  "home": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\desktop-T1Qw9F\\home",
+  "profile": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\desktop-T1Qw9F\\home\\profiles\\desktop",
+  "userData": "D:\\ChatGPTProjects\\dsh-code-index\\node_modules\\.v013-dev\\node_modules\\.m0-host\\desktop-T1Qw9F\\electron-user-data",
+  "protectedBefore": {
+    "C:\\Users\\18439\\.dsh\\profiles\\desktop\\package.json": "d6ad962f5f0b853fa33370f02330e26d98ca35bdca33847aed90ccf3f1819ac7",
+    "C:\\Users\\18439\\.dsh\\profiles\\desktop\\cordis.patch.yml": "dce24767c874c2861ab4713bf5af90b7d77c36fe792b038f4746adf210c57624",
+    "C:\\Users\\18439\\.dsh\\.credentials.yaml": "963bde2b7b3011fbb8dfb558819d9745b29688052500382466db3cd3050fff44"
+  },
+  "method": "installed rc.3 Desktop; disposable home and Electron data",
+  "exitCode": 4294967295
+}

@@ -1,0 +1,2495 @@
+{
+  "status": "PASS",
+  "method": "normal installed development tarball + rc.3 Cordis/ToolsService/NativeToolExecutor",
+  "node": "v22.23.3",
+  "versions": {
+    "dsh-code-index": "0.13.0-rc.1",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.3",
+    "@deepseek-ai/cordis": "4.1.0"
+  },
+  "archiveSha256": "cb32938de45a17f84e152e9d5cc764c9357bf537fcdb09421ebe670e76e589cf",
+  "checks": [
+    "review six full-envelope budgets and canonical native rendering",
+    "source, direct caller, candidate test and dirty metadata",
+    "default text/X-Ray value+metadata and raw Context Pack unchanged",
+    "A/B/A and linked-worktree review identity/source isolation",
+    "candidate load/dispose/reload: 8/0/8/0"
+  ],
+  "repos": {
+    "a": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+    "b": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\b",
+    "wt": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\wt"
+  },
+  "calls": [
+    {
+      "name": "code_change_context",
+      "args": {},
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "xray"
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "name": "ALPHA_MARKER",
+              "kind": "function",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:caller.ts#function:caller@1",
+              "name": "caller",
+              "kind": "function",
+              "file": "caller.ts",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+              "name": "candidate",
+              "kind": "function",
+              "file": "tests/core.test.ts",
+              "line": 2,
+              "changed": false,
+              "category": "test",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:caller.ts",
+              "name": "caller.ts",
+              "kind": "module",
+              "file": "caller.ts",
+              "line": 1,
+              "changed": false,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:core.ts",
+              "name": "core.ts",
+              "kind": "module",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              }
+            },
+            {
+              "id": "file:current:tests/core.test.ts",
+              "name": "tests/core.test.ts",
+              "kind": "module",
+              "file": "tests/core.test.ts",
+              "line": 1,
+              "changed": false,
+              "category": "test",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              },
+              "resolution": "import-scoped"
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:caller.ts#function:caller@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "call:1",
+              "from": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:2",
+              "from": "file:current:caller.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:3",
+              "from": "file:current:tests/core.test.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            }
+          ],
+          "tests": [
+            {
+              "file": "tests/core.test.ts",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "distance": 1,
+              "nodeId": "file:current:tests/core.test.ts"
+            }
+          ],
+          "imports": [
+            {
+              "file": "caller.ts",
+              "changedFile": "core.ts",
+              "specifier": "./core",
+              "resolution": "import-scoped",
+              "edgeId": "import:2"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "changedFile": "core.ts",
+              "specifier": "../core",
+              "resolution": "import-scoped",
+              "edgeId": "import:3"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "caller",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            },
+            {
+              "id": "path:1",
+              "from": "candidate",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:1"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 4 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 4, import-scoped 2, name-only 0.",
+            "Tests: 1 candidate(s), not run; not verified coverage."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 1,
+              "callers": 2,
+              "impact": 0,
+              "imports": 2,
+              "tests": 1,
+              "paths": 2,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 4,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 4,
+              "import-scoped": 2,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 1,
+              "zero": []
+            }
+          }
+        },
+        "value": {
+          "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)",
+          "xray": {
+            "card": "impact-xray",
+            "version": 2,
+            "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+            "source": "git",
+            "nodes": [
+              {
+                "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "name": "ALPHA_MARKER",
+                "kind": "function",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                },
+                "change": "modified"
+              },
+              {
+                "id": "current:sym:v1:caller.ts#function:caller@1",
+                "name": "caller",
+                "kind": "function",
+                "file": "caller.ts",
+                "line": 2,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                "name": "candidate",
+                "kind": "function",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "changed": false,
+                "category": "test",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:caller.ts",
+                "name": "caller.ts",
+                "kind": "module",
+                "file": "caller.ts",
+                "line": 1,
+                "changed": false,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:core.ts",
+                "name": "core.ts",
+                "kind": "module",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "changed-module",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                }
+              },
+              {
+                "id": "file:current:tests/core.test.ts",
+                "name": "tests/core.test.ts",
+                "kind": "module",
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "changed": false,
+                "category": "test",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                },
+                "resolution": "import-scoped"
+              }
+            ],
+            "edges": [
+              {
+                "id": "call:0",
+                "from": "current:sym:v1:caller.ts#function:caller@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "call:1",
+                "from": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:2",
+                "from": "file:current:caller.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:3",
+                "from": "file:current:tests/core.test.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1,
+                "nodeId": "file:current:tests/core.test.ts"
+              }
+            ],
+            "imports": [
+              {
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped",
+                "edgeId": "import:2"
+              },
+              {
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped",
+                "edgeId": "import:3"
+              }
+            ],
+            "paths": [
+              {
+                "id": "path:0",
+                "from": "caller",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:0"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              },
+              {
+                "id": "path:1",
+                "from": "candidate",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:1"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              }
+            ],
+            "unmapped": [],
+            "gaps": [
+              "Evidence (indexed static scope; unscanned files not assessed):",
+              "Index: 4 parsed, 0 partial, 0 failed, 0 unknown.",
+              "Selected relationship items: exact 4, import-scoped 2, name-only 0.",
+              "Tests: 1 candidate(s), not run; not verified coverage."
+            ],
+            "truncated": false,
+            "bounds": {
+              "analysis": {
+                "callers": false,
+                "dependents": false,
+                "paths": false,
+                "impact": false,
+                "tests": false
+              },
+              "projection": false,
+              "totals": {
+                "changed": 1,
+                "callers": 2,
+                "impact": 0,
+                "imports": 2,
+                "tests": 1,
+                "paths": 2,
+                "unmapped": 0
+              }
+            },
+            "evidence": {
+              "scope": "indexed-static-only",
+              "basis": "change-analysis",
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              },
+              "relationships": {
+                "exact": 4,
+                "import-scoped": 2,
+                "name-only": 0
+              },
+              "tests": {
+                "candidates": 1,
+                "verification": "not-run"
+              },
+              "callers": {
+                "checkedSymbols": 1,
+                "zero": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: removedMarker old.ts:1-1 [current]\nReason: matches task terms\nSource (complete):\nexport function removedMarker() { return 7 }\n\ncaller: caller caller.ts:2-2 [current]\nReason: direct caller of ALPHA_MARKER\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function caller() { return ALPHA_MARKER() }\n\ncaller: candidate tests/core.test.ts:2-2 [current]\nReason: direct caller of ALPHA_MARKER\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function candidate() { return ALPHA_MARKER() }\n\ntest: candidate tests/core.test.ts:2-2 [current]\nReason: candidate test (not verified coverage): test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSignature only: candidate()\n\nrelationship: caller (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: candidate (tests/core.test.ts:2) → ALPHA_MARKER (core.ts:1) at tests/core.test.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 0, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for removedMarker (old.ts:1): none found in current index/static resolution; not proof of no callers.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage\nBudget: 1968 / 5000 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+          "task": "理解 ALPHA_MARKER 的实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function ALPHA_MARKER() { return 43 }",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            },
+            {
+              "file": "old.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function removedMarker() { return 7 }",
+              "kind": "primary",
+              "name": "removedMarker",
+              "reason": "matches task terms"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function caller() { return ALPHA_MARKER() }",
+              "kind": "caller",
+              "name": "caller",
+              "reason": "direct caller of ALPHA_MARKER",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function candidate() { return ALPHA_MARKER() }",
+              "kind": "caller",
+              "name": "candidate",
+              "reason": "direct caller of ALPHA_MARKER",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "signature",
+              "signature": "candidate()",
+              "kind": "test",
+              "name": "candidate",
+              "reason": "candidate test (not verified coverage): test imports primary seed file",
+              "resolution": "import-scoped",
+              "provenance": "imports-changed-file"
+            },
+            {
+              "kind": "relationship",
+              "text": "caller (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "kind": "relationship",
+              "text": "candidate (tests/core.test.ts:2) → ALPHA_MARKER (core.ts:1) at tests/core.test.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 1968,
+            "packChars": 2395,
+            "truncated": true
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 4,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 4,
+              "import-scoped": 0,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "old.ts",
+                  "line": 1,
+                  "name": "removedMarker"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 300
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief omitted: budget. Static only; tests not run."
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief omitted: budget. Static only; tests not run.",
+          "brief": {
+            "version": 1,
+            "status": "omitted",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "gaps": [
+              "budget: all evidence and repository metadata omitted"
+            ],
+            "budget": {
+              "limit": 300,
+              "usedChars": 267
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 500
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief omitted: budget. Static only; tests not run."
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief omitted: budget. Static only; tests not run.",
+          "brief": {
+            "version": 1,
+            "status": "omitted",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "gaps": [
+              "budget: all evidence and repository metadata omitted"
+            ],
+            "budget": {
+              "limit": 500,
+              "usedChars": 267
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 1000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief omitted: budget. Static only; tests not run."
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief omitted: budget. Static only; tests not run.",
+          "brief": {
+            "version": 1,
+            "status": "omitted",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "gaps": [
+              "budget: all evidence and repository metadata omitted"
+            ],
+            "budget": {
+              "limit": 1000,
+              "usedChars": 268
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 2000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:18.698Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 1 changes, 3 relations, 0 tests, 0 warnings; 1 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; evidence-omitted; non-atomic-snapshot\nBudget (full JSON envelope): 1979/2000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:18.698Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 1 changes, 3 relations, 0 tests, 0 warnings; 1 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; evidence-omitted; non-atomic-snapshot\nBudget (full JSON envelope): 1979/2000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+              "head": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "baseRef": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "dirty": true,
+              "indexedAt": 1794887896926,
+              "observedAt": 1794887898698,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [],
+            "relations": [
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "evidence-omitted",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 1,
+              "relations": 3,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 1
+            },
+            "budget": {
+              "limit": 2000,
+              "usedChars": 1979
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 5000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:18.973Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:18.973Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+              "head": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "baseRef": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "dirty": true,
+              "indexedAt": 1794887896926,
+              "observedAt": 1794887898973,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function ALPHA_MARKER() { return 43 }",
+                "name": "ALPHA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 3286
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "budgetChars": 20000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:19.241Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3288/20000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:19.241Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3288/20000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+              "head": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "baseRef": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "dirty": true,
+              "indexedAt": 1794887896926,
+              "observedAt": 1794887899241,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function ALPHA_MARKER() { return 43 }",
+                "name": "ALPHA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 20000,
+              "usedChars": 3288
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "budgetChars": 300
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": null,
+        "value": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "xray",
+        "budgetChars": 300
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)"
+          }
+        ],
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "name": "ALPHA_MARKER",
+              "kind": "function",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:caller.ts#function:caller@1",
+              "name": "caller",
+              "kind": "function",
+              "file": "caller.ts",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+              "name": "candidate",
+              "kind": "function",
+              "file": "tests/core.test.ts",
+              "line": 2,
+              "changed": false,
+              "category": "test",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:caller.ts",
+              "name": "caller.ts",
+              "kind": "module",
+              "file": "caller.ts",
+              "line": 1,
+              "changed": false,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "file:current:core.ts",
+              "name": "core.ts",
+              "kind": "module",
+              "file": "core.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "core.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function ALPHA_MARKER() { return 43 }\n"
+              }
+            },
+            {
+              "id": "file:current:tests/core.test.ts",
+              "name": "tests/core.test.ts",
+              "kind": "module",
+              "file": "tests/core.test.ts",
+              "line": 1,
+              "changed": false,
+              "category": "test",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              },
+              "resolution": "import-scoped"
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:caller.ts#function:caller@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "call:1",
+              "from": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+              "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:2",
+              "from": "file:current:caller.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "caller.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+              }
+            },
+            {
+              "id": "import:3",
+              "from": "file:current:tests/core.test.ts",
+              "to": "file:current:core.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+              }
+            }
+          ],
+          "tests": [
+            {
+              "file": "tests/core.test.ts",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "distance": 1,
+              "nodeId": "file:current:tests/core.test.ts"
+            }
+          ],
+          "imports": [
+            {
+              "file": "caller.ts",
+              "changedFile": "core.ts",
+              "specifier": "./core",
+              "resolution": "import-scoped",
+              "edgeId": "import:2"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "changedFile": "core.ts",
+              "specifier": "../core",
+              "resolution": "import-scoped",
+              "edgeId": "import:3"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "caller",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            },
+            {
+              "id": "path:1",
+              "from": "candidate",
+              "to": "ALPHA_MARKER",
+              "edgeIds": [
+                "call:1"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 4 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 4, import-scoped 2, name-only 0.",
+            "Tests: 1 candidate(s), not run; not verified coverage."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 1,
+              "callers": 2,
+              "impact": 0,
+              "imports": 2,
+              "tests": 1,
+              "paths": 2,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 4,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 4,
+              "import-scoped": 2,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 1,
+              "zero": []
+            }
+          }
+        },
+        "value": {
+          "text": "change context — source: git (base e99afcbd9edd6e0830c0524de90b24c77bc3c7a2): 1 changed symbol(s)\nCHANGED:\n  modified function ALPHA_MARKER() core.ts:1 [exact]\nDIRECT CALLERS:\n  function caller() caller.ts:2 (called at caller.ts:2) [exact]\n  function candidate() tests/core.test.ts:2 (called at tests/core.test.ts:2) [exact]\nIMPORT DEPENDENTS:\n  caller.ts imports core.ts ('./core') [import-scoped]\n  tests/core.test.ts imports core.ts ('../core') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  caller.ts:2 function caller() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\n  tests/core.test.ts:2 function candidate() → core.ts:1 function ALPHA_MARKER() (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/core.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nWARNINGS:\n  (none)",
+          "xray": {
+            "card": "impact-xray",
+            "version": 2,
+            "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+            "source": "git",
+            "nodes": [
+              {
+                "id": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "name": "ALPHA_MARKER",
+                "kind": "function",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "change",
+                "depth": 0,
+                "reason": "diff-mapping",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                },
+                "change": "modified"
+              },
+              {
+                "id": "current:sym:v1:caller.ts#function:caller@1",
+                "name": "caller",
+                "kind": "function",
+                "file": "caller.ts",
+                "line": 2,
+                "changed": false,
+                "category": "caller",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                "name": "candidate",
+                "kind": "function",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "changed": false,
+                "category": "test",
+                "depth": 1,
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:caller.ts",
+                "name": "caller.ts",
+                "kind": "module",
+                "file": "caller.ts",
+                "line": 1,
+                "changed": false,
+                "category": "module",
+                "reason": "import-dependent",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "file:current:core.ts",
+                "name": "core.ts",
+                "kind": "module",
+                "file": "core.ts",
+                "line": 1,
+                "changed": true,
+                "category": "module",
+                "reason": "changed-module",
+                "evidence": {
+                  "file": "core.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "declaration",
+                  "code": "export function ALPHA_MARKER() { return 43 }\n"
+                }
+              },
+              {
+                "id": "file:current:tests/core.test.ts",
+                "name": "tests/core.test.ts",
+                "kind": "module",
+                "file": "tests/core.test.ts",
+                "line": 1,
+                "changed": false,
+                "category": "test",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                },
+                "resolution": "import-scoped"
+              }
+            ],
+            "edges": [
+              {
+                "id": "call:0",
+                "from": "current:sym:v1:caller.ts#function:caller@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "call:1",
+                "from": "current:sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                "to": "current:sym:v1:core.ts#function:ALPHA_MARKER@1",
+                "kind": "call",
+                "resolution": "exact",
+                "reason": "explicit-import-binding",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 2,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "call-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:2",
+                "from": "file:current:caller.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "caller.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from './core'\nexport function caller() { return ALPHA_MARKER() }\n"
+                }
+              },
+              {
+                "id": "import:3",
+                "from": "file:current:tests/core.test.ts",
+                "to": "file:current:core.ts",
+                "kind": "import",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "evidence": {
+                  "file": "tests/core.test.ts",
+                  "line": 1,
+                  "startLine": 1,
+                  "side": "current",
+                  "type": "import-site",
+                  "code": "import { ALPHA_MARKER } from '../core'\nexport function candidate() { return ALPHA_MARKER() }\n"
+                }
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1,
+                "nodeId": "file:current:tests/core.test.ts"
+              }
+            ],
+            "imports": [
+              {
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped",
+                "edgeId": "import:2"
+              },
+              {
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped",
+                "edgeId": "import:3"
+              }
+            ],
+            "paths": [
+              {
+                "id": "path:0",
+                "from": "caller",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:0"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              },
+              {
+                "id": "path:1",
+                "from": "candidate",
+                "to": "ALPHA_MARKER",
+                "edgeIds": [
+                  "call:1"
+                ],
+                "resolution": "exact",
+                "omitted": false
+              }
+            ],
+            "unmapped": [],
+            "gaps": [
+              "Evidence (indexed static scope; unscanned files not assessed):",
+              "Index: 4 parsed, 0 partial, 0 failed, 0 unknown.",
+              "Selected relationship items: exact 4, import-scoped 2, name-only 0.",
+              "Tests: 1 candidate(s), not run; not verified coverage."
+            ],
+            "truncated": false,
+            "bounds": {
+              "analysis": {
+                "callers": false,
+                "dependents": false,
+                "paths": false,
+                "impact": false,
+                "tests": false
+              },
+              "projection": false,
+              "totals": {
+                "changed": 1,
+                "callers": 2,
+                "impact": 0,
+                "imports": 2,
+                "tests": 1,
+                "paths": 2,
+                "unmapped": 0
+              }
+            },
+            "evidence": {
+              "scope": "indexed-static-only",
+              "basis": "change-analysis",
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              },
+              "relationships": {
+                "exact": 4,
+                "import-scoped": 2,
+                "name-only": 0
+              },
+              "tests": {
+                "candidates": 1,
+                "verification": "not-run"
+              },
+              "callers": {
+                "checkedSymbols": 1,
+                "zero": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_context",
+      "args": {
+        "task": "理解 ALPHA_MARKER 的实现",
+        "outputFormat": "pack",
+        "budgetChars": 5000
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Task context — symbol\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nTask: 理解 ALPHA_MARKER 的实现\n\nprimary: ALPHA_MARKER core.ts:1-1 [current]\nReason: task names this symbol\nSource (complete):\nexport function ALPHA_MARKER() { return 43 }\n\nprimary: removedMarker old.ts:1-1 [current]\nReason: matches task terms\nSource (complete):\nexport function removedMarker() { return 7 }\n\ncaller: caller caller.ts:2-2 [current]\nReason: direct caller of ALPHA_MARKER\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function caller() { return ALPHA_MARKER() }\n\ncaller: candidate tests/core.test.ts:2-2 [current]\nReason: direct caller of ALPHA_MARKER\nRelationship provenance: exact; explicit-import-binding\nSource (complete):\nexport function candidate() { return ALPHA_MARKER() }\n\ntest: candidate tests/core.test.ts:2-2 [current]\nReason: candidate test (not verified coverage): test imports primary seed file\nRelationship provenance: import-scoped; imports-changed-file\nSignature only: candidate()\n\nrelationship: caller (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nrelationship: candidate (tests/core.test.ts:2) → ALPHA_MARKER (core.ts:1) at tests/core.test.ts:2 [exact; explicit-import-binding]\nReason: bounded primary graph neighborhood\nRelationship provenance: exact; explicit-import-binding\n\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 4, import-scoped 0, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for removedMarker (old.ts:1): none found in current index/static resolution; not proof of no callers.\n\nGaps: indexed static only; test candidates are static leads, not verified coverage\nBudget: 1968 / 5000 chars (bounded output; see evidence/gaps)"
+          }
+        ],
+        "value": {
+          "version": 1,
+          "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+          "task": "理解 ALPHA_MARKER 的实现",
+          "route": "symbol",
+          "items": [
+            {
+              "file": "core.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function ALPHA_MARKER() { return 43 }",
+              "kind": "primary",
+              "name": "ALPHA_MARKER",
+              "reason": "task names this symbol"
+            },
+            {
+              "file": "old.ts",
+              "side": "current",
+              "startLine": 1,
+              "endLine": 1,
+              "mode": "complete",
+              "code": "export function removedMarker() { return 7 }",
+              "kind": "primary",
+              "name": "removedMarker",
+              "reason": "matches task terms"
+            },
+            {
+              "file": "caller.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function caller() { return ALPHA_MARKER() }",
+              "kind": "caller",
+              "name": "caller",
+              "reason": "direct caller of ALPHA_MARKER",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "complete",
+              "code": "export function candidate() { return ALPHA_MARKER() }",
+              "kind": "caller",
+              "name": "candidate",
+              "reason": "direct caller of ALPHA_MARKER",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "file": "tests/core.test.ts",
+              "side": "current",
+              "startLine": 2,
+              "endLine": 2,
+              "mode": "signature",
+              "signature": "candidate()",
+              "kind": "test",
+              "name": "candidate",
+              "reason": "candidate test (not verified coverage): test imports primary seed file",
+              "resolution": "import-scoped",
+              "provenance": "imports-changed-file"
+            },
+            {
+              "kind": "relationship",
+              "text": "caller (caller.ts:2) → ALPHA_MARKER (core.ts:1) at caller.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            },
+            {
+              "kind": "relationship",
+              "text": "candidate (tests/core.test.ts:2) → ALPHA_MARKER (core.ts:1) at tests/core.test.ts:2 [exact; explicit-import-binding]",
+              "reason": "bounded primary graph neighborhood",
+              "resolution": "exact",
+              "provenance": "explicit-import-binding"
+            }
+          ],
+          "gaps": [
+            "indexed static only",
+            "test candidates are static leads, not verified coverage"
+          ],
+          "budget": {
+            "budgetChars": 5000,
+            "usedChars": 1968,
+            "packChars": 2395,
+            "truncated": true
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "context-pack",
+            "index": {
+              "parsed": 4,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 4,
+              "import-scoped": 0,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 2,
+              "zero": [
+                {
+                  "file": "old.ts",
+                  "line": 1,
+                  "name": "removedMarker"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review",
+        "files": [
+          "core.ts"
+        ]
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\b",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\b\nHEAD: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; base: not provided; dirty: false\nIndex built: 2026-11-17T03:58:19.829Z; metadata observed: 2026-11-17T03:58:19.969Z\nSnapshot: non-atomic; re-query after edits.\nSelection: files; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified BETA_MARKER core.ts:1-1 [current; complete]\nexport function BETA_MARKER() { return 40 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3220/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\b\nHEAD: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; base: not provided; dirty: false\nIndex built: 2026-11-17T03:58:19.829Z; metadata observed: 2026-11-17T03:58:19.969Z\nSnapshot: non-atomic; re-query after edits.\nSelection: files; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified BETA_MARKER core.ts:1-1 [current; complete]\nexport function BETA_MARKER() { return 40 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3220/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\b",
+              "head": "aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a",
+              "baseRef": null,
+              "dirty": false,
+              "indexedAt": 1794887899829,
+              "observedAt": 1794887899969,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "files",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function BETA_MARKER() { return 40 }",
+                "name": "BETA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:BETA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:BETA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 3220
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review"
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\wt",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\wt\nHEAD: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; base: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; dirty: true\nIndex built: 2026-11-17T03:58:20.055Z; metadata observed: 2026-11-17T03:58:20.333Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 2 changed symbols, 2 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: deleted BETA_MARKER core.ts:1-1 [base @aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; complete]\nexport function BETA_MARKER() { return 40 }\nChange: added WORKTREE_MARKER core.ts:1-1 [current; complete]\nexport function WORKTREE_MARKER() { return 82 }\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: non-atomic-snapshot\nBudget (full JSON envelope): 2689/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\wt\nHEAD: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; base: aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; dirty: true\nIndex built: 2026-11-17T03:58:20.055Z; metadata observed: 2026-11-17T03:58:20.333Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 2 changed symbols, 2 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: deleted BETA_MARKER core.ts:1-1 [base @aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a; complete]\nexport function BETA_MARKER() { return 40 }\nChange: added WORKTREE_MARKER core.ts:1-1 [current; complete]\nexport function WORKTREE_MARKER() { return 82 }\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: non-atomic-snapshot\nBudget (full JSON envelope): 2689/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\wt",
+              "head": "aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a",
+              "baseRef": "aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a",
+              "dirty": true,
+              "indexedAt": 1794887900055,
+              "observedAt": 1794887900333,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 2,
+              "relations": 2,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "base",
+                "ref": "aed5a87d9055e2ef3b0b9c25cf21f5b2f7cb269a",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function BETA_MARKER() { return 40 }",
+                "name": "BETA_MARKER",
+                "change": "deleted"
+              },
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function WORKTREE_MARKER() { return 82 }",
+                "name": "WORKTREE_MARKER",
+                "change": "added"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 2689
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review"
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:20.656Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:20.656Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+              "head": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "baseRef": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "dirty": true,
+              "indexedAt": 1794887896926,
+              "observedAt": 1794887900656,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function ALPHA_MARKER() { return 43 }",
+                "name": "ALPHA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 3286
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "code_change_context",
+      "args": {
+        "outputFormat": "review"
+      },
+      "repoRoot": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+      "result": {
+        "isError": false,
+        "content": [
+          {
+            "type": "text",
+            "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:21.060Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000"
+          }
+        ],
+        "meta": null,
+        "value": {
+          "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a\nHEAD: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; base: e99afcbd9edd6e0830c0524de90b24c77bc3c7a2; dirty: true\nIndex built: 2026-11-17T03:58:16.926Z; metadata observed: 2026-11-17T03:58:21.060Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 4 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 4 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified ALPHA_MARKER core.ts:1-1 [current; complete]\nexport function ALPHA_MARKER() { return 43 }\nPotential impact: caller caller.ts:2 [path exact; depth 1]; via caller.ts:2 [hop exact; explicit-import-binding]\nPotential impact: candidate tests/core.test.ts:2 [path exact; depth 1]; via tests/core.test.ts:2 [hop exact; explicit-import-binding]\nImport dependent: caller.ts -> core.ts (./core) [import-scoped]\nImport dependent: tests/core.test.ts -> core.ts (../core) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/core.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot\nBudget (full JSON envelope): 3286/5000",
+          "brief": {
+            "version": 1,
+            "status": "bounded",
+            "scope": "indexed-static-only",
+            "verification": "not-run",
+            "repository": {
+              "root": "C:\\Users\\18439\\AppData\\Local\\Temp\\review-rc3-2gMwom\\a",
+              "head": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "baseRef": "e99afcbd9edd6e0830c0524de90b24c77bc3c7a2",
+              "dirty": true,
+              "indexedAt": 1794887896926,
+              "observedAt": 1794887901060,
+              "snapshot": "non-atomic"
+            },
+            "summary": {
+              "source": "git",
+              "changes": 1,
+              "relations": 4,
+              "tests": 1,
+              "unmapped": 0,
+              "index": {
+                "parsed": 4,
+                "partial": 0,
+                "failed": 0,
+                "unknown": 0
+              }
+            },
+            "changes": [
+              {
+                "file": "core.ts",
+                "side": "current",
+                "startLine": 1,
+                "endLine": 1,
+                "mode": "complete",
+                "code": "export function ALPHA_MARKER() { return 43 }",
+                "name": "ALPHA_MARKER",
+                "change": "modified"
+              }
+            ],
+            "relations": [
+              {
+                "kind": "call",
+                "name": "caller",
+                "file": "caller.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:caller.ts#function:caller@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "caller.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "call",
+                "name": "candidate",
+                "file": "tests/core.test.ts",
+                "line": 2,
+                "depth": 1,
+                "resolution": "exact",
+                "via": {
+                  "fromId": "sym:v1:tests%2Fcore.test.ts#function:candidate@1",
+                  "toId": "sym:v1:core.ts#function:ALPHA_MARKER@1",
+                  "callSite": {
+                    "file": "tests/core.test.ts",
+                    "line": 2
+                  },
+                  "resolution": "exact",
+                  "reason": "explicit-import-binding"
+                }
+              },
+              {
+                "kind": "import",
+                "file": "caller.ts",
+                "changedFile": "core.ts",
+                "specifier": "./core",
+                "resolution": "import-scoped"
+              },
+              {
+                "kind": "import",
+                "file": "tests/core.test.ts",
+                "changedFile": "core.ts",
+                "specifier": "../core",
+                "resolution": "import-scoped"
+              }
+            ],
+            "tests": [
+              {
+                "file": "tests/core.test.ts",
+                "resolution": "import-scoped",
+                "reason": "imports-changed-file",
+                "distance": 1
+              }
+            ],
+            "warnings": [],
+            "gaps": [
+              "entry-paths-not-projected; use xray for full paths",
+              "non-atomic-snapshot"
+            ],
+            "omitted": {
+              "changes": 0,
+              "relations": 0,
+              "tests": 0,
+              "warnings": 0,
+              "sourceBodies": 0
+            },
+            "budget": {
+              "limit": 5000,
+              "usedChars": 3286
+            }
+          }
+        }
+      }
+    }
+  ]
+}

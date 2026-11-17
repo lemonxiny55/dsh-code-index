@@ -1,0 +1,134 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "taskId": "C",
+  "maxTokens": 8192,
+  "sessionId": "review-v013-1794889147376",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 2,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "final": "## 只读查询结果\n\n### 1. 收到的 ID（原样）\n\n```\nsym:v1:src%2Fexperimental.ts#function:experimentalLabel@1\n```\n\n来源：`code_symbols { query: \"experimentalLabel\" }` 返回\n`export function experimentalLabel() — src/experimental.ts:1`\n（本次未发现重名符号，仅此一条，故无歧义。）\n\n### 2. review 调用\n\n- 工具：`code_change_context`\n- 参数：`outputFormat=\"review\"`、`budgetChars=5000`、`symbols=[\"sym:v1:src%2Fexperimental.ts#function:experimentalLabel@1\"]`\n- 该 ID 未做任何改写（百分号编码、`#`、`@1` 均保持原样），执行成功。\n\n### 3. 调用结果要点\n\n| 项目 | 内容 |\n|---|---|\n| 仓库/worktree | `D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C` |\n| HEAD | `77df37019cc8b5cf3369255638dfef5968599232`；base 未提供；`dirty: true` |\n| 索引时间 | 构建于 2026-11-17T03:14:15.268Z，元数据观测于 2026-11-17T04:19:09.849Z |\n| 选择 | symbols：1 个变更符号，0 静态关系，0 候选测试，0 未映射变更 |\n| 索引健康 | 7 parsed / 0 partial / 0 failed / 0 unknown |\n| 预算 | 2032 / 5000 字符 |\n\n**变更符号**：[experimentalLabel](src/experimental.ts#L1-L3) — 状态 `current; complete`，内容：\n\n```ts\nexport function experimentalLabel() {\n  return 'preview-v2'\n}\n```\n\n### 4. 静态证据\n\n- 工具明确标注：**indexed static only; runtime behavior not proven**。\n- 该符号在索引中**无任何静态关系**：无调用者、无导入依赖、无入口路径（即上表中的 0 relations）。\n- 工具同时给出免责声明：*\"No static relationships found in this analysis; not proof of no callers or runtime impact.\"* —— 零关系只反映索引可见证据，不等于运行时无影响。\n- 快照**非原子**（non-atomic），建议在编辑后重新查询。\n- 就现有证据看，[experimentalLabel](src/experimental.ts#L1-L3) 是一个无参、返回字符串常量的导出函数，未见对其它模块的引用线索。\n\n### 5. 测试边界\n\n- **候选测试：0 个，且未运行（not-run）**，覆盖率未验证。\n- 记录的证据缺口（Gaps）：`no-test-candidates`、`no-test-candidates-in-analysis`、`non-atomic-snapshot`。\n- 因此本次结果**不能**用来判断该改动是否被测试覆盖，也**不能**作为\"无影响\"的结论依据。\n\n### 6. 操作边界声明\n\n本次会话未修改任何文件，未执行任何构建、测试或 lint；仅进行了两次只读工具调用（`code_symbols`、`code_change_context`）。",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794889148587,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_ET_d81UO7FahhsBdbdzYfOl8417",
+        "name": "code_symbols",
+        "arguments": "{\"query\": \"experimentalLabel\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794889148609,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_ET_d81UO7FahhsBdbdzYfOl8417"
+          },
+          "toolCallId": "call_00_ET_d81UO7FahhsBdbdzYfOl8417",
+          "content": [
+            {
+              "type": "text",
+              "text": "export function experimentalLabel() — src/experimental.ts:1\n  id: sym:v1:src%2Fexperimental.ts#function:experimentalLabel@1"
+            }
+          ],
+          "isError": false,
+          "id": "58175259-3c22-42d8-a6b1-dce7b03c7614"
+        },
+        "meta": {
+          "shape": "matches",
+          "files": [
+            {
+              "path": "src/experimental.ts",
+              "matches": [
+                {
+                  "lineNumber": 1,
+                  "line": "function experimentalLabel()"
+                }
+              ]
+            }
+          ],
+          "truncated": false,
+          "total": 1
+        }
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 24,
+      "time": 1794889149636,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "callId": "call_00_4XNk7FOiKIGBNyxV45FX3604",
+        "name": "code_change_context",
+        "arguments": "{\"symbols\": [\"sym:v1:src%2Fexperimental.ts#function:experimentalLabel@1\"], \"outputFormat\": \"review\", \"budgetChars\": 5000}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 25,
+      "time": 1794889149854,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_4XNk7FOiKIGBNyxV45FX3604"
+          },
+          "toolCallId": "call_00_4XNk7FOiKIGBNyxV45FX3604",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: not provided; dirty: true\nIndex built: 2026-11-17T03:14:15.268Z; metadata observed: 2026-11-17T04:19:09.849Z\nSnapshot: non-atomic; re-query after edits.\nSelection: symbols; 1 changed symbols, 0 static relations, 0 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nChange: modified experimentalLabel src/experimental.ts:1-3 [current; complete]\nexport function experimentalLabel() {\n  return 'preview-v2'\n}\nCandidate tests: not-run; coverage not verified.\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot\nBudget (full JSON envelope): 2032/5000"
+            }
+          ],
+          "isError": false,
+          "id": "7f61007f-aa8a-4d64-875f-b67f6e6aa2ce"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        24
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 31,
+      "time": 1794889153863,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true
+}

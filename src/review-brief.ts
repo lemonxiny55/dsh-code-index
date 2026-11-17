@@ -1,0 +1,194 @@
+/** Bounded presentation of one existing change analysis; no new graph or task routing. */
+import { execFile } from 'node:child_process'
+import { realpath } from 'node:fs/promises'
+import path from 'node:path'
+import type { RepoIndex } from './types.js'
+import type { AffectedTest, ChangeContextResult, ChangeKind, ImpactHop } from './change-context.js'
+import type { ResolutionLabel } from './refgraph.js'
+import { excerptVariants, sourceReader, type SourceExcerpt } from './source-excerpts.js'
+
+export interface ReviewRepository {
+  root: string
+  head: string | null
+  baseRef: string | null
+  dirty: boolean | null
+  indexedAt: number
+  observedAt: number
+  snapshot: 'non-atomic'
+}
+export interface ReviewChange extends SourceExcerpt {
+  name: string
+  change: ChangeKind
+  sourceGap?: 'source-unavailable' | 'source-budget'
+}
+export type ReviewRelation =
+  | { kind: 'call'; name: string; file: string; line: number; depth: number; resolution: ResolutionLabel; via: ImpactHop }
+  | { kind: 'import'; file: string; changedFile: string; specifier: string; resolution: 'import-scoped' }
+interface ReviewBase {
+  version: 1
+  scope: 'indexed-static-only'
+  verification: 'not-run'
+  gaps: string[]
+  /** Complete {text, brief} JSON character count, not just the rendered text. */
+  budget: { limit: number; usedChars: number }
+}
+export interface ReviewBriefV1 extends ReviewBase {
+  status: 'bounded'
+  repository: ReviewRepository
+  summary: {
+    source: ChangeContextResult['source']
+    changes: number; relations: number; tests: number; unmapped: number
+    index: { parsed: number; partial: number; failed: number; unknown: number }
+  }
+  changes: ReviewChange[]
+  relations: ReviewRelation[]
+  tests: AffectedTest[]
+  warnings: string[]
+  /** Counts are relative to the bounded upstream analysis, not the entire repository. */
+  omitted: { changes: number; relations: number; tests: number; warnings: number; sourceBodies: number }
+}
+export interface OmittedReviewBrief extends ReviewBase {
+  status: 'omitted'
+  repository?: never; summary?: never; changes?: never; relations?: never
+  tests?: never; warnings?: never; omitted?: never
+}
+export type ReviewBrief = ReviewBriefV1 | OmittedReviewBrief
+export interface ReviewOutput { text: string; brief: ReviewBrief }
+
+export const REVIEW_LIMITS = { changes: 24, relations: 40, tests: 20, warnings: 12 } as const
+
+function git(root: string, args: string[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    execFile('git', args, { cwd: root, encoding: 'utf8', timeout: 3000, maxBuffer: 1024 * 1024,
+      windowsHide: true, env: { ...process.env, GIT_OPTIONAL_LOCKS: '0' } }, (error, stdout) => error ? reject(error) : resolve(stdout))
+  })
+}
+
+/** Git metadata is observational, never an identity/authorization or freshness token. */
+async function repositoryInfo(index: RepoIndex, change: ChangeContextResult): Promise<ReviewRepository> {
+  const repository: ReviewRepository = { root: index.root, head: null, baseRef: change.baseRef ?? null,
+    dirty: null, indexedAt: index.generatedAt, observedAt: Date.now(), snapshot: 'non-atomic' }
+  // Caller-supplied diffs do not cause extra Git commands for presentation.
+  if (change.source === 'diff') return repository
+  try {
+    const top = (await git(index.root, ['rev-parse', '--show-toplevel'])).trim()
+    if (await realpath(top) !== await realpath(index.root)) return repository
+    try {
+      const head = (await git(index.root, ['rev-parse', '--verify', 'HEAD^{commit}'])).trim()
+      if (/^[a-f0-9]{40,64}$/i.test(head)) repository.head = head
+    } catch { /* unborn or unavailable HEAD remains null */ }
+    try {
+      // Local index cache is not a repository code edit, even without .gitignore.
+      repository.dirty = (await git(index.root, ['status', '--porcelain=v1', '-z', '--untracked-files=normal',
+        '--', '.', ':(exclude).dsh-code-index'])).length > 0
+    } catch { /* failed status is unknown, never clean */ }
+  } catch { /* no Git, different parent repository, or command failure */ }
+  repository.observedAt = Date.now()
+  return repository
+}
+
+export function renderReviewBrief(brief: ReviewBrief): string {
+  if (brief.status === 'omitted') return 'Review Brief omitted: budget. Static only; tests not run.'
+  const r = brief.repository, s = brief.summary
+  const lines = ['Review Brief — indexed static only; runtime behavior not proven.',
+    `Repo/worktree: ${r.root}`, `HEAD: ${r.head ?? 'unavailable'}; base: ${r.baseRef ?? 'not provided'}; dirty: ${r.dirty ?? 'unknown'}`,
+    `Index built: ${new Date(r.indexedAt).toISOString()}; metadata observed: ${new Date(r.observedAt).toISOString()}`,
+    'Snapshot: non-atomic; re-query after edits.',
+    `Selection: ${s.source}; ${s.changes} changed symbols, ${s.relations} static relations, ${s.tests} candidate tests, ${s.unmapped} unmapped changes.`,
+    `Index: ${s.index.parsed} parsed, ${s.index.partial} partial, ${s.index.failed} failed, ${s.index.unknown} unknown; parsed is not semantic proof.`]
+  if (s.relations === 0) lines.push('No static relationships found in this analysis; not proof of no callers or runtime impact.')
+  for (const row of brief.changes) {
+    lines.push(`Change: ${row.change} ${row.name} ${row.file}:${row.startLine}-${row.endLine} [${row.side}${row.ref ? ` @${row.ref}` : ''}; ${row.mode}]`,
+      row.code ?? `Signature only (${row.sourceGap}): ${row.signature ?? ''}`)
+  }
+  for (const row of brief.relations) lines.push(row.kind === 'call'
+    ? `Potential impact: ${row.name} ${row.file}:${row.line} [path ${row.resolution}; depth ${row.depth}]; via ${row.via.callSite.file}:${row.via.callSite.line} [hop ${row.via.resolution}; ${row.via.reason}]`
+    : `Import dependent: ${row.file} -> ${row.changedFile} (${row.specifier}) [${row.resolution}]`)
+  lines.push('Candidate tests: not-run; coverage not verified.')
+  for (const row of brief.tests) lines.push(`Candidate: ${row.file} [${row.resolution}; ${row.reason}]`)
+  for (const warning of brief.warnings) lines.push(`Warning: ${warning}`)
+  lines.push(`Omitted from analysis: ${brief.omitted.changes} changes, ${brief.omitted.relations} relations, ${brief.omitted.tests} tests, ${brief.omitted.warnings} warnings; ${brief.omitted.sourceBodies} source bodies not included.`,
+    `Gaps: ${brief.gaps.join('; ')}`, `Budget (full JSON envelope): ${brief.budget.usedChars}/${brief.budget.limit}`)
+  return lines.join('\n')
+}
+
+function account(brief: ReviewBrief): ReviewOutput {
+  // Both text and serialized DTO contain the counter. Iterate to a fixed point.
+  for (let n = 0; n < 8; n++) {
+    const output = { text: renderReviewBrief(brief), brief }
+    const used = JSON.stringify(output).length
+    if (used === brief.budget.usedChars) return output
+    brief.budget.usedChars = used
+  }
+  return { text: renderReviewBrief(brief), brief }
+}
+
+/** Reads only source excerpts for the supplied analysis; never executes candidate tests. */
+export async function buildReviewBrief(index: RepoIndex, change: ChangeContextResult, budgetChars = 5000): Promise<ReviewOutput> {
+  if (path.resolve(index.root) !== path.resolve(change.root)) throw new Error('review root mismatch')
+  const limit = Number.isFinite(budgetChars) ? Math.max(300, Math.min(20000, Math.floor(budgetChars))) : 5000
+  const fallback = () => account({ version: 1, status: 'omitted', scope: 'indexed-static-only', verification: 'not-run',
+    gaps: ['budget: all evidence and repository metadata omitted'], budget: { limit, usedChars: 0 } })
+  const repository = await repositoryInfo(index, change)
+  const indexStatus = { parsed: 0, partial: 0, failed: 0, unknown: 0 }
+  for (const file of index.files) indexStatus[file.diagnostic?.status ?? 'unknown']++
+  // Preserve the analysis's weakest path grade separately from its last hop.
+  const relations: ReviewRelation[] = [...change.directCallers, ...change.impact].map(row => ({ kind: 'call', name: row.symbol.name,
+    file: row.symbol.file, line: row.symbol.line, depth: row.depth, resolution: row.resolution, via: row.via }))
+  relations.push(...change.importDependents.map(row => ({ kind: 'import' as const, ...row })))
+  const upstreamGaps = new Set(change.evidence?.gaps?.map(gap => gap.code) ?? [])
+  upstreamGaps.add('non-atomic-snapshot')
+  if (change.source === 'diff') upstreamGaps.add('git-metadata-not-collected-for-inline-diff')
+  else { if (!repository.head) upstreamGaps.add('HEAD-unavailable'); if (repository.dirty === null) upstreamGaps.add('dirty-status-unavailable') }
+  if (change.unmapped.length) upstreamGaps.add('unmapped-changes')
+  if (change.paths.length) upstreamGaps.add('entry-paths-not-projected; use xray for full paths')
+  if (Object.values(change.truncated).some(Boolean)) upstreamGaps.add('upstream-analysis-truncated')
+  if (indexStatus.partial || indexStatus.failed) upstreamGaps.add('parse-diagnostics')
+  if (indexStatus.unknown) upstreamGaps.add('parse-status-unknown')
+  if (!change.changed.length) upstreamGaps.add('no-changed-symbols-in-analysis')
+  if (!change.tests.length) upstreamGaps.add('no-test-candidates-in-analysis')
+  if (change.changed.length > REVIEW_LIMITS.changes || relations.length > REVIEW_LIMITS.relations ||
+    change.tests.length > REVIEW_LIMITS.tests || change.warnings.length > REVIEW_LIMITS.warnings) upstreamGaps.add('projection-row-cap')
+  const brief: ReviewBriefV1 = { version: 1, status: 'bounded', scope: 'indexed-static-only', verification: 'not-run', repository,
+    summary: { source: change.source, changes: change.changed.length, relations: relations.length, tests: change.tests.length,
+      unmapped: change.unmapped.length, index: indexStatus }, changes: [], relations: [], tests: [], warnings: [], gaps: [],
+    omitted: { changes: 0, relations: 0, tests: 0, warnings: 0, sourceBodies: 0 }, budget: { limit, usedChars: 0 } }
+  const output = (): ReviewOutput => {
+    brief.omitted = { changes: change.changed.length - brief.changes.length, relations: relations.length - brief.relations.length,
+      tests: change.tests.length - brief.tests.length, warnings: change.warnings.length - brief.warnings.length,
+      sourceBodies: change.changed.length - brief.changes.filter(row => row.code !== undefined).length }
+    const gaps = new Set(upstreamGaps)
+    if (Object.values(brief.omitted).some(Boolean)) gaps.add('evidence-omitted')
+    for (const row of brief.changes) {
+      if (row.sourceGap) { gaps.add(row.sourceGap); gaps.add('signature-only') }
+      if (row.mode === 'window') gaps.add('source-window')
+    }
+    brief.gaps = [...gaps].sort()
+    return account(brief)
+  }
+  const fits = (): boolean => output().brief.budget.usedChars <= limit
+  if (!fits()) return fallback()
+  const add = <T>(rows: T[], row: T): boolean => { rows.push(row); if (fits()) return true; rows.pop(); return false }
+  // Reserve a representative test and relation before source bodies can fill the budget.
+  if (change.tests[0]) add(brief.tests, change.tests[0])
+  if (relations[0]) add(brief.relations, relations[0])
+  const read = sourceReader(index)
+  for (const row of change.changed.slice(0, REVIEW_LIMITS.changes)) {
+    const lines = await read(row.symbol.file, row.side, row.side === 'base' ? change.baseRef : undefined)
+    const sourceAvailable = lines !== null && row.symbol.line >= 1 && row.symbol.endLine >= row.symbol.line && row.symbol.endLine <= lines.length
+    for (const variant of excerptVariants(lines, row.symbol, row.side, row.side === 'base' ? change.baseRef : undefined, row.focusLine)) {
+      const candidate: ReviewChange = { ...variant, name: row.symbol.name, change: row.change,
+        ...(variant.mode === 'signature' ? { sourceGap: !sourceAvailable ? 'source-unavailable' as const : 'source-budget' as const } : {}) }
+      if (add(brief.changes, candidate)) break
+    }
+  }
+  // Alternate the remaining relation/test rows; preserve upstream ranking and grades.
+  for (let n = 0; n < Math.max(REVIEW_LIMITS.relations, REVIEW_LIMITS.tests); n++) {
+    const relation = relations[n], test = change.tests[n]
+    if (n < REVIEW_LIMITS.relations && relation && !brief.relations.includes(relation)) add(brief.relations, relation)
+    if (n < REVIEW_LIMITS.tests && test && !brief.tests.includes(test)) add(brief.tests, test)
+  }
+  for (const warning of change.warnings.slice(0, REVIEW_LIMITS.warnings)) add(brief.warnings, warning)
+  // Return detached plain data, so later DTO edits cannot mutate the original analysis.
+  return JSON.parse(JSON.stringify(output())) as ReviewOutput
+}

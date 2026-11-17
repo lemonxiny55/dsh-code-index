@@ -1,0 +1,41 @@
+{
+  "method": "one no-candidate/no-tools transport check in existing Desktop; global profile preserved",
+  "isolation": true,
+  "sessionId": "review-v013-1794854539052",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 0,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "error",
+      "error": {
+        "message": "DeepSeek Messages transport failed",
+        "code": "TRANSPORT"
+      }
+    }
+  },
+  "final": null,
+  "events": [
+    {
+      "type": "turn/end",
+      "seq": 31,
+      "time": 1794854555751,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "error",
+          "error": {
+            "message": "DeepSeek Messages transport failed",
+            "code": "TRANSPORT"
+          }
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true
+}

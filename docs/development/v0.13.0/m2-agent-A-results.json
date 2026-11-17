@@ -1,0 +1,462 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "sessionId": "review-v013-1794885339400",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 4,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "final": "## 任务 A 结论：静态关系成立、运行时影响未证明\n\n两次强制调用均已完成，且 `review` 用的是 `budgetChars=5000`（实际占用 3198/5000）。全程只读，未运行测试。为补 review 自报的 `entry-paths-not-projected` 缺口，我额外做了一次 `xray`；结果与 `text` 输出**逐字相同**——xray 没有补出任何新证据。\n\n### 1. 变更本身（唯一可确认的实际源码）\n\n当前 [price.ts:1–3](src/price.ts#L1-L3)：\n\n```ts\nexport function calculateTotal(price: number, quantity: number): number {\n  return Math.round(price * quantity * 100) / 100\n}\n```\n\n- 状态：`modified`，`src/price.ts:1-3`，`[current; complete]`（\"complete\" 只指**当前函数体完整**）。\n- **关键缺失：没有 unified diff，也没有 base 版本函数体。** 所以\"修改\"只能由 git 状态确认，无法确认改的是舍入、签名还是别的行。这是本次分析最大的证据缺口。\n\n### 2. 调用者与路径（均限定在 7 文件索引内）\n\n| 关系 | 证据 | 置信度 |\n|---|---|---|\n| 直接调用者 | `checkout()` 于 [checkout.ts:2](src/checkout.ts#L2) 调用 | exact |\n| 导入依赖 | [checkout.ts](src/checkout.ts) → price（`./price`） | import-scoped |\n| 最短入口路径 | `checkout → calculateTotal`，1 跳 | exact |\n| 传递影响 | 无 | — |\n| 未解析调用点 | **1 个，目标未知** | 证据缺口 |\n\n额外取到的调用者源码（通过把该文件当作\"变更文件\"查询才内联出来，**不代表它真的被改过**）：\n\n```ts\nexport function checkout() { return calculateTotal(10, 2) }\n```\n\n据此可得一个确定的静态事实：该调用传的是字面量整数 `10 × 2 = 20`，**当前舍入步骤对这条调用是恒等操作**，不可能区分修改前后。也就是说，即使 `checkout` 真的被执行，也验证不了舍入行为；分数/浮点输入才能暴露差异。\n\n另外，`checkout` 在索引中**没有调用者**，是根节点；7 个已解析文件里也没有 `main`/`index` 入口。所以\"shortest path to entry points\"实际终止于 `checkout` 自身，**不等于运行时可达**。\n\n### 3. 候选测试\n\n[tests/price.test.ts](tests/price.test.ts)：`[import-scoped]`、distance 1、`imports-changed-file`，**未运行、覆盖未验证**。第二次查询显示该文件**没有已索引符号**（Warning: no indexed symbols），因此它的用例与断言内容完全不可见。候选测试 ≠ 已证明的覆盖。\n\n### 4. text 与 review 的差异（同一快照、粒度不同）\n\n| 维度 | `text` | `review` |\n|---|---|---|\n| 变更符号 | 有 | 有，且额外给出行范围 1–3 与完整当前函数体 |\n| 直接调用者 | 1 个，第 2 行 | 1 个，`depth 1`、`explicit-import-binding` |\n| 入口路径 | **投影了** 1 跳 shortest path | 声明 `entry-paths-not-projected`（与 text 表面矛盾：因为该路径止于根 `checkout`，并非真实入口） |\n| 未解析调用点 | 给出**计数 1** | 只列 gap 名 `unresolved-call-targets`，无计数 |\n| 快照可信度 | 未提 | `non-atomic`、HEAD=base、`dirty: true`、索引构建/观测时间戳 |\n| 测试 | 1 candidate / not run | 同，并显式写 `coverage not verified` |\n| 预算 | 无 | 3198/5000 |\n| 省略项 | `UNMAPPED: none`、`WARNINGS: none` | `Omitted: 0 changes, 0 relations...`、`0 source bodies not included` |\n\n其中 `0 source bodies not included` 与 review 只内联了被改函数体这一事实一致，**但调用者体与测试体都没有被纳入**。\n\n### 5. 缺失源码与证据缺口清单\n\n1. **修改前版本 / diff hunk** —— 无法描述\"改了什么\"，只能描述\"现在是什么\"。\n2. [checkout.ts](src/checkout.ts) 完整文件 —— 我仅拿到 1 行函数体，其导入与其它逻辑不可见。\n3. [tests/price.test.ts](tests/price.test.ts) 用例与断言 —— 无索引符号，内容未知。\n4. [quote.ts](src/quote.ts)、[policy.ts](src/policy.ts)、[experimental.ts](src/experimental.ts) 源码 —— 索引中不与 price 相连，静态上不属受影响集，但无法排除间接/外部调用。\n5. **1 个未解析调用点**，`external not established` —— 因此\"恰好 1 个调用者\"只是索引内结论，不能排除第二个调用者。\n6. 索引仅 7 文件、`parsed` 不等于语义证明、`non-atomic` 快照、工作区 `dirty`。\n7. 未运行测试：候选测试未验证覆盖。\n\n### 6. 边界声明\n\n- 上述 exact / import-scoped 关系是**静态索引关系，不是运行时影响**；没有执行、没有 profiling、没有入口可达性证明。\n- 候选测试没有被执行，也没有证据表明它断言了舍入行为。\n- 本会话工具集只暴露 `code_change_context`（无 shell/文件读取），因此无法独立打开磁盘文件；所有\"实际源码\"均来自工具内联的输出，且 `xray` 未增加任何信息。",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794885341046,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_7VJEeNKGUTVZBJVC4oPe4405",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794885341244,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_7VJEeNKGUTVZBJVC4oPe4405"
+          },
+          "toolCallId": "call_00_7VJEeNKGUTVZBJVC4oPe4405",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified function calculateTotal(price: number, quantity: number) src/price.ts:1 [exact]\nDIRECT CALLERS:\n  function checkout() src/checkout.ts:2 (called at src/checkout.ts:2) [exact]\nIMPORT DEPENDENTS:\n  src/checkout.ts imports src/price.ts ('./price') [import-scoped]\n  tests/price.test.ts imports src/price.ts ('../src/price') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/checkout.ts:2 function checkout() → src/price.ts:1 function calculateTotal(price: number, quantity: number) (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/price.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nUnresolved call sites: 1; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "87bf3cab-e79c-46da-a962-02180b13b412"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 20,
+      "time": 1794885341245,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_01_HOTKwkanPJvPpXFiJZz49466",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"budgetChars\": 5000}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 21,
+      "time": 1794885341570,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_01_HOTKwkanPJvPpXFiJZz49466"
+          },
+          "toolCallId": "call_01_HOTKwkanPJvPpXFiJZz49466",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\A\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: 77df37019cc8b5cf3369255638dfef5968599232; dirty: true\nIndex built: 2026-11-17T03:14:13.389Z; metadata observed: 2026-11-17T03:15:41.567Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 3 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified calculateTotal src/price.ts:1-3 [current; complete]\nexport function calculateTotal(price: number, quantity: number): number {\n  return Math.round(price * quantity * 100) / 100\n}\nPotential impact: checkout src/checkout.ts:2 [path exact; depth 1]; via src/checkout.ts:2 [hop exact; explicit-import-binding]\nImport dependent: src/checkout.ts -> src/price.ts (./price) [import-scoped]\nImport dependent: tests/price.test.ts -> src/price.ts (../src/price) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/price.test.ts [import-scoped; imports-changed-file]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: entry-paths-not-projected; use xray for full paths; non-atomic-snapshot; unresolved-call-targets\nBudget (full JSON envelope): 3198/5000"
+            }
+          ],
+          "isError": false,
+          "id": "f2024f85-03a9-4a4b-94a9-220e607dbfba"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        20
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 27,
+      "time": 1794885351893,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "callId": "call_00_NKq5BTvjHJXa2u44TJKg3535",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"xray\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 28,
+      "time": 1794885352093,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_NKq5BTvjHJXa2u44TJKg3535"
+          },
+          "toolCallId": "call_00_NKq5BTvjHJXa2u44TJKg3535",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified function calculateTotal(price: number, quantity: number) src/price.ts:1 [exact]\nDIRECT CALLERS:\n  function checkout() src/checkout.ts:2 (called at src/checkout.ts:2) [exact]\nIMPORT DEPENDENTS:\n  src/checkout.ts imports src/price.ts ('./price') [import-scoped]\n  tests/price.test.ts imports src/price.ts ('../src/price') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/checkout.ts:2 function checkout() → src/price.ts:1 function calculateTotal(price: number, quantity: number) (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/price.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 2, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\nUnresolved call sites: 1; target unknown, external not established.\nEvidence gaps: not-found/unresolved-call-targets.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "a27e493e-8851-4ce3-bb9b-0ff313979024"
+        },
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\A",
+          "source": "git",
+          "nodes": [
+            {
+              "id": "current:sym:v1:src%2Fprice.ts#function:calculateTotal@1",
+              "name": "calculateTotal",
+              "kind": "function",
+              "file": "src/price.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "diff-mapping",
+              "evidence": {
+                "file": "src/price.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function calculateTotal(price: number, quantity: number): number {\n  return Math.round(price * quantity * 100) / 100\n}\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:src%2Fcheckout.ts#function:checkout@1",
+              "name": "checkout",
+              "kind": "function",
+              "file": "src/checkout.ts",
+              "line": 2,
+              "changed": false,
+              "category": "caller",
+              "depth": 1,
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "file:current:src/checkout.ts",
+              "name": "src/checkout.ts",
+              "kind": "module",
+              "file": "src/checkout.ts",
+              "line": 1,
+              "changed": false,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "file:current:src/price.ts",
+              "name": "src/price.ts",
+              "kind": "module",
+              "file": "src/price.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "src/price.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function calculateTotal(price: number, quantity: number): number {\n  return Math.round(price * quantity * 100) / 100\n}\n"
+              }
+            },
+            {
+              "id": "file:current:tests/price.test.ts",
+              "name": "tests/price.test.ts",
+              "kind": "module",
+              "file": "tests/price.test.ts",
+              "line": 3,
+              "changed": false,
+              "category": "test",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/price.test.ts",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { calculateTotal } from '../src/price'\ntest('total', () => assert.equal(calculateTotal(10, 2), 20))\n"
+              },
+              "resolution": "import-scoped"
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:src%2Fcheckout.ts#function:checkout@1",
+              "to": "current:sym:v1:src%2Fprice.ts#function:calculateTotal@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "import:1",
+              "from": "file:current:src/checkout.ts",
+              "to": "file:current:src/price.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "import:2",
+              "from": "file:current:tests/price.test.ts",
+              "to": "file:current:src/price.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/price.test.ts",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { calculateTotal } from '../src/price'\ntest('total', () => assert.equal(calculateTotal(10, 2), 20))\n"
+              }
+            }
+          ],
+          "tests": [
+            {
+              "file": "tests/price.test.ts",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "distance": 1,
+              "nodeId": "file:current:tests/price.test.ts"
+            }
+          ],
+          "imports": [
+            {
+              "file": "src/checkout.ts",
+              "changedFile": "src/price.ts",
+              "specifier": "./price",
+              "resolution": "import-scoped",
+              "edgeId": "import:1"
+            },
+            {
+              "file": "tests/price.test.ts",
+              "changedFile": "src/price.ts",
+              "specifier": "../src/price",
+              "resolution": "import-scoped",
+              "edgeId": "import:2"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "checkout",
+              "to": "calculateTotal",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 7 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 2, import-scoped 2, name-only 0.",
+            "Tests: 1 candidate(s), not run; not verified coverage.",
+            "Unresolved call sites: 1; target unknown, external not established.",
+            "Evidence gaps: not-found/unresolved-call-targets."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 1,
+              "callers": 1,
+              "impact": 0,
+              "imports": 2,
+              "tests": 1,
+              "paths": 1,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 7,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 2,
+              "import-scoped": 2,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 1,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 1,
+              "zero": []
+            },
+            "unresolved": {
+              "count": 1,
+              "sites": [
+                {
+                  "file": "src/price.ts",
+                  "line": 2,
+                  "name": "round"
+                }
+              ]
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "unresolved-call-targets",
+                "source": "indexed-call-sites"
+              }
+            ]
+          }
+        }
+      },
+      "sourceEventSeqs": [
+        27
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 33,
+      "time": 1794885364969,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "callId": "call_00_n3KlixVrtISQOKwVXkAr0078",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"files\": [\"src/checkout.ts\", \"tests/price.test.ts\"], \"budgetChars\": 5000}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 34,
+      "time": 1794885365100,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_n3KlixVrtISQOKwVXkAr0078"
+          },
+          "toolCallId": "call_00_n3KlixVrtISQOKwVXkAr0078",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\A\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: not provided; dirty: true\nIndex built: 2026-11-17T03:14:13.389Z; metadata observed: 2026-11-17T03:16:05.096Z\nSnapshot: non-atomic; re-query after edits.\nSelection: files; 1 changed symbols, 0 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nChange: modified checkout src/checkout.ts:2-2 [current; complete]\nexport function checkout() { return calculateTotal(10, 2) }\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/price.test.ts [exact; changed-test]\nWarning: no indexed symbols in changed file: tests/price.test.ts\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: non-atomic-snapshot\nBudget (full JSON envelope): 2153/5000"
+            }
+          ],
+          "isError": false,
+          "id": "8acc2875-e368-4a74-82c9-dd7724e165b5"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        33
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 40,
+      "time": 1794885383854,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true,
+  "rawReportSha256": "c8bb9c93a5b3369d0c21d885c59b672b9fa196142e96c9978fb50e2c1b03fd72",
+  "retention": "Public evidence retains actual tool calls/results, turn end and final text; assistant reasoning/stream blocks excluded.",
+  "taskId": "A",
+  "maxTokens": 4096
+}

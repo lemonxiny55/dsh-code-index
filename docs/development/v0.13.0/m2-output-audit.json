@@ -1,0 +1,185 @@
+{
+  "status": "PASS",
+  "scope": "Recorded tool contracts and source equality; not an assertion that all model conclusions are correct",
+  "cases": [
+    {
+      "task": "A",
+      "textChars": 1170,
+      "reviewEnvelopeChars": 3198,
+      "summary": {
+        "source": "git",
+        "changes": 1,
+        "relations": 3,
+        "tests": 1,
+        "unmapped": 0,
+        "index": {
+          "parsed": 7,
+          "partial": 0,
+          "failed": 0,
+          "unknown": 0
+        }
+      },
+      "changes": 1,
+      "sourceBodies": 1,
+      "sourceTextMatchesDisk": true,
+      "tests": [
+        {
+          "file": "tests/price.test.ts",
+          "resolution": "import-scoped",
+          "reason": "imports-changed-file",
+          "distance": 1
+        }
+      ],
+      "gaps": [
+        "entry-paths-not-projected; use xray for full paths",
+        "non-atomic-snapshot",
+        "unresolved-call-targets"
+      ],
+      "textXrayCanonicalTextEqual": true
+    },
+    {
+      "task": "B",
+      "textChars": 879,
+      "reviewEnvelopeChars": 2238,
+      "summary": {
+        "source": "git",
+        "changes": 1,
+        "relations": 1,
+        "tests": 1,
+        "unmapped": 0,
+        "index": {
+          "parsed": 7,
+          "partial": 0,
+          "failed": 0,
+          "unknown": 0
+        }
+      },
+      "changes": 1,
+      "sourceBodies": 1,
+      "sourceTextMatchesDisk": true,
+      "tests": [
+        {
+          "file": "tests/policy.test.ts",
+          "resolution": "name-only",
+          "reason": "path-convention"
+        }
+      ],
+      "gaps": [
+        "non-atomic-snapshot"
+      ],
+      "textXrayCanonicalTextEqual": true
+    },
+    {
+      "task": "C",
+      "textChars": 803,
+      "reviewEnvelopeChars": 2090,
+      "summary": {
+        "source": "git",
+        "changes": 1,
+        "relations": 0,
+        "tests": 0,
+        "unmapped": 0,
+        "index": {
+          "parsed": 7,
+          "partial": 0,
+          "failed": 0,
+          "unknown": 0
+        }
+      },
+      "changes": 1,
+      "sourceBodies": 1,
+      "sourceTextMatchesDisk": true,
+      "tests": [],
+      "gaps": [
+        "no-test-candidates",
+        "no-test-candidates-in-analysis",
+        "non-atomic-snapshot"
+      ],
+      "textXrayCanonicalTextEqual": true
+    }
+  ],
+  "budgets": [
+    {
+      "limit": 5000,
+      "used": 3198
+    },
+    {
+      "limit": 5000,
+      "used": 2238
+    },
+    {
+      "limit": 5000,
+      "used": 2090
+    },
+    {
+      "limit": 5000,
+      "used": 1982
+    },
+    {
+      "limit": 5000,
+      "used": 3198
+    },
+    {
+      "limit": 300,
+      "used": 267
+    },
+    {
+      "limit": 500,
+      "used": 267
+    },
+    {
+      "limit": 1000,
+      "used": 268
+    },
+    {
+      "limit": 2000,
+      "used": 1903
+    },
+    {
+      "limit": 20000,
+      "used": 3200
+    },
+    {
+      "limit": 5000,
+      "used": 3198
+    },
+    {
+      "limit": 5000,
+      "used": 3198
+    }
+  ],
+  "agents": [
+    {
+      "task": "A",
+      "toolCalls": 4,
+      "end": "completed",
+      "finalPresent": true,
+      "invalidSymbolSelections": 0,
+      "semanticVerdict": "COMPLETED_WITH_RECORDED_CAVEATS"
+    },
+    {
+      "task": "B",
+      "toolCalls": 5,
+      "end": "completed",
+      "finalPresent": true,
+      "invalidSymbolSelections": 1,
+      "semanticVerdict": "COMPLETED_WITH_RECORDED_CAVEATS"
+    },
+    {
+      "task": "C",
+      "toolCalls": 7,
+      "end": "completed",
+      "finalPresent": true,
+      "invalidSymbolSelections": 5,
+      "semanticVerdict": "COMPLETED_WITH_RECORDED_CAVEATS"
+    },
+    {
+      "task": "B-max-tokens",
+      "toolCalls": 2,
+      "end": "max-tokens",
+      "finalPresent": false,
+      "invalidSymbolSelections": 0,
+      "semanticVerdict": "INCOMPLETE"
+    }
+  ]
+}

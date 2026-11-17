@@ -1,0 +1,137 @@
+{
+  "date": "2026-11-17",
+  "baseCommit": "4db3b18e20a53ee159e2921734b0a5280c70f137",
+  "version": "0.13.0-dev.0",
+  "commands": {
+    "node22": {
+      "tests": "node22 ../../node_modules/vitest/vitest.mjs run --reporter=json --outputFile=node_modules/m2-tests-node22-full.json",
+      "typecheck": "node22 ../../node_modules/typescript/bin/tsc --noEmit",
+      "build": [
+        "node22 ../../node_modules/tsup/dist/cli-default.js",
+        "node22 ../../node_modules/tsup/dist/cli-default.js --config tsup.client.config.ts"
+      ],
+      "exitCodes": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "node24": {
+      "tests": "node ../../node_modules/vitest/vitest.mjs run --reporter=json --outputFile=docs/development/v0.13.0/m2-tests-node24.json (full report subsequently compacted)",
+      "typecheck": "node ../../node_modules/typescript/bin/tsc --noEmit",
+      "build": [
+        "node ../../node_modules/tsup/dist/cli-default.js",
+        "node ../../node_modules/tsup/dist/cli-default.js --config tsup.client.config.ts"
+      ],
+      "exitCodes": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "normalInstalls": [
+    {
+      "consumer": "node_modules/.m2-consumer-node22",
+      "node": "v22.23.3",
+      "exitCode": 0,
+      "flags": [
+        "--no-audit",
+        "--no-fund"
+      ],
+      "ignoreScripts": false,
+      "force": false,
+      "legacyPeerDeps": false,
+      "scriptApprovalBypassed": false,
+      "warning": "prepare allow-scripts pending warning retained",
+      "installedVersion": "0.13.0-dev.0",
+      "consumerTypesExitCode": 0,
+      "resolved": {
+        "@deepseek-ai/cordis": "4.1.0",
+        "@deepseek-ai/dsh-tools": "0.2.2-rc.3",
+        "@deepseek-ai/dsh-tool-executor-native": "0.2.2-rc.3",
+        "@deepseek-ai/dsh-system-prompt": "0.2.2-rc.3"
+      }
+    },
+    {
+      "consumer": "node_modules/.m2-consumer-final",
+      "node": "v24.19.0",
+      "exitCode": 0,
+      "flags": [
+        "--no-audit",
+        "--no-fund"
+      ],
+      "ignoreScripts": false,
+      "force": false,
+      "legacyPeerDeps": false,
+      "scriptApprovalBypassed": false,
+      "warning": "prepare allow-scripts pending warning retained",
+      "installedVersion": "0.13.0-dev.0",
+      "consumerTypesExitCode": 0,
+      "resolved": {
+        "@deepseek-ai/cordis": "4.1.0",
+        "@deepseek-ai/dsh-tools": "0.2.2-rc.3",
+        "@deepseek-ai/dsh-tool-executor-native": "0.2.2-rc.3",
+        "@deepseek-ai/dsh-system-prompt": "0.2.2-rc.3"
+      }
+    }
+  ],
+  "archive": {
+    "path": "node_modules/.m2-package-verified/dsh-code-index-0.13.0-dev.0.tgz",
+    "sha256": "f92fafb669d247ed55257e5f4887b0b5a7f2c0d871f2ddcd354e9cfe09854fdf"
+  },
+  "dist": [
+    {
+      "file": "index.js",
+      "bytes": 215114,
+      "sha256": "b690b4071b1776530b063cb942d4c74131415ec72de9e221d680f3a77707c0b7",
+      "desktopCandidateMatches": true
+    },
+    {
+      "file": "index.d.ts",
+      "bytes": 32988,
+      "sha256": "a7233984301b6a754d5e3890d9750dd44c5263e8d982fe21fb93e3cb1e1442ef",
+      "desktopCandidateMatches": true
+    },
+    {
+      "file": "client.js",
+      "bytes": 62174,
+      "sha256": "9abaceb9bb8b08f664c9dafcf1bc9baf8bd11d1862f03e665ffc95d1a1bb4553",
+      "desktopCandidateMatches": true
+    }
+  ],
+  "sourceSha256": {
+    "package.json": "5a7af7c83e6cf30418aa8a6593ad8d4b0f7075c21b2ba407a772cb1a9518caf8",
+    "src/review-brief.ts": "078ee55b112243b1e9501e23c85d0118536d25ba54b5cdd642f72f4f16acaa4f",
+    "scripts/release-smoke.mjs": "c7f031a0f1e9d770d7918e8abdd49bfee6201ebfa35c6a796bca20209c1a3899",
+    "scripts/create-review-demo.mjs": "7fe04c28868b6c2f569933b89aa22e4e6cd076f6e010b7c073205d9867f6fd7f",
+    "tests/review-brief.spec.ts": "346864ab564d59352a2e97122f62b07a503a732634605de90d5760aa8ee8bee6"
+  },
+  "desktopProfile": {
+    "globalPluginReplaced": false,
+    "globalToolsUnchanged": true,
+    "scopeLifecycle": [
+      8,
+      7,
+      8,
+      7
+    ],
+    "profileConfigurationWritten": false
+  },
+  "agentTeam": "DEFERRED",
+  "candidateDecision": "READY_FOR_RC_STABILIZATION_WITH_DOCUMENTED_AGENT_CAVEATS",
+  "regression": {
+    "record": "m2-regression.json",
+    "oldRendererFailed": 2,
+    "currentPassed": 26,
+    "restoredSourceFingerprintMatches": true
+  },
+  "assets": {
+    "record": "../../assets/v0.13.0/capture-manifest.json",
+    "realDesktopScreenshots": 6,
+    "format": "original JPEG",
+    "videoRecorded": false
+  }
+}

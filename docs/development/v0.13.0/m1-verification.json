@@ -1,0 +1,201 @@
+{
+  "date": "2026-11-17",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/review-ready-context-v0.13.0-m1",
+  "baseCommit": "314d1ab00845b8f55100d97fa76109557a250e5f",
+  "worktree": "D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0",
+  "node": "v24.19.0",
+  "tests": {
+    "command": "node ../../node_modules/vitest/vitest.mjs run --reporter=json --outputFile=node_modules/m1-tests-final.json",
+    "exitCode": 0,
+    "total": 327,
+    "passed": 327,
+    "failed": 0,
+    "pending": 0,
+    "files": 33,
+    "newReviewTests": 25,
+    "originalContextCases": [
+      {
+        "name": "C phase six real Context Pack inputs T1-C3-r1",
+        "status": "passed"
+      },
+      {
+        "name": "C phase six real Context Pack inputs T2-C3-r1",
+        "status": "passed"
+      },
+      {
+        "name": "C phase six real Context Pack inputs T3-C3-r1",
+        "status": "passed"
+      },
+      {
+        "name": "C phase six real Context Pack inputs T1-C3-r2",
+        "status": "passed"
+      },
+      {
+        "name": "C phase six real Context Pack inputs T2-C3-r2",
+        "status": "passed"
+      },
+      {
+        "name": "C phase six real Context Pack inputs T3-C3-r2",
+        "status": "passed"
+      }
+    ],
+    "reportSha256": "7b8367e98c6eab7043122318453c86fbac953c8006c844bb59c177ae0f5712de"
+  },
+  "typecheck": {
+    "command": "node ../../node_modules/typescript/bin/tsc --noEmit",
+    "exitCode": 0
+  },
+  "build": {
+    "server": "node ../../node_modules/tsup/dist/cli-default.js",
+    "client": "node ../../node_modules/tsup/dist/cli-default.js --config tsup.client.config.ts",
+    "exitCodes": [
+      0,
+      0
+    ],
+    "declarationBytes": 32988,
+    "clientBytesMatchStable": true
+  },
+  "consumerTypes": {
+    "exitCode": 0,
+    "command": "node ../../node_modules/typescript/bin/tsc --ignoreConfig --noEmit --strict --skipLibCheck --target ES2023 --module NodeNext --moduleResolution NodeNext --types node node_modules/.m1-consumer-final/typecheck.ts",
+    "source": "m1-consumer-check.ts"
+  },
+  "install": {
+    "command": "npm install --prefix node_modules/.m1-consumer-final --no-audit --no-fund <candidate.tgz> @deepseek-ai/dsh-tools@0.2.2-rc.3 @deepseek-ai/dsh-tool-executor-native@0.2.2-rc.3 @deepseek-ai/dsh-system-prompt@0.2.2-rc.3",
+    "exitCode": 0,
+    "normalPeerResolution": true,
+    "scriptApprovalBypassed": false,
+    "warning": "npm prepare approval warning retained; packaged dist loaded without bypass",
+    "plugin": {
+      "version": "0.13.0-dev.0",
+      "resolved": "file:../.m1-package-final/dsh-code-index-0.13.0-dev.0.tgz",
+      "integrity": "sha512-OrNMaiN+RsbkRQkT9sa9Siy88bges8mEH3SoTA7+t2gw4aP6IHhF/VZT6hX8K8dfDggzLPH+jHbmNO9h+3rpYA==",
+      "license": "MIT",
+      "dependencies": {
+        "@deepseek-ai/schemastery": "^3.18.4",
+        "chokidar": "4.0.3",
+        "ignore": "7.0.5",
+        "tree-sitter-wasms": "^0.1.13",
+        "web-tree-sitter": "^0.25.10"
+      },
+      "engines": {
+        "node": ">=22"
+      },
+      "peerDependencies": {
+        "@deepseek-ai/cordis": "^4.0.1",
+        "@deepseek-ai/dsh-tools": ">=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3"
+      },
+      "peerDependenciesMeta": {
+        "@deepseek-ai/cordis": {
+          "optional": true
+        }
+      }
+    }
+  },
+  "artifact": {
+    "path": "D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m1-package-final\\dsh-code-index-0.13.0-dev.0.tgz",
+    "sha256": "1b5d4a649622b1149607d7a1cbe98946df466c40363e4b5708464a2719d61d02",
+    "serverSha256": "8d48ed7f457bfa785b4c129d167c96e3cb86c5952c1a7e67cc0deda12c2aab74",
+    "installedServerMatches": true
+  },
+  "native": {
+    "status": "PASS",
+    "calls": 16,
+    "versions": {
+      "dsh-code-index": "0.13.0-dev.0",
+      "@deepseek-ai/dsh-tools": "0.2.2-rc.3",
+      "@deepseek-ai/cordis": "4.1.0"
+    }
+  },
+  "defaultReview": {
+    "chars": 3202,
+    "budget": {
+      "limit": 5000,
+      "usedChars": 3202
+    },
+    "changes": 1,
+    "relations": 4,
+    "tests": 1,
+    "omitted": {
+      "changes": 0,
+      "relations": 0,
+      "tests": 0,
+      "warnings": 0,
+      "sourceBodies": 0
+    },
+    "gaps": [
+      "entry-paths-not-projected; use xray for full paths",
+      "non-atomic-snapshot"
+    ]
+  },
+  "desktop": {
+    "hostStatus": "PASS",
+    "calls": 2,
+    "temporaryAliasRemoved": true,
+    "stablePluginReplaced": false,
+    "clientRenderingVerified": false
+  },
+  "realAgent": {
+    "status": "BLOCKED_BY_TRANSPORT",
+    "candidate": {
+      "sessionId": "review-v013-1794854429283",
+      "toolCalls": 0,
+      "turnEnd": {
+        "turn": 1,
+        "reason": {
+          "kind": "error",
+          "error": {
+            "message": "DeepSeek Messages transport failed",
+            "code": "TRANSPORT"
+          }
+        }
+      },
+      "globalToolsUnchanged": true
+    },
+    "oneMinimalCheck": {
+      "sessionId": "review-v013-1794854539052",
+      "toolCalls": 0,
+      "turnEnd": {
+        "turn": 1,
+        "reason": {
+          "kind": "error",
+          "error": {
+            "message": "DeepSeek Messages transport failed",
+            "code": "TRANSPORT"
+          }
+        }
+      },
+      "globalToolsUnchanged": true
+    },
+    "investigationStopped": true
+  },
+  "protectedFiles": [
+    {
+      "file": "C:\\Users\\18439\\.dsh\\profiles\\desktop\\package.json",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\18439\\.dsh\\profiles\\desktop\\cordis.patch.yml",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\18439\\.dsh\\.credentials.yaml",
+      "unchanged": true
+    }
+  ],
+  "sourceSha256": {
+    "src/review-brief.ts": "66bbb8777ec25ee58cc39f77983502a6e3774b48ddda05d8331f52c0b64ddea2",
+    "src/tools.ts": "c356bfe323d17b5ec6d8ae82a91e3f5a09367964dba4bde4e036fb9ecdd9e80b",
+    "src/change-context.ts": "5e22b7ba73618f84b1daaa3ad2e44727444adb293dcf2ba4d4befdafff3c9304",
+    "src/index.ts": "b2fa0fec2d5d219809f0e57eca0e00a9e09dc83ebf03ea64426efcfe56f3d872",
+    "package.json": "5a7af7c83e6cf30418aa8a6593ad8d4b0f7075c21b2ba407a772cb1a9518caf8",
+    "tsup.config.ts": "905519f908b417dea9a490aec72a92d10d807ad69f398fee4950a27b3520838d"
+  },
+  "limits": [
+    "Current gate Node24.19.0 only; no new Node22 or future runtime claim",
+    "No final Desktop card drawing/source interaction verification",
+    "No successful new real model task or automatic AgentTeam handoff",
+    "Old node_modules worktree and early artifacts retained as historical, not deliverables"
+  ]
+}
