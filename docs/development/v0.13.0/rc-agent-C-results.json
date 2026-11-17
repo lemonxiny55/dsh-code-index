@@ -1,0 +1,119 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "taskId": "C",
+  "maxTokens": 8192,
+  "sessionId": "review-v013-1794887644025",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 2,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "final": "## Tool results (actual output, both calls read-only)\n\nBoth calls selected the file `src/experimental.ts` (no `code_symbols` tool is exposed in this session, so I could not target `SymbolInfo.id` directly and scoped by file instead).\n\n| | `text` | `review` |\n|---|---|---|\n| Selected | 1 changed symbol | 1 changed symbol (`experimental.ts#L1-L3`) |\n| Direct callers | *(none found in current indexed static scope)* | 0 static relations |\n| Import dependents | *(none)* | 0 |\n| Paths to entry points | *(none)* | 0 |\n| Transitive impact | *(none)* | 0 |\n| Affected tests | *(none)* | 0 candidates, not run |\n| Index health | 7 parsed / 0 partial / 0 failed / 0 unknown | same |\n| Git | not reported | HEAD `77df370…`, **base: not provided**, dirty: **true** |\n| Source body | **not shown** | shown: 3 lines |\n| Gaps | `not-found/no-test-candidates` | `no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot` |\n| Budget | n/a | 2028 / 5000 chars |\n\nThe `review` call returned the only source I actually saw:\n\n```ts\nexport function experimentalLabel() {\n  return 'preview-v2'\n}\n```\n\nBoth outputs explicitly self-caveat: *“none found in current index/static resolution; not proof of no callers”* and *“Candidate tests: not-run; coverage not verified.”*\n\n## What the two formats differ on\n\n- **Source visibility:** `text` returned **no source at all** for the changed symbol; only `review` emitted the body. Any claim about the function’s content is therefore based solely on the `review` body, not corroborated by `text`.\n- **Git baseline:** only `review` reveals `base: not provided` and `dirty: true`. `text` gives no diff provenance, so it cannot distinguish “no change” from “change not diffed.”\n- **Line span:** `text` reports `experimental.ts:1`; `review` reports `1-3`. Same symbol, different anchoring.\n- **Gap granularity:** `review` names three specific gaps including `non-atomic-snapshot`; `text` collapses to two short tags.\n- **Agreement:** on the substantive facts — 0 callers, 0 import dependents, 0 paths, 0 tests, 7 parsed files — the two formats are **consistent, not contradictory**.\n\n## Missing source and unscanned material\n\n1. **Only 3 lines of code are actually visible.** The bodies of [policy.ts](src/policy.ts), [price.ts](src/price.ts), [checkout.ts](src/checkout.ts), and [quote.ts](src/quote.ts) were never returned, so I cannot manually confirm nothing references the label.\n2. **Index census mismatch:** the repo map header says *“7 files, 5 symbols”* and lists 5 files, yet the index reports **7 parsed**. The 2 extra files are not surfaced anywhere in either result, so they are effectively unassessed.\n3. **No test files were surfaced at all** — zero candidates is reported, but I cannot tell whether that means “tests don’t reference this” or “no tests are in the index.”\n4. **No package/entry/config files** (package.json, tsconfig, barrel exports) were returned, so “entry point paths: none” cannot be distinguished from “no entry points were indexed.”\n5. **Symbol targeting was approximated** by whole-file selection because no symbol-id lookup was available; “modified function” is therefore a file→symbol expansion, not a symbol-precise query.\n\n## Error-inference risks\n\n- **Zero callers ≠ dead code / no runtime users.** Resolution may miss dynamic imports, reflection, string-keyed/lazy lookup, re-exports through barrels, path aliases, or consumers outside this worktree. The symbol is `export`ed, so external API use is possible with no indexed importer.\n- **Zero candidate tests ≠ untested / verified coverage.** It means no test lead was *found*, not that none exists.\n- **“modified” ≠ a real diff was reviewed.** I supplied `files` explicitly; `review` confirms `base: not provided`, so no git diff was read. The change label is selection-induced, not evidence of an actual edit.\n- **`dirty: true` + `non-atomic-snapshot`** means the index may lag the working tree; results can be stale relative to disk.\n- **“7 parsed, 0 failed” ≠ semantic correctness.** Parsing success does not prove import/call resolution actually bound (`parsed is not semantic proof`).\n\n## Conclusion — insufficient evidence\n\n**Insufficient evidence to conclude there are no runtime users or no affected tests.** The defensible statement is only: *within this index’s static scope, zero static callers, zero import dependents, and zero candidate tests were found for `experimentalLabel`.* The function is exported and returns a constant (`'preview-v2'`), so a rename/removal is plausibly a public-API break even with zero internal callers — that cannot be confirmed from this evidence.\n\nI ran no tests and modified no files; the workspace was untouched (read-only analysis calls only).",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794887648721,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_RaAYhI7del1eaTGaXDGi1149",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"files\": [\"src/experimental.ts\"], \"maxDepth\": 3}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794887648742,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_RaAYhI7del1eaTGaXDGi1149"
+          },
+          "toolCallId": "call_00_RaAYhI7del1eaTGaXDGi1149",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: files: 1 changed symbol(s)\nCHANGED:\n  modified function experimentalLabel() src/experimental.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for experimentalLabel (src/experimental.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "39a66ea0-8846-4b76-b911-9eecbc7bffb7"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 20,
+      "time": 1794887648743,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_01_8OA9X1PCZBS78e98PRj75692",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"files\": [\"src/experimental.ts\"], \"budgetChars\": 5000, \"maxDepth\": 3, \"maxTests\": 20}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 21,
+      "time": 1794887648871,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_01_8OA9X1PCZBS78e98PRj75692"
+          },
+          "toolCallId": "call_01_8OA9X1PCZBS78e98PRj75692",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: not provided; dirty: true\nIndex built: 2026-11-17T03:14:15.268Z; metadata observed: 2026-11-17T03:54:08.866Z\nSnapshot: non-atomic; re-query after edits.\nSelection: files; 1 changed symbols, 0 static relations, 0 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nChange: modified experimentalLabel src/experimental.ts:1-3 [current; complete]\nexport function experimentalLabel() {\n  return 'preview-v2'\n}\nCandidate tests: not-run; coverage not verified.\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot\nBudget (full JSON envelope): 2028/5000"
+            }
+          ],
+          "isError": false,
+          "id": "193656f3-6076-4c02-a97b-49b5ee2da6b8"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        20
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 27,
+      "time": 1794887672923,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true
+}

@@ -54,6 +54,22 @@ it('registers review, renders canonical text, and preserves default text/xray ex
   expect(bounded(review).verification).toBe('not-run')
 })
 
+it('exposes exact symbol IDs in the model-facing code_symbols output', async () => {
+  const { root } = await fixture()
+  const ctx = new Context(); ctx.provide('systemPrompt', { tools: () => () => {}, section: () => () => {} })
+  const runtime = new ToolRuntime(ctx), tool = tools.find(t => t.name === 'code_symbols')!
+  const dispose = runtime.register(tool)
+  try {
+    const result = await runtime.execute({ callId: 'symbol:id' as never, name: 'code_symbols',
+      arguments: { repoRoot: root, query: 'normalize' }, signal: new AbortController().signal })
+    expect(result.isError).toBe(false)
+    if (result.isError) throw Error('Runtime failed')
+    const hit = (result.value as unknown as Array<{ id: string }>)[0]
+    expect(hit.id).toMatch(/^sym:v1:/)
+    expect(JSON.stringify(result.content)).toContain(hit.id)
+  } finally { dispose(); await ctx.fiber.dispose() }
+})
+
 it('runs review through the real declared SDK output and validation pipeline', async () => {
   const { root } = await fixture()
   const ctx = new Context(); ctx.provide('systemPrompt', { tools: () => () => {}, section: () => () => {} })

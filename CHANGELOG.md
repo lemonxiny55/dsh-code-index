@@ -2,8 +2,9 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.13.0-dev.0 — Review-Ready Context (unreleased)
+## 0.13.0-rc.1 — Review-Ready Context (release candidate)
 
+- Expose exact symbol IDs in model-facing `code_symbols` results; clarify static caller direction, candidate-test and character-budget boundaries in the tool contract.
 - Add opt-in `code_change_context(outputFormat: "review")`, returning a versioned Review Brief with source excerpts, static callers/import dependents, candidate tests, repository observations and explicit evidence omissions.
 - Bound the complete `{text, brief}` JSON envelope to 5000 characters by default (300–20000). Reserve a relation and candidate test before filling source excerpts; preserve whole source lines and baseline-side deletion evidence.
 - Keep default text, X-Ray and original Context Pack behavior. Tests remain not-run; HEAD/dirty metadata is a non-atomic observation, not a safe AgentTeam handoff token. No automatic AgentTeam integration is included.

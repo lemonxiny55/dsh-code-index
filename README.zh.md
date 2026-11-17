@@ -16,6 +16,10 @@
 
 [English](README.md) | 中文
 
+## Review Brief（v0.13.0 RC）
+
+调用 `code_change_context` 并传入 `{"outputFormat":"review","budgetChars":5000}`，可查看当前变更符号源码、有界静态关系、候选测试、仓库观察与证据缺口。默认 text 和 `xray` 仍可使用。完整 `{text, brief}` JSON 预算为 300–20000 个 JavaScript 字符，不是模型 token 上限，也不包含宿主开销。候选测试未运行，静态关系不证明运行时影响，证据缺失不等于不存在；仓库元数据是非原子观察。`symbols` 必须使用 `code_symbols` 返回的精确 ID；省略时使用工作区 diff。见[可复现教程](docs/development/v0.13.0/DEMO.zh-CN.md)。
+
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**

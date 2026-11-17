@@ -19,6 +19,10 @@ Historical validation: the [candidate integration record](docs/development/v0.12
 
 **Validation boundaries:** public-install verification used SDK 0.2.2-rc.1 / Cordis 4.1.0 (8 tools registered, 7 pipeline calls passed, no registrations after disposal). This was SDK/runtime smoke, not a repeated Desktop UI gate. Earlier Desktop 0.2.2-rc.1 checks covered graph/text rendering; extra edge-click interactions were tested in Web. Two focused real-Agent rechecks completed with a temporary 8192-token cap and only the requested code tools; they do not establish unrestricted shell access, arbitrary task success or model/network reliability.
 
+## Review Brief (v0.13.0 RC)
+
+Request `code_change_context` with `{"outputFormat":"review","budgetChars":5000}` to inspect current changed-symbol source, bounded static relations, test leads, repository observations and evidence gaps. The default text and `xray` formats remain available. The full `{text, brief}` JSON budget is 300–20000 JavaScript characters, not a model token limit; host overhead is excluded. Candidate tests are not run, static relations do not prove runtime impact, and missing evidence is not evidence of absence. Repository metadata is a non-atomic observation. Obtain exact `symbols` IDs from `code_symbols`, or omit `symbols` to use the working tree diff. See the [reproducible tutorial](docs/development/v0.13.0/DEMO.en.md).
+
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**

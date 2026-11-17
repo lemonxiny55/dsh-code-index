@@ -194,7 +194,7 @@ export const tools = [
       render: (_args, value: JsonValue[]): TextBlock[] =>
         value.map((v) => ({
           type: 'text' as const,
-          text: renderHit(v as unknown as Parameters<typeof renderHit>[0]),
+          text: `${renderHit(v as unknown as Parameters<typeof renderHit>[0])}\n  id: ${String((v as Record<string, JsonValue>).id)}`,
         })),
       presentationMeta: (_args, value) => hitsToSearchMeta(value),
     },
@@ -387,7 +387,7 @@ export const tools = [
   defineTool({
     name: 'code_change_context',
     description:
-      'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Every relation is labeled exact / import-scoped / name-only, so confidence is explicit. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
+      'Return the smallest change-aware context for the current diff: changed symbols, direct callers, import dependents, shortest paths to entry points, transitive impact, and likely affected tests. Relations are labeled exact / import-scoped / name-only and are bounded static evidence, not proven runtime impact; a direct caller calls a selected changed symbol at the reported call site. Candidate tests are not run and coverage is not verified. Select the change with an explicit diff, a list of files, a list of symbol ids, or (default) the working tree against baseRef.',
     parameters: {
       outputFormat: {
         type: 'string', enum: ['text', 'xray', 'review'],
@@ -395,7 +395,7 @@ export const tools = [
       },
       budgetChars: {
         type: 'number',
-        description: 'Review output only: full {text, brief} JSON character budget, 300..20000 (default 5000). Does not change text/xray.',
+        description: 'Review output only: full {text, brief} JSON character budget, 300..20000 (default 5000). This is not a model token limit and excludes host/tool overhead. Does not change text/xray.',
       },
       repoRoot: {
         type: 'string',
@@ -417,7 +417,7 @@ export const tools = [
       symbols: {
         type: 'array',
         items: { type: 'string' },
-        description: 'SymbolInfo ids to treat as changed (mutually exclusive with diff/files).',
+        description: 'Exact SymbolInfo.id values returned by code_symbols (sym:v1:...), not names or file::name; mutually exclusive with diff/files. Omit to use the working tree diff.',
       },
       maxDepth: {
         type: 'number',
