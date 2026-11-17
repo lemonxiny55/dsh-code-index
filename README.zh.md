@@ -1,6 +1,20 @@
 # dsh-code-index
 
-## v0.12.0 正式发布 — Reliable Context & Evidence
+[English](README.md) | 中文
+
+## v0.13.0 正式发布 — Review Brief
+
+**dsh-code-index v0.13.0 已正式发布。** [GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.13.0) · [npm v0.13.0](https://www.npmjs.com/package/dsh-code-index/v/0.13.0)。
+
+## Review Brief（v0.13.0）
+
+**Review Brief —— AI 修改代码前，先检查潜在影响与证据。**
+
+调用 `code_change_context` 并传入 `{"outputFormat":"review","budgetChars":5000}`，可查看当前变更符号源码、有界静态关系、候选测试、仓库观察与证据缺口。默认 text 和 `xray` 仍可使用。完整 `{text, brief}` JSON 预算为 300–20000 个 JavaScript 字符，不是模型 token 上限，也不包含宿主开销。候选测试未运行，静态关系不证明运行时影响，证据缺失不等于不存在；仓库元数据是非原子观察。`symbols` 必须使用 `code_symbols` 返回的精确 ID；省略时使用工作区 diff。见[可复现教程](docs/development/v0.13.0/DEMO.zh-CN.md)。
+
+[六张 v0.13.0 Desktop 截图](docs/assets/v0.13.0/README.md)展示实际 Host API 工具结果在 Desktop 中的回放，均标记为 **Host API replay / no model call**，不是模型 Agent 的 UI 交互截图。Agent 与 DSH rc.3 的独立验证范围见[稳定版验收记录](docs/development/v0.13.0/STABLE_ACCEPTANCE.zh-CN.md)。
+
+## v0.12.0 历史发布 — Reliable Context & Evidence
 
 **dsh-code-index v0.12.0 已于 2026-11-09 正式发布。** 更准确的代码上下文，更可信的分析证据。[GitHub Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.12.0) · [npm v0.12.0](https://www.npmjs.com/package/dsh-code-index/v/0.12.0)。
 
@@ -14,14 +28,6 @@
 
 **验证边界：** 公开安装验证使用 SDK 0.2.2-rc.1 / Cordis 4.1.0（8 工具注册、7 次管线调用通过、卸载后 0 注册残留），属于 SDK/runtime smoke，并非重跑 Desktop UI 验收。此前 Desktop 0.2.2-rc.1 检查覆盖图和文本渲染，边点击额外交互在 Web 实测。两项真实 Agent 有限复验使用临时 8192 token 上限，仅调用指定代码工具并完成回答；不保证任意 shell 权限、任意任务成功或模型/网络可靠性。
 
-[English](README.md) | 中文
-
-## Review Brief（v0.13.0）
-
-**Review Brief —— AI 修改代码前，先检查潜在影响与证据。**
-
-调用 `code_change_context` 并传入 `{"outputFormat":"review","budgetChars":5000}`，可查看当前变更符号源码、有界静态关系、候选测试、仓库观察与证据缺口。默认 text 和 `xray` 仍可使用。完整 `{text, brief}` JSON 预算为 300–20000 个 JavaScript 字符，不是模型 token 上限，也不包含宿主开销。候选测试未运行，静态关系不证明运行时影响，证据缺失不等于不存在；仓库元数据是非原子观察。`symbols` 必须使用 `code_symbols` 返回的精确 ID；省略时使用工作区 diff。见[可复现教程](docs/development/v0.13.0/DEMO.zh-CN.md)。
-
 ## Impact X-Ray
 
 **See the blast radius before your AI edits the code.**
@@ -30,19 +36,19 @@
 
 这是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地插件：把代码 diff 呈现为一张可检查的潜在影响图，列出可能受影响的调用者、导入和测试线索。点击关系即可核对源码文件、行号与证据。
 
-**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。将已正式发布的 **v0.12.0** 安装到兼容的 DSH profile：
+**适合正在维护现有代码的 DSH 用户：** 在让 AI Agent 修改代码前，先查看可能的连带影响。将已正式发布的 **v0.13.0** 安装到兼容的 DSH profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.12.0
+dsh plugin --profile desktop add dsh-code-index@0.13.0
 ```
 
-安装后重启 Desktop，宿主中的第一方 DSH 包应保持配套版本。SDK、Desktop 与 Agent 的独立验证范围见[安装要求](#安装)及 [v0.12.0 发布证据](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.12.0)。
+安装后重启 Desktop，宿主中的第一方 DSH 包应保持配套版本。SDK、Desktop 与 Agent 的独立验证范围见[安装要求](#安装)及 [v0.13.0 验收记录](docs/development/v0.13.0/STABLE_ACCEPTANCE.zh-CN.md)。
 
 **观看 30 秒真实 Desktop 演示：**`normalize()` 被修改 → 查看调用者与测试线索 → 点击关系查看真实源码位置。
 
 ![真实 DSH Desktop 中的 Impact X-Ray：变更的 normalize、调用者、测试与可点击的源码证据](assets/impact-xray-mvp.gif)
 
-[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [从 npm 安装 v0.12.0](https://www.npmjs.com/package/dsh-code-index/v/0.12.0) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
+[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [从 npm 安装 v0.13.0](https://www.npmjs.com/package/dsh-code-index/v/0.13.0) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
 
 录屏来自真实 DSH Desktop 0.2.1-rc.2 中的 `0.11.0-dev.0` MVP 操作，展示的是既有分析与源码证据；它不代表模型驱动 Agent 的耗时或成功率。详见[录制来源](assets/impact-xray-mvp-demo.md)。
 
@@ -88,7 +94,7 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 - **可检查的证据：**入选 reason 与关系的 `exact` / `import-scoped` / `name-only` provenance 分开，不编造概率或 confidence。
 - **本地、隔离、实时：**repo/worktree 独立，外部增改删自动刷新，不需要外部索引 API key；保留 full/compact surface 和 v0.8 配置。
 
-[v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) 引入的 ArkTS 功能在 v0.12.0 继续保留：`.ets` 使用独立、版本锁定的 parser，定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。v0.10.0 安装包曾通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查，这是历史验证，并非本次重新运行 v0.12.0 ArkTS 验收；部分解析或解析失败会提供有限诊断。
+[v0.10.0](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.10.0) 引入的 ArkTS 功能在 v0.13.0 继续保留：`.ets` 使用独立、版本锁定的 parser，定位组件 struct、方法、字段和装饰器，查看静态可确定的 ETS/TS 引用，并通过有界 Context Pack 获取真实源码。v0.10.0 安装包曾通过 DSH Desktop 真实 Agent 验证及 Node 22/24 发布检查，这是历史验证，并非本次重新运行 v0.12.0 ArkTS 验收；部分解析或解析失败会提供有限诊断。
 
 支持范围是语法和静态代码上下文，不包含完整 HarmonyOS SDK 语义、HAR/模块别名解析、状态更新或 UI 重渲染调用图。见[发布证据](RELEASE_EVIDENCE_v0.10.0.md)、[ArkTS PoC](ARKTS_POC_v0.10.0.md) 和[双语公告](assets/v0.10.0-announcement.md)。v0.9.1 的 Gitignore 目录白名单修复继续保留。
 
@@ -109,13 +115,13 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 需要 Node ≥22；已记录的验证环境为 Node 22/24。第一方 DSH 包应使用配套版本，并符合[声明的 peer 要求](#安装)。用 Desktop 自带的 `dsh` CLI 安装到现有 profile：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.12.0
+dsh plugin --profile desktop add dsh-code-index@0.13.0
 ```
 
 安装后重启 Desktop。匹配的 Web profile 可使用：
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.12.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.13.0
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -167,13 +173,13 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 需要 `dsh`(任意安装方式——npx、npm 或源码)与 Node ≥ 22。
 
-v0.12.0 声明 `@deepseek-ai/dsh-tools: >=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3` 及可选的 `@deepseek-ai/cordis: ^4.0.1`。新增 RC 范围修复这些版本组的正常 npm peer 解析。DSH 宿主检查包含预发布版本，npm 使用默认预发布匹配规则；允许加载不等于已经验证。请保持 DSH/dsh-tools 及其他第一方包的版本配套；插件接口仍属于预览 API。
+v0.13.0 保留 v0.12.0 的 peer 要求：`@deepseek-ai/dsh-tools: >=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3` 及可选的 `@deepseek-ai/cordis: ^4.0.1`。新增 RC 范围修复这些版本组的正常 npm peer 解析。DSH 宿主检查包含预发布版本，npm 使用默认预发布匹配规则；允许加载不等于已经验证。请保持 DSH/dsh-tools 及其他第一方包的版本配套；插件接口仍属于预览 API。
 
 兼容历史：v0.10.0 精确锁定 `0.2.0-rc.2`；v0.10.1 列举当时支持的版本组；v0.11.2 放宽宿主范围；v0.12.0 为 npm peer 解析补充显式 RC 范围。开发依赖保留 `0.2.0-rc.2` 以检查旧版 API，不代表每次运行时验证均使用该 SDK。
 
 ```sh
 # 从 npm(预编译)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.12.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.13.0
 
 # 或从包含本仓库检查副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
