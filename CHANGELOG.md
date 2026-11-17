@@ -2,7 +2,7 @@
 
 All notable changes to dsh-code-index are documented here.
 
-## 0.13.0-rc.1 — Review-Ready Context (release candidate)
+## 0.13.0 — Review-Ready Context (prepared for release)
 
 - Expose exact symbol IDs in model-facing `code_symbols` results; clarify static caller direction, candidate-test and character-budget boundaries in the tool contract.
 - Add opt-in `code_change_context(outputFormat: "review")`, returning a versioned Review Brief with source excerpts, static callers/import dependents, candidate tests, repository observations and explicit evidence omissions.
