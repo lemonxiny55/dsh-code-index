@@ -105,7 +105,9 @@ let nativeCalls = 0
 try {
   run(npm, ['init', '--yes'], smokeDir)
   console.log('smoke fixture: normal npm peer resolution; no force or legacy-peer-deps')
-  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`], smokeDir)
+  const batchRuntime = semver.gte(toolsVersion, '0.2.2-rc.1')
+  run(npm, ['install', '--ignore-scripts', '--no-save', tarball, `@deepseek-ai/dsh-tools@${toolsVersion}`,
+    ...(batchRuntime ? [`@deepseek-ai/dsh-tool-executor-native@${toolsVersion}`] : [])], smokeDir)
 
   const installedPackage = JSON.parse(
     readFileSync(path.join(smokeDir, 'node_modules', packageJson.name, 'package.json'), 'utf8'),
@@ -295,13 +297,17 @@ try {
   const nativeContext = new Context()
   nativeContext.provide('systemPrompt', { tools: () => () => {}, section: () => () => {} })
   const runtime = new ToolRuntime(nativeContext)
+  if (batchRuntime) {
+    const { NativeToolExecutor } = await import(pathToFileURL(consumerRequire.resolve('@deepseek-ai/dsh-tool-executor-native')).href)
+    runtime.setExecutor(new NativeToolExecutor(nativeContext))
+  }
   const nativeDisposers = plugin.tools.map(tool => runtime.register(tool))
   try {
     const nativeInvoke = async (name, args) => {
-      const result = await runtime.execute({
-        callId: `release:${name}`, name, arguments: args,
-        signal: new AbortController().signal,
-      })
+      const callId = `release:${nativeCalls}:${name}`
+      const result = batchRuntime
+        ? (await runtime.execute({ calls: [{ type: 'tool-call', id: callId, name, arguments: JSON.stringify(args) }], signal: new AbortController().signal })).results[0].result
+        : await runtime.execute({ callId, name, arguments: args, signal: new AbortController().signal })
       assert.equal(result.isError, false, JSON.stringify(result.content))
       nativeCalls++
       return result
@@ -349,6 +355,12 @@ try {
     assert.equal(xray.meta.tests.length, 1)
     assert.equal(xray.meta.evidence.scope, 'indexed-static-only')
     assert.equal(xray.meta.evidence.tests.verification, 'not-run')
+    for (const budgetChars of [300, 500, 1000, 2000, 5000, 20000]) {
+      const review = await nativeInvoke('code_change_context', { repoRoot: xrayRoot, outputFormat: 'review', budgetChars })
+      assert.ok(JSON.stringify(review.value).length <= budgetChars)
+      assert.equal(review.value.brief.verification, 'not-run')
+      assert.deepEqual(review.content, [{ type: 'text', text: review.value.text }])
+    }
     assert.deepEqual(new Set(xray.meta.edges.map(e => e.resolution)), new Set(['exact', 'import-scoped', 'name-only']))
     assert.ok(xray.meta.paths.some(p => p.edgeIds.length === 2 && p.resolution === 'exact' && !p.omitted))
     assert.ok(Buffer.byteLength(JSON.stringify(xray.meta)) <= plugin.XRAY_LIMITS.metadataBytes)

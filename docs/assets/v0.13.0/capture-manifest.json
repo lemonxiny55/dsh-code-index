@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-17",
+  "desktopVersion": "0.2.2-rc.3",
+  "method": "Real Desktop Windows screenshot through sky.get_window_state; original JPEG bytes, no image modification",
+  "transcript": "Actual candidate native Host tools; public Session API replay; explicitly labelled no model call",
+  "privateSidebarHidden": true,
+  "width": 1282,
+  "height": 823,
+  "files": [
+    {
+      "name": "desktop-review-A-gaps.jpg",
+      "bytes": 100143,
+      "sha256": "b5be3ac79e9aa86acaea37baf97eff7b91d9e9dc9dda608ce19f37d6345e3de8",
+      "savedAt": "2026-11-17T03:20:32.799Z"
+    },
+    {
+      "name": "desktop-review-A.jpg",
+      "bytes": 101538,
+      "sha256": "7faf0d64555bf51dc27b87778292c603d975cbc640759e47f7d375896fbd649b",
+      "savedAt": "2026-11-17T03:19:08.326Z"
+    },
+    {
+      "name": "desktop-review-C.jpg",
+      "bytes": 95475,
+      "sha256": "238265b14b027318893e3d9903053a0e2d38a3d39b8e565901354eb685452360",
+      "savedAt": "2026-11-17T03:38:28.403Z"
+    },
+    {
+      "name": "desktop-text-A.jpg",
+      "bytes": 88042,
+      "sha256": "e9e51e9f9798c27a6402efbf1c71535f7c593687a54fa3d32cd1b7828ea1db6b",
+      "savedAt": "2026-11-17T03:24:40.917Z"
+    },
+    {
+      "name": "desktop-xray-A-call.jpg",
+      "bytes": 79130,
+      "sha256": "520a31aa54960ecde0ea873fca348190b35efc76f2632994b91eaf49b78aa958",
+      "savedAt": "2026-11-17T03:32:23.706Z"
+    },
+    {
+      "name": "desktop-xray-A.jpg",
+      "bytes": 79033,
+      "sha256": "82a987aed3867b7942b7f990ea66f7058c357de94c3fb9ba491da5ac6f730e81",
+      "savedAt": "2026-11-17T03:31:45.895Z"
+    }
+  ],
+  "observed": [
+    "Review A current source, exact caller, import-scoped test",
+    "Review A internal scroll: gaps and budget visible",
+    "Legacy text A displayed",
+    "X-Ray A enlarged and call-edge source selected",
+    "Review C: own Worktree root, experimentalLabel and explicit zero-static-relations caveat"
+  ],
+  "notClaimed": [
+    "Screenshot of a successful model-generated answer",
+    "Source file click/navigation in Review text",
+    "Stable global candidate bundle replacement",
+    "Video recording"
+  ]
+}

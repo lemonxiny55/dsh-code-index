@@ -1,0 +1,268 @@
+{
+  "node": "v24.19.0",
+  "success": true,
+  "total": 328,
+  "passed": 328,
+  "failed": 0,
+  "pending": 0,
+  "files": 33,
+  "fullReportSha256": "440129d3586bbff6eee2cebd1d879d5f9c3cd5ca1113f2a663916fd5a001f48f",
+  "suites": [
+    {
+      "file": "arkts.spec.ts",
+      "status": "passed",
+      "tests": 15,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "buildIndex.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "change-context.spec.ts",
+      "status": "passed",
+      "tests": 26,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "client-locale.spec.ts",
+      "status": "passed",
+      "tests": 2,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "compat.spec.ts",
+      "status": "passed",
+      "tests": 1,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "config.spec.ts",
+      "status": "passed",
+      "tests": 3,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "context-c-phase.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": [
+        {
+          "name": "C phase six real Context Pack inputs T1-C3-r1",
+          "status": "passed"
+        },
+        {
+          "name": "C phase six real Context Pack inputs T2-C3-r1",
+          "status": "passed"
+        },
+        {
+          "name": "C phase six real Context Pack inputs T3-C3-r1",
+          "status": "passed"
+        },
+        {
+          "name": "C phase six real Context Pack inputs T1-C3-r2",
+          "status": "passed"
+        },
+        {
+          "name": "C phase six real Context Pack inputs T2-C3-r2",
+          "status": "passed"
+        },
+        {
+          "name": "C phase six real Context Pack inputs T3-C3-r2",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "file": "context-quality.spec.ts",
+      "status": "passed",
+      "tests": 18,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "context.spec.ts",
+      "status": "passed",
+      "tests": 25,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "evidence-summary.spec.ts",
+      "status": "passed",
+      "tests": 14,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "extract.spec.ts",
+      "status": "passed",
+      "tests": 24,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "git-diff.spec.ts",
+      "status": "passed",
+      "tests": 14,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "gitignore-tools.spec.ts",
+      "status": "passed",
+      "tests": 1,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "health.spec.ts",
+      "status": "passed",
+      "tests": 7,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "ids.spec.ts",
+      "status": "passed",
+      "tests": 20,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "impact-xray-client.spec.ts",
+      "status": "passed",
+      "tests": 1,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "impact-xray.spec.ts",
+      "status": "passed",
+      "tests": 10,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "index.spec.ts",
+      "status": "passed",
+      "tests": 3,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "package-peer.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "provenance.spec.ts",
+      "status": "passed",
+      "tests": 25,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "refgraph.spec.ts",
+      "status": "passed",
+      "tests": 7,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "repo-context.spec.ts",
+      "status": "passed",
+      "tests": 5,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "repomap.spec.ts",
+      "status": "passed",
+      "tests": 16,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "review-brief-prototype.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "review-brief.spec.ts",
+      "status": "passed",
+      "tests": 26,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "rust.spec.ts",
+      "status": "passed",
+      "tests": 7,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "scan.spec.ts",
+      "status": "passed",
+      "tests": 3,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "search.spec.ts",
+      "status": "passed",
+      "tests": 7,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "settings.spec.ts",
+      "status": "passed",
+      "tests": 2,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "source-excerpts.spec.ts",
+      "status": "passed",
+      "tests": 2,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "store.spec.ts",
+      "status": "passed",
+      "tests": 8,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "tools-execute.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": []
+    },
+    {
+      "file": "tools.spec.ts",
+      "status": "passed",
+      "tests": 6,
+      "failures": [],
+      "contextCases": []
+    }
+  ]
+}

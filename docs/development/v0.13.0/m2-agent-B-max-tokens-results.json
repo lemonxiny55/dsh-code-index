@@ -1,0 +1,121 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "sessionId": "review-v013-1794885424283",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 2,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "max-tokens"
+    }
+  },
+  "final": "",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794885426557,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_8xftFGXokXpaqCsfuZC31773",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"baseRef\": \"HEAD\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794885426748,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_8xftFGXokXpaqCsfuZC31773"
+          },
+          "toolCallId": "call_00_8xftFGXokXpaqCsfuZC31773",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified interface PricePolicy src/policy.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS:\n  src/quote.ts imports src/policy.ts ('./policy') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/policy.test.ts (candidate; not run; coverage unverified; path-convention) [name-only]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 1, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for PricePolicy (src/policy.ts:1): none found in current index/static resolution; not proof of no callers.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "4c440bf5-b33d-497d-a154-bce8b75b7e32"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 20,
+      "time": 1794885426749,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_01_ESnFTn7gcjbHPmmzFw944183",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"baseRef\": \"HEAD\", \"budgetChars\": 5000}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 21,
+      "time": 1794885427061,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_01_ESnFTn7gcjbHPmmzFw944183"
+          },
+          "toolCallId": "call_01_ESnFTn7gcjbHPmmzFw944183",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\B\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: 77df37019cc8b5cf3369255638dfef5968599232; dirty: true\nIndex built: 2026-11-17T03:14:14.344Z; metadata observed: 2026-11-17T03:17:07.056Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 1 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified PricePolicy src/policy.ts:1-4 [current; complete]\nexport interface PricePolicy {\n  discount: number\n  minimumTotal: number\n}\nImport dependent: src/quote.ts -> src/policy.ts (./policy) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/policy.test.ts [name-only; path-convention]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: non-atomic-snapshot\nBudget (full JSON envelope): 2238/5000"
+            }
+          ],
+          "isError": false,
+          "id": "478e009a-1e4d-42b9-bcd6-1ad669780ee1"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        20
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 28,
+      "time": 1794885452272,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "max-tokens"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true,
+  "rawReportSha256": "b17e74b2cd61eb9e2cfb95f328cdd67d62b59fa785d904452c0e20f19bd8cc28",
+  "retention": "Public evidence retains actual tool calls/results, turn end and final text; assistant reasoning/stream blocks excluded.",
+  "taskId": "B",
+  "maxTokens": 4096
+}

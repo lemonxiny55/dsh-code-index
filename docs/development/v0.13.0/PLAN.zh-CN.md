@@ -2,7 +2,7 @@
 
 日期：2026-11-16（Asia/Shanghai）。主题：**Review-Ready Context — Agent-Ready Context & Change Review**。
 
-2026-11-17 更新：用户已恢复开发，[M1 Review Brief](M1_REVIEW_BRIEF.zh-CN.md) 已接入 `code_change_context(outputFormat: "review")`，开发版本0.13.0-dev.0；自动AgentTeam交接继续暂缓。最终接续worktree为 `.worktrees/v0.13.0`，分支 `codex/review-ready-context-v0.13.0-m1`，原开发树保留。下文保留第一阶段的原始草案和当时边界，最终接口/实测以M1记录为准。
+2026-11-17 更新：[M1 Review Brief](M1_REVIEW_BRIEF.zh-CN.md) 已接入 `code_change_context(outputFormat: "review")`，[M2 实机与 Agent 验收](M2_ACCEPTANCE.zh-CN.md) 已完成本轮对照；开发版本仍为0.13.0-dev.0，建议进入 RC 收敛阶段，自动 AgentTeam 交接继续暂缓。最终接续 worktree 为 `.worktrees/v0.13.0`，分支 `codex/review-ready-context-v0.13.0-m1`，原开发树保留。下文保留第一阶段的原始草案和当时边界，最终接口以 M1、最新实测与限制以 M2 为准。
 
 ## 当前状态
 
@@ -90,3 +90,8 @@ code_change_context({
 实施顺序：先完善 DTO/gaps/类别预算和版本采集，再将唯一 `review` 分支接入现有工具；补注册与输出契约测试后，运行已有完整回归、构建、已发布包与新包分层兼容验收。最后做一次真实 Desktop 卡片/文本展示核查。自动交接不阻塞 Review Brief，但不能搭便车宣称已支持。
 
 本轮只提交本地研究、诊断证据和内部原型；不推送、不创建 PR、不发布 npm、不改稳定 profile。详细兼容范围见 [M0](M0_COMPATIBILITY.zh-CN.md)。
+## M2 实际验收更新（2026-11-17）
+
+Review Brief 已完成真实 Desktop 展示检查和 A/B/C 真实 Agent 对照，Node 22/24 各 328 项全量测试通过；两个输出边界呈现缺口及 rc.3 打包 smoke 组合已修复。建议进入 RC 收敛阶段，保留模型参数误用、推论误读和输出上限失败，不宣称全部审阅结论正确。
+
+证据与限制见 [M2 验收](M2_ACCEPTANCE.zh-CN.md)、[验证摘要](m2-verification.json)、[双语演示入口](DEMO.zh-CN.md)。AgentTeam 自动交接继续 DEFERRED；不推送、不打发布 Tag、不发布 npm。

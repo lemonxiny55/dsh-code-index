@@ -1,0 +1,331 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "sessionId": "review-v013-1794885510033",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 7,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "final": "## experimentalLabel 审查结论（只读；未运行测试、未修改文件）\n\nI ran `code_change_context` in both formats; because per-symbol selection failed, I also ran a plain-diff selection to obtain real evidence. All runs were read-only; no tests were executed and no files were modified.\n\n### 1. 工具结果对照（实际输出）\n\n| 调用 | 选择方式 | 结果 |\n|---|---|---|\n| `text` | `symbols: [\"experimentalLabel\"]` | **0 changed symbols**；警告 `symbol not in index: experimentalLabel` |\n| `review`（budgetChars=5000，最终计 2090/5000） | `symbols` | **0 changed symbols / 0 relations / 0 tests**；同样警告符号不在索引 |\n| 尝试的其余 ID 形式（`src/experimental.ts::experimentalLabel`、`experimental.ts::experimentalLabel`、`experimentalLabel()`，以及对照 `calculateTotal`、`src/price.ts::calculateTotal`） | `symbols` | 全部 `symbol not in index` |\n| `text` | 缺省（工作树 vs base HEAD `77df370`） | **1 changed symbol**：`modified function experimentalLabel() src/experimental.ts:1 [exact]`；direct callers / import dependents / entry paths / impact / tests 均为空 |\n| `review` | 缺省 git | 同上，并给出源码：`src/experimental.ts:1-3`，`return 'preview-v2'`；Gaps 仅 `no-test-candidates`、`non-atomic-snapshot` |\n\n两份要求的调用都已执行：text 默认基线那次实际选中了该函数（源码行号 [src/experimental.ts:1](src/experimental.ts#L1)），review 给出 1 个变更符号、0 静态关系、0 候选测试，预算 2090/5000。\n\n### 2. 差异与工具自身的证据缺口\n\n- **符号 ID 解析失败**：仓库地图列出 `function experimentalLabel() :1`，但 `symbols` 参数的任何形式都解析不到它；连对照符号 `calculateTotal` 也失败。因此**前两次基于 `symbols` 的空白结果不是对该函数的评估**，只是选择未命中——不能把它当作\"无调用者\"证据。这是工具/指令层面的解析问题，而非代码事实。\n- **只有缺省 diff 选择才命中**：该路径报告的调用者/测试为空，并在 text 输出中自带免责声明\"none found in current index/static resolution; **not proof of no callers**\"。\n- **静态索引范围有限**：索引仅 7 个解析文件（无 partial/failed/unknown），文本输出明示\"unscanned files not assessed\"。仓库地图里 `checkout()`（src/checkout.ts:2）是唯一显式入口点，路径计算为空，但入口点集合本身可能不完整。\n- **候选测试非覆盖**：0 candidate tests 且 review 明确\"not-run; coverage not verified\"。0 候选 ≠ 0 未覆盖风险。\n- **快照非原子**：index 构建于 `2026-11-17T03:14:15Z`，metadata 观测于 `03:18:44Z`，工作树 `dirty: true`；审查期间或之后的编辑不会自动反映，需重新查询。\n- **缺失源码**：本会话无文件读取工具，我无法读 `src/experimental.ts` 全文、`src/checkout.ts`、`src/quote.ts` 或任何测试目录。我只看到 diff 给出的 1–3 行函数体，无法判断导出是否被动态加载、字符串字面量、配置或聚合入口引用。\n\n### 3. 不成立的推论（需明确避免）\n\n- ❌ \"静态无调用者 ⇒ 没有运行时使用者\"：不成立。证据只覆盖已索引的静态解析，动态导入、反射、配置驱动、包级再导出、外部消费者均未评估。\n- ❌ \"0 候选测试 ⇒ 已被/未被覆盖，或无需测试\"：不成立。证据是\"未找到候选\"，且未运行。\n- ❌ \"只改了返回值文案，影响面为零\"：不能下此结论，因为连调用者集合是否存在都未确认。\n- ❌ 把前两次 `symbols` 调用的空结果当成\"该符号没有关系\"：那两次是选择失败，不是有效评估。\n\n### 4. 明确声明\n\n**证据不足以判断 `experimentalLabel` 的调用者或测试覆盖情况（insufficient evidence）。** 已确认的仅有：工作树中该函数相对 HEAD 被修改（返回 `'preview-v2'`，[src/experimental.ts:1-3](src/experimental.ts#L1-L3)）；已索引的静态分析未解析到它的任何调用者、导入依赖、入口路径或候选测试；且该结论有工具自带的\"非证明\"限定。若要进一步确认，需要能够完整读取源码与测试目录（本会话不具备），或换成可正确解析符号选择的方式重跑，并按需运行相关测试——后者需你明确授权。",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794885512306,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_OrnhuUEcPGzDppU0h0AZ6508",
+        "name": "code_change_context",
+        "arguments": "{\"symbols\": [\"experimentalLabel\"], \"outputFormat\": \"text\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794885512321,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_OrnhuUEcPGzDppU0h0AZ6508"
+          },
+          "toolCallId": "call_00_OrnhuUEcPGzDppU0h0AZ6508",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: symbols: 0 changed symbol(s)\nCHANGED: (none)\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\nEvidence gaps: not-found/no-changed-symbols, not-found/no-test-candidates.\nWARNINGS:\n  - symbol not in index: experimentalLabel"
+            }
+          ],
+          "isError": false,
+          "id": "87481659-1c56-4d99-ae4e-3f1a6748bc9e"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 25,
+      "time": 1794885513781,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "callId": "call_00_QnZI3Dbz9MzugJaxGYVj4353",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\", \"symbols\": [\"src/experimental.ts::experimentalLabel\"], \"budgetChars\": 5000}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 26,
+      "time": 1794885513910,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_QnZI3Dbz9MzugJaxGYVj4353"
+          },
+          "toolCallId": "call_00_QnZI3Dbz9MzugJaxGYVj4353",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: not provided; dirty: true\nIndex built: 2026-11-17T03:14:15.268Z; metadata observed: 2026-11-17T03:18:33.907Z\nSnapshot: non-atomic; re-query after edits.\nSelection: symbols; 0 changed symbols, 0 static relations, 0 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nCandidate tests: not-run; coverage not verified.\nWarning: symbol not in index: src/experimental.ts::experimentalLabel\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: no-changed-symbols; no-changed-symbols-in-analysis; no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot\nBudget (full JSON envelope): 1913/5000"
+            }
+          ],
+          "isError": false,
+          "id": "e401a3e7-cecf-4fc2-80f5-b5f28ea8c0d2"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        25
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 31,
+      "time": 1794885515718,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "callId": "call_00_9tHfrPE6br69pxRWAGuk8498",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\", \"symbols\": [\"experimental.ts::experimentalLabel\", \"src/experimental.ts::experimentalLabel()\", \"experimentalLabel()\"], \"maxImpact\": 10}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 32,
+      "time": 1794885515728,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_9tHfrPE6br69pxRWAGuk8498"
+          },
+          "toolCallId": "call_00_9tHfrPE6br69pxRWAGuk8498",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: symbols: 0 changed symbol(s)\nCHANGED: (none)\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\nEvidence gaps: not-found/no-changed-symbols, not-found/no-test-candidates.\nWARNINGS:\n  - symbol not in index: experimental.ts::experimentalLabel\n  - symbol not in index: src/experimental.ts::experimentalLabel()\n  - symbol not in index: experimentalLabel()"
+            }
+          ],
+          "isError": false,
+          "id": "716d693e-9e05-4d45-808f-15991508bce9"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        31
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 37,
+      "time": 1794885517598,
+      "data": {
+        "turn": 1,
+        "step": 4,
+        "callId": "call_00_DR1i8KacdBZ0voTHEYLB3422",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\", \"maxImpact\": 10, \"symbols\": [\"calculateTotal\"]}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 38,
+      "time": 1794885517608,
+      "data": {
+        "turn": 1,
+        "step": 4,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_DR1i8KacdBZ0voTHEYLB3422"
+          },
+          "toolCallId": "call_00_DR1i8KacdBZ0voTHEYLB3422",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: symbols: 0 changed symbol(s)\nCHANGED: (none)\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\nEvidence gaps: not-found/no-changed-symbols, not-found/no-test-candidates.\nWARNINGS:\n  - symbol not in index: calculateTotal"
+            }
+          ],
+          "isError": false,
+          "id": "16a93df8-0334-443d-95df-c63ed2e30d7b"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        37
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 43,
+      "time": 1794885519316,
+      "data": {
+        "turn": 1,
+        "step": 5,
+        "callId": "call_00_UFSINHi2Ex3IQidlAlgw9334",
+        "name": "code_change_context",
+        "arguments": "{\"budgetChars\": 5000, \"outputFormat\": \"review\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\", \"symbols\": [\"src/price.ts::calculateTotal\", \"src/experimental.ts::experimentalLabel\"]}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 44,
+      "time": 1794885519450,
+      "data": {
+        "turn": 1,
+        "step": 5,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_UFSINHi2Ex3IQidlAlgw9334"
+          },
+          "toolCallId": "call_00_UFSINHi2Ex3IQidlAlgw9334",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: not provided; dirty: true\nIndex built: 2026-11-17T03:14:15.268Z; metadata observed: 2026-11-17T03:18:39.447Z\nSnapshot: non-atomic; re-query after edits.\nSelection: symbols; 0 changed symbols, 0 static relations, 0 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nCandidate tests: not-run; coverage not verified.\nWarning: symbol not in index: src/price.ts::calculateTotal\nWarning: symbol not in index: src/experimental.ts::experimentalLabel\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: no-changed-symbols; no-changed-symbols-in-analysis; no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot\nBudget (full JSON envelope): 2025/5000"
+            }
+          ],
+          "isError": false,
+          "id": "84f40fd6-7375-4f28-9e08-69d9d87adc68"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        43
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 49,
+      "time": 1794885521018,
+      "data": {
+        "turn": 1,
+        "step": 6,
+        "callId": "call_00_CPvcB0fMmc2h9AHGuySo3461",
+        "name": "code_change_context",
+        "arguments": "{\"maxDepth\": 2, \"maxImpact\": 20, \"outputFormat\": \"text\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 50,
+      "time": 1794885521201,
+      "data": {
+        "turn": 1,
+        "step": 6,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_CPvcB0fMmc2h9AHGuySo3461"
+          },
+          "toolCallId": "call_00_CPvcB0fMmc2h9AHGuySo3461",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified function experimentalLabel() src/experimental.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\n0 callers for experimentalLabel (src/experimental.ts:1): none found in current index/static resolution; not proof of no callers.\nEvidence gaps: not-found/no-test-candidates.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "b74d85a8-2cbd-472e-b212-47a584b82018"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        49
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 55,
+      "time": 1794885523784,
+      "data": {
+        "turn": 1,
+        "step": 7,
+        "callId": "call_00_3nHsR8o57aS1jYbVRh729527",
+        "name": "code_change_context",
+        "arguments": "{\"budgetChars\": 5000, \"maxDepth\": 2, \"maxImpact\": 20, \"outputFormat\": \"review\", \"repoRoot\": \"D:\\\\ChatGPTProjects\\\\dsh-code-index\\\\.worktrees\\\\v0.13.0\\\\node_modules\\\\.m2-demo\\\\C\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 56,
+      "time": 1794885524119,
+      "data": {
+        "turn": 1,
+        "step": 7,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_3nHsR8o57aS1jYbVRh729527"
+          },
+          "toolCallId": "call_00_3nHsR8o57aS1jYbVRh729527",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\C\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: 77df37019cc8b5cf3369255638dfef5968599232; dirty: true\nIndex built: 2026-11-17T03:14:15.268Z; metadata observed: 2026-11-17T03:18:44.115Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 0 static relations, 0 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nNo static relationships found in this analysis; not proof of no callers or runtime impact.\nChange: modified experimentalLabel src/experimental.ts:1-3 [current; complete]\nexport function experimentalLabel() {\n  return 'preview-v2'\n}\nCandidate tests: not-run; coverage not verified.\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: no-test-candidates; no-test-candidates-in-analysis; non-atomic-snapshot\nBudget (full JSON envelope): 2090/5000"
+            }
+          ],
+          "isError": false,
+          "id": "4963e947-88b4-4785-8055-3608232cb127"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        55
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 62,
+      "time": 1794885533597,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true,
+  "rawReportSha256": "96e2e73634a90af1c1d449e8facf159961cffed9a3f3b9f15d205f227bc8eb45",
+  "retention": "Public evidence retains actual tool calls/results, turn end and final text; assistant reasoning/stream blocks excluded.",
+  "taskId": "C",
+  "maxTokens": 8192
+}

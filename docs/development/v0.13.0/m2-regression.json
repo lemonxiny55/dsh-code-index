@@ -1,0 +1,20 @@
+{
+  "method": "Temporarily run the current review tests against M1 renderer, restore exact current bytes in finally, then run current renderer",
+  "red": {
+    "exitCode": 1,
+    "total": 26,
+    "passed": 24,
+    "failed": 2,
+    "failures": [
+      "reports real HEAD/base, dirty and index time without treating them as a snapshot token",
+      "expresses zero static relationships as a bounded observation, not proof of no callers"
+    ]
+  },
+  "green": {
+    "exitCode": 0,
+    "total": 26,
+    "passed": 26,
+    "failed": 0,
+    "failures": []
+  }
+}

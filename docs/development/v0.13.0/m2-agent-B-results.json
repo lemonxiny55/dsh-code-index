@@ -1,0 +1,651 @@
+{
+  "method": "real existing Desktop Agent with agent-scoped candidate tool; configured model; synthetic repository",
+  "isolation": false,
+  "sessionId": "review-v013-1794885606829",
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "reasoningEffort": "high"
+  },
+  "timedOut": false,
+  "toolCalls": 5,
+  "turnEnd": {
+    "turn": 1,
+    "reason": {
+      "kind": "completed"
+    }
+  },
+  "final": "## 调用记录与范围（只读）\n\n| # | 调用 | 参数 | 性质 |\n|---|---|---|---|\n| 1 | `code_change_context` | `outputFormat=text`，默认 diff（base `HEAD`），maxDepth 3 / maxPaths 10 / maxTests 20 / maxImpact 40 | 要求调用 |\n| 2 | `code_change_context` | `outputFormat=review`，`budgetChars=5000`，同默认值 | 要求调用 |\n| 3 | `code_change_context` | `outputFormat=text`，maxDepth 6 / maxPaths 20 / maxTests 50 / maxImpact 100 | 附加探测 |\n| 4 | `code_change_context` | `outputFormat=xray`，`files=[src/quote.ts, src/price.ts, src/checkout.ts, tests/policy.test.ts]` | 附加探测（**files 参数=我声明整文件变更，非真实 git 变更**） |\n| 5 | `code_change_context` | `outputFormat=xray`，`symbols=[\"PricePolicy\"]` | 附加探测，返回 `symbol not in index`，无效 |\n\n未运行任何测试、未执行编译、未读取/修改任何文件。工具均为索引静态分析。\n\n---\n\n## 一、text 与 review 的对照\n\n**一致的部分**\n\n- 变更选择相同：`git` 工作树 vs `HEAD`，1 个变更符号 `interface PricePolicy`（[src/policy.ts:1](src/policy.ts#L1)），[exact]。\n- 直接调用者：**0**；入口路径：0；传递影响：0；UNMAPPED：0。\n- 唯一导入依赖：[src/quote.ts](src/quote.ts) `import './policy'` [import-scoped]。\n- 候选测试：[tests/policy.test.ts](tests/policy.test.ts)，`candidate; not run; coverage unverified; path-convention` [name-only]。\n- 索引健康度：7 parsed / 0 partial / 0 failed / 0 unknown。\n\n**review 多出的信息**\n\n- `HEAD == base == 77df370…`，**dirty: true** → 审的是未提交工作树。\n- 索引构建时间 `03:14:14Z`，metadata 观测 `03:20:11Z`，明确标注 **Snapshot: non-atomic**。\n- 变更源码仅 `src/policy.ts:1-4`：`discount: number` / `minimumTotal: number`，标注 `[current; complete]`。\n- `Budget (full JSON envelope): 2238/5000`，`Omitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings` → **预算不是瓶颈，证据缺口不是因为截断**。\n- 唯一 gap：`non-atomic-snapshot`。\n\n**review 没有提供、但结论必须依赖的信息**\n\n- **没有旧版接口定义**。只有 `modified` 标签和当前形态，无法判断是新增字段、删除字段、改名还是类型放宽/收紧。因此“变更是否破坏性”在工具输出内**不可判定**。\n- 没有 `quote()` 函数体。仓库地图只给出签名 `quote(policy: PricePolicy)`（[src/quote.ts:2](src/quote.ts#L2)）；工具只把它记作 import 边，**未报告任何类型注解级引用**。\n- 没有 checkout/price/experimental 的函数体，也没有任何测试文件内容。\n\n---\n\n## 二、证据分层（严格区分）\n\n| 层 | 内容 | 能证明 | 不能证明 |\n|---|---|---|---|\n| exact | `PricePolicy` 本身被修改；附加 xray 里的 checkout 自指调用 | 文件与 HEAD 不同 | 改动语义、兼容性 |\n| import-scoped | `src/quote.ts → src/policy.ts ('./policy')` | quote.ts 模块级引用 policy 模块 | 用到哪个字段、是否构造该类型、是否仅 re-export |\n| name-only | `tests/policy.test.ts`（仅文件名/路径约定） | 命名上像覆盖目标 | 测试内容、断言对象、是否触碰变更字段 |\n| resolved calls | **无**（`0 callers`） | 索引中没有函数调用点指向该符号 | 没有消费者 |\n\n关键：**`0 callers` 对 interface 是预期结果，不是“无使用方”的证据。** 接口通过类型注解、参数、结构类型对象字面量被使用，这些都不产生 call 边；TypeScript 结构类型还允许消费者**完全不 import** policy.ts 而传入同形对象。\n\n---\n\n## 三、工具结果之间的差异与可疑信号\n\n1. **测试线索的来源不一致。**\n   - 真实变更查询里，`tests/policy.test.ts` 是 `[name-only] / path-convention`。\n   - 但附加 xray 显示它 `imports ../src/quote` [import-scoped]，而 quote.ts 又 import policy.ts → 它是**2 跳 import 依赖**。\n   - 也就是说：`TRANSITIVE IMPACT: (none)` 反映的是**工具没有沿 import-scoped 边做多跳展开**（maxDepth 提到 6 结果完全不变），而非下游无人。\n\n2. **计数口径不一致。**\n   - text 写着 `Selected relationship items: exact 0, import-scoped 1, name-only 0`，同一份输出里测试行却标 `[name-only]`。计数器似乎只统计符号关系、不含测试候选 → **不要把这几项相加**。\n\n3. **附加 files 探测的标签是人造产物。**\n   - 我把 4 个文件声明为“整体变更”，于是出现 `modified function checkout() [exact]` 等标签——**它们不是 git 变更状态**。\n   - 同时产生 `function checkout() src/checkout.ts:2 (called at src/checkout.ts:2) [exact]` 的**同行自指调用**，而页脚又写 `0 callers for checkout`。该自指边不应计入调用证据；`checkout → calculateTotal` 的入口路径也与本次 policy 改动无关。\n\n4. **测试文件在索引中无符号。**\n   - 警告：`no indexed symbols in changed file: tests/policy.test.ts`。7 个文件总计只有 5 个符号；两个测试文件没有符号映射 → 测试的“候选”身份**只能来自文件名/import 路径**，内容对索引不可见。\n\n5. **`symbols=[\"PricePolicy\"]` 返回 not found。** 说明符号 id 需要带类型前缀等形式，我无法用短名独立枚举引用；这属于用法问题，不构成“无引用”的结论。\n\n6. **仓库地图与工具的行号一致**（policy.ts:1、quote.ts:2、checkout.ts:2），这一点没有冲突。\n\n---\n\n## 四、缺失源码与“迁移安全”无法成立的推理风险\n\n未证实的推论风险，按严重度：\n\n1. **把 import 边当作迁移覆盖面** —— `quote.ts` 是唯一 import 依赖，但它可能只用 `minimumTotal`，也可能把 `policy` 透传/存储；而**其他文件可能直接向 `quote()` 传入内联对象字面量**，根本不需要 import。工具看不到结构类型消费方。→ 消费者集合可能比图上大。\n2. **把 `0 callers` 当作“零消费者”** —— 见上，接口模型的固有盲区。\n3. **把候选测试当作已验证覆盖** —— `tests/policy.test.ts` 未运行、覆盖未验证，而且它在索引里连符号都没有；即使运行，针对 `quote()` 的测试也不必然断言 `discount`/`minimumTotal`。\n4. **把 `[current; complete]` 当作“改动完整说明”** —— `complete` 指的是变更符号跨度被完整取到，不是变更内容被完整描述；旧形态缺失。\n5. **把索引快照当作当前工作树** —— `dirty: true` + 非原子快照 + 构建时间早于 metadata 观测，存在索引滞后于工作树的风险；`parsed 7 / 0 failed` 只是解析成功，不是类型检查通过。\n6. **忽略无符号文件变更** —— 若某人改的是测试或配置而无顶层符号，可能不被计为变更符号（本次 UNMAPPED=0，但机制上存在此盲区）。\n\n**结论：无法声称该 `PricePolicy` 迁移安全。** 工具只能支持到“一个 import 依赖 + 一个按路径约定的候选测试 + 无解析调用”，且不展示旧接口与新接口的差异。\n\n---\n\n## 五、候选测试线索（明确未验证）\n\n| 测试 | 关联证据 | 状态 |\n|---|---|---|\n| [tests/policy.test.ts](tests/policy.test.ts) | 真实变更查询：`name-only / path-convention`；附加探测：`imports ../src/quote`（2 跳到 policy.ts） | 未运行、覆盖未验证、索引内无符号 |\n| [tests/price.test.ts](tests/price.test.ts) | 仅附加 files 探测：`imports ../src/price`，与 policy 无直接关联 | 未运行、未验证、**不应计入本次变更影响** |\n\n---\n\n## 六、若要下迁移结论，还缺什么\n\n需要（均为静态材料，尚未获取）：`src/policy.ts` 的 **HEAD 旧版定义**；`src/quote.ts` 全文（字段读取/构造/透传）；所有向 `quote()` 传入对象字面量的位置（尤其 [src/checkout.ts](src/checkout.ts)、[src/price.ts](src/price.ts)）；两个测试文件正文；以及类型检查结果。在这些证据到位前，正确表述是：**“变更存在、仅有一个 import 级依赖被静态观察到；影响范围与兼容性均未验证。”**",
+  "events": [
+    {
+      "type": "tool/call",
+      "seq": 18,
+      "time": 1794885611060,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_00_Gn8V2gbLG5Gl9AH3v2ME4151",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"maxDepth\": 3, \"maxPaths\": 10, \"maxTests\": 20, \"maxImpact\": 40}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 19,
+      "time": 1794885611253,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_Gn8V2gbLG5Gl9AH3v2ME4151"
+          },
+          "toolCallId": "call_00_Gn8V2gbLG5Gl9AH3v2ME4151",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified interface PricePolicy src/policy.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS:\n  src/quote.ts imports src/policy.ts ('./policy') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/policy.test.ts (candidate; not run; coverage unverified; path-convention) [name-only]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 1, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for PricePolicy (src/policy.ts:1): none found in current index/static resolution; not proof of no callers.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "43b17eff-32b6-4ef7-98bf-f39b17f0ae23"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        18
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 20,
+      "time": 1794885611253,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "callId": "call_01_EvisFbxj4BwLpj61T6Y57190",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"review\", \"budgetChars\": 5000, \"maxDepth\": 3, \"maxPaths\": 10, \"maxTests\": 20, \"maxImpact\": 40}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 21,
+      "time": 1794885611551,
+      "data": {
+        "turn": 1,
+        "step": 1,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_01_EvisFbxj4BwLpj61T6Y57190"
+          },
+          "toolCallId": "call_01_EvisFbxj4BwLpj61T6Y57190",
+          "content": [
+            {
+              "type": "text",
+              "text": "Review Brief — indexed static only; runtime behavior not proven.\nRepo/worktree: D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\B\nHEAD: 77df37019cc8b5cf3369255638dfef5968599232; base: 77df37019cc8b5cf3369255638dfef5968599232; dirty: true\nIndex built: 2026-11-17T03:14:14.344Z; metadata observed: 2026-11-17T03:20:11.547Z\nSnapshot: non-atomic; re-query after edits.\nSelection: git; 1 changed symbols, 1 static relations, 1 candidate tests, 0 unmapped changes.\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown; parsed is not semantic proof.\nChange: modified PricePolicy src/policy.ts:1-4 [current; complete]\nexport interface PricePolicy {\n  discount: number\n  minimumTotal: number\n}\nImport dependent: src/quote.ts -> src/policy.ts (./policy) [import-scoped]\nCandidate tests: not-run; coverage not verified.\nCandidate: tests/policy.test.ts [name-only; path-convention]\nOmitted from analysis: 0 changes, 0 relations, 0 tests, 0 warnings; 0 source bodies not included.\nGaps: non-atomic-snapshot\nBudget (full JSON envelope): 2238/5000"
+            }
+          ],
+          "isError": false,
+          "id": "a0573993-83db-453d-b2cd-73886d868dc3"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        20
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 26,
+      "time": 1794885615340,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "callId": "call_00_Qz52dHRcYR2NojlVPlXv7289",
+        "name": "code_change_context",
+        "arguments": "{\"files\": [\"src/quote.ts\", \"src/price.ts\", \"src/checkout.ts\", \"tests/policy.test.ts\"], \"maxDepth\": 2, \"maxImpact\": 40, \"maxPaths\": 10, \"outputFormat\": \"xray\"}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 27,
+      "time": 1794885615358,
+      "data": {
+        "turn": 1,
+        "step": 2,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_Qz52dHRcYR2NojlVPlXv7289"
+          },
+          "toolCallId": "call_00_Qz52dHRcYR2NojlVPlXv7289",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: files: 3 changed symbol(s)\nCHANGED:\n  modified function checkout() src/checkout.ts:2 [exact]\n  modified function calculateTotal(price: number, quantity: number) src/price.ts:1 [exact]\n  modified function quote(policy: PricePolicy) src/quote.ts:2 [exact]\nDIRECT CALLERS:\n  function checkout() src/checkout.ts:2 (called at src/checkout.ts:2) [exact]\nIMPORT DEPENDENTS:\n  src/checkout.ts imports src/price.ts ('./price') [import-scoped]\n  tests/policy.test.ts imports src/quote.ts ('../src/quote') [import-scoped]\n  tests/price.test.ts imports src/price.ts ('../src/price') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS:\n  src/checkout.ts:2 function checkout() → src/price.ts:1 function calculateTotal(price: number, quantity: number) (1 hop(s)) [exact]\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/policy.test.ts (candidate; not run; coverage unverified; changed-test, distance 0) [exact]\n  tests/price.test.ts (candidate; not run; coverage unverified; imports-changed-file, distance 1) [import-scoped]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 2, import-scoped 3, name-only 0.\nTests: 2 candidate(s), not run; not verified coverage.\n0 callers for checkout (src/checkout.ts:2): none found in current index/static resolution; not proof of no callers.\nWARNINGS:\n  - no indexed symbols in changed file: tests/policy.test.ts"
+            }
+          ],
+          "isError": false,
+          "id": "e8884cc3-e163-47cd-bfef-ec453d207e41"
+        },
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\B",
+          "source": "files",
+          "nodes": [
+            {
+              "id": "current:sym:v1:src%2Fcheckout.ts#function:checkout@1",
+              "name": "checkout",
+              "kind": "function",
+              "file": "src/checkout.ts",
+              "line": 2,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "explicit-selection",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:src%2Fprice.ts#function:calculateTotal@1",
+              "name": "calculateTotal",
+              "kind": "function",
+              "file": "src/price.ts",
+              "line": 1,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "explicit-selection",
+              "evidence": {
+                "file": "src/price.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function calculateTotal(price: number, quantity: number): number {\n  return price * quantity\n}\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "current:sym:v1:src%2Fquote.ts#function:quote@1",
+              "name": "quote",
+              "kind": "function",
+              "file": "src/quote.ts",
+              "line": 2,
+              "changed": true,
+              "category": "change",
+              "depth": 0,
+              "reason": "explicit-selection",
+              "evidence": {
+                "file": "src/quote.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import type { PricePolicy } from './policy'\nexport function quote(policy: PricePolicy) { return 100 * (1 - policy.discount) }\n"
+              },
+              "change": "modified"
+            },
+            {
+              "id": "file:current:src/checkout.ts",
+              "name": "src/checkout.ts",
+              "kind": "module",
+              "file": "src/checkout.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "import-dependent",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "file:current:src/price.ts",
+              "name": "src/price.ts",
+              "kind": "module",
+              "file": "src/price.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "src/price.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "export function calculateTotal(price: number, quantity: number): number {\n  return price * quantity\n}\n"
+              }
+            },
+            {
+              "id": "file:current:tests/policy.test.ts",
+              "name": "tests/policy.test.ts",
+              "kind": "module",
+              "file": "tests/policy.test.ts",
+              "line": 1,
+              "changed": false,
+              "category": "test",
+              "reason": "changed-test",
+              "evidence": {
+                "file": "tests/policy.test.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "test-lead",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { quote } from '../src/quote'\ntest('quote', () => assert.equal(quote({ discount: 0.1 }), 90))"
+              },
+              "resolution": "exact"
+            },
+            {
+              "id": "file:current:src/quote.ts",
+              "name": "src/quote.ts",
+              "kind": "module",
+              "file": "src/quote.ts",
+              "line": 1,
+              "changed": true,
+              "category": "module",
+              "reason": "changed-module",
+              "evidence": {
+                "file": "src/quote.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "declaration",
+                "code": "import type { PricePolicy } from './policy'\nexport function quote(policy: PricePolicy) { return 100 * (1 - policy.discount) }\n"
+              }
+            },
+            {
+              "id": "file:current:tests/price.test.ts",
+              "name": "tests/price.test.ts",
+              "kind": "module",
+              "file": "tests/price.test.ts",
+              "line": 3,
+              "changed": false,
+              "category": "test",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/price.test.ts",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { calculateTotal } from '../src/price'\ntest('total', () => assert.equal(calculateTotal(10, 2), 20))\n"
+              },
+              "resolution": "import-scoped"
+            }
+          ],
+          "edges": [
+            {
+              "id": "call:0",
+              "from": "current:sym:v1:src%2Fcheckout.ts#function:checkout@1",
+              "to": "current:sym:v1:src%2Fprice.ts#function:calculateTotal@1",
+              "kind": "call",
+              "resolution": "exact",
+              "reason": "explicit-import-binding",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 2,
+                "startLine": 1,
+                "side": "current",
+                "type": "call-site",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "import:1",
+              "from": "file:current:src/checkout.ts",
+              "to": "file:current:src/price.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "src/checkout.ts",
+                "line": 1,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { calculateTotal } from './price'\nexport function checkout() { return calculateTotal(10, 2) }\n"
+              }
+            },
+            {
+              "id": "import:2",
+              "from": "file:current:tests/policy.test.ts",
+              "to": "file:current:src/quote.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/policy.test.ts",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { quote } from '../src/quote'\ntest('quote', () => assert.equal(quote({ discount: 0.1 }), 90))\n"
+              }
+            },
+            {
+              "id": "import:3",
+              "from": "file:current:tests/price.test.ts",
+              "to": "file:current:src/price.ts",
+              "kind": "import",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "evidence": {
+                "file": "tests/price.test.ts",
+                "line": 3,
+                "startLine": 1,
+                "side": "current",
+                "type": "import-site",
+                "code": "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { calculateTotal } from '../src/price'\ntest('total', () => assert.equal(calculateTotal(10, 2), 20))\n"
+              }
+            }
+          ],
+          "tests": [
+            {
+              "file": "tests/policy.test.ts",
+              "resolution": "exact",
+              "reason": "changed-test",
+              "distance": 0,
+              "nodeId": "file:current:tests/policy.test.ts"
+            },
+            {
+              "file": "tests/price.test.ts",
+              "resolution": "import-scoped",
+              "reason": "imports-changed-file",
+              "distance": 1,
+              "nodeId": "file:current:tests/price.test.ts"
+            }
+          ],
+          "imports": [
+            {
+              "file": "src/checkout.ts",
+              "changedFile": "src/price.ts",
+              "specifier": "./price",
+              "resolution": "import-scoped",
+              "edgeId": "import:1"
+            },
+            {
+              "file": "tests/policy.test.ts",
+              "changedFile": "src/quote.ts",
+              "specifier": "../src/quote",
+              "resolution": "import-scoped",
+              "edgeId": "import:2"
+            },
+            {
+              "file": "tests/price.test.ts",
+              "changedFile": "src/price.ts",
+              "specifier": "../src/price",
+              "resolution": "import-scoped",
+              "edgeId": "import:3"
+            }
+          ],
+          "paths": [
+            {
+              "id": "path:0",
+              "from": "checkout",
+              "to": "calculateTotal",
+              "edgeIds": [
+                "call:0"
+              ],
+              "resolution": "exact",
+              "omitted": false
+            }
+          ],
+          "unmapped": [],
+          "gaps": [
+            "no indexed symbols in changed file: tests/policy.test.ts",
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 7 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 2, import-scoped 3, name-only 0.",
+            "Tests: 2 candidate(s), not run; not verified coverage.",
+            "0 callers for checkout (src/checkout.ts:2): none found in current index/static resolution; not proof of no callers."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 3,
+              "callers": 1,
+              "impact": 0,
+              "imports": 3,
+              "tests": 2,
+              "paths": 1,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 7,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 2,
+              "import-scoped": 3,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 2,
+              "verification": "not-run"
+            },
+            "callers": {
+              "checkedSymbols": 3,
+              "zero": [
+                {
+                  "file": "src/checkout.ts",
+                  "line": 2,
+                  "name": "checkout"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "sourceEventSeqs": [
+        26
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 32,
+      "time": 1794885626082,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "callId": "call_00_vkS63ZD8W3eN7BGtbAdn8912",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"text\", \"maxDepth\": 6, \"maxPaths\": 20, \"maxTests\": 50, \"maxImpact\": 100}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 33,
+      "time": 1794885626271,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_00_vkS63ZD8W3eN7BGtbAdn8912"
+          },
+          "toolCallId": "call_00_vkS63ZD8W3eN7BGtbAdn8912",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: git (base 77df37019cc8b5cf3369255638dfef5968599232): 1 changed symbol(s)\nCHANGED:\n  modified interface PricePolicy src/policy.ts:1 [exact]\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS:\n  src/quote.ts imports src/policy.ts ('./policy') [import-scoped]\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS:\n  tests/policy.test.ts (candidate; not run; coverage unverified; path-convention) [name-only]\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 1, name-only 0.\nTests: 1 candidate(s), not run; not verified coverage.\n0 callers for PricePolicy (src/policy.ts:1): none found in current index/static resolution; not proof of no callers.\nWARNINGS:\n  (none)"
+            }
+          ],
+          "isError": false,
+          "id": "c3156117-b6f8-4645-92bf-a03ac2ff1969"
+        },
+        "meta": null
+      },
+      "sourceEventSeqs": [
+        32
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "tool/call",
+      "seq": 34,
+      "time": 1794885626271,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "callId": "call_01_T539h840WiFRrhqn06ES6509",
+        "name": "code_change_context",
+        "arguments": "{\"outputFormat\": \"xray\", \"maxDepth\": 6, \"maxImpact\": 100, \"maxPaths\": 20, \"symbols\": [\"PricePolicy\"]}"
+      }
+    },
+    {
+      "type": "tool/result",
+      "seq": 35,
+      "time": 1794885626280,
+      "data": {
+        "turn": 1,
+        "step": 3,
+        "message": {
+          "role": "tool",
+          "source": {
+            "kind": "tool",
+            "callId": "call_01_T539h840WiFRrhqn06ES6509"
+          },
+          "toolCallId": "call_01_T539h840WiFRrhqn06ES6509",
+          "content": [
+            {
+              "type": "text",
+              "text": "change context — source: symbols: 0 changed symbol(s)\nCHANGED: (none)\nDIRECT CALLERS: (none found in current indexed static scope)\nIMPORT DEPENDENTS: (none)\nSHORTEST PATHS TO ENTRY POINTS: (none)\nTRANSITIVE IMPACT: (none)\nLIKELY AFFECTED TESTS: (none)\nUNMAPPED: (none)\nEvidence (indexed static scope; unscanned files not assessed):\nIndex: 7 parsed, 0 partial, 0 failed, 0 unknown.\nSelected relationship items: exact 0, import-scoped 0, name-only 0.\nTests: 0 candidate(s), not run; not verified coverage.\nEvidence gaps: not-found/no-changed-symbols, not-found/no-test-candidates.\nWARNINGS:\n  - symbol not in index: PricePolicy"
+            }
+          ],
+          "isError": false,
+          "id": "e585c8f3-0990-4591-8934-b3206731a3c3"
+        },
+        "meta": {
+          "card": "impact-xray",
+          "version": 2,
+          "root": "D:\\ChatGPTProjects\\dsh-code-index\\.worktrees\\v0.13.0\\node_modules\\.m2-demo\\B",
+          "source": "symbols",
+          "nodes": [],
+          "edges": [],
+          "tests": [],
+          "imports": [],
+          "paths": [],
+          "unmapped": [],
+          "gaps": [
+            "symbol not in index: PricePolicy",
+            "Evidence (indexed static scope; unscanned files not assessed):",
+            "Index: 7 parsed, 0 partial, 0 failed, 0 unknown.",
+            "Selected relationship items: exact 0, import-scoped 0, name-only 0.",
+            "Tests: 0 candidate(s), not run; not verified coverage.",
+            "Evidence gaps: not-found/no-changed-symbols, not-found/no-test-candidates."
+          ],
+          "truncated": false,
+          "bounds": {
+            "analysis": {
+              "callers": false,
+              "dependents": false,
+              "paths": false,
+              "impact": false,
+              "tests": false
+            },
+            "projection": false,
+            "totals": {
+              "changed": 0,
+              "callers": 0,
+              "impact": 0,
+              "imports": 0,
+              "tests": 0,
+              "paths": 0,
+              "unmapped": 0
+            }
+          },
+          "evidence": {
+            "scope": "indexed-static-only",
+            "basis": "change-analysis",
+            "index": {
+              "parsed": 7,
+              "partial": 0,
+              "failed": 0,
+              "unknown": 0
+            },
+            "relationships": {
+              "exact": 0,
+              "import-scoped": 0,
+              "name-only": 0
+            },
+            "tests": {
+              "candidates": 0,
+              "verification": "not-run"
+            },
+            "gaps": [
+              {
+                "kind": "not-found",
+                "code": "no-changed-symbols",
+                "source": "diff-or-selection"
+              },
+              {
+                "kind": "not-found",
+                "code": "no-test-candidates",
+                "source": "indexed-test-discovery"
+              }
+            ]
+          }
+        }
+      },
+      "sourceEventSeqs": [
+        34
+      ],
+      "surfaceOp": "append"
+    },
+    {
+      "type": "turn/end",
+      "seq": 41,
+      "time": 1794885659935,
+      "data": {
+        "turn": 1,
+        "reason": {
+          "kind": "completed"
+        }
+      }
+    }
+  ],
+  "globalToolsUnchanged": true,
+  "rawReportSha256": "c54c2a9593c23c66dae452b361d32c1100e9f32fcac07b510dba37bc976a7f8f",
+  "retention": "Public evidence retains actual tool calls/results, turn end and final text; assistant reasoning/stream blocks excluded.",
+  "taskId": "B",
+  "maxTokens": 8192
+}

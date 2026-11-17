@@ -92,9 +92,11 @@ export function renderReviewBrief(brief: ReviewBrief): string {
   const r = brief.repository, s = brief.summary
   const lines = ['Review Brief — indexed static only; runtime behavior not proven.',
     `Repo/worktree: ${r.root}`, `HEAD: ${r.head ?? 'unavailable'}; base: ${r.baseRef ?? 'not provided'}; dirty: ${r.dirty ?? 'unknown'}`,
+    `Index built: ${new Date(r.indexedAt).toISOString()}; metadata observed: ${new Date(r.observedAt).toISOString()}`,
     'Snapshot: non-atomic; re-query after edits.',
     `Selection: ${s.source}; ${s.changes} changed symbols, ${s.relations} static relations, ${s.tests} candidate tests, ${s.unmapped} unmapped changes.`,
     `Index: ${s.index.parsed} parsed, ${s.index.partial} partial, ${s.index.failed} failed, ${s.index.unknown} unknown; parsed is not semantic proof.`]
+  if (s.relations === 0) lines.push('No static relationships found in this analysis; not proof of no callers or runtime impact.')
   for (const row of brief.changes) {
     lines.push(`Change: ${row.change} ${row.name} ${row.file}:${row.startLine}-${row.endLine} [${row.side}${row.ref ? ` @${row.ref}` : ''}; ${row.mode}]`,
       row.code ?? `Signature only (${row.sourceGap}): ${row.signature ?? ''}`)

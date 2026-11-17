@@ -80,10 +80,23 @@ it('reports real HEAD/base, dirty and index time without treating them as a snap
   expect(brief.repository).toMatchObject({ root, head: git(root, 'rev-parse', 'HEAD').trim(), baseRef: change.baseRef,
     dirty: true, indexedAt: index.generatedAt, snapshot: 'non-atomic' })
   expect(brief.repository.observedAt).toBeGreaterThanOrEqual(index.generatedAt)
+  const shown = await buildReviewBrief(index, change)
+  expect(shown.text).toContain(`Index built: ${new Date(index.generatedAt).toISOString()}`)
+  expect(shown.text).toContain('metadata observed:')
   git(root, 'checkout', '--', 'core.ts')
   await mkdir(path.join(root, '.dsh-code-index')); await writeFile(path.join(root, '.dsh-code-index/cache.json'), '{}')
   const clean = bounded(await buildReviewBrief(index, change))
   expect(clean.repository.dirty).toBe(false)
+})
+
+it('expresses zero static relationships as a bounded observation, not proof of no callers', async () => {
+  const { root } = await fixture()
+  await writeFile(path.join(root, 'isolated.ts'), 'export function isolatedMarker() { return 11 }\n')
+  const index = await buildIndex(root), change = await buildChangeContext(index, { kind: 'files', files: ['isolated.ts'] })
+  const out = await buildReviewBrief(index, change)
+  expect(bounded(out).summary.relations).toBe(0)
+  expect(out.text).toContain('not proof of no callers or runtime impact')
+  expect(out.brief.verification).toBe('not-run')
 })
 
 it('preserves all critical gaps even when long warnings and evidence are omitted', async () => {
