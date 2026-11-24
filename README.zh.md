@@ -3,17 +3,18 @@
 [![npm version](https://img.shields.io/npm/v/dsh-code-index)](https://www.npmjs.com/package/dsh-code-index)
 [![CI](https://github.com/lemonxiny55/dsh-code-index/actions/workflows/ci.yml/badge.svg)](https://github.com/lemonxiny55/dsh-code-index/actions)
 
-[English](README.md) | 中文 · [v0.13.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.13.0) · [npm v0.13.0](https://www.npmjs.com/package/dsh-code-index/v/0.13.0) · [CHANGELOG](CHANGELOG.md)
+[English](README.md) | 中文 · [v0.14.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.0) · [npm v0.14.0](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [CHANGELOG](CHANGELOG.md)
 
 > **在 AI 动手改代码之前，先看清“爆炸半径”。**
 >
-> 面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地代码智能插件——在让 AI Agent 修改代码前，先看清变更符号源码、受影响的调用链、导入依赖与候选测试证据。
+> 面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的本地代码智能插件——在让 AI Agent 修改代码前，先看清变更符号源码、穿透别名与 barrel 后的调用链、最小验证命令线索、变更环依赖预警与跨包影响。
 
-- **Review Brief（`v0.13.0` 新增）：** 通过 `code_change_context`（`outputFormat: "review"`）输出结构化 `{ text, brief }` 评审摘要，直出源码、关系、`Test Leads` 与显式 `Evidence Gaps`。
-- **Impact X-Ray：** Desktop 交互式潜在影响图（`outputFormat: "xray"`），点击关系即可核对真实源码位置与来源证据。
+- **真实仓库精度与验证线索（`v0.14.0` 新增）：** 支持 `tsconfig.json`/`jsconfig.json`/`package.json#exports`/鸿蒙 `oh-package.json5` 路径别名、有界 barrel re-export 穿透（`maxReexportDepth = 3`）、`Review Brief` 静态 `commandLead`（绝不自动执行）、变更范围 `cycle-warning` 与 Monorepo `Cross-package impact`。
+- **Review Brief：** 通过 `code_change_context`（`outputFormat: "review"`）输出结构化 `{ text, brief }` 评审摘要，直出源码、关系、`Test Leads` 与显式 `Evidence Gaps`。
+- **Impact X-Ray：** Desktop 交互式潜在影响图（`outputFormat: "xray"`），点击关系即可核对真实源码位置、来源证据与跨包影响。
 - **调用链与排名检索：** 调用图追踪（`code_refs`）、排名符号检索（`code_search`）与 PageRank 仓库地图（`code_map`）。
 - **5000 字符硬预算 Context Pack：** 一次 `code_context` 调用返回有界、可直接用于修改的源码上下文（默认 5000 / 300–20000 JS 字符），带入选理由、关系来源与明确缺口。
-- **100% 本地运行、零外部 API Key：** 纯 Tree-sitter WASM 解析 + 磁盘 mtime 增量缓存 + 多 Worktree 独立隔离。
+- **100% 本地运行、零外部 API Key：** 纯 Tree-sitter WASM 解析 + 磁盘 mtime 增量缓存（schema 5）+ 多 Worktree 独立隔离。
 - **支持含鸿蒙 ArkTS（`.ets`）在内的 9 种语言：** ArkTS、TypeScript、JavaScript、Python、Go、Rust、Java、C++ 与 C，无需原生编译。
 
 ---
@@ -23,7 +24,7 @@
 需要 **Node ≥ 22**（已在 Node 22/24 验证），并确保 DSH 宿主中的第一方包版本配套。用 Desktop 自带的 `dsh` CLI 一行安装：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.13.0
+dsh plugin --profile desktop add dsh-code-index@0.14.0
 ```
 
 安装后重启 DSH Desktop，即可直接向 Agent 发送试用指令：
@@ -40,7 +41,7 @@ dsh plugin --profile desktop add dsh-code-index@0.13.0
 ### Web profile 安装
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.13.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.0
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -48,7 +49,7 @@ npx @deepseek-ai/dsh@0.2.1-rc.2 web
 
 ```sh
 # 从 npm（预编译）
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.13.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.0
 
 # 或从包含本仓库检出副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
@@ -99,7 +100,7 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 
 ---
 
-## v0.13.0 新功能：Review Brief
+## v0.14.0 新功能：真实仓库精度与验证线索
 
 在 AI 修改代码前，调用 `code_change_context` 并传入 `outputFormat: "review"`，返回预算受控的结构化 `{ text, brief }` 评审摘要（默认 `text` 与 `xray` 格式仍可使用）：
 
@@ -107,14 +108,14 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 {"outputFormat":"review","budgetChars":5000}
 ```
 
-| Review Brief 核心项 | 你将看到 |
+| v0.14.0 核心能力 | 你将看到 |
 | --- | --- |
-| **变更符号源码** | 当前变更符号的真实源码片段（省略 `symbols` 默认取工作区 diff；或传入 `code_symbols` 返回的精确 ID）。 |
-| **有界静态关系** | 带 `exact` / `import-scoped` / `name-only` 来源等级的调用者、导入依赖与有限影响路径。 |
-| **`Test Leads`（候选测试）** | 静态关联的候选测试线索——明确标记为线索，不会执行测试，也不等同于覆盖率验证。 |
-| **仓库观察与显式 `Evidence Gaps`** | 非原子仓库元数据观察（root、HEAD/base、dirty 状态、索引/元数据时间），以及缺失或截断时的显式证据缺口。 |
+| **路径别名与 Barrel Re-export 穿透** | 解析 JSONC `tsconfig.json`/`jsconfig.json`（`extends`、`baseUrl`、`paths`）、本地 `package.json#exports`、鸿蒙 `oh-package.json5` 以及 `export { ... } from` / `export * from` 链（`maxReexportDepth = 3`，防环），附确定性 `via` 说明；多匹配通配符严格退化为 `import-scoped` 并记录 `ambiguous-alias`。 |
+| **验证命令线索（`commandLead`）** | 在 `Review Brief` 中基于 `package.json`（Vitest/Jest）、`pyproject.toml`、`go.mod`/`go.work` 与 `Cargo.toml` 确定性推导最小范围测试命令——绝不自动执行测试（`verification: "not-run"`），无法识别时留空并记 `verification-command-unavailable`。 |
+| **变更环依赖预警（`cycle-warning`）** | 在 `review` 模式下复用 Tarjan SCC，仅对包含本次变更文件的 import 环输出有界告警。 |
+| **Monorepo 跨包影响（`Cross-package impact`）** | 解析 `pnpm-workspace.yaml`、`package.json#workspaces`、`Cargo.toml`、`go.work` 与鸿蒙 `build-profile.json5` 边界，在 `Review Brief` 与 `Impact X-Ray` 中汇总跨包引用；严守 300–20000 字符预算，紧预算下优先裁 `commandLead`。 |
 
-- **教程与发布说明：** [可复现教程](docs/development/v0.13.0/DEMO.zh-CN.md) · [v0.13.0 发布说明](RELEASE_NOTES_v0.13.0.zh-CN.md) · [六张 v0.13.0 Desktop 截图（Host API replay / no model call）](docs/assets/v0.13.0/README.md) · [稳定版验收记录](docs/development/v0.13.0/STABLE_ACCEPTANCE.zh-CN.md)
+- **发布说明与证据：** [v0.14.0 发布说明](RELEASE_NOTES_v0.14.0.zh-CN.md) · [v0.14.0 验收证据](RELEASE_EVIDENCE_v0.14.0.md) · [v0.14.0 工程方案](V0.14.0_PLAN.md) · [Review Brief 教程（v0.13.0）](docs/development/v0.13.0/DEMO.zh-CN.md)
 
 <details>
 <summary>Review Brief 预算规则、截图来源与能力边界</summary>
@@ -136,7 +137,7 @@ node.exe scripts\fix-wsl-links.mjs C:\Users\you\.dsh\profiles\web   # dsh profil
 
 ![真实 DSH Desktop 中的 Impact X-Ray：变更的 normalize、调用者、测试与可点击的源码证据](assets/impact-xray-mvp.gif)
 
-[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [MVP 报告](IMPACT_XRAY_MVP.md) · [从 npm 安装 v0.13.0](https://www.npmjs.com/package/dsh-code-index/v/0.13.0) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
+[观看 MP4](assets/impact-xray-mvp.mp4) · [全尺寸 GIF](assets/impact-xray-mvp.gif) · [演示说明与复现](assets/impact-xray-mvp-demo.md) · [MVP 报告](IMPACT_XRAY_MVP.md) · [从 npm 安装 v0.14.0](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [项目主页](https://github.com/lemonxiny55/dsh-code-index)
 
 让 Agent 调用 `code_change_context` 并传入 `{"repoRoot":"D:/absolute/path/to/repo","outputFormat":"xray"}`，展开工具结果，选择“放大查看”，再点击任意箭头：
 
@@ -242,7 +243,12 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 ## 严谨声明、技术细节与历史验收
 
 <details>
-<summary>验证边界与历史版本验收记录（v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0）</summary>
+<summary>验证边界与历史版本验收记录（v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0）</summary>
+
+### v0.14.0 — Real-Repo Precision & Verification Leads
+
+- **发布说明与证据：** [v0.14.0 发布说明](RELEASE_NOTES_v0.14.0.zh-CN.md) · [v0.14.0 验收证据](RELEASE_EVIDENCE_v0.14.0.md) · [CHANGELOG](CHANGELOG.md)
+- **验收范围：** 本次已通过本地 `pnpm typecheck`、36 个 Vitest 测试套件（`pnpm test`）、ESM/DTS/Client 生产构建（`pnpm build`）及干净 tarball 安装与 `ToolRuntime` 冒烟验收（`pnpm release:smoke`）。本次**未运行**新的 DSH Electron Desktop UI 实测或真实模型 Agent 实测。
 
 ### v0.13.0 — Review Brief
 
@@ -287,11 +293,11 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 
 ### ArkTS 功能与限制
 
-- 支持范围是语法和静态代码上下文，不包含完整 HarmonyOS SDK 语义、HAR/oh-package/模块别名解析、状态更新或 UI 重渲染调用图。
+- 支持语法、静态代码上下文、本地 `oh-package.json5` 相对路径依赖解析（含 `Index.ets` 默认入口）、`build-profile.json5` 多模块边界以及有界 ETS/TS re-export 穿透（`maxReexportDepth = 3`），不包含完整 HarmonyOS SDK 语义、`oh_modules` 第三方源码解析、状态更新或 UI 重渲染调用图。
 - `struct` 组件使用现有 `kind: class`，签名为 `struct Name`。方法、字段、全局函数、class/interface/type/enum 和模块变量保留稳定的限定 ID、所属作用域和源码行号。`@Component`、`@ComponentV2`、`@State`、`@Local`、`@Builder` 等装饰器保留为元数据，装饰器所在行纳入定义源码范围。
-- 能解析 `build()` 和嵌套声明式 UI；本地组件、显式 ETS/TS import 接入符号、搜索、地图、引用、变更上下文和 Context Pack。`@Extend` 元数据及 UI 属性链不会被当作业务调用关系。UI 块内大写裸调用不使用全仓库同名或仅导入模块的回退，避免给无绑定的 SDK 组件关联无关项目符号。普通 callback/业务调用沿用已有 provenance；ArkTS 的 `code_refs` 使用按绑定解析的候选关系。
-- 唯一可确定目标的相对 ETS/TS import 可解析；同一无扩展名路径同时存在 ETS 和其他源码时不猜测。默认 import 保留 `import-scoped`，不推断 HAR/oh-package/模块别名、SDK 类型、re-export 链、状态更新或 UI 重渲染语义。无显式绑定的全局自定义 UI 组件可能没有关系边。语法解析通过不等于 ArkTS 编译通过或鸿蒙运行时行为已验证。
-- 每个索引文件记录 `parsed` / `partial` / `failed`、ERROR/MISSING 数量和最多三处位置。不可靠的 ArkTS 声明会被省略，避免错误的范围或所属作用域。`code_index` 提供有限的索引不完整摘要，Context Pack 和变更上下文在原有预算内保留缺口。缓存 schema 3 自动重建旧缓存，仍不持久化源码正文。
+- 能解析 `build()` 和嵌套声明式 UI；本地组件、显式 ETS/TS import 接入符号、搜索、地图、引用、变更上下文和 Context Pack。`@Extend` 元数据及 UI 属性链不会被当作业务调用关系。UI 块内大写裸调用不使用全仓库同名或仅导入模块的回退，避免给无绑定的 SDK 组件（`@ohos.*` / `@kit.*`）关联无关项目符号。普通 callback/业务调用沿用已有 provenance；ArkTS 的 `code_refs` 使用按绑定解析的候选关系。
+- 唯一可确定目标的相对及本地 `oh-package.json5` 混合 ETS/TS import 可解析；同一无扩展名路径同时存在 ETS 和其他源码时不猜测；歧义通配符退化为 `import-scoped` 并写入 `ambiguous-alias`。默认 import 保留 `import-scoped`，不推断 SDK 类型、状态更新或 UI 重渲染语义。无显式绑定的全局自定义 UI 组件可能没有关系边。语法解析通过不等于 ArkTS 编译通过或鸿蒙运行时行为已验证。
+- 每个索引文件记录 `parsed` / `partial` / `failed`、ERROR/MISSING 数量和最多三处位置。不可靠的 ArkTS 声明会被省略，避免错误的范围或所属作用域。`code_index` 提供有限的索引不完整摘要，Context Pack 和变更上下文在原有预算内保留缺口。缓存 schema 5 自动重建旧缓存并随配置 mtime 变化增量失效，仍不持久化源码正文。
 - grammar 使用 [harmony-contrib 0.3.0](https://github.com/harmony-contrib/tree-sitter-arkts)，ABI 14，未经修改的 npm WASM 与 MIT 声明随包发布，消费端无需原生 ArkTS addon。见 [WASM 来源](grammars/README.md)。
 
 ### 已知限制
@@ -337,11 +343,11 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 
 ### 工作原理
 
-- **索引构建**（`src/buildIndex.ts`）：递归扫描（应用排除规则），逐文件 tree-sitter 提取（`src/extract.ts`），JSON 缓存置于 `<repo>/.dsh-code-index/`，按 mtime 增量刷新（只有被改动的文件才重新解析）。
+- **索引构建与配置解析**（`src/buildIndex.ts`、`src/alias.ts`、`src/workspace.ts`）：递归扫描（应用排除规则），逐文件 tree-sitter 提取（`src/extract.ts`），轻量归一化别名与工作区配置（`tsconfig`/`jsconfig`/`package.json`/`oh-package.json5`/`pnpm-workspace.yaml`/`Cargo.toml`/`go.work`/`build-profile.json5`），JSON 缓存（schema 5）置于 `<repo>/.dsh-code-index/`，按源码及配置 mtime 增量刷新（不持久化源码正文）。
 - **搜索**（`src/search.ts`）：纯打分——精确 `1` / 前缀 `0.8` / 子串 `0.5`，导出加权，名称序平局裁决。
 - **仓库地图**（`src/repomap.ts`）：import 图上的个性化 PageRank（传送向量 = 各文件密度份额，被其他枢纽文件引用的枢纽会比平铺入度统计排得更靠前），以密度感知的文件打分为底（class/interface/function 加权，测试路径衰减），取 Top-N 文件，每文件符号上限，硬截断。
-- **调用图**（`src/refgraph.ts`）：逐文件提取调用点（按语言，并记录其所属函数），按名称解析成 callers 与 callees——`code_refs` 直接暴露，`code_search` 也把调用热度作为排名平局裁决。
-- **变更上下文**（`src/change-context.ts`）：把 Git hunk 映射到稳定符号，再在有限深度内追踪带来源标签的调用者、import 依赖、入口路径、影响范围和可能受影响的测试，避免返回整个仓库。
+- **调用图**（`src/refgraph.ts`）：逐文件提取调用点（按语言，并记录其所属函数），通过局部作用域、配置别名与有界 barrel re-export 链（`maxReexportDepth = 3`，防环）解析成 callers 与 callees——`code_refs` 直接暴露，`code_search` 也把调用热度作为排名平局裁决。
+- **变更上下文与 Review Brief**（`src/change-context.ts`、`src/review-brief.ts`、`src/test-leads.ts`）：把 Git hunk 映射到稳定符号，在有限深度内追踪带来源标签的调用者、import 依赖（含反向 barrel 链）、入口路径、跨包汇总、变更环依赖预警与确定性静态 `commandLead`（绝不执行测试）。
 - **ContextPack**（`src/context.ts`、`src/context-pack.ts`、`src/source-excerpts.ts`）：候选排序、临时读取源码证据、按文本/JSON 预算选择唯一 DTO，再渲染入选项。
 - **健康检查**（`src/health.ts`）：对 import 图跑 Tarjan SCC 得到环依赖；孤儿模块检测列出既不被 import、也不 import 任何文件的含符号文件（排除入口与测试）。
 - **工作区解析**：每个工具解析会话 cwd（`agent.session.header.cwd`）并向上查找最近的 `.git`（有界——没有仓库标记的目录绝不会被索引）。

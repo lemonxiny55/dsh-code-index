@@ -3,17 +3,18 @@
 [![npm version](https://img.shields.io/npm/v/dsh-code-index)](https://www.npmjs.com/package/dsh-code-index)
 [![CI](https://github.com/lemonxiny55/dsh-code-index/actions/workflows/ci.yml/badge.svg)](https://github.com/lemonxiny55/dsh-code-index/actions)
 
-English | [中文](README.zh.md) · [v0.13.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.13.0) · [npm v0.13.0](https://www.npmjs.com/package/dsh-code-index/v/0.13.0) · [CHANGELOG](CHANGELOG.md)
+English | [中文](README.zh.md) · [v0.14.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.0) · [npm v0.14.0](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [CHANGELOG](CHANGELOG.md)
 
 > **See the blast radius before your AI edits the code.**
 >
-> Local code intelligence for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) — inspect changed-symbol source, callers, import dependents, and candidate tests before letting an AI agent edit your repository.
+> Local code intelligence for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) — inspect changed-symbol source, aliased/barrel callers, verification command leads, import cycles, and monorepo cross-package impact before letting an AI agent edit your repository.
 
-- **Review Brief (`v0.13.0` new):** Structured `{ text, brief }` change review via `code_change_context` (`outputFormat: "review"`) with explicit `Test Leads` and `Evidence Gaps`.
-- **Impact X-Ray:** Interactive Desktop blast-radius map (`outputFormat: "xray"`) with clickable source evidence.
+- **Real-Repo Precision & Verification Leads (`v0.14.0` new):** Config-aware path aliases (`tsconfig.json`/`jsconfig.json`/`package.json#exports`/HarmonyOS `oh-package.json5`), bounded barrel re-exports (`maxReexportDepth = 3`), `Review Brief` `commandLead` suggestions (never executed), change-scoped `cycle-warning`, and monorepo `Cross-package impact`.
+- **Review Brief:** Structured `{ text, brief }` change review via `code_change_context` (`outputFormat: "review"`) with explicit `Test Leads` and `Evidence Gaps`.
+- **Impact X-Ray:** Interactive Desktop blast-radius map (`outputFormat: "xray"`) with clickable source evidence and cross-package summary.
 - **Call Graph & Ranked Search:** Trace callers/callees (`code_refs`), ranked symbol lookup (`code_search`), and PageRank repo maps (`code_map`).
 - **5,000-Char Hard-Budget Context Packs:** One `code_context` call delivers bounded, edit-ready source excerpts (default 5000 / 300–20000 JS chars) with provenance and explicit gaps.
-- **100% Local, Zero Indexing API Key:** Tree-sitter WASM + on-disk mtime-incremental cache + isolated multi-worktree contexts.
+- **100% Local, Zero Indexing API Key:** Tree-sitter WASM + on-disk mtime-incremental cache (schema 5) + isolated multi-worktree contexts.
 - **9 Languages Including HarmonyOS ArkTS (`.ets`):** ArkTS, TypeScript, JavaScript, Python, Go, Rust, Java, C++, and C — pure WASM, no native build.
 
 ---
@@ -23,7 +24,7 @@ English | [中文](README.zh.md) · [v0.13.0 Release](https://github.com/lemonxi
 Requires **Node ≥ 22** (validated on Node 22/24) and a compatible DSH profile with matched first-party DSH packages:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.13.0
+dsh plugin --profile desktop add dsh-code-index@0.14.0
 ```
 
 Restart DSH Desktop after installation, then try asking your Agent:
@@ -40,7 +41,7 @@ Or try `code_context` on an existing bug:
 ### Web profile
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.13.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.0
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
@@ -48,7 +49,7 @@ You can also install against a matching `0.2.0-rc.2` profile from npm or a local
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.13.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.0
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
@@ -99,7 +100,7 @@ It re-points every dead link at its real `.pnpm` store entry as a junction; safe
 
 ---
 
-## What's New in v0.13.0: Review Brief
+## What's New in v0.14.0: Real-Repo Precision & Verification Leads
 
 Call `code_change_context` with `outputFormat: "review"` to get a bounded `{ text, brief }` review package before AI edits (default `text` and `xray` formats remain available):
 
@@ -107,14 +108,14 @@ Call `code_change_context` with `outputFormat: "review"` to get a bounded `{ tex
 {"outputFormat":"review","budgetChars":5000}
 ```
 
-| Review Brief Component | What You Get |
+| v0.14.0 Highlight | What You Get |
 | --- | --- |
-| **Changed-Symbol Source** | Current source excerpts for working-tree diff symbols (omit `symbols` for the working-tree diff, or pass exact `symbols` IDs returned by `code_symbols`). |
-| **Bounded Static Relations** | Callers, import dependents, and bounded impact paths with explicit `exact` / `import-scoped` / `name-only` provenance. |
-| **`Test Leads`** | Candidate test files statically linked to the changed symbols — explicitly marked as leads, not executed or verified for coverage. |
-| **Repo Observations & `Evidence Gaps`** | Non-atomic workspace observations (root, HEAD/base, dirty state, index/metadata timestamps) plus explicit `Evidence Gaps` whenever evidence is missing or truncated. |
+| **Path Aliases & Barrel Re-exports** | Resolves JSONC `tsconfig.json`/`jsconfig.json` (`extends`, `baseUrl`, `paths`), local `package.json#exports`, HarmonyOS `oh-package.json5`, and `export { ... } from` / `export * from` (`maxReexportDepth = 3`, cycle-guarded) with deterministic `via` notes. Multi-match wildcards downgrade strictly to `import-scoped` + `ambiguous-alias`. |
+| **Verification Command Leads (`commandLead`)** | Deterministic minimal-scope test commands in `Review Brief` from `package.json` (Vitest/Jest), `pyproject.toml`, `go.mod`/`go.work`, and `Cargo.toml` — never auto-executed (`verification: "not-run"`); omitted with `verification-command-unavailable` when unknown. |
+| **Change-Scoped `cycle-warning`** | Reuses Tarjan SCC over the alias-aware module graph in `review` mode to warn only on import cycles touching changed files. |
+| **Monorepo `Cross-package impact`** | Maps `pnpm-workspace.yaml`, `package.json#workspaces`, `Cargo.toml`, `go.work`, and HarmonyOS `build-profile.json5` boundaries in `Review Brief` and `Impact X-Ray`, preserving the 300–20000 JS-char hard budget (`commandLead` trims first when tight). |
 
-- **Walkthrough & Notes:** [Reproducible Tutorial](docs/development/v0.13.0/DEMO.en.md) · [v0.13.0 Release Notes](RELEASE_NOTES_v0.13.0.md) · [Six v0.13.0 Desktop Captures (Host API replay / no model call)](docs/assets/v0.13.0/README.md) · [Stable Acceptance Record](docs/development/v0.13.0/STABLE_ACCEPTANCE.zh-CN.md)
+- **Notes & Evidence:** [v0.14.0 Release Notes](RELEASE_NOTES_v0.14.0.md) · [v0.14.0 Release Evidence](RELEASE_EVIDENCE_v0.14.0.md) · [v0.14.0 Engineering Plan](V0.14.0_PLAN.md) · [Review Brief Walkthrough (v0.13.0)](docs/development/v0.13.0/DEMO.en.md)
 
 <details>
 <summary>Review Brief budget, capture provenance & scope boundaries</summary>
@@ -136,7 +137,7 @@ A change to `normalize()` → inspect callers and a test lead → click a relati
 
 ![Impact X-Ray in actual DSH Desktop: changed normalize function, callers, tests and clickable source evidence](assets/impact-xray-mvp.gif)
 
-[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [MVP report](IMPACT_XRAY_MVP.md) · [Install v0.13.0 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.13.0) · [Project](https://github.com/lemonxiny55/dsh-code-index)
+[Watch MP4](assets/impact-xray-mvp.mp4) · [Full-size GIF](assets/impact-xray-mvp.gif) · [Demo notes and reproduction](assets/impact-xray-mvp-demo.md) · [MVP report](IMPACT_XRAY_MVP.md) · [Install v0.14.0 from npm](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [Project](https://github.com/lemonxiny55/dsh-code-index)
 
 Ask the Agent to call `code_change_context` with `{"repoRoot":"/absolute/path/to/repo","outputFormat":"xray"}`, expand the tool result, choose **Expand view**, and click any arrow:
 
@@ -242,7 +243,12 @@ Each Git worktree gets its own on-disk index and change state (up to 4 contexts 
 ## Validation Boundaries, Technical Specs & Release History
 
 <details>
-<summary>Validation boundaries & historical release acceptance (v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0)</summary>
+<summary>Validation boundaries & historical release acceptance (v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0)</summary>
+
+### v0.14.0 — Real-Repo Precision & Verification Leads
+
+- **Release:** [v0.14.0 Release Notes](RELEASE_NOTES_v0.14.0.md) · [v0.14.0 Release Evidence](RELEASE_EVIDENCE_v0.14.0.md) · [CHANGELOG](CHANGELOG.md)
+- **Verification scope:** Verified locally via `pnpm typecheck`, 36 Vitest suites (`pnpm test`), production ESM/DTS/client builds (`pnpm build`), and clean tarball installation + `ToolRuntime` smoke (`pnpm release:smoke`). No new Desktop Electron UI run or model-driven Agent run is claimed for `v0.14.0`.
 
 ### v0.13.0 — Review Brief
 
@@ -287,11 +293,11 @@ Each Git worktree gets its own on-disk index and change state (up to 4 contexts 
 
 ### ArkTS scope and limits
 
-- Supports syntax and static code context, without full HarmonyOS SDK semantics, HAR/oh-package/module-alias resolution, or state-update/UI rerender graphs.
+- Supports syntax, static code context, local `oh-package.json5` relative dependencies (`Index.ets` default entry), `build-profile.json5` multi-module workspace boundaries, and bounded ETS/TS re-export traversal (`maxReexportDepth = 3`), without full HarmonyOS SDK semantics, `oh_modules` third-party source parsing, or state-update/UI rerender graphs.
 - Components declared with `struct` appear as `kind: class`, signature `struct Name`. Methods, fields, global functions, classes/interfaces/types/enums, and module variables have stable qualified IDs, owners, and source line ranges. Decorators (`@Component`, `@ComponentV2`, `@State`, `@Local`, `@Builder`, etc.) are retained as metadata and included in the definition's source range.
-- `build()` and nested declarative UI blocks parse as ArkTS. Local components and explicit ETS/TS imports feed symbols, search, map, references, change context, and Context Packs. `@Extend` metadata and UI attribute chains are excluded from call relationships. Bare capitalized calls in UI bodies have no global-name or imported-module fallback; unbound SDK components cannot acquire unrelated same-named project targets. Ordinary callback/business calls retain existing provenance. `code_refs` uses binding-aware candidates for ArkTS call sites.
-- Relative mixed ETS/TS imports work when the target is statically unique. Extensionless stems with both ETS and another source file stay unresolved. Default imports remain `import-scoped`; no HAR/oh-package/module alias, SDK typing, re-export chain, state-update, or UI rerender semantics are inferred. Unbound/global custom UI components may therefore have no relationship edge. Syntax acceptance does not prove valid ArkTS or HarmonyOS runtime behavior.
-- Each indexed file records `parsed`, `partial`, or `failed` syntax/read status, ERROR/MISSING counts, and at most three issue locations. Unreliable ArkTS declarations are omitted rather than assigned misleading IDs. `code_index` reports a bounded incomplete-index summary, and Context Packs/change context carry gaps within their existing budgets. Cache schema 3 rebuilds older caches automatically; source bodies remain unpersisted.
+- `build()` and nested declarative UI blocks parse as ArkTS. Local components and explicit ETS/TS imports feed symbols, search, map, references, change context, and Context Packs. `@Extend` metadata and UI attribute chains are excluded from call relationships. Bare capitalized calls in UI bodies have no global-name or imported-module fallback; unbound SDK components (`@ohos.*` / `@kit.*`) cannot acquire unrelated same-named project targets. Ordinary callback/business calls retain existing provenance. `code_refs` uses binding-aware candidates for ArkTS call sites.
+- Relative and local `oh-package.json5` mixed ETS/TS imports work when the target is statically unique. Extensionless stems with both ETS and another source file stay unresolved; ambiguous wildcards downgrade to `import-scoped` with `ambiguous-alias`. Default imports remain `import-scoped`; no SDK typing, state-update, or UI rerender semantics are inferred. Unbound/global custom UI components may therefore have no relationship edge. Syntax acceptance does not prove valid ArkTS or HarmonyOS runtime behavior.
+- Each indexed file records `parsed`, `partial`, or `failed` syntax/read status, ERROR/MISSING counts, and at most three issue locations. Unreliable ArkTS declarations are omitted rather than assigned misleading IDs. `code_index` reports a bounded incomplete-index summary, and Context Packs/change context carry gaps within their existing budgets. Cache schema 5 rebuilds older caches automatically and invalidates on config mtime changes; source bodies remain unpersisted.
 - Grammar: [harmony-contrib 0.3.0](https://github.com/harmony-contrib/tree-sitter-arkts), ABI 14, unchanged npm WASM bundled with its MIT notices. Consumer installation requires no native ArkTS addon. See [Asset provenance](grammars/README.md).
 
 ### Known limitations
@@ -337,11 +343,11 @@ Options are passed as the plugin row's `config` in the profile patch (defaults a
 
 ### How it works
 
-- **Index build** (`src/buildIndex.ts`): recursive scan (excludes applied), per-file tree-sitter extraction (`src/extract.ts`), JSON cache under `<repo>/.dsh-code-index/`, incremental refresh by mtime (only touched files re-parse).
+- **Index build & config resolution** (`src/buildIndex.ts`, `src/alias.ts`, `src/workspace.ts`): recursive scan (excludes applied), per-file tree-sitter extraction (`src/extract.ts`), lightweight alias & workspace manifest normalization (`tsconfig`/`jsconfig`/`package.json`/`oh-package.json5`/`pnpm-workspace.yaml`/`Cargo.toml`/`go.work`/`build-profile.json5`), JSON cache (schema 5) under `<repo>/.dsh-code-index/`, incremental refresh by source & config mtime (no source bodies persisted).
 - **Search** (`src/search.ts`): pure scoring — exact `1` / prefix `0.8` / substring `0.5`, export boost, name order tiebreak.
 - **Repo map** (`src/repomap.ts`): personalized PageRank over the import graph (teleport = per-file density share, so hub files that are themselves imported by other hubs rise above flat in-degree counting), seeded by the density-aware file score (class/interface/function weighted, test paths damped), top-N files, per-file symbol cap, hard char truncation.
-- **Call graph** (`src/refgraph.ts`): call sites extracted per file (per language, with their enclosing function) are resolved by name into callers and callees — `code_refs` exposes this directly, and `code_search` uses call fan-in as a ranking tie-break.
-- **Change context** (`src/change-context.ts`): maps Git hunks to stable symbols, then follows bounded provenance-labeled callers, import dependents, entry paths, impact, and likely affected tests without returning the whole repository.
+- **Call graph** (`src/refgraph.ts`): call sites extracted per file (per language, with their enclosing function) resolve through local scopes, configured aliases, and bounded barrel re-exports (`maxReexportDepth = 3`, cycle-guarded) into callers and callees — `code_refs` exposes this directly, and `code_search` uses call fan-in as a ranking tie-break.
+- **Change context & Review Brief** (`src/change-context.ts`, `src/review-brief.ts`, `src/test-leads.ts`): maps Git hunks to stable symbols, follows bounded provenance-labeled callers, import dependents (incl. reverse barrel chains), entry paths, cross-package summaries, changed import-cycle warnings, and deterministic static `commandLead` test suggestions without executing tests.
 - **ContextPack** (`src/context.ts`, `src/context-pack.ts`, `src/source-excerpts.ts`): ranks task candidates, reads ephemeral source evidence, selects a final DTO under text/JSON budgets, then renders only selected items.
 - **Health** (`src/health.ts`): Tarjan SCC over the import graph yields circular dependencies; orphan-module detection lists symbol-bearing files with no inbound or outbound imports (entry points and tests excluded).
 - **Workspace resolution**: each tool resolves the session cwd (`agent.session.header.cwd`) and walks up to the nearest `.git` (bounded — a directory without a repo marker is never indexed).

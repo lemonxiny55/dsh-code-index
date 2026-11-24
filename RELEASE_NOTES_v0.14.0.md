@@ -1,0 +1,12 @@
+# dsh-code-index v0.14.0
+
+**Real-Repo Precision & Verification Leads — trace aliased imports, barrel chains, verification leads, changed import cycles, and monorepo blast radius before AI edits.**
+
+This release upgrades static call/import precision and Review Brief diagnostics across TypeScript/JavaScript monorepos and HarmonyOS ArkTS projects while preserving every `exact` / `import-scoped` / `name-only` evidence contract and hard `300–20000` character budget:
+
+- **Config-Aware Path Aliases & Bounded Barrel Re-exports:** Resolves JSONC `tsconfig.json` / `jsconfig.json` (`extends`, `baseUrl`, `paths`), local `package.json#exports`, HarmonyOS `oh-package.json5` local relative dependencies, and `export { ... } from` / `export * from` chains (`maxReexportDepth = 3`, cycle-guarded) across `code_refs`, `code_change_context`, and `Review Brief`. Wildcard multi-matches downgrade strictly to `import-scoped` with `ambiguous-alias` gaps; third-party `node_modules` / `oh_modules` and `@ohos.*` / `@kit.*` remain ignored.
+- **Deterministic Verification Command Leads (`commandLead`):** Suggests narrow test commands in `Review Brief` from `package.json` (Vitest / Jest), `pyproject.toml` (pytest), `go.mod` / `go.work` (`go test`), and `Cargo.toml` (`cargo test`). Tests are **never** executed (`verification: "not-run"`); unrecognized setups stay empty with `verification-command-unavailable`. Under tight budgets, `commandLead` trims before core source or strong callers.
+- **Change-Scoped Cycle Warnings (`cycle-warning`):** Surfaces bounded Tarjan SCC warnings in `review` mode only when a changed file participates in an import cycle.
+- **Monorepo Cross-Package Impact & Schema v5:** Parses `pnpm-workspace.yaml`, `package.json#workspaces`, `Cargo.toml`, `go.work`, and HarmonyOS `build-profile.json5` to summarize `Cross-package impact` in `Review Brief` and `Impact X-Ray`, and bumps cache schema to `5` (config mtime invalidation + watcher hot refresh; no source bodies persisted).
+
+Analysis remains strictly indexed-static (`HEAD`/dirty metadata is non-atomic). This release candidate is verified locally via full TypeScript checks, unit/integration tests, production ESM/DTS/client builds, and clean tarball installation smoke (`pnpm release:smoke`); no new DSH Desktop UI or model-driven Agent run is claimed for `v0.14.0`. See [V0.14.0_PLAN.md](V0.14.0_PLAN.md) and [RELEASE_EVIDENCE_v0.14.0.md](RELEASE_EVIDENCE_v0.14.0.md).

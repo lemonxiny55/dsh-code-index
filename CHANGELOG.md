@@ -2,6 +2,15 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.14.0 — Real-Repo Precision & Verification Leads (prepared for release)
+
+- **Path Alias & Local Package Resolution:** Lightly parse repository-local `tsconfig.json` / `jsconfig.json` (JSONC comments and trailing commas, `extends`, `baseUrl`, `paths`), local relative `package.json#exports`, and HarmonyOS `oh-package.json5` local relative dependencies (`Index.ets` default entry), skipping `node_modules` / `oh_modules` and `@ohos.*` / `@kit.*` SDK namespaces. Multi-target wildcard aliases never guess: they downgrade strictly to `import-scoped` and emit `ambiguous-alias` in `gaps`.
+- **Bounded Barrel Re-export Traversal:** Traverse `export { ... } from` and `export * from` chains across `code_refs`, `code_change_context`, and `Review Brief` with `maxReexportDepth = 3` and cycle-safe `visited` guards. Named chains with a single target retain `exact` + deterministic `via` notes (e.g. `tsconfig-path+reexport(2)`); `export *` stays `import-scoped`.
+- **Verification Command Leads (`commandLead`):** Derive deterministic minimal-scope verification commands in `Review Brief` `Test Leads` from `package.json` (Vitest / Jest), `pyproject.toml` (pytest), `go.mod` / `go.work` (`go test`), and `Cargo.toml` (`cargo test`). Candidate tests are never executed (`verification: "not-run"`); unrecognized or conflicting runners remain omitted and report `verification-command-unavailable`.
+- **Change-Scoped Cycle Warnings (`cycle-warning`):** Reuse Tarjan SCC (`findCycles`) over the alias-aware module graph in `code_change_context(outputFormat: "review")`, surfacing bounded `cycle-warning` entries strictly for cycles touching changed files while suppressing unrelated repo cycles.
+- **Monorepo Cross-Package Impact:** Parse `pnpm-workspace.yaml`, `package.json#workspaces`, `Cargo.toml`, `go.work`, and HarmonyOS `build-profile.json5` into `dirPrefix -> packageName` boundaries; summarize `Cross-package impact` in `Review Brief` and `Impact X-Ray` (client validation updated).
+- **Cache Schema v5 & Hard Budget Priority:** Bump `REPO_INDEX_SCHEMA_VERSION` to `5` to rebuild legacy caches automatically (still persisting zero source text), track resolution/workspace config mtimes for incremental invalidation and chokidar live refresh, and trim optional `commandLead` / secondary summaries first under tight `300–20000` JS-char budgets without slicing source lines. Retain existing DSH peer dependency ranges.
+
 ## 0.13.0 — Review-Ready Context (prepared for release)
 
 - Expose exact symbol IDs in model-facing `code_symbols` results; clarify static caller direction, candidate-test and character-budget boundaries in the tool contract.
