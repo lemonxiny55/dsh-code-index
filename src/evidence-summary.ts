@@ -3,7 +3,7 @@ import type { ReferenceGraph, ResolutionLabel } from './refgraph.js'
 
 export interface EvidenceLocation { file: string; line: number; name?: string }
 export interface EvidenceGap {
-  kind: 'not-found' | 'unavailable' | 'budget' | 'index-incomplete' | 'selection-limit'
+  kind: 'not-found' | 'unavailable' | 'budget' | 'index-incomplete' | 'selection-limit' | 'ambiguous'
   code: string
   source: string
   file?: string
@@ -76,6 +76,22 @@ export function summarizeEvidence(index: RepoIndex, options: {
       result.unresolved = { count: unresolved.length, sites: unresolved.slice(0, 3),
         ...(unresolved.length > 3 ? { sitesOmitted: unresolved.length - 3 } : {}) }
       gaps.push({ kind: 'not-found', code: 'unresolved-call-targets', source: 'indexed-call-sites' })
+    }
+    const seedFiles = new Set(seeds.map((seed) => seed.file))
+    const ambiguousFiles = new Set<string>()
+    for (const seed of seeds) {
+      for (const edge of graph.incoming.get(seed.id) ?? []) {
+        if (edge.ambiguousAlias) ambiguousFiles.add(edge.callSite.file)
+      }
+      for (const edge of graph.outgoing.get(seed.id) ?? []) {
+        if (edge.ambiguousAlias) ambiguousFiles.add(edge.callSite.file)
+      }
+    }
+    for (const hit of graph.ambiguousAliases ?? []) {
+      if (seedFiles.has(hit.file)) ambiguousFiles.add(hit.file)
+    }
+    for (const file of [...ambiguousFiles].sort((a, b) => a.localeCompare(b))) {
+      gaps.push({ kind: 'ambiguous', code: 'ambiguous-alias', source: 'alias-resolution', file })
     }
   }
   if (gaps.length) result.gaps = [...new Map(gaps.map(gap => [JSON.stringify(gap), gap])).values()]

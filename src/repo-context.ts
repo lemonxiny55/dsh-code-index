@@ -2,6 +2,7 @@ import { realpath } from 'node:fs/promises'
 import type { Stats } from 'node:fs'
 import path from 'node:path'
 import chokidar, { type FSWatcher } from 'chokidar'
+import { isResolutionConfigPath } from './alias.js'
 import { buildIndexWithCache } from './buildIndex.js'
 import { DEFAULT_EXCLUDED_DIRS, isGitIgnoredPath, SUPPORTED_EXTS, type GitIgnoreMatcherCache } from './scan.js'
 import { cacheKeyForRoot } from './store.js'
@@ -175,7 +176,10 @@ export class RepoContextManager {
       const rel = path.relative(context.root, absolute).split(path.sep).join('/')
       if (!rel || ignoredRelativePath(rel, this.options.indexOptions())
         || isGitIgnoredPath(context.root, rel, context.ignoreMatcherCache)) return
-      if (!SUPPORTED_EXTS.has(path.extname(rel).toLowerCase())) return
+      if (
+        !SUPPORTED_EXTS.has(path.extname(rel).toLowerCase()) &&
+        !isResolutionConfigPath(rel, context.index?.resolution?.configFiles)
+      ) return
       context.dirtyFiles.add(rel)
       this.scheduleRefresh(context)
     })

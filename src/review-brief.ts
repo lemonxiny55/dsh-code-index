@@ -23,7 +23,7 @@ export interface ReviewChange extends SourceExcerpt {
 }
 export type ReviewRelation =
   | { kind: 'call'; name: string; file: string; line: number; depth: number; resolution: ResolutionLabel; via: ImpactHop }
-  | { kind: 'import'; file: string; changedFile: string; specifier: string; resolution: 'import-scoped' }
+  | { kind: 'import'; file: string; changedFile: string; specifier: string; resolution: 'import-scoped'; via?: string; ambiguousAlias?: boolean }
 interface ReviewBase {
   version: 1
   scope: 'indexed-static-only'
@@ -102,8 +102,8 @@ export function renderReviewBrief(brief: ReviewBrief): string {
       row.code ?? `Signature only (${row.sourceGap}): ${row.signature ?? ''}`)
   }
   for (const row of brief.relations) lines.push(row.kind === 'call'
-    ? `Potential impact: ${row.name} ${row.file}:${row.line} [path ${row.resolution}; depth ${row.depth}]; via ${row.via.callSite.file}:${row.via.callSite.line} [hop ${row.via.resolution}; ${row.via.reason}]`
-    : `Import dependent: ${row.file} -> ${row.changedFile} (${row.specifier}) [${row.resolution}]`)
+    ? `Potential impact: ${row.name} ${row.file}:${row.line} [path ${row.resolution}; depth ${row.depth}]; via ${row.via.callSite.file}:${row.via.callSite.line} [hop ${row.via.resolution}; ${row.via.reason}${row.via.via ? `; via: ${row.via.via}` : ''}]`
+    : `Import dependent: ${row.file} -> ${row.changedFile} (${row.specifier}) [${row.resolution}${row.via ? `; via: ${row.via}` : ''}]`)
   lines.push('Candidate tests: not-run; coverage not verified.')
   for (const row of brief.tests) lines.push(`Candidate: ${row.file} [${row.resolution}; ${row.reason}]`)
   for (const warning of brief.warnings) lines.push(`Warning: ${warning}`)
@@ -147,6 +147,9 @@ export async function buildReviewBrief(index: RepoIndex, change: ChangeContextRe
   if (indexStatus.unknown) upstreamGaps.add('parse-status-unknown')
   if (!change.changed.length) upstreamGaps.add('no-changed-symbols-in-analysis')
   if (!change.tests.length) upstreamGaps.add('no-test-candidates-in-analysis')
+  if (relations.some(row => row.kind === 'call' ? Boolean(row.via.ambiguousAlias) : Boolean(row.ambiguousAlias))) {
+    upstreamGaps.add('ambiguous-alias')
+  }
   if (change.changed.length > REVIEW_LIMITS.changes || relations.length > REVIEW_LIMITS.relations ||
     change.tests.length > REVIEW_LIMITS.tests || change.warnings.length > REVIEW_LIMITS.warnings) upstreamGaps.add('projection-row-cap')
   const brief: ReviewBriefV1 = { version: 1, status: 'bounded', scope: 'indexed-static-only', verification: 'not-run', repository,

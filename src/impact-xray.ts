@@ -1,7 +1,7 @@
 import type { ChangeContextResult, ImpactHop } from './change-context.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import { sourceReader } from './source-excerpts.js'
-import { resolveImport } from './repomap.js'
+import { resolveImportTargets } from './repomap.js'
 import { renderEvidenceSummary } from './evidence-summary.js'
 import { XRAY_LIMITS, type ImpactXray, type XrayNode, type XrayEvidence } from './impact-xray-model.js'
 export * from './impact-xray-model.js'
@@ -98,7 +98,7 @@ export async function buildImpactXray(index: RepoIndex, result: ChangeContextRes
   for (const row of result.tests.slice(0, 8)) {
     const file = files.get(row.file)
     const targets = row.reason === 'imports-changed-file' ? changedFiles : row.reason === 'imports-impact-file' ? impactFiles : new Set<string>()
-    const site = file?.importDetails?.find(i => { const target = resolveImport(i.specifier, row.file, fileSet); return target !== null && targets.has(target) })
+    const site = file?.importDetails?.find(i => resolveImportTargets(i.specifier, row.file, fileSet, index.resolution).some(target => targets.has(target)))
     const call = row.reason === 'references-symbol-name' ? file?.calls?.find(c => result.changed.some(s => s.symbol.name === c.name)) : undefined
     const line = site?.line ?? call?.line ?? 1
     const e = await evidence(row.file, line, site ? 'import-site' : 'test-lead')

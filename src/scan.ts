@@ -4,6 +4,7 @@ import { readFile, readdir, stat } from 'node:fs/promises'
 import { readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import ignore from 'ignore'
+import { CONFIG_BASENAMES } from './alias.js'
 import type { IndexOptions } from './types.js'
 
 export const DEFAULT_EXCLUDED_DIRS = [
@@ -115,17 +116,23 @@ export interface ScannedFile {
   mtimeMs: number
 }
 
+export interface ScanRepoResult {
+  files: ScannedFile[]
+  configFiles: ScannedFile[]
+}
+
 /**
- * Recursively walk `root` and return indexed files, skipping excluded dir
- * components at any depth. Uses readdir with `withFileTypes` so we never
- * stat every entry; mtime comes from a targeted stat per candidate file.
+ * Recursively walk `root` and return indexed source files alongside
+ * repository-local resolution config files (`tsconfig.json`, `jsconfig.json`,
+ * `package.json`, `oh-package.json5`) in a single traversal.
  */
-export async function scanRepo(
+export async function scanRepoWithConfigs(
   root: string,
   options: IndexOptions = {},
-): Promise<ScannedFile[]> {
+): Promise<ScanRepoResult> {
   const excluded = new Set([...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])])
-  const results: ScannedFile[] = []
+  const files: ScannedFile[] = []
+  const configFiles: ScannedFile[] = []
   const queue: Array<[string, string, IgnoreLayer[]]> = [[root, '', []]] // [absDir, relDir, inherited ignore files]
 
   while (queue.length) {
@@ -149,10 +156,15 @@ export async function scanRepo(
       if (entry.isDirectory()) {
         if (excluded.has(entry.name)) continue
         if (!ignoredByGitLayers(layers, rel, true)) queue.push([abs, rel, layers])
-      } else if (entry.isFile() && !ignoredByGitLayers(layers, rel, false) && SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())) {
+      } else if (entry.isFile() && !ignoredByGitLayers(layers, rel, false)) {
+        const isSource = SUPPORTED_EXTS.has(path.extname(entry.name).toLowerCase())
+        const isConfig = CONFIG_BASENAMES.has(entry.name)
+        if (!isSource && !isConfig) continue
         try {
           const st = await stat(abs)
-          results.push({ abs, rel, mtimeMs: st.mtimeMs })
+          const row: ScannedFile = { abs, rel, mtimeMs: st.mtimeMs }
+          if (isSource) files.push(row)
+          if (isConfig) configFiles.push(row)
         } catch {
           // race: file deleted mid-scan — ignore
         }
@@ -160,6 +172,19 @@ export async function scanRepo(
     }
   }
 
-  results.sort((a, b) => a.rel.localeCompare(b.rel))
-  return results
+  files.sort((a, b) => a.rel.localeCompare(b.rel))
+  configFiles.sort((a, b) => a.rel.localeCompare(b.rel))
+  return { files, configFiles }
+}
+
+/**
+ * Recursively walk `root` and return indexed files, skipping excluded dir
+ * components at any depth. Uses readdir with `withFileTypes` so we never
+ * stat every entry; mtime comes from a targeted stat per candidate file.
+ */
+export async function scanRepo(
+  root: string,
+  options: IndexOptions = {},
+): Promise<ScannedFile[]> {
+  return (await scanRepoWithConfigs(root, options)).files
 }

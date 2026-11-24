@@ -1,8 +1,8 @@
 /** Shared data model for dsh-code-index. */
 
 /** On-disk cache layout version. Bump when persisted graph/symbol shapes change. */
-// v4 invalidates pre-0.10.2 Rust signatures (visibility rendered as the name).
-export const REPO_INDEX_SCHEMA_VERSION = 4 as const
+// v5 adds lightweight path-alias resolution metadata and config mtimes (no source text).
+export const REPO_INDEX_SCHEMA_VERSION = 5 as const
 
 export type SymbolKind =
   | 'function'
@@ -121,6 +121,45 @@ export interface ParseDiagnostic {
   reason?: 'source-unavailable' | 'parser-failed'
 }
 
+export interface TrackedConfigFile {
+  /** Repo-relative POSIX path. */
+  path: string
+  mtimeMs: number
+}
+
+export interface TsConfigAliasScope {
+  /** Repo-relative directory containing the config ('' for repo root). */
+  scopeDir: string
+  kind: 'tsconfig' | 'jsconfig'
+  /** Repo-relative POSIX baseUrl directory ('' for repo root), if set. */
+  baseUrl?: string
+  /** Pattern -> repo-relative target templates (e.g. 'src/*'). */
+  paths: Record<string, string[]>
+}
+
+export interface PackageExportsScope {
+  dir: string
+  name: string
+  /** Export subpath ('.', './utils', './features/*') -> repo-relative target templates. */
+  exports: Record<string, string[]>
+}
+
+export interface OhPackageScope {
+  scopeDir: string
+  name?: string
+  /** Repo-relative entry file from `main`, if specified. */
+  main?: string
+  /** Local relative depName -> repo-relative target path (dir or file). */
+  dependencies: Record<string, string>
+}
+
+export interface ResolutionConfig {
+  configFiles: TrackedConfigFile[]
+  tsConfigs: TsConfigAliasScope[]
+  packageExports: PackageExportsScope[]
+  ohPackages: OhPackageScope[]
+}
+
 export interface RepoIndex {
   /** Persisted layout version; see {@link REPO_INDEX_SCHEMA_VERSION}. */
   schemaVersion: typeof REPO_INDEX_SCHEMA_VERSION
@@ -130,6 +169,8 @@ export interface RepoIndex {
   generatedAt: number
   files: IndexedFile[]
   excludedDirs: string[]
+  /** Lightweight path-alias and manifest rules (no source bodies persisted). */
+  resolution?: ResolutionConfig
 }
 
 export function symbolCount(index: RepoIndex): number {

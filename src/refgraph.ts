@@ -1,14 +1,19 @@
 /** Function-level call graph built from the cached index — pure, no IO. */
 
-import { resolveImport, resolveImportDetailed } from './repomap.js'
+import type { AliasVia } from './alias.js'
+import { resolveImportDetailed, resolveImportTargets, type ImportResolutionVia } from './repomap.js'
 import type {
   CallInfo,
   ImportBinding,
+  ImportInfo,
   IndexedFile,
   RepoIndex,
+  ResolutionConfig,
   SymbolId,
   SymbolInfo,
 } from './types.js'
+
+export const MAX_REEXPORT_DEPTH = 3
 
 /** name -> definitions; several when same-named symbols live in different files. */
 export function buildSymbolTable(index: RepoIndex): Map<string, SymbolInfo[]> {
@@ -31,6 +36,7 @@ export interface CallerHit {
   file: string
   line: number
   from: string
+  via?: string
 }
 
 /** One distinct symbol the queried function calls, with its first call line. */
@@ -39,6 +45,7 @@ export interface CalleeHit {
   line: number
   /** In-repo definitions matched by the callee name. */
   targets: SymbolInfo[]
+  via?: string
 }
 
 export interface SymbolRefs {
@@ -59,39 +66,71 @@ export function callerCounts(index: RepoIndex): Map<string, number> {
   return counts
 }
 
+/** Format deterministic resolution provenance notes without inventing numeric confidence. */
+export function formatResolutionVia(
+  via?: ImportResolutionVia | AliasVia,
+  reexportDepth = 0,
+): string | undefined {
+  const aliasPart =
+    via && via !== 'relative' && via !== 'suffix-fallback' ? via : undefined
+  if (aliasPart && reexportDepth > 0) return `${aliasPart}+reexport(${reexportDepth})`
+  if (aliasPart) return aliasPart
+  if (reexportDepth > 0) return `reexport(${reexportDepth})`
+  return undefined
+}
+
 /**
  * Resolve one symbol to its callers (call sites invoking it anywhere) and its
  * callees (calls made inside the definition, attributed by the extracted
- * enclosing-function name). Name-based, so it is a best-effort view: like-named
- * symbols are reported as candidates rather than guessed apart.
+ * enclosing-function name). Uses the provenance-labeled reference graph so
+ * path aliases and bounded barrel re-export chains resolve accurately.
  */
 export function symbolRefs(index: RepoIndex, symbol: string, limit = 200): SymbolRefs {
   const table = buildSymbolTable(index)
   const defs = table.get(symbol) ?? []
+  const graph = buildReferenceGraph(index)
 
   const callers: CallerHit[] = []
   const calleeFirstLine = new Map<string, number>()
-  const arktsTargets = new Map<string, SymbolInfo[]>()
-  const graph = index.files.some(file => file.lang === 'arkts') ? buildReferenceGraph(index) : null
-  const arktsEdgesBySite = new Map<string, ReferenceEdge[]>()
-  if (graph) for (const edge of [...graph.outgoing.values()].flat().concat(graph.moduleLevelEdges)) {
+  const calleeTargets = new Map<string, SymbolInfo[]>()
+  const calleeVia = new Map<string, string>()
+
+  const edgesBySite = new Map<string, ReferenceEdge[]>()
+  for (const edge of [...graph.outgoing.values()].flat().concat(graph.moduleLevelEdges)) {
     const key = `${edge.callSite.file}\u0000${edge.callSite.line}\u0000${edge.name}\u0000${edge.sourceId}`
-    const rows = arktsEdgesBySite.get(key) ?? []
-    rows.push(edge); arktsEdgesBySite.set(key, rows)
+    const rows = edgesBySite.get(key) ?? []
+    rows.push(edge)
+    edgesBySite.set(key, rows)
   }
+
   for (const file of index.files) {
     for (const call of file.calls ?? []) {
-      const resolved = file.lang === 'arkts' && graph
-        ? (arktsEdgesBySite.get(`${file.path}\u0000${call.line}\u0000${call.name}\u0000${call.fromId}`) ?? [])
-          .map(edge => graph.symbolsById.get(edge.targetId)!)
-        : null
-      if (resolved ? resolved.some(target => target.name === symbol) : call.name === symbol) {
-        callers.push({ file: file.path, line: call.line, from: call.from })
+      const siteEdges =
+        edgesBySite.get(`${file.path}\u0000${call.line}\u0000${call.name}\u0000${call.fromId}`) ?? []
+      const resolved = siteEdges.map((edge) => graph.symbolsById.get(edge.targetId)!).filter(Boolean)
+      const matchedCaller = resolved.some((target) => target.name === symbol)
+      const fallbackNameMatch = defs.length === 0 && file.lang !== 'arkts' && call.name === symbol
+      if (matchedCaller || fallbackNameMatch) {
+        const edgeVia = siteEdges.find((edge) => edge.via)?.via
+        callers.push({
+          file: file.path,
+          line: call.line,
+          from: call.from,
+          ...(edgeVia ? { via: edgeVia } : {}),
+        })
       }
-      if (call.from === symbol && !calleeFirstLine.has(call.name)) {
-        calleeFirstLine.set(call.name, call.line)
+      if (call.from === symbol) {
+        if (!calleeFirstLine.has(call.name)) {
+          calleeFirstLine.set(call.name, call.line)
+        }
+        const targets = resolved.length > 0 ? resolved : (file.lang === 'arkts' ? [] : (table.get(call.name) ?? []))
+        calleeTargets.set(
+          call.name,
+          dedupeSymbols([...(calleeTargets.get(call.name) ?? []), ...targets]),
+        )
+        const edgeVia = siteEdges.find((edge) => edge.via)?.via
+        if (edgeVia && !calleeVia.has(call.name)) calleeVia.set(call.name, edgeVia)
       }
-      if (call.from === symbol) arktsTargets.set(call.name, dedupeSymbols([...(arktsTargets.get(call.name) ?? []), ...(resolved ?? table.get(call.name) ?? [])]))
     }
   }
 
@@ -100,7 +139,15 @@ export function symbolRefs(index: RepoIndex, symbol: string, limit = 200): Symbo
   )
 
   const callees: CalleeHit[] = [...calleeFirstLine.entries()]
-    .map(([name, line]) => ({ name, line, targets: arktsTargets.get(name) ?? table.get(name) ?? [] }))
+    .map(([name, line]) => {
+      const via = calleeVia.get(name)
+      return {
+        name,
+        line,
+        targets: calleeTargets.get(name) ?? (table.get(name) ?? []),
+        ...(via ? { via } : {}),
+      }
+    })
     .sort((a, b) => a.line - b.line || a.name.localeCompare(b.name))
 
   return {
@@ -130,6 +177,14 @@ export type ResolutionProvenance =
   | 'resolved-import-module'
   | 'global-name'
 
+/** Record of a wildcard/alias specifier matching multiple indexed files. */
+export interface AmbiguousAliasHit {
+  file: string
+  specifier: string
+  candidates: string[]
+  via?: AliasVia
+}
+
 /** One resolved call edge; one row per candidate target. */
 export interface ReferenceEdge {
   /** Call's structural owner, or null for a module-level call. */
@@ -142,6 +197,10 @@ export interface ReferenceEdge {
   resolution: ResolutionLabel
   /** Total candidates produced at this tier (may exceed the emitted edges). */
   candidateCount: number
+  /** Deterministic path-alias / re-export chain explanation, when applicable. */
+  via?: string
+  /** True when any hop on this resolution hit an ambiguous wildcard alias. */
+  ambiguousAlias?: boolean
 }
 
 /** Adjacency views over the same edge set, plus ownerless call sites. */
@@ -153,6 +212,8 @@ export interface ReferenceGraph {
   incoming: Map<SymbolId, ReferenceEdge[]>
   /** Edges whose call site has no structural owner. */
   moduleLevelEdges: ReferenceEdge[]
+  /** Ambiguous alias/wildcard resolutions observed while building the graph. */
+  ambiguousAliases: AmbiguousAliasHit[]
 }
 
 export interface ReferenceGraphOptions {
@@ -164,8 +225,7 @@ const DEFAULT_MAX_CANDIDATES = 8
 
 /**
  * Build the provenance-labeled reference graph for an index. Pure: reads the
- * cached index only. Existing `code_refs` helpers above keep their name-based
- * behavior; this graph is the precise-by-provenance successor.
+ * cached index only.
  */
 export function buildReferenceGraph(
   index: RepoIndex,
@@ -174,7 +234,9 @@ export function buildReferenceGraph(
   const maxCandidates = options.maxCandidatesPerCall ?? DEFAULT_MAX_CANDIDATES
   const symbolsById = new Map<SymbolId, SymbolInfo>()
   const symbolsByFile = new Map<string, SymbolInfo[]>()
+  const filesByPath = new Map<string, IndexedFile>()
   for (const file of index.files) {
+    filesByPath.set(file.path, file)
     for (const symbol of file.symbols) symbolsById.set(symbol.id, symbol)
     symbolsByFile.set(file.path, file.symbols)
   }
@@ -184,16 +246,25 @@ export function buildReferenceGraph(
   const outgoing = new Map<SymbolId, ReferenceEdge[]>()
   const incoming = new Map<SymbolId, ReferenceEdge[]>()
   const moduleLevelEdges: ReferenceEdge[] = []
+  const ambiguousMap = new Map<string, AmbiguousAliasHit>()
+
+  const recordAmbiguous = (hit: AmbiguousAliasHit): void => {
+    const key = `${hit.file}\u0000${hit.specifier}`
+    if (!ambiguousMap.has(key)) ambiguousMap.set(key, hit)
+  }
 
   for (const file of index.files) {
     for (const call of file.calls ?? []) {
       const edges = resolveCallTargetsFor(
         fileSet,
+        filesByPath,
         file,
         call,
         symbolsByName,
         symbolsByFile,
+        index.resolution,
         maxCandidates,
+        recordAmbiguous,
       )
       if (edges.length === 0) continue
       if (call.fromId) {
@@ -205,18 +276,16 @@ export function buildReferenceGraph(
     }
   }
 
-  return { symbolsById, outgoing, incoming, moduleLevelEdges }
+  const ambiguousAliases = [...ambiguousMap.values()].sort(
+    (a, b) => a.file.localeCompare(b.file) || a.specifier.localeCompare(b.specifier),
+  )
+
+  return { symbolsById, outgoing, incoming, moduleLevelEdges, ambiguousAliases }
 }
 
 /**
  * Resolve one call site to zero or more target edges, stopping at the first
- * non-empty resolution tier (see §2 of the design):
- *
- * 1. provably-owned local candidate (recursion / directly-owned declaration)
- * 2. explicit imported binding (incl. an honest default-binding path)
- * 3. qualifier matched to a namespace/package import
- * 4. names declared in resolved imported modules
- * 5. repo-wide name candidates
+ * non-empty resolution tier.
  */
 export function resolveCallTargets(
   index: RepoIndex,
@@ -226,42 +295,353 @@ export function resolveCallTargets(
   maxCandidates = DEFAULT_MAX_CANDIDATES,
 ): ReferenceEdge[] {
   const fileSet = new Set(index.files.map((f) => f.path))
+  const filesByPath = new Map(index.files.map((f) => [f.path, f]))
   const symbolsByFile = new Map(index.files.map((f) => [f.path, f.symbols]))
-  return resolveCallTargetsFor(fileSet, file, call, symbolsByName, symbolsByFile, maxCandidates)
+  return resolveCallTargetsFor(
+    fileSet,
+    filesByPath,
+    file,
+    call,
+    symbolsByName,
+    symbolsByFile,
+    index.resolution,
+    maxCandidates,
+  )
+}
+
+interface ExportedMatch {
+  symbol: SymbolInfo
+  reexportDepth: number
+  exactEligible: boolean
+  ambiguousAlias: boolean
+  aliasVia?: AliasVia
+}
+
+function isWildcardReexport(info: ImportInfo): boolean {
+  return (
+    info.kind === 'reexport' &&
+    (info.bindings.length === 0 || info.bindings.some((b) => b.kind === 'glob'))
+  )
+}
+
+function isExportedCandidate(def: SymbolInfo, fromFile: IndexedFile, targetPath: string): boolean {
+  if (fromFile.lang !== 'arkts' && !targetPath.endsWith('.ets')) return true
+  return def.exported && def.scope.length === 0
+}
+
+/**
+ * Follow barrel re-exports (`export { ... } from` and `export * from`) up to
+ * `MAX_REEXPORT_DEPTH = 3`, using `visited` to prevent infinite loops on cycles.
+ */
+function resolveExportedSymbols(
+  modulePath: string,
+  wantedName: string,
+  isDefault: boolean,
+  fromFile: IndexedFile,
+  fileSet: Set<string>,
+  filesByPath: Map<string, IndexedFile>,
+  symbolsByName: Map<string, SymbolInfo[]>,
+  symbolsByFile: Map<string, SymbolInfo[]>,
+  resolution: ResolutionConfig | undefined,
+  depth: number,
+  visited: Set<string>,
+  inheritedAliasVia: AliasVia | undefined,
+  inheritedAmbiguous: boolean,
+  onAmbiguous?: (hit: AmbiguousAliasHit) => void,
+): ExportedMatch[] {
+  const visitKey = `${modulePath}\u0000${isDefault ? '<default>' : wantedName}`
+  if (visited.has(visitKey)) return []
+  visited.add(visitKey)
+
+  try {
+    // Direct definitions in `modulePath`
+    const directMatches: ExportedMatch[] = []
+    if (isDefault) {
+      const moduleSymbols = symbolsByFile.get(modulePath) ?? []
+      const nameMatches = moduleSymbols.filter(
+        (s) => s.name === wantedName && isExportedCandidate(s, fromFile, modulePath),
+      )
+      for (const symbol of nameMatches) {
+        directMatches.push({
+          symbol,
+          reexportDepth: depth,
+          exactEligible: false,
+          ambiguousAlias: inheritedAmbiguous,
+          aliasVia: inheritedAliasVia,
+        })
+      }
+      if (directMatches.length > 0) return directMatches
+    } else {
+      for (const def of symbolsByName.get(wantedName) ?? []) {
+        if (def.file === modulePath && isExportedCandidate(def, fromFile, modulePath)) {
+          directMatches.push({
+            symbol: def,
+            reexportDepth: depth,
+            exactEligible: !inheritedAmbiguous,
+            ambiguousAlias: inheritedAmbiguous,
+            aliasVia: inheritedAliasVia,
+          })
+        }
+      }
+      if (directMatches.length > 0) return directMatches
+    }
+
+    // Stop traversing once hard re-export depth cap is reached.
+    if (depth >= MAX_REEXPORT_DEPTH) {
+      if (isDefault) {
+        const moduleSymbols = symbolsByFile.get(modulePath) ?? []
+        return moduleSymbols.filter((s) => s.exported).map((symbol) => ({
+          symbol,
+          reexportDepth: depth,
+          exactEligible: false,
+          ambiguousAlias: inheritedAmbiguous,
+          aliasVia: inheritedAliasVia,
+        }))
+      }
+      return []
+    }
+
+    const moduleFile = filesByPath.get(modulePath)
+    if (!moduleFile) return []
+    const reexports = (moduleFile.importDetails ?? []).filter((info) => info.kind === 'reexport')
+    if (reexports.length === 0) {
+      if (isDefault) {
+        const moduleSymbols = symbolsByFile.get(modulePath) ?? []
+        return moduleSymbols.filter((s) => s.exported).map((symbol) => ({
+          symbol,
+          reexportDepth: depth,
+          exactEligible: false,
+          ambiguousAlias: inheritedAmbiguous,
+          aliasVia: inheritedAliasVia,
+        }))
+      }
+      return []
+    }
+
+    const targetName = isDefault ? 'default' : wantedName
+    const namedHits: ExportedMatch[] = []
+
+    // Named re-exports: `export { a as b } from ...`, `export { default as Foo } from ...`, `export { x as default } from ...`
+    for (const re of reexports) {
+      if (isWildcardReexport(re)) continue
+      for (const binding of re.bindings) {
+        if (binding.local !== targetName) continue
+        if (!binding.imported || binding.imported === '*') continue
+        const nextIsDefault = binding.imported === 'default'
+        const nextWanted = nextIsDefault ? wantedName : binding.imported
+
+        const resolved = resolveImportDetailed(re.specifier, modulePath, fileSet, resolution)
+        const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+        if (targets.length === 0) continue
+
+        if (resolved.ambiguous) {
+          onAmbiguous?.({
+            file: modulePath,
+            specifier: re.specifier,
+            candidates: targets,
+            via: toAliasVia(resolved.via),
+          })
+        }
+
+        const hopAlias = inheritedAliasVia ?? toAliasVia(resolved.via)
+        const hopAmbiguous = inheritedAmbiguous || Boolean(resolved.ambiguous)
+        const hopExactOk = !resolved.suffixSkipped && !resolved.ambiguous && !nextIsDefault
+
+        for (const nextModule of targets) {
+          const nested = resolveExportedSymbols(
+            nextModule,
+            nextWanted,
+            nextIsDefault,
+            fromFile,
+            fileSet,
+            filesByPath,
+            symbolsByName,
+            symbolsByFile,
+            resolution,
+            depth + 1,
+            visited,
+            hopAlias,
+            hopAmbiguous,
+            onAmbiguous,
+          )
+          for (const hit of nested) {
+            namedHits.push({
+              ...hit,
+              exactEligible: hit.exactEligible && hopExactOk,
+            })
+          }
+        }
+      }
+    }
+    if (namedHits.length > 0) return namedHits
+
+    // Wildcard re-exports (`export * from ...`): never forward `default` and never claim `exact`.
+    if (isDefault) {
+      const moduleSymbols = symbolsByFile.get(modulePath) ?? []
+      return moduleSymbols.filter((s) => s.exported).map((symbol) => ({
+        symbol,
+        reexportDepth: depth,
+        exactEligible: false,
+        ambiguousAlias: inheritedAmbiguous,
+        aliasVia: inheritedAliasVia,
+      }))
+    }
+    const wildcardHits: ExportedMatch[] = []
+    for (const re of reexports) {
+      if (!isWildcardReexport(re)) continue
+      const resolved = resolveImportDetailed(re.specifier, modulePath, fileSet, resolution)
+      const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+      if (targets.length === 0) continue
+      if (resolved.ambiguous) {
+        onAmbiguous?.({
+          file: modulePath,
+          specifier: re.specifier,
+          candidates: targets,
+          via: toAliasVia(resolved.via),
+        })
+      }
+      const hopAlias = inheritedAliasVia ?? toAliasVia(resolved.via)
+      const hopAmbiguous = inheritedAmbiguous || Boolean(resolved.ambiguous)
+      for (const nextModule of targets) {
+        const nested = resolveExportedSymbols(
+          nextModule,
+          wantedName,
+          false,
+          fromFile,
+          fileSet,
+          filesByPath,
+          symbolsByName,
+          symbolsByFile,
+          resolution,
+          depth + 1,
+          visited,
+          hopAlias,
+          hopAmbiguous,
+          onAmbiguous,
+        )
+        for (const hit of nested) {
+          wildcardHits.push({
+            ...hit,
+            exactEligible: false, // wildcard barrel traversal always stays import-scoped
+          })
+        }
+      }
+    }
+    return wildcardHits
+  } finally {
+    visited.delete(visitKey)
+  }
+}
+
+function toAliasVia(via: ImportResolutionVia | undefined): AliasVia | undefined {
+  return via && via !== 'relative' && via !== 'suffix-fallback' ? via : undefined
+}
+
+function resolveReexportModuleClosure(
+  startModules: readonly string[],
+  fileSet: Set<string>,
+  filesByPath: Map<string, IndexedFile>,
+  resolution: ResolutionConfig | undefined,
+  initialAliasVia: AliasVia | undefined,
+  initialAmbiguous: boolean,
+  onAmbiguous?: (hit: AmbiguousAliasHit) => void,
+): Map<string, { depth: number; aliasVia?: AliasVia; ambiguousAlias: boolean }> {
+  const visited = new Map<string, { depth: number; aliasVia?: AliasVia; ambiguousAlias: boolean }>()
+  const queue: Array<{ path: string; depth: number; aliasVia?: AliasVia; ambiguousAlias: boolean }> =
+    startModules.map((p) => ({
+      path: p,
+      depth: 0,
+      aliasVia: initialAliasVia,
+      ambiguousAlias: initialAmbiguous,
+    }))
+
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    const prev = visited.get(current.path)
+    if (prev && prev.depth <= current.depth) continue
+    visited.set(current.path, {
+      depth: current.depth,
+      aliasVia: current.aliasVia,
+      ambiguousAlias: current.ambiguousAlias,
+    })
+    if (current.depth >= MAX_REEXPORT_DEPTH) continue
+
+    const file = filesByPath.get(current.path)
+    if (!file) continue
+    for (const re of file.importDetails ?? []) {
+      if (re.kind !== 'reexport') continue
+      const resolved = resolveImportDetailed(re.specifier, current.path, fileSet, resolution)
+      const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+      if (targets.length === 0) continue
+      if (resolved.ambiguous) {
+        onAmbiguous?.({
+          file: current.path,
+          specifier: re.specifier,
+          candidates: targets,
+          via: toAliasVia(resolved.via),
+        })
+      }
+      const nextAlias = current.aliasVia ?? toAliasVia(resolved.via)
+      const nextAmbiguous = current.ambiguousAlias || Boolean(resolved.ambiguous)
+      for (const nextPath of targets) {
+        queue.push({
+          path: nextPath,
+          depth: current.depth + 1,
+          aliasVia: nextAlias,
+          ambiguousAlias: nextAmbiguous,
+        })
+      }
+    }
+  }
+  return visited
 }
 
 function resolveCallTargetsFor(
   fileSet: Set<string>,
+  filesByPath: Map<string, IndexedFile>,
   file: IndexedFile,
   call: CallInfo,
   symbolsByName: Map<string, SymbolInfo[]>,
   symbolsByFile: Map<string, SymbolInfo[]>,
+  resolution: ResolutionConfig | undefined,
   maxCandidates: number,
+  onAmbiguous?: (hit: AmbiguousAliasHit) => void,
 ): ReferenceEdge[] {
   const named = symbolsByName.get(call.name) ?? []
   const qualified = call.qualifier !== null
   // Re-exports do not bind names in this module; only genuine imports can
-  // target a call (§2 — re-export chains cannot claim exact).
+  // target a call (§2 — finding #6).
   const imports = (file.importDetails ?? []).filter((info) => info.kind !== 'reexport')
 
   // Bare calls only: a qualified call names a member of its receiver, so a
   // same-named local or import binding must not capture it.
   if (!qualified) {
-    // Tier 1 — a same-file symbol whose scope encloses this call site. `exact`
-    // needs provable ownership: a parameter or local the index cannot see may
-    // shadow any other name, including a module-level sibling.
-    const locals = named.filter((s) => s.file === file.path && lexicallyVisible(s, call)
-      && (call.context !== 'arkui' || s.signature.startsWith('struct ') || s.decorators?.some(text => /^@Builder\b/.test(text))))
+    // Tier 1 — same-file enclosing/local candidate.
+    const locals = named.filter(
+      (s) =>
+        s.file === file.path &&
+        lexicallyVisible(s, call) &&
+        (call.context !== 'arkui' ||
+          s.signature.startsWith('struct ') ||
+          s.decorators?.some((text) => /^@Builder\b/.test(text))),
+    )
     if (locals.length > 0) {
       const unique = locals.length === 1
       const owned = unique && isStructuralOwner(call, locals[0]!)
       const provenance: ResolutionProvenance =
         owned && call.fromId !== null ? 'structural-owner' : 'local-unique'
-      return toEdges(locals, call, file.path, provenance, owned ? 'exact' : 'name-only', maxCandidates)
+      return toEdges(
+        locals,
+        call,
+        file.path,
+        provenance,
+        owned ? 'exact' : 'name-only',
+        maxCandidates,
+      )
     }
 
-    // Tier 2 — explicit imported binding (`import { foo } from './x'`).
-    const bound: SymbolInfo[] = []
+    // Tier 2 — explicit imported binding (`import { foo } from './x'` or `@/barrel`).
+    const boundMatches: ExportedMatch[] = []
     let directBinding = true
     let defaultBinding = false
     for (const info of imports) {
@@ -269,84 +649,258 @@ function resolveCallTargetsFor(
         if (binding.local !== call.name) continue
         const isDefault = binding.kind === 'default' || binding.imported === 'default'
         if (!isDefault && !isExplicitBinding(binding)) continue
-        const resolved = resolveImportDetailed(info.specifier, file.path, fileSet)
-        const target = resolved.target
-        if (!target) continue
+
+        const resolved = resolveImportDetailed(info.specifier, file.path, fileSet, resolution)
+        const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+        if (targets.length === 0) continue
+
         if (resolved.suffixSkipped) directBinding = false
-        if (isDefault) {
-          // `import x from './m'` binds a default export the index cannot name;
-          // an alias match against the module's symbols is the only honest
-          // target, else the module's exported set — and never `exact`.
-          defaultBinding = true
-          const moduleSymbols = symbolsByFile.get(target) ?? []
-          const nameMatches = moduleSymbols.filter((s) => s.name === binding.local)
-          bound.push(
-            ...(nameMatches.length > 0 ? nameMatches : moduleSymbols.filter((s) => s.exported)),
-          )
-          continue
+        if (resolved.ambiguous) {
+          directBinding = false
+          onAmbiguous?.({
+            file: file.path,
+            specifier: info.specifier,
+            candidates: targets,
+            via: toAliasVia(resolved.via),
+          })
         }
-        if (!isExplicitBinding(binding)) continue
-        for (const def of symbolsByName.get(binding.imported) ?? []) {
-          if (def.file === target && (file.lang !== 'arkts' && !target.endsWith('.ets') || def.exported && def.scope.length === 0)) bound.push(def)
+        if (isDefault) defaultBinding = true
+
+        const aliasVia = toAliasVia(resolved.via)
+        const wantedName = isDefault ? binding.local : binding.imported!
+
+        for (const target of targets) {
+          const hits = resolveExportedSymbols(
+            target,
+            wantedName,
+            isDefault,
+            file,
+            fileSet,
+            filesByPath,
+            symbolsByName,
+            symbolsByFile,
+            resolution,
+            0,
+            new Set(),
+            aliasVia,
+            Boolean(resolved.ambiguous),
+            onAmbiguous,
+          )
+          boundMatches.push(...hits)
         }
       }
     }
-    if (bound.length > 0) {
+    if (boundMatches.length > 0) {
+      const uniqueSymbols = dedupeSymbols(boundMatches.map((m) => m.symbol))
+      const bestById = new Map<SymbolId, ExportedMatch>()
+      for (const match of boundMatches) {
+        const prev = bestById.get(match.symbol.id)
+        if (
+          !prev ||
+          (match.exactEligible && !prev.exactEligible) ||
+          match.reexportDepth < prev.reexportDepth
+        ) {
+          bestById.set(match.symbol.id, match)
+        }
+      }
+      const allExactEligible = boundMatches.every((m) => m.exactEligible && !m.ambiguousAlias)
+      const anyAmbiguous = boundMatches.some((m) => m.ambiguousAlias)
       const label: ResolutionLabel =
-        bound.length === 1 && directBinding && !defaultBinding ? 'exact' : 'import-scoped'
-      return toEdges(bound, call, file.path, 'explicit-import-binding', label, maxCandidates)
+        uniqueSymbols.length === 1 &&
+        directBinding &&
+        !defaultBinding &&
+        allExactEligible &&
+        !anyAmbiguous
+          ? 'exact'
+          : 'import-scoped'
+
+      const viaById = new Map<SymbolId, { via?: string; ambiguousAlias?: boolean }>()
+      for (const [id, match] of bestById) {
+        const via = formatResolutionVia(match.aliasVia, match.reexportDepth)
+        viaById.set(id, {
+          ...(via ? { via } : {}),
+          ...(match.ambiguousAlias ? { ambiguousAlias: true } : {}),
+        })
+      }
+      return toEdgesWithMeta(
+        uniqueSymbols,
+        call,
+        file.path,
+        'explicit-import-binding',
+        label,
+        maxCandidates,
+        viaById,
+      )
     }
 
     // Built-ins must not acquire same-named definitions through a module
     // import or a repo-wide lookup when there is no local/explicit binding.
     if (call.context === 'arkui') return []
 
-    // Tier 4 — the name exists in a module this file imports, binding or not.
-    const resolvedModules = new Set<string>()
+    // Tier 4 — the name exists in a module this file imports (or its barrel chain).
+    const moduleEntries = new Map<
+      string,
+      { depth: number; aliasVia?: AliasVia; ambiguousAlias: boolean }
+    >()
     for (const info of imports) {
-      const target = resolveImport(info.specifier, file.path, fileSet)
-      if (target && target !== file.path) resolvedModules.add(target)
+      const resolved = resolveImportDetailed(info.specifier, file.path, fileSet, resolution)
+      const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+      if (targets.length === 0) continue
+      if (resolved.ambiguous) {
+        onAmbiguous?.({
+          file: file.path,
+          specifier: info.specifier,
+          candidates: targets,
+          via: toAliasVia(resolved.via),
+        })
+      }
+      const closure = resolveReexportModuleClosure(
+        targets,
+        fileSet,
+        filesByPath,
+        resolution,
+        toAliasVia(resolved.via),
+        Boolean(resolved.ambiguous),
+        onAmbiguous,
+      )
+      for (const [modPath, meta] of closure) {
+        if (modPath === file.path) continue
+        const prev = moduleEntries.get(modPath)
+        if (!prev || meta.depth < prev.depth) moduleEntries.set(modPath, meta)
+      }
     }
-    const imported = named.filter((s) => resolvedModules.has(s.file))
+    const imported = named.filter((s) => moduleEntries.has(s.file))
     if (imported.length > 0) {
-      return toEdges(
+      const viaById = new Map<SymbolId, { via?: string; ambiguousAlias?: boolean }>()
+      for (const sym of imported) {
+        const meta = moduleEntries.get(sym.file)!
+        const via = formatResolutionVia(meta.aliasVia, meta.depth)
+        viaById.set(sym.id, {
+          ...(via ? { via } : {}),
+          ...(meta.ambiguousAlias ? { ambiguousAlias: true } : {}),
+        })
+      }
+      return toEdgesWithMeta(
         imported,
         call,
         file.path,
         'resolved-import-module',
         'import-scoped',
         maxCandidates,
+        viaById,
       )
     }
   }
 
-  // Tier 3 — `ns.foo()` where `ns` is a namespace/package import. A qualifier
-  // must be an actual namespace/package binding; only a record that carries no
-  // binding at all (e.g. a C/C++ include) may infer it from the path segment,
-  // and even then it never elevates above `import-scoped`.
+  // Tier 3 — `ns.foo()` where `ns` is a namespace/package import.
   if (qualified) {
     const qualifier = call.qualifier!
-    const modules = new Set<string>()
+    const matchedModules = new Map<
+      string,
+      { depth: number; aliasVia?: AliasVia; ambiguousAlias: boolean }
+    >()
     for (const info of imports) {
       const namespaceBound = info.bindings.some(
         (b) => (b.kind === 'namespace' || b.kind === 'package') && b.local === qualifier,
       )
-      if (!namespaceBound) {
+      const reexportNamespaceBound =
+        !namespaceBound && info.bindings.some((b) => b.kind === 'named' && b.local === qualifier)
+      if (!namespaceBound && !reexportNamespaceBound) {
         if (info.bindings.length > 0) continue
         if (specifierLastSegment(info.specifier) !== qualifier) continue
       }
-      const target = resolveImport(info.specifier, file.path, fileSet)
-      if (target && target !== file.path) modules.add(target)
+
+      const resolved = resolveImportDetailed(info.specifier, file.path, fileSet, resolution)
+      const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+      if (targets.length === 0) continue
+      if (resolved.ambiguous) {
+        onAmbiguous?.({
+          file: file.path,
+          specifier: info.specifier,
+          candidates: targets,
+          via: toAliasVia(resolved.via),
+        })
+      }
+
+      const initialAlias = toAliasVia(resolved.via)
+      const initialAmbiguous = Boolean(resolved.ambiguous)
+
+      if (reexportNamespaceBound) {
+        const namedBinding = info.bindings.find(
+          (b) => b.kind === 'named' && b.local === qualifier,
+        )!
+        const startTargets: string[] = []
+        let depthBump = 0
+        for (const barrelPath of targets) {
+          const barrelFile = filesByPath.get(barrelPath)
+          for (const re of barrelFile?.importDetails ?? []) {
+            if (re.kind !== 'reexport') continue
+            const nsRe = re.bindings.find(
+              (b) => b.kind === 'namespace' && b.local === namedBinding.imported,
+            )
+            if (!nsRe) continue
+            for (const next of resolveImportTargets(re.specifier, barrelPath, fileSet, resolution)) {
+              startTargets.push(next)
+              depthBump = 1
+            }
+          }
+        }
+        if (startTargets.length === 0) continue
+        const closure = resolveReexportModuleClosure(
+          startTargets,
+          fileSet,
+          filesByPath,
+          resolution,
+          initialAlias,
+          initialAmbiguous,
+          onAmbiguous,
+        )
+        for (const [modPath, meta] of closure) {
+          if (modPath === file.path) continue
+          const prev = matchedModules.get(modPath)
+          const totalDepth = Math.min(MAX_REEXPORT_DEPTH, meta.depth + depthBump)
+          if (!prev || totalDepth < prev.depth) {
+            matchedModules.set(modPath, { ...meta, depth: totalDepth })
+          }
+        }
+        continue
+      }
+
+      const closure = resolveReexportModuleClosure(
+        targets,
+        fileSet,
+        filesByPath,
+        resolution,
+        initialAlias,
+        initialAmbiguous,
+        onAmbiguous,
+      )
+      for (const [modPath, meta] of closure) {
+        if (modPath === file.path) continue
+        const prev = matchedModules.get(modPath)
+        if (!prev || meta.depth < prev.depth) matchedModules.set(modPath, meta)
+      }
     }
-    const qualifiedTargets = named.filter((s) => modules.has(s.file))
+
+    const qualifiedTargets = named.filter((s) => matchedModules.has(s.file))
     if (qualifiedTargets.length > 0) {
-      return toEdges(
+      const viaById = new Map<SymbolId, { via?: string; ambiguousAlias?: boolean }>()
+      for (const sym of qualifiedTargets) {
+        const meta = matchedModules.get(sym.file)!
+        const via = formatResolutionVia(meta.aliasVia, meta.depth)
+        viaById.set(sym.id, {
+          ...(via ? { via } : {}),
+          ...(meta.ambiguousAlias ? { ambiguousAlias: true } : {}),
+        })
+      }
+      return toEdgesWithMeta(
         qualifiedTargets,
         call,
         file.path,
         'namespace-import',
         'import-scoped',
         maxCandidates,
+        viaById,
       )
     }
   }
@@ -367,18 +921,35 @@ function toEdges(
   resolution: ResolutionLabel,
   maxCandidates: number,
 ): ReferenceEdge[] {
+  return toEdgesWithMeta(candidates, call, filePath, provenance, resolution, maxCandidates)
+}
+
+function toEdgesWithMeta(
+  candidates: SymbolInfo[],
+  call: CallInfo,
+  filePath: string,
+  provenance: ResolutionProvenance,
+  resolution: ResolutionLabel,
+  maxCandidates: number,
+  metaById?: Map<SymbolId, { via?: string; ambiguousAlias?: boolean }>,
+): ReferenceEdge[] {
   const unique = dedupeSymbols(candidates)
   const count = unique.length
   const cap = maxCandidates > 0 ? Math.floor(maxCandidates) : 0
-  return unique.slice(0, cap).map((target) => ({
-    sourceId: call.fromId,
-    targetId: target.id,
-    callSite: { file: filePath, line: call.line },
-    name: call.name,
-    provenance,
-    resolution,
-    candidateCount: count,
-  }))
+  return unique.slice(0, cap).map((target) => {
+    const meta = metaById?.get(target.id)
+    return {
+      sourceId: call.fromId,
+      targetId: target.id,
+      callSite: { file: filePath, line: call.line },
+      name: call.name,
+      provenance,
+      resolution,
+      candidateCount: count,
+      ...(meta?.via ? { via: meta.via } : {}),
+      ...(meta?.ambiguousAlias ? { ambiguousAlias: true } : {}),
+    }
+  })
 }
 
 function appendEdges(

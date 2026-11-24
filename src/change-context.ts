@@ -10,9 +10,15 @@
  */
 
 import path from 'node:path'
-import { buildReferenceGraph, type ResolutionLabel, type ResolutionProvenance } from './refgraph.js'
+import {
+  buildReferenceGraph,
+  formatResolutionVia,
+  MAX_REEXPORT_DEPTH,
+  type ResolutionLabel,
+  type ResolutionProvenance,
+} from './refgraph.js'
 import { buildModuleGraph } from './health.js'
-import { resolveImport } from './repomap.js'
+import { resolveImportDetailed, resolveImportTargets } from './repomap.js'
 import { extractAll, languageForFile } from './extract.js'
 import {
   parseUnifiedDiff,
@@ -54,6 +60,8 @@ export interface ImpactHop {
   callSite: { file: string; line: number }
   resolution: ResolutionLabel
   reason: ResolutionProvenance
+  via?: string
+  ambiguousAlias?: boolean
 }
 
 export interface ImpactRow {
@@ -75,6 +83,8 @@ export interface ImportDependent {
   changedFile: string
   specifier: string
   resolution: 'import-scoped'
+  via?: string
+  ambiguousAlias?: boolean
 }
 
 export interface AffectedTest {
@@ -426,7 +436,7 @@ export async function buildChangeContext(
   }
   allPaths.sort(comparePaths)
 
-  // Import dependents: reverse module-graph edges of each changed file.
+  // Import dependents: reverse module-graph edges of each changed file (incl. alias & barrel re-exports).
   const importDependents = collectImportDependents(index, moduleGraph, fileSet, changedFiles)
 
   // Likely affected tests.
@@ -436,6 +446,7 @@ export async function buildChangeContext(
     changedFiles,
     changedSymbols,
     [...allCallers, ...allImpact],
+    importDependents,
   )
 
   const truncated = {
@@ -468,6 +479,32 @@ export async function buildChangeContext(
     kind: entry.reason === 'base-content-unavailable' ? 'unavailable' : 'not-found', code: entry.reason,
     source: entry.reason === 'base-content-unavailable' ? 'baseline-content' : 'diff-symbol-mapping', file: entry.file, side: entry.side,
   })
+  const ambiguousFiles = new Set<string>()
+  for (const row of [...result.directCallers, ...result.impact]) {
+    if (row.via.ambiguousAlias) ambiguousFiles.add(row.via.callSite.file)
+  }
+  for (const pathRow of result.paths) {
+    for (const hop of pathRow.hops) {
+      if (hop.ambiguousAlias) ambiguousFiles.add(hop.callSite.file)
+    }
+  }
+  for (const dependent of result.importDependents) {
+    if (dependent.ambiguousAlias) ambiguousFiles.add(dependent.file)
+  }
+  const relevantFiles = new Set<string>([
+    ...changedFiles,
+    ...result.directCallers.map((r) => r.symbol.file),
+    ...result.importDependents.map((d) => d.file),
+    ...result.tests.map((t) => t.file),
+  ])
+  for (const hit of graph.ambiguousAliases) {
+    if (relevantFiles.has(hit.file) || hit.candidates.some((c) => changedFiles.has(c))) {
+      ambiguousFiles.add(hit.file)
+    }
+  }
+  for (const file of [...ambiguousFiles].sort((a, b) => a.localeCompare(b))) {
+    gaps.push({ kind: 'ambiguous', code: 'ambiguous-alias', source: 'alias-resolution', file })
+  }
   result.evidence = summarizeEvidence(index, { graph, basis: 'change-analysis',
     seeds: changedSymbols.filter(row => row.side === 'current').map(row => row.symbol),
     resolutions: [...result.directCallers, ...result.impact, ...result.importDependents, ...result.paths].map(row => row.resolution),
@@ -481,6 +518,8 @@ function hopOf(edge: {
   callSite: { file: string; line: number }
   resolution: ResolutionLabel
   provenance: ResolutionProvenance
+  via?: string
+  ambiguousAlias?: boolean
 }): ImpactHop {
   return {
     fromId: edge.sourceId,
@@ -488,6 +527,8 @@ function hopOf(edge: {
     callSite: edge.callSite,
     resolution: edge.resolution,
     reason: edge.provenance,
+    ...(edge.via ? { via: edge.via } : {}),
+    ...(edge.ambiguousAlias ? { ambiguousAlias: true } : {}),
   }
 }
 
@@ -707,17 +748,63 @@ function collectImportDependents(
   // every file's imports against a set that still contains those paths — one
   // pass total, not one pass per changed file.
   const augmented = new Set([...fileSet, ...changedFiles])
+
+  interface BarrelExposure {
+    depth: number
+    exportedNames: Set<string> | '*'
+    aliasVia?: 'tsconfig-path' | 'tsconfig-baseurl' | 'package-exports' | 'oh-package'
+    ambiguousAlias: boolean
+  }
+
+  interface ReverseReexportEdge {
+    barrelFile: string
+    exportedBindings: Array<{ imported: string; local: string }> | '*'
+    aliasVia?: 'tsconfig-path' | 'tsconfig-baseurl' | 'package-exports' | 'oh-package'
+    ambiguousAlias: boolean
+  }
+
+  const reverseReexports = new Map<string, ReverseReexportEdge[]>()
+  for (const file of index.files) {
+    for (const info of file.importDetails ?? []) {
+      if (info.kind !== 'reexport') continue
+      const resolved = resolveImportDetailed(info.specifier, file.path, augmented, index.resolution)
+      const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+      if (targets.length === 0) continue
+      const aliasVia =
+        resolved.via && resolved.via !== 'relative' && resolved.via !== 'suffix-fallback'
+          ? resolved.via
+          : undefined
+      const wildcard =
+        info.bindings.length === 0 || info.bindings.some((b) => b.kind === 'glob')
+      const exportedBindings: ReverseReexportEdge['exportedBindings'] = wildcard
+        ? '*'
+        : info.bindings
+            .filter((b) => b.imported && b.imported !== '*')
+            .map((b) => ({ imported: b.imported!, local: b.local }))
+      for (const target of targets) {
+        const list = reverseReexports.get(target) ?? []
+        list.push({
+          barrelFile: file.path,
+          exportedBindings,
+          aliasVia,
+          ambiguousAlias: Boolean(resolved.ambiguous),
+        })
+        reverseReexports.set(target, list)
+      }
+    }
+  }
+
   let reverseImports: Map<string, Set<string>> | null = null
   const reverseImportIndex = (): Map<string, Set<string>> => {
     if (reverseImports) return reverseImports
     const map = new Map<string, Set<string>>()
     for (const file of index.files) {
       for (const info of file.importDetails ?? []) {
-        const target = resolveImport(info.specifier, file.path, augmented)
-        if (target === null) continue
-        const importers = map.get(target) ?? new Set<string>()
-        importers.add(file.path)
-        map.set(target, importers)
+        for (const target of resolveImportTargets(info.specifier, file.path, augmented, index.resolution)) {
+          const importers = map.get(target) ?? new Set<string>()
+          importers.add(file.path)
+          map.set(target, importers)
+        }
       }
     }
     reverseImports = map
@@ -738,17 +825,143 @@ function collectImportDependents(
     for (const importerPath of [...importers].sort((a, b) => a.localeCompare(b))) {
       const importer = filesByPath.get(importerPath)
       if (!importer) continue
-      const specifier = specifierFor(importer, changedFile, resolutionSet)
-      if (specifier === null) continue
-      const key = `${importerPath}\u0000${changedFile}\u0000${specifier}`
+      const match = specifierMatchFor(importer, changedFile, resolutionSet, index.resolution)
+      if (match === null) continue
+      const key = `${importerPath}\u0000${changedFile}\u0000${match.specifier}`
       if (seen.has(key)) continue
       seen.add(key)
       dependents.push({
         file: importerPath,
         changedFile,
-        specifier,
+        specifier: match.specifier,
         resolution: 'import-scoped',
+        ...(match.via ? { via: match.via } : {}),
+        ...(match.ambiguousAlias ? { ambiguousAlias: true } : {}),
       })
+    }
+
+    // Reverse barrel traversal (depth <= MAX_REEXPORT_DEPTH, cycle-safe)
+    const barrelReach = new Map<string, BarrelExposure>()
+    const queue: Array<{
+      file: string
+      depth: number
+      exportedNames: Set<string> | '*'
+      aliasVia?: 'tsconfig-path' | 'tsconfig-baseurl' | 'package-exports' | 'oh-package'
+      ambiguousAlias: boolean
+    }> = []
+
+    const initialExposed = (bindings: ReverseReexportEdge['exportedBindings']): Set<string> | '*' =>
+      bindings === '*' ? '*' : new Set(bindings.map((b) => b.local))
+
+    const propagateExposed = (
+      inner: Set<string> | '*',
+      outer: ReverseReexportEdge['exportedBindings'],
+    ): Set<string> | '*' => {
+      if (outer === '*') return inner === '*' ? '*' : new Set(inner)
+      const out = new Set<string>()
+      for (const b of outer) {
+        if (inner === '*' || inner.has(b.imported)) out.add(b.local)
+      }
+      return out
+    }
+
+    for (const edge of reverseReexports.get(changedFile) ?? []) {
+      if (edge.barrelFile === changedFile) continue
+      const exposed = initialExposed(edge.exportedBindings)
+      if (exposed !== '*' && exposed.size === 0) continue
+      queue.push({
+        file: edge.barrelFile,
+        depth: 1,
+        exportedNames: exposed,
+        aliasVia: edge.aliasVia,
+        ambiguousAlias: edge.ambiguousAlias,
+      })
+    }
+
+    const visitedBarrels = new Set<string>([changedFile])
+    while (queue.length > 0) {
+      const current = queue.shift()!
+      const prev = barrelReach.get(current.file)
+      if (prev && prev.depth <= current.depth) {
+        if (prev.exportedNames !== '*') {
+          if (current.exportedNames === '*') prev.exportedNames = '*'
+          else for (const name of current.exportedNames) prev.exportedNames.add(name)
+        }
+        continue
+      }
+      barrelReach.set(current.file, {
+        depth: current.depth,
+        exportedNames:
+          current.exportedNames === '*' ? '*' : new Set(current.exportedNames),
+        aliasVia: current.aliasVia,
+        ambiguousAlias: current.ambiguousAlias,
+      })
+      if (current.depth >= MAX_REEXPORT_DEPTH || visitedBarrels.has(current.file)) continue
+      visitedBarrels.add(current.file)
+
+      for (const nextEdge of reverseReexports.get(current.file) ?? []) {
+        if (nextEdge.barrelFile === changedFile || visitedBarrels.has(nextEdge.barrelFile)) continue
+        const nextExposed = propagateExposed(current.exportedNames, nextEdge.exportedBindings)
+        if (nextExposed !== '*' && nextExposed.size === 0) continue
+        queue.push({
+          file: nextEdge.barrelFile,
+          depth: current.depth + 1,
+          exportedNames: nextExposed,
+          aliasVia: nextEdge.aliasVia ?? current.aliasVia,
+          ambiguousAlias: current.ambiguousAlias || nextEdge.ambiguousAlias,
+        })
+      }
+    }
+
+    for (const [barrelFile, exposure] of barrelReach) {
+      const barrelImporters = new Set(reverse.get(barrelFile) ?? [])
+      for (const importerPath of [...barrelImporters].sort((a, b) => a.localeCompare(b))) {
+        if (importerPath === changedFile) continue
+        const importer = filesByPath.get(importerPath)
+        if (!importer) continue
+        for (const info of importer.importDetails ?? []) {
+          if (info.kind === 'reexport') continue
+          const resolved = resolveImportDetailed(
+            info.specifier,
+            importer.path,
+            resolutionSet,
+            index.resolution,
+          )
+          const targets = resolved.targets ?? (resolved.target ? [resolved.target] : [])
+          if (!targets.includes(barrelFile)) continue
+
+          const overlaps =
+            exposure.exportedNames === '*' ||
+            info.bindings.length === 0 ||
+            info.bindings.some(
+              (b) =>
+                b.kind === 'namespace' ||
+                b.kind === 'glob' ||
+                b.kind === 'default' ||
+                (b.imported !== null &&
+                  exposure.exportedNames !== '*' &&
+                  exposure.exportedNames.has(b.imported)),
+            )
+          if (!overlaps) continue
+
+          const importerAlias =
+            resolved.via && resolved.via !== 'relative' && resolved.via !== 'suffix-fallback'
+              ? resolved.via
+              : undefined
+          const via = formatResolutionVia(importerAlias ?? exposure.aliasVia, exposure.depth)
+          const key = `${importerPath}\u0000${changedFile}\u0000${info.specifier}`
+          if (seen.has(key)) continue
+          seen.add(key)
+          dependents.push({
+            file: importerPath,
+            changedFile,
+            specifier: info.specifier,
+            resolution: 'import-scoped',
+            ...(via ? { via } : {}),
+            ...(exposure.ambiguousAlias || resolved.ambiguous ? { ambiguousAlias: true } : {}),
+          })
+        }
+      }
     }
   }
   return dependents.sort(
@@ -759,12 +972,36 @@ function collectImportDependents(
   )
 }
 
-function specifierFor(file: IndexedFile, target: string, fileSet: Set<string>): string | null {
+function specifierMatchFor(
+  file: IndexedFile,
+  target: string,
+  fileSet: Set<string>,
+  resolution: RepoIndex['resolution'],
+): { specifier: string; via?: string; ambiguousAlias?: boolean } | null {
   for (const info of file.importDetails ?? []) {
-    if (resolveImport(info.specifier, file.path, fileSet) === target) return info.specifier
+    if (info.kind === 'reexport') continue
+    const detailed = resolveImportDetailed(info.specifier, file.path, fileSet, resolution)
+    const targets = detailed.targets ?? (detailed.target ? [detailed.target] : [])
+    if (targets.includes(target)) {
+      const via = formatResolutionVia(detailed.via, 0)
+      return {
+        specifier: info.specifier,
+        ...(via ? { via } : {}),
+        ...(detailed.ambiguous ? { ambiguousAlias: true } : {}),
+      }
+    }
   }
   for (const spec of file.imports ?? []) {
-    if (resolveImport(spec, file.path, fileSet) === target) return spec
+    const detailed = resolveImportDetailed(spec, file.path, fileSet, resolution)
+    const targets = detailed.targets ?? (detailed.target ? [detailed.target] : [])
+    if (targets.includes(target)) {
+      const via = formatResolutionVia(detailed.via, 0)
+      return {
+        specifier: spec,
+        ...(via ? { via } : {}),
+        ...(detailed.ambiguous ? { ambiguousAlias: true } : {}),
+      }
+    }
   }
   return null
 }
@@ -779,8 +1016,18 @@ const TEST_RANK: Record<AffectedTest['reason'], number> = {
 
 /** Also usable on a clean tree: primary declarations are the test seeds. */
 export function collectSeedTests(index: RepoIndex, seeds: readonly SymbolInfo[]): AffectedTest[] {
-  return collectAffectedTests(index, buildModuleGraph(index), new Set(seeds.map(seed => seed.file)),
-    seeds.map(symbol => ({ symbol, side: 'current', change: 'unclassified', resolution: 'exact' })), [])
+  const moduleGraph = buildModuleGraph(index)
+  const changedFiles = new Set(seeds.map((seed) => seed.file))
+  const fileSet = new Set(index.files.map((file) => file.path))
+  const importDependents = collectImportDependents(index, moduleGraph, fileSet, changedFiles)
+  return collectAffectedTests(
+    index,
+    moduleGraph,
+    changedFiles,
+    seeds.map((symbol) => ({ symbol, side: 'current', change: 'unclassified', resolution: 'exact' })),
+    [],
+    importDependents,
+  )
 }
 
 function collectAffectedTests(
@@ -789,6 +1036,7 @@ function collectAffectedTests(
   changedFiles: Set<string>,
   changedSymbols: readonly ChangedSymbol[],
   impactRows: readonly ImpactRow[],
+  importDependents: readonly ImportDependent[] = [],
 ): AffectedTest[] {
   const changedNames = new Set(changedSymbols.map((changed) => changed.symbol.name))
   const impactFileDepth = new Map<string, number>()
@@ -798,6 +1046,7 @@ function collectAffectedTests(
       impactFileDepth.set(row.symbol.file, row.depth)
     }
   }
+  const dependentTestFiles = new Set(importDependents.map((dep) => dep.file))
   const changedStems = new Set([...changedFiles].map(pathStem))
 
   const tests: AffectedTest[] = []
@@ -813,7 +1062,7 @@ function collectAffectedTests(
     const changedImport = [...imports].find(
       (target) => changedFiles.has(target) && target !== file.path,
     )
-    if (changedImport !== undefined) {
+    if (changedImport !== undefined || dependentTestFiles.has(file.path)) {
       tests.push({
         file: file.path,
         resolution: 'import-scoped',
@@ -930,14 +1179,14 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
       title: 'DIRECT CALLERS',
       rows: result.directCallers.map(
         (row) =>
-          `${symbolLabel(row.symbol)} ${row.symbol.file}:${row.symbol.line} (called at ${row.via.callSite.file}:${row.via.callSite.line}) [${row.resolution}]`,
+          `${symbolLabel(row.symbol)} ${row.symbol.file}:${row.symbol.line} (called at ${row.via.callSite.file}:${row.via.callSite.line}) [${row.resolution}${row.via.via ? `; via: ${row.via.via}` : ''}]`,
       ),
     },
     {
       title: 'IMPORT DEPENDENTS',
       rows: result.importDependents.map(
         (dependent) =>
-          `${dependent.file} imports ${dependent.changedFile} ('${dependent.specifier}') [${dependent.resolution}]`,
+          `${dependent.file} imports ${dependent.changedFile} ('${dependent.specifier}') [${dependent.resolution}${dependent.via ? `; via: ${dependent.via}` : ''}]`,
       ),
     },
     {
@@ -951,7 +1200,7 @@ export function renderChangeContext(result: ChangeContextResult, maxChars = 12_0
       title: 'TRANSITIVE IMPACT',
       rows: result.impact.map(
         (row) =>
-          `depth ${row.depth}: ${symbolLabel(row.symbol)} ${row.symbol.file}:${row.symbol.line} (reached via ${row.via.callSite.file}:${row.via.callSite.line}) [${row.resolution}]`,
+          `depth ${row.depth}: ${symbolLabel(row.symbol)} ${row.symbol.file}:${row.symbol.line} (reached via ${row.via.callSite.file}:${row.via.callSite.line}) [${row.resolution}${row.via.via ? `; via: ${row.via.via}` : ''}]`,
       ),
     },
     {

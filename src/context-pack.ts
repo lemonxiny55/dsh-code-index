@@ -4,7 +4,7 @@ import type { ResolutionLabel } from './refgraph.js'
 import type { RepoIndex, SymbolInfo } from './types.js'
 import type { TaskContextResult } from './context.js'
 import { contextTerms } from './context-terms.js'
-import { resolveImport } from './repomap.js'
+import { resolveImportTargets } from './repomap.js'
 import { excerptVariants, sourceReader, subtractExcerpt, type SourceExcerpt } from './source-excerpts.js'
 
 export interface ContextPackItem extends Partial<SourceExcerpt> {
@@ -122,8 +122,11 @@ export async function selectContextPack(
   for (const [rank, test] of sortedTests.entries()) {
     const file = index.files.find(row => row.path === test.file)!
     const seedNames = new Set(context.primarySymbols.map(seed => seed.symbol.name))
-    for (const imported of file.importDetails ?? []) if (primaryFiles.has(resolveImport(imported.specifier, file.path, fileSet) ?? '')) {
-      for (const binding of imported.bindings) seedNames.add(binding.local)
+    for (const imported of file.importDetails ?? []) {
+      const targets = resolveImportTargets(imported.specifier, file.path, fileSet, index.resolution)
+      if (targets.some(target => primaryFiles.has(target))) {
+        for (const binding of imported.bindings) seedNames.add(binding.local)
+      }
     }
     const call = file.calls?.find(call => seedNames.has(call.name))
     const lines = await read(file.path, 'current')

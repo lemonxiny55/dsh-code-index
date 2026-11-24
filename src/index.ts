@@ -37,15 +37,48 @@ export const name = 'dsh-code-index'
 
 // Public API surface (consumable by other bundles / tests).
 export { buildIndex, buildIndexWithCache, findRepoRoot } from './buildIndex.js'
+export { parseJsoncOrJson5, loadResolutionConfig, resolveAliasImport, isResolutionConfigPath, CONFIG_BASENAMES } from './alias.js'
+export type { AliasMatchResult, AliasVia } from './alias.js'
 export { extractSymbols, extractAll, languageForFile, parseFileToSymbols } from './extract.js'
-export { scanRepo, DEFAULT_EXCLUDED_DIRS, SUPPORTED_EXTS } from './scan.js'
+export { scanRepo, scanRepoWithConfigs, DEFAULT_EXCLUDED_DIRS, SUPPORTED_EXTS } from './scan.js'
 export { loadIndex, saveIndex, defaultCachePath, CACHE_DIR_NAME } from './store.js'
-export { symbolCount } from './types.js'
+export { REPO_INDEX_SCHEMA_VERSION, symbolCount } from './types.js'
 export { indexIntegrityWarnings } from './integrity.js'
-export type { RepoIndex, IndexedFile, SymbolInfo, SymbolKind, IndexOptions, ParseDiagnostic } from './types.js'
+export type {
+  RepoIndex,
+  IndexedFile,
+  SymbolInfo,
+  SymbolKind,
+  IndexOptions,
+  ParseDiagnostic,
+  ResolutionConfig,
+  TrackedConfigFile,
+  TsConfigAliasScope,
+  PackageExportsScope,
+  OhPackageScope,
+} from './types.js'
 export { searchSymbols, renderHit } from './search.js'
-export { rankRepoMap, renderRepoMap, scoreFile } from './repomap.js'
-export { symbolRefs, buildSymbolTable, callerCounts } from './refgraph.js'
+export { rankRepoMap, renderRepoMap, scoreFile, resolveImport, resolveImportDetailed, resolveImportTargets } from './repomap.js'
+export type { ImportResolution, ImportResolutionVia } from './repomap.js'
+export {
+  symbolRefs,
+  buildSymbolTable,
+  callerCounts,
+  buildReferenceGraph,
+  resolveCallTargets,
+  formatResolutionVia,
+  MAX_REEXPORT_DEPTH,
+} from './refgraph.js'
+export type {
+  CallerHit,
+  CalleeHit,
+  SymbolRefs,
+  ResolutionLabel,
+  ResolutionProvenance,
+  ReferenceEdge,
+  ReferenceGraph,
+  AmbiguousAliasHit,
+} from './refgraph.js'
 export { findCycles, findOrphanModules, buildModuleGraph } from './health.js'
 export { parseUnifiedDiff, readWorkingTreeDiff, readGitFileAtRef } from './git-diff.js'
 export {

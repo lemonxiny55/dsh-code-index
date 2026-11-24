@@ -2,8 +2,9 @@
 
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
+import { loadResolutionConfig } from './alias.js'
 import { extractAll, languageForFile } from './extract.js'
-import { scanRepo, DEFAULT_EXCLUDED_DIRS } from './scan.js'
+import { scanRepoWithConfigs, DEFAULT_EXCLUDED_DIRS } from './scan.js'
 import {
   cacheKeyForRoot,
   defaultCachePath,
@@ -28,7 +29,8 @@ export async function buildIndex(
   // Public callers may supply a previous index directly, bypassing loadIndex.
   // Never reuse extraction from an incompatible cache generation.
   if (previous?.schemaVersion !== REPO_INDEX_SCHEMA_VERSION) previous = null
-  const scanned = await scanRepo(root, options)
+  const { files: scanned, configFiles } = await scanRepoWithConfigs(root, options)
+  const resolution = await loadResolutionConfig(root, configFiles, previous?.resolution, forcePaths)
 
   // Index stale/current state from the previous run by rel path.
   const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))
@@ -89,6 +91,7 @@ export async function buildIndex(
     generatedAt: Date.now(),
     files,
     excludedDirs: [...DEFAULT_EXCLUDED_DIRS, ...(options.excludeDirs ?? [])],
+    ...(resolution ? { resolution } : {}),
   }
 }
 
@@ -125,6 +128,7 @@ function indexesEqual(left: RepoIndex, right: RepoIndex): boolean {
   if (left.files.length !== right.files.length) return false
   if (left.excludedDirs.length !== right.excludedDirs.length) return false
   if (left.excludedDirs.some((value, index) => value !== right.excludedDirs[index])) return false
+  if (JSON.stringify(left.resolution ?? null) !== JSON.stringify(right.resolution ?? null)) return false
 
   return left.files.every((file, fileIndex) => {
     const other = right.files[fileIndex]

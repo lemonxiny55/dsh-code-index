@@ -4,8 +4,9 @@
  */
 
 import path from 'node:path'
+import { resolveAliasImport, type AliasVia } from './alias.js'
 import { SUPPORTED_EXTS } from './scan.js'
-import type { IndexedFile, RepoIndex, SymbolKind } from './types.js'
+import type { IndexedFile, RepoIndex, ResolutionConfig, SymbolKind } from './types.js'
 
 /** Higher-weight symbols pull their file up the map. */
 export const KIND_WEIGHT: Record<SymbolKind, number> = {
@@ -64,7 +65,7 @@ export function rankRepoMap(index: RepoIndex, options: RepoMapOptions = {}): Rep
   for (const f of index.files) {
     if (f.symbols.length > 0) density.set(f.path, scoreFile(f))
   }
-  const centrality = referencePageRank(index.files, density)
+  const centrality = referencePageRank(index.files, density, index.resolution)
   const ranked = index.files
     .filter((f) => f.symbols.length > 0)
     .map((f) => ({
@@ -93,14 +94,18 @@ const REF_WEIGHT = 0.5
  * Count in-repo references: how many OTHER indexed files import each file.
  * Self-imports don't count; each (importer, target) pair counts once.
  */
-export function countReferences(files: IndexedFile[]): Map<string, number> {
+export function countReferences(
+  files: IndexedFile[],
+  resolution?: ResolutionConfig,
+): Map<string, number> {
   const fileSet = new Set(files.map((f) => f.path))
   const counts = new Map<string, number>()
   for (const file of files) {
     const targets = new Set<string>()
     for (const spec of file.imports ?? []) {
-      const target = resolveImport(spec, file.path, fileSet)
-      if (target && target !== file.path) targets.add(target)
+      for (const target of resolveImportTargets(spec, file.path, fileSet, resolution)) {
+        if (target !== file.path) targets.add(target)
+      }
     }
     for (const target of targets) {
       counts.set(target, (counts.get(target) ?? 0) + 1)
@@ -127,7 +132,11 @@ const MAX_ITERATIONS = 100
  * point IS the normalized density vector). Returns L1-normalized importance
  * mass per file.
  */
-function referencePageRank(files: IndexedFile[], density: Map<string, number>): Map<string, number> {
+function referencePageRank(
+  files: IndexedFile[],
+  density: Map<string, number>,
+  resolution?: ResolutionConfig,
+): Map<string, number> {
   const nodes = files.filter((f) => density.has(f.path)).map((f) => f.path)
   const n = nodes.length
   if (n === 0) return new Map()
@@ -142,8 +151,9 @@ function referencePageRank(files: IndexedFile[], density: Map<string, number>): 
     if (!fileSet.has(file.path)) continue
     const targets = out.get(file.path) ?? new Set<string>()
     for (const spec of file.imports ?? []) {
-      const target = resolveImport(spec, file.path, fileSet)
-      if (target && target !== file.path) targets.add(target)
+      for (const target of resolveImportTargets(spec, file.path, fileSet, resolution)) {
+        if (target !== file.path) targets.add(target)
+      }
     }
     out.set(file.path, targets)
   }
@@ -185,9 +195,17 @@ function referencePageRank(files: IndexedFile[], density: Map<string, number>): 
   return result
 }
 
+export type ImportResolutionVia =
+  | 'relative'
+  | AliasVia
+  | 'suffix-fallback'
+
 /** Outcome of {@link resolveImportDetailed}: the target plus how it matched. */
 export interface ImportResolution {
+  /** Single unambiguous target, or null when unresolved or ambiguous. */
   target: string | null
+  /** All matched targets (0 = unresolved, 1 = unique, >1 = ambiguous wildcard). */
+  targets?: string[]
   /**
    * True when only the nested-segment suffix fallback matched (Go module paths,
    * Java packages). Callers that must not over-claim can use this to keep a
@@ -195,44 +213,100 @@ export interface ImportResolution {
    * substitution at skip 0 is a direct hit, not a fallback.
    */
   suffixSkipped: boolean
+  /** True when a wildcard alias/exports rule matched multiple distinct files. */
+  ambiguous?: boolean
+  /** Deterministic resolution note explaining how the specifier matched. */
+  via?: ImportResolutionVia
 }
 
 /**
  * Resolve a raw import specifier against the indexed file set, reporting both
  * the repo-relative target and whether the nested-segment suffix fallback was
- * needed. Relative specifiers resolve against the importing file; absolute
- * ones against the repo root — the suffix fallback lets Go module paths and
- * Java package names match their in-repo location without reading go.mod /
- * package-info.
+ * needed. Relative specifiers resolve against the importing file; non-relative
+ * specifiers first consult repository-local alias/export/oh-package rules, then
+ * fall back to root-relative and nested-segment suffix matching.
  */
 export function resolveImportDetailed(
   spec: string,
   fromPath: string,
   fileSet: Set<string>,
+  resolution?: ResolutionConfig,
 ): ImportResolution {
   if (!spec) return { target: null, suffixSkipped: false }
   // HarmonyOS SDK namespaces are external; a same-named source file cannot
   // make @ohos/@kit APIs into local modules.
   if (/^@(ohos|kit)\./.test(spec)) return { target: null, suffixSkipped: false }
-  if (spec.startsWith('./') || spec.startsWith('../')) {
+  if (spec === '.' || spec === '..' || spec.startsWith('./') || spec.startsWith('../')) {
     const base = path.posix.normalize(path.posix.join(path.posix.dirname(fromPath), spec))
-    return { target: candidateFor(base, fileSet), suffixSkipped: false }
+    const hit = candidateFor(base, fileSet)
+    return hit
+      ? { target: hit, targets: [hit], suffixSkipped: false, via: 'relative' }
+      : { target: null, suffixSkipped: false }
+  }
+  if (resolution) {
+    const aliased = resolveAliasImport(spec, fromPath, fileSet, resolution, candidateFor)
+    if (aliased) {
+      if (aliased.ambiguous) {
+        return {
+          target: null,
+          targets: aliased.targets,
+          suffixSkipped: false,
+          ambiguous: true,
+          via: aliased.via,
+        }
+      }
+      return {
+        target: aliased.targets[0]!,
+        targets: aliased.targets,
+        suffixSkipped: false,
+        ambiguous: false,
+        via: aliased.via,
+      }
+    }
   }
   const segments = spec.split('/').filter(Boolean)
   for (let skip = 0; skip < segments.length; skip++) {
     const hit = candidateFor(segments.slice(skip).join('/'), fileSet)
-    if (hit) return { target: hit, suffixSkipped: skip > 0 }
+    if (hit) {
+      return {
+        target: hit,
+        targets: [hit],
+        suffixSkipped: skip > 0,
+        ...(skip > 0 ? { via: 'suffix-fallback' as const } : {}),
+      }
+    }
   }
   return { target: null, suffixSkipped: false }
 }
 
 /** Thin wrapper over {@link resolveImportDetailed} returning just the target. */
-export function resolveImport(spec: string, fromPath: string, fileSet: Set<string>): string | null {
-  return resolveImportDetailed(spec, fromPath, fileSet).target
+export function resolveImport(
+  spec: string,
+  fromPath: string,
+  fileSet: Set<string>,
+  resolution?: ResolutionConfig,
+): string | null {
+  return resolveImportDetailed(spec, fromPath, fileSet, resolution).target
+}
+
+/** Return all matched targets for an import (including multi-target ambiguous aliases). */
+export function resolveImportTargets(
+  spec: string,
+  fromPath: string,
+  fileSet: Set<string>,
+  resolution?: ResolutionConfig,
+): string[] {
+  const detailed = resolveImportDetailed(spec, fromPath, fileSet, resolution)
+  if (detailed.targets && detailed.targets.length > 0) return detailed.targets
+  return detailed.target ? [detailed.target] : []
 }
 
 /** Extension and index-file candidates for a specifier base path. */
-function candidateFor(base: string, fileSet: Set<string>): string | null {
+function candidateFor(
+  base: string,
+  fileSet: Set<string>,
+  extraIndexNames: readonly string[] = [],
+): string | null {
   // Bare path first: C/C++ includes already carry their extension
   // ("net/socket.hpp"), and matching the exact file beats guessing.
   if (fileSet.has(base)) return base
@@ -251,6 +325,10 @@ function candidateFor(base: string, fileSet: Set<string>): string | null {
   for (const ext of SUPPORTED_EXTS) {
     if (fileSet.has(`${base}/index${ext}`)) return `${base}/index${ext}`
     if (fileSet.has(`${base}/__init__${ext}`)) return `${base}/__init__${ext}`
+  }
+  for (const indexName of extraIndexNames) {
+    const candidate = base ? `${base}/${indexName}` : indexName
+    if (fileSet.has(candidate)) return candidate
   }
   return null
 }

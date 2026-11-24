@@ -1,6 +1,6 @@
 /** Import-graph health checks: circular dependencies and orphan modules. */
 
-import { resolveImport } from './repomap.js'
+import { resolveImportTargets } from './repomap.js'
 import type { RepoIndex } from './types.js'
 
 export interface ModuleGraph {
@@ -16,8 +16,9 @@ export function buildModuleGraph(index: RepoIndex): ModuleGraph {
   for (const file of index.files) {
     const targets = new Set<string>()
     for (const spec of file.imports ?? []) {
-      const target = resolveImport(spec, file.path, fileSet)
-      if (target && target !== file.path) targets.add(target)
+      for (const target of resolveImportTargets(spec, file.path, fileSet, index.resolution)) {
+        if (target !== file.path) targets.add(target)
+      }
     }
     edges.set(file.path, targets)
   }
