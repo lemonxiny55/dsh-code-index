@@ -3,6 +3,7 @@ import type { RepoIndex, SymbolInfo } from './types.js'
 import { sourceReader } from './source-excerpts.js'
 import { resolveImportTargets } from './repomap.js'
 import { renderEvidenceSummary } from './evidence-summary.js'
+import { computeCrossPackageImpact, formatCrossPackageImpact } from './workspace.js'
 import { XRAY_LIMITS, type ImpactXray, type XrayNode, type XrayEvidence } from './impact-xray-model.js'
 export * from './impact-xray-model.js'
 
@@ -110,9 +111,15 @@ export async function buildImpactXray(index: RepoIndex, result: ChangeContextRes
   for (const row of result.unmapped.slice(0, 8)) view.unmapped!.push({ ...row, ranges: row.ranges.slice(0, 16),
     evidence: await evidence(row.file, row.ranges[0]?.startLine ?? 1, 'unmapped-change', row.side) })
   if (result.unmapped.length > 8 || result.unmapped.some(r => r.ranges.length > 16)) clip()
+  const crossPackage = computeCrossPackageImpact(index, result, 12)
+  if (crossPackage.length > 0) {
+    view.crossPackageImpact = crossPackage
+    view.gaps.push(`Cross-package impact: ${crossPackage.slice(0, 4).map(formatCrossPackageImpact).join('; ')}`)
+  }
   view.gaps = [...new Set(view.gaps)].slice(0, 20)
   view.truncated = view.bounds!.projection || Object.values(result.truncated).some(Boolean)
   if (Buffer.byteLength(JSON.stringify(view)) > XRAY_LIMITS.metadataBytes) {
+    delete view.crossPackageImpact
     for (const e of [...view.nodes.map(n => n.evidence), ...view.edges.map(e => e.evidence), ...view.unmapped!.map(u => u.evidence)]) {
       delete e.code; e.gap = 'source-budget'
     }

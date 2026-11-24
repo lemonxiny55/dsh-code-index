@@ -30,7 +30,7 @@ export async function buildIndex(
   // Never reuse extraction from an incompatible cache generation.
   if (previous?.schemaVersion !== REPO_INDEX_SCHEMA_VERSION) previous = null
   const { files: scanned, configFiles } = await scanRepoWithConfigs(root, options)
-  const resolution = await loadResolutionConfig(root, configFiles, previous?.resolution, forcePaths)
+  const resolution = await loadResolutionConfig(root, configFiles, previous?.resolution, forcePaths, scanned)
 
   // Index stale/current state from the previous run by rel path.
   const prevByPath = new Map((previous?.files ?? []).map((f) => [f.path, f]))

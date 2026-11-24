@@ -16,12 +16,14 @@ import type {
   TrackedConfigFile,
   TsConfigAliasScope,
 } from './types.js'
+import { loadWorkspacePackages, WORKSPACE_CONFIG_BASENAMES } from './workspace.js'
 
 export const CONFIG_BASENAMES = new Set([
   'tsconfig.json',
   'jsconfig.json',
   'package.json',
   'oh-package.json5',
+  ...WORKSPACE_CONFIG_BASENAMES,
 ])
 
 const MAX_EXTENDS_DEPTH = 8
@@ -556,6 +558,7 @@ async function canReuseResolutionConfig(
   forcePaths: ReadonlySet<string>,
 ): Promise<boolean> {
   if (forcePaths.has('*')) return false
+  if (previous.workspacePackages === undefined) return false
   const prevByPath = new Map(previous.configFiles.map((entry) => [entry.path, entry.mtimeMs]))
   const discoveredPaths = new Set<string>()
   for (const cfg of discoveredConfigs) {
@@ -577,8 +580,19 @@ async function canReuseResolutionConfig(
   return true
 }
 
+function parsePackageWorkspaces(parsed: Record<string, unknown>): string[] {
+  const raw = parsed.workspaces
+  if (Array.isArray(raw)) {
+    return raw.filter((item): item is string => typeof item === 'string')
+  }
+  if (isPlainObject(raw) && Array.isArray(raw.packages)) {
+    return raw.packages.filter((item): item is string => typeof item === 'string')
+  }
+  return []
+}
+
 /**
- * Load and normalize repository-local alias/export/dependency configs.
+ * Load and normalize repository-local alias/export/dependency/workspace configs.
  * Reuses `previous` without re-reading JSON when all config mtimes match.
  */
 export async function loadResolutionConfig(
@@ -586,6 +600,7 @@ export async function loadResolutionConfig(
   discoveredConfigs: readonly ConfigFileEntry[],
   previous?: ResolutionConfig,
   forcePaths: ReadonlySet<string> = new Set(),
+  scannedFiles: readonly ConfigFileEntry[] = [],
 ): Promise<ResolutionConfig | undefined> {
   if (previous && (await canReuseResolutionConfig(root, discoveredConfigs, previous, forcePaths))) {
     return previous
@@ -596,6 +611,9 @@ export async function loadResolutionConfig(
   const tsConfigs: TsConfigAliasScope[] = []
   const packageExports: PackageExportsScope[] = []
   const ohPackages: OhPackageScope[] = []
+  const pkgNameByDir = new Map<string, string>()
+  const ohNameByDir = new Map<string, string>()
+  const pkgWorkspacesByDir = new Map<string, string[]>()
 
   for (const cfg of discoveredConfigs) {
     const base = path.posix.basename(cfg.rel)
@@ -613,18 +631,39 @@ export async function loadResolutionConfig(
       continue
     }
 
+    if (base !== 'package.json' && base !== 'oh-package.json5') continue
+
     const abs = path.join(root, ...cfg.rel.split('/'))
     const parsed = await readParsedConfig(abs, cfg.rel, trackedMap)
     if (!parsed) continue
 
     if (base === 'package.json') {
+      const dir = scopeDirOf(cfg.rel)
+      if (typeof parsed.name === 'string' && parsed.name.trim()) {
+        pkgNameByDir.set(dir, parsed.name.trim())
+      }
+      const workspaces = parsePackageWorkspaces(parsed)
+      if (workspaces.length > 0) pkgWorkspacesByDir.set(dir, workspaces)
       const pkg = parsePackageExports(parsed, cfg.rel)
       if (pkg) packageExports.push(pkg)
     } else if (base === 'oh-package.json5') {
       const oh = parseOhPackage(parsed, cfg.rel)
-      if (oh) ohPackages.push(oh)
+      if (oh) {
+        ohPackages.push(oh)
+        if (oh.name) ohNameByDir.set(oh.scopeDir, oh.name)
+      }
     }
   }
+
+  const workspacePackages = await loadWorkspacePackages(
+    root,
+    discoveredConfigs,
+    scannedFiles,
+    trackedMap,
+    pkgNameByDir,
+    ohNameByDir,
+    pkgWorkspacesByDir,
+  )
 
   if (trackedMap.size === 0) return undefined
 
@@ -648,7 +687,7 @@ export async function loadResolutionConfig(
     (a, b) => b.scopeDir.length - a.scopeDir.length || a.scopeDir.localeCompare(b.scopeDir),
   )
 
-  return { configFiles, tsConfigs, packageExports, ohPackages }
+  return { configFiles, tsConfigs, packageExports, ohPackages, workspacePackages }
 }
 
 /* -------------------------------------------------------------------------- */

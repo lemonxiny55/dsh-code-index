@@ -39,6 +39,9 @@ export function asImpactXray(v: unknown): ImpactXray | null {
   if (v.bounds !== undefined && (!record(v.bounds) || typeof v.bounds.projection !== 'boolean' || !record(v.bounds.analysis) || !record(v.bounds.totals) ||
     !['callers', 'dependents', 'paths', 'impact', 'tests'].every(k => typeof (v.bounds as Record<string, Record<string, unknown>>).analysis[k] === 'boolean') ||
     !['changed', 'callers', 'impact', 'imports', 'tests', 'paths', 'unmapped'].every(k => Number.isSafeInteger((v.bounds as Record<string, Record<string, unknown>>).totals[k]) && Number((v.bounds as Record<string, Record<string, unknown>>).totals[k]) >= 0))) return null
+  if (v.crossPackageImpact !== undefined && (!Array.isArray(v.crossPackageImpact) || v.crossPackageImpact.length > 12 ||
+    !v.crossPackageImpact.every(c => record(c) && string(c.fromPackage) && string(c.fromDir) && string(c.toPackage) && string(c.toDir) &&
+      Number.isSafeInteger(c.refs) && Number(c.refs) >= 0 && Number.isSafeInteger(c.callRefs) && Number(c.callRefs) >= 0 && Number.isSafeInteger(c.importRefs) && Number(c.importRefs) >= 0))) return null
   return v as unknown as ImpactXray
 }
 
@@ -125,6 +128,7 @@ export function ImpactXrayCard({ view, openFile, localeStore = FALLBACK_LOCALE, 
     <div className="change-center"><strong>{t(view.source === 'git' || view.source === 'diff' ? 'changeCenter' : 'selectionCenter')}</strong>
       {centers.length ? <div className="chips">{centers.map(nodeButton)}</div> : <p>{t('noCenter')}</p>}</div>
     <div className="metrics" aria-label={t('snapshotCounts')}><span>{t('callCount', { count: callCount })}</span><span>{t('importCount', { count: importCount })}</span><span>{t('testCount', { count: view.tests.length })}</span></div>
+    {view.crossPackageImpact?.length ? <p className="notice"><strong>{t('crossPackageImpact')}:</strong> {view.crossPackageImpact.map(c => `${c.fromDir || c.fromPackage} → ${c.toDir || c.toPackage} (${c.refs})`).join(' · ')}</p> : null}
     <p className="uncertainty">{t('potential')} · {t('weakCount', { count: weakCount })} · {t('unmappedCount', { count: view.unmapped?.length ?? 0 })}</p>
     {view.version === 1 ? <p className="notice">{t('saved')}</p> : null}
     {view.truncated ? <p className="notice">{t('displayCut')}</p> : null}

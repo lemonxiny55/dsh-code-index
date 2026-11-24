@@ -1,5 +1,6 @@
 import type { ChangeContextResult, ImpactHop } from './change-context.js'
 import type { EvidenceSummary } from './evidence-summary.js'
+import type { CrossPackageImpact } from './types.js'
 
 /** Browser-safe presentation contract. Persisted v1 PoCs remain readable. */
 export const XRAY_LIMITS = { nodes: 32, edges: 48, paths: 12, evidenceChars: 900, metadataBytes: 96_000 } as const
@@ -56,6 +57,7 @@ export interface ImpactXray {
   paths?: XrayPath[]
   unmapped?: Array<ChangeContextResult['unmapped'][number] & { evidence: XrayEvidence }>
   bounds?: { analysis: ChangeContextResult['truncated']; projection: boolean; text?: boolean; totals: { changed: number; callers: number; impact: number; imports: number; tests: number; paths: number; unmapped: number } }
+  crossPackageImpact?: CrossPackageImpact[]
   gaps: string[]
   truncated: boolean
   /** Analysis boundary; projected row limits remain in bounds. */

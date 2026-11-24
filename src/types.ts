@@ -153,11 +153,37 @@ export interface OhPackageScope {
   dependencies: Record<string, string>
 }
 
+export type WorkspaceSource =
+  | 'pnpm-workspace'
+  | 'package-workspaces'
+  | 'cargo-workspace'
+  | 'go-work'
+  | 'harmony-build-profile'
+
+export interface WorkspacePackage {
+  /** Repo-relative POSIX directory prefix ('' for repo root, e.g. 'packages/core'). */
+  dirPrefix: string
+  /** Package or module name from manifest, falling back to dirPrefix. */
+  name: string
+  source: WorkspaceSource
+}
+
+export interface CrossPackageImpact {
+  fromPackage: string
+  fromDir: string
+  toPackage: string
+  toDir: string
+  refs: number
+  callRefs: number
+  importRefs: number
+}
+
 export interface ResolutionConfig {
   configFiles: TrackedConfigFile[]
   tsConfigs: TsConfigAliasScope[]
   packageExports: PackageExportsScope[]
   ohPackages: OhPackageScope[]
+  workspacePackages?: WorkspacePackage[]
 }
 
 export interface RepoIndex {

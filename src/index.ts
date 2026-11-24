@@ -56,7 +56,20 @@ export type {
   TsConfigAliasScope,
   PackageExportsScope,
   OhPackageScope,
+  WorkspaceSource,
+  WorkspacePackage,
+  CrossPackageImpact,
 } from './types.js'
+export {
+  loadWorkspacePackages,
+  packageForFile,
+  computeCrossPackageImpact,
+  formatPackageLabel,
+  formatCrossPackageImpact,
+  WORKSPACE_CONFIG_BASENAMES,
+} from './workspace.js'
+export { deriveCommandLeads } from './test-leads.js'
+export type { ReviewTestLead, CommandLeadBatch } from './test-leads.js'
 export { searchSymbols, renderHit } from './search.js'
 export { rankRepoMap, renderRepoMap, scoreFile, resolveImport, resolveImportDetailed, resolveImportTargets } from './repomap.js'
 export type { ImportResolution, ImportResolutionVia } from './repomap.js'
@@ -123,7 +136,7 @@ export { tools } from './tools.js'
 export { buildImpactXray, XRAY_LIMITS } from './impact-xray.js'
 export type { ImpactXray, XrayNode, XrayEdge, XrayPath, XrayEvidence } from './impact-xray-model.js'
 export { buildReviewBrief, renderReviewBrief, REVIEW_LIMITS } from './review-brief.js'
-export type { ReviewBrief, ReviewBriefV1, OmittedReviewBrief, ReviewOutput, ReviewRepository, ReviewChange, ReviewRelation } from './review-brief.js'
+export type { ReviewBrief, ReviewBriefV1, OmittedReviewBrief, ReviewOutput, ReviewRepository, ReviewChange, ReviewRelation, ReviewCycleWarning } from './review-brief.js'
 export { Config } from './config.js'
 
 import { activateRepoContextManager, clearRepoContextManager, getIndex, invalidateIndexCache, tools } from './tools.js'

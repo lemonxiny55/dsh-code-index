@@ -2,10 +2,13 @@
 import { execFile } from 'node:child_process'
 import { realpath } from 'node:fs/promises'
 import path from 'node:path'
-import type { RepoIndex } from './types.js'
-import type { AffectedTest, ChangeContextResult, ChangeKind, ImpactHop } from './change-context.js'
+import type { CrossPackageImpact, RepoIndex } from './types.js'
+import type { ChangeContextResult, ChangeKind, ImpactHop } from './change-context.js'
 import type { ResolutionLabel } from './refgraph.js'
+import { findCycles } from './health.js'
 import { excerptVariants, sourceReader, type SourceExcerpt } from './source-excerpts.js'
+import { deriveCommandLeads, type ReviewTestLead } from './test-leads.js'
+import { computeCrossPackageImpact, formatCrossPackageImpact } from './workspace.js'
 
 export interface ReviewRepository {
   root: string
@@ -24,6 +27,12 @@ export interface ReviewChange extends SourceExcerpt {
 export type ReviewRelation =
   | { kind: 'call'; name: string; file: string; line: number; depth: number; resolution: ResolutionLabel; via: ImpactHop }
   | { kind: 'import'; file: string; changedFile: string; specifier: string; resolution: 'import-scoped'; via?: string; ambiguousAlias?: boolean }
+export interface ReviewCycleWarning {
+  files: string[]
+  changedFiles: string[]
+  totalFiles: number
+  truncated: boolean
+}
 interface ReviewBase {
   version: 1
   scope: 'indexed-static-only'
@@ -42,20 +51,31 @@ export interface ReviewBriefV1 extends ReviewBase {
   }
   changes: ReviewChange[]
   relations: ReviewRelation[]
-  tests: AffectedTest[]
+  tests: ReviewTestLead[]
   warnings: string[]
+  cycleWarnings?: ReviewCycleWarning[]
+  crossPackageImpact?: CrossPackageImpact[]
   /** Counts are relative to the bounded upstream analysis, not the entire repository. */
   omitted: { changes: number; relations: number; tests: number; warnings: number; sourceBodies: number }
 }
 export interface OmittedReviewBrief extends ReviewBase {
   status: 'omitted'
   repository?: never; summary?: never; changes?: never; relations?: never
-  tests?: never; warnings?: never; omitted?: never
+  tests?: never; warnings?: never; cycleWarnings?: never; crossPackageImpact?: never; omitted?: never
 }
 export type ReviewBrief = ReviewBriefV1 | OmittedReviewBrief
 export interface ReviewOutput { text: string; brief: ReviewBrief }
 
-export const REVIEW_LIMITS = { changes: 24, relations: 40, tests: 20, warnings: 12 } as const
+export const REVIEW_LIMITS = {
+  changes: 24,
+  relations: 40,
+  tests: 20,
+  warnings: 12,
+  cycles: 4,
+  crossPackage: 12,
+} as const
+
+const MAX_CYCLE_DISPLAY_FILES = 5
 
 function git(root: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -87,6 +107,38 @@ async function repositoryInfo(index: RepoIndex, change: ChangeContextResult): Pr
   return repository
 }
 
+function detectChangedCycles(index: RepoIndex, change: ChangeContextResult): ReviewCycleWarning[] {
+  const changedFiles = new Set<string>()
+  for (const row of change.changed) {
+    if (row.side === 'current') changedFiles.add(row.symbol.file)
+  }
+  for (const row of change.unmapped) {
+    if (row.side === 'current') changedFiles.add(row.file)
+  }
+  if (changedFiles.size === 0) return []
+
+  const warnings: ReviewCycleWarning[] = []
+  for (const cycle of findCycles(index)) {
+    const touched = cycle.filter((file) => changedFiles.has(file)).sort((a, b) => a.localeCompare(b))
+    if (touched.length === 0) continue
+    const untouched = cycle.filter((file) => !changedFiles.has(file)).sort((a, b) => a.localeCompare(b))
+    const ordered = [...touched, ...untouched]
+    const shown = ordered.slice(0, MAX_CYCLE_DISPLAY_FILES)
+    warnings.push({
+      files: shown,
+      changedFiles: touched,
+      totalFiles: cycle.length,
+      truncated: cycle.length > shown.length,
+    })
+  }
+  return warnings.slice(0, REVIEW_LIMITS.cycles)
+}
+
+function formatCycleWarning(entry: ReviewCycleWarning): string {
+  const chain = entry.files.join(' -> ')
+  return `cycle-warning: ${chain}${entry.truncated ? ` (+${entry.totalFiles - entry.files.length} more)` : ''}`
+}
+
 export function renderReviewBrief(brief: ReviewBrief): string {
   if (brief.status === 'omitted') return 'Review Brief omitted: budget. Static only; tests not run.'
   const r = brief.repository, s = brief.summary
@@ -104,8 +156,14 @@ export function renderReviewBrief(brief: ReviewBrief): string {
   for (const row of brief.relations) lines.push(row.kind === 'call'
     ? `Potential impact: ${row.name} ${row.file}:${row.line} [path ${row.resolution}; depth ${row.depth}]; via ${row.via.callSite.file}:${row.via.callSite.line} [hop ${row.via.resolution}; ${row.via.reason}${row.via.via ? `; via: ${row.via.via}` : ''}]`
     : `Import dependent: ${row.file} -> ${row.changedFile} (${row.specifier}) [${row.resolution}${row.via ? `; via: ${row.via}` : ''}]`)
+  if (brief.crossPackageImpact?.length) {
+    lines.push('Cross-package impact:')
+    for (const row of brief.crossPackageImpact) lines.push(`  ${formatCrossPackageImpact(row)}`)
+  }
   lines.push('Candidate tests: not-run; coverage not verified.')
-  for (const row of brief.tests) lines.push(`Candidate: ${row.file} [${row.resolution}; ${row.reason}]`)
+  for (const row of brief.tests) {
+    lines.push(`Candidate: ${row.file} [${row.resolution}; ${row.reason}]${row.commandLead ? ` — lead: ${row.commandLead}` : ''}`)
+  }
   for (const warning of brief.warnings) lines.push(`Warning: ${warning}`)
   lines.push(`Omitted from analysis: ${brief.omitted.changes} changes, ${brief.omitted.relations} relations, ${brief.omitted.tests} tests, ${brief.omitted.warnings} warnings; ${brief.omitted.sourceBodies} source bodies not included.`,
     `Gaps: ${brief.gaps.join('; ')}`, `Budget (full JSON envelope): ${brief.budget.usedChars}/${brief.budget.limit}`)
@@ -123,7 +181,7 @@ function account(brief: ReviewBrief): ReviewOutput {
   return { text: renderReviewBrief(brief), brief }
 }
 
-/** Reads only source excerpts for the supplied analysis; never executes candidate tests. */
+/** Reads only source excerpts and static manifests for the supplied analysis; never executes candidate tests. */
 export async function buildReviewBrief(index: RepoIndex, change: ChangeContextResult, budgetChars = 5000): Promise<ReviewOutput> {
   if (path.resolve(index.root) !== path.resolve(change.root)) throw new Error('review root mismatch')
   const limit = Number.isFinite(budgetChars) ? Math.max(300, Math.min(20000, Math.floor(budgetChars))) : 5000
@@ -136,6 +194,13 @@ export async function buildReviewBrief(index: RepoIndex, change: ChangeContextRe
   const relations: ReviewRelation[] = [...change.directCallers, ...change.impact].map(row => ({ kind: 'call', name: row.symbol.name,
     file: row.symbol.file, line: row.symbol.line, depth: row.depth, resolution: row.resolution, via: row.via }))
   relations.push(...change.importDependents.map(row => ({ kind: 'import' as const, ...row })))
+  const { leads: testLeads, hasUnresolvedRunner } = await deriveCommandLeads(index.root, change.tests)
+  const baseTests: ReviewTestLead[] = testLeads.map(({ commandLead: _omit, ...rest }) => rest)
+  const cycles = detectChangedCycles(index, change)
+  const cycleWarningTexts = cycles.map(formatCycleWarning)
+  const allWarnings = [...cycleWarningTexts, ...change.warnings]
+  const crossPackages = computeCrossPackageImpact(index, change, REVIEW_LIMITS.crossPackage)
+
   const upstreamGaps = new Set(change.evidence?.gaps?.map(gap => gap.code) ?? [])
   upstreamGaps.add('non-atomic-snapshot')
   if (change.source === 'diff') upstreamGaps.add('git-metadata-not-collected-for-inline-diff')
@@ -147,21 +212,26 @@ export async function buildReviewBrief(index: RepoIndex, change: ChangeContextRe
   if (indexStatus.unknown) upstreamGaps.add('parse-status-unknown')
   if (!change.changed.length) upstreamGaps.add('no-changed-symbols-in-analysis')
   if (!change.tests.length) upstreamGaps.add('no-test-candidates-in-analysis')
+  if (hasUnresolvedRunner) upstreamGaps.add('verification-command-unavailable')
   if (relations.some(row => row.kind === 'call' ? Boolean(row.via.ambiguousAlias) : Boolean(row.ambiguousAlias))) {
     upstreamGaps.add('ambiguous-alias')
   }
   if (change.changed.length > REVIEW_LIMITS.changes || relations.length > REVIEW_LIMITS.relations ||
-    change.tests.length > REVIEW_LIMITS.tests || change.warnings.length > REVIEW_LIMITS.warnings) upstreamGaps.add('projection-row-cap')
+    change.tests.length > REVIEW_LIMITS.tests || allWarnings.length > REVIEW_LIMITS.warnings) upstreamGaps.add('projection-row-cap')
   const brief: ReviewBriefV1 = { version: 1, status: 'bounded', scope: 'indexed-static-only', verification: 'not-run', repository,
     summary: { source: change.source, changes: change.changed.length, relations: relations.length, tests: change.tests.length,
       unmapped: change.unmapped.length, index: indexStatus }, changes: [], relations: [], tests: [], warnings: [], gaps: [],
     omitted: { changes: 0, relations: 0, tests: 0, warnings: 0, sourceBodies: 0 }, budget: { limit, usedChars: 0 } }
+  let commandLeadTrimmed = false
+  let crossPackageTrimmed = false
   const output = (): ReviewOutput => {
     brief.omitted = { changes: change.changed.length - brief.changes.length, relations: relations.length - brief.relations.length,
-      tests: change.tests.length - brief.tests.length, warnings: change.warnings.length - brief.warnings.length,
+      tests: change.tests.length - brief.tests.length, warnings: allWarnings.length - brief.warnings.length,
       sourceBodies: change.changed.length - brief.changes.filter(row => row.code !== undefined).length }
     const gaps = new Set(upstreamGaps)
     if (Object.values(brief.omitted).some(Boolean)) gaps.add('evidence-omitted')
+    if (commandLeadTrimmed) gaps.add('command-lead-budget')
+    if (crossPackageTrimmed) gaps.add('cross-package-impact-budget')
     for (const row of brief.changes) {
       if (row.sourceGap) { gaps.add(row.sourceGap); gaps.add('signature-only') }
       if (row.mode === 'window') gaps.add('source-window')
@@ -172,8 +242,8 @@ export async function buildReviewBrief(index: RepoIndex, change: ChangeContextRe
   const fits = (): boolean => output().brief.budget.usedChars <= limit
   if (!fits()) return fallback()
   const add = <T>(rows: T[], row: T): boolean => { rows.push(row); if (fits()) return true; rows.pop(); return false }
-  // Reserve a representative test and relation before source bodies can fill the budget.
-  if (change.tests[0]) add(brief.tests, change.tests[0])
+  // Reserve a representative test (without commandLead yet) and relation before source bodies can fill the budget.
+  if (baseTests[0]) add(brief.tests, { ...baseTests[0] })
   if (relations[0]) add(brief.relations, relations[0])
   const read = sourceReader(index)
   for (const row of change.changed.slice(0, REVIEW_LIMITS.changes)) {
@@ -187,11 +257,45 @@ export async function buildReviewBrief(index: RepoIndex, change: ChangeContextRe
   }
   // Alternate the remaining relation/test rows; preserve upstream ranking and grades.
   for (let n = 0; n < Math.max(REVIEW_LIMITS.relations, REVIEW_LIMITS.tests); n++) {
-    const relation = relations[n], test = change.tests[n]
+    const relation = relations[n], test = baseTests[n]
     if (n < REVIEW_LIMITS.relations && relation && !brief.relations.includes(relation)) add(brief.relations, relation)
-    if (n < REVIEW_LIMITS.tests && test && !brief.tests.includes(test)) add(brief.tests, test)
+    if (n < REVIEW_LIMITS.tests && test && !brief.tests.some(t => t.file === test.file && t.reason === test.reason)) add(brief.tests, { ...test })
   }
-  for (const warning of change.warnings.slice(0, REVIEW_LIMITS.warnings)) add(brief.warnings, warning)
+  for (const warning of allWarnings.slice(0, REVIEW_LIMITS.warnings)) add(brief.warnings, warning)
+  if (cycles.length > 0) {
+    brief.cycleWarnings = []
+    for (const cycle of cycles) {
+      if (!add(brief.cycleWarnings, cycle)) break
+    }
+    if (brief.cycleWarnings.length === 0) delete brief.cycleWarnings
+  }
+  if (crossPackages.length > 0) {
+    brief.crossPackageImpact = []
+    for (const row of crossPackages) {
+      if (!add(brief.crossPackageImpact, row)) {
+        crossPackageTrimmed = true
+        if (!fits()) crossPackageTrimmed = false
+        break
+      }
+    }
+    if (brief.crossPackageImpact.length < crossPackages.length && !crossPackageTrimmed) {
+      crossPackageTrimmed = true
+      if (!fits()) crossPackageTrimmed = false
+    }
+    if (brief.crossPackageImpact.length === 0) delete brief.crossPackageImpact
+  }
+  // Attach optional commandLeads last so tight budgets trim leads before core source/relations.
+  const leadByFile = new Map(testLeads.map(lead => [lead.file, lead.commandLead]))
+  for (const row of brief.tests) {
+    const lead = leadByFile.get(row.file)
+    if (!lead) continue
+    row.commandLead = lead
+    if (!fits()) {
+      delete row.commandLead
+      commandLeadTrimmed = true
+      if (!fits()) commandLeadTrimmed = false
+    }
+  }
   // Return detached plain data, so later DTO edits cannot mutate the original analysis.
   return JSON.parse(JSON.stringify(output())) as ReviewOutput
 }
