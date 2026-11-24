@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/dsh-code-index)](https://www.npmjs.com/package/dsh-code-index)
 [![CI](https://github.com/lemonxiny55/dsh-code-index/actions/workflows/ci.yml/badge.svg)](https://github.com/lemonxiny55/dsh-code-index/actions)
 
-[English](README.md) | 中文 · [v0.14.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.0) · [npm v0.14.0](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [CHANGELOG](CHANGELOG.md)
+[English](README.md) | 中文 · [v0.14.1 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.1) · [npm v0.14.1](https://www.npmjs.com/package/dsh-code-index/v/0.14.1) · [CHANGELOG](CHANGELOG.md)
 
 > **在 AI 动手改代码之前，先看清“爆炸半径”。**
 >
@@ -24,7 +24,7 @@
 需要 **Node ≥ 22**（已在 Node 22/24 验证），并确保 DSH 宿主中的第一方包版本配套。用 Desktop 自带的 `dsh` CLI 一行安装：
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.14.0
+dsh plugin --profile desktop add dsh-code-index@0.14.1
 ```
 
 安装后重启 DSH Desktop，即可直接向 Agent 发送试用指令：
@@ -41,15 +41,15 @@ dsh plugin --profile desktop add dsh-code-index@0.14.0
 ### Web profile 安装
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.1
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
-也可在匹配的 `0.2.0-rc.2` profile 中从 npm 或本地检出目录安装：
+也可在匹配的 `0.2.0-rc.2` 或 `0.2.3-alpha.2` profile 中从 npm 或本地检出目录安装：
 
 ```sh
 # 从 npm（预编译）
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.1
 
 # 或从包含本仓库检出副本的目录
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
@@ -80,10 +80,12 @@ dsh plugin --profile web add .
 
 需要 `dsh`（任意安装方式——npx、npm 或源码）与 Node ≥ 22。
 
-- **声明的 peer 要求（v0.13.0 延续 v0.12.0）：** `@deepseek-ai/dsh-tools: >=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3` 及可选的 `@deepseek-ai/cordis: ^4.0.1`。
-- 新增的显式 RC 范围修复了已声明 DSH 0.2.1 / 0.2.2 RC 版本组的正常 npm peer 解析，无需 `--force` 或 `--legacy-peer-deps`；但不代表所有未来 SDK 或宿主均经过验证。
-- DSH 宿主检查包含预发布版本，npm 使用默认预发布匹配规则；允许加载不等于已经验证。请保持 DSH/`dsh-tools` 及其他第一方包的版本配套；插件接口仍属于预览 API。
-- **兼容历史：** v0.10.0 精确锁定 `0.2.0-rc.2`；v0.10.1 列举当时支持的版本组；v0.11.2 放宽宿主范围；v0.12.0 为 npm peer 解析补充显式 RC 范围。开发依赖保留 `0.2.0-rc.2` 以检查旧版 API，不代表每次运行时验证均使用该 SDK。
+- **声明的 `0.2.x` peer 兼容范围（`v0.14.1` 更新）：**
+  - `@deepseek-ai/dsh-tools`: `>=0.2.0-rc.2 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0 || >=0.2.4-0 <0.3.0 || >=0.2.5-0 <0.3.0`
+  - `@deepseek-ai/cordis`（可选）：`>=4.0.1 <5.0.0 || >=4.0.5-0 <5.0.0 || >=4.1.0-0 <5.0.0 || >=4.2.0-0 <5.0.0 || >=4.3.0-0 <5.0.0 || >=4.4.0-0 <5.0.0 || >=4.5.0-0 <5.0.0`
+- **“声明兼容范围”与“已实测验证版本”明确区分：** 上述覆盖 `-alpha`/`-rc` 的范围修复了 `0.2.x` 系列（含 DSH `0.2.3-alpha.2` 与 `cordis@4.2.0-alpha.1`）在常规 npm/pnpm 下无需 `--force` 或 `--legacy-peer-deps` 的 peer 解析，同时保留 `<0.3.0` / `<5.0.0` 安全上限。允许解析不代表已对未来未发布的 `0.2.4`/`0.2.5` 全部运行验收；已实测验证的宿主/SDK 版本以文末“验证边界”中的精确记录为准（`0.2.0-rc.2`、`0.2.1-rc.2`、`0.2.1-rc.3`、`0.2.2-rc.1` 与 `0.2.3-alpha.2`）。
+- 请保持 DSH/`dsh-tools` 及其他第一方包的版本配套；插件接口仍属于预览 API。
+- **兼容历史：** v0.10.0 精确锁定 `0.2.0-rc.2`；v0.10.1 列举当时支持的版本组；v0.11.2 放宽宿主范围；v0.12.0 为 npm peer 解析补充 `0.2.1`/`0.2.2` 显式 RC 范围；v0.14.1 进一步将兼容范围放宽至 `0.2.0`–`0.2.5` 与 `cordis` `4.0`–`4.5` 预发布版本以支持 DSH `0.2.3-alpha.2`。开发依赖保留 `0.2.0-rc.2` 以检查旧版 API，不代表每次运行时验证均使用该 SDK。
 
 ### WSL → Windows 检出符号链接修复
 
@@ -243,7 +245,11 @@ node scripts/impact-xray-demo.mjs D:/absolute/path/to/new-demo-repo
 ## 严谨声明、技术细节与历史验收
 
 <details>
-<summary>验证边界与历史版本验收记录（v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0）</summary>
+<summary>验证边界与历史版本验收记录（v0.14.1 / v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0）</summary>
+
+### v0.14.1 — DSH `0.2.x` 与 `0.2.3-alpha.2` 兼容补丁
+
+- **声明范围 vs. 实测版本：** 声明 `@deepseek-ai/dsh-tools`（`0.2.0-rc.2`～`0.2.5-x`，`<0.3.0`）与可选 `@deepseek-ai/cordis`（`4.0.1`～`4.5.x`，`<5.0.0`）预发布兼容范围。**本补丁已实测通过：** `pnpm typecheck`、36 个 Vitest 套件（363 项用例，含 peer `semver` 边界回归）、`pnpm build`、面向 `@deepseek-ai/dsh-tools@0.2.1-rc.3` 的 `pnpm release:smoke`、面向 `0.2.3-alpha.2` 的 tarball `release-smoke`（含 `NativeToolExecutor`、ArkTS/Rust、X-Ray 与 Review Brief 管线）、搭配 `@deepseek-ai/dsh-tools@0.2.3-alpha.2` + `@deepseek-ai/cordis@4.2.0-alpha.1` 的干净 `pnpm add` + `pnpm peers check`（`No peer dependency issues found`），以及隔离 `DSH_HOME` 下 `dsh` `0.2.3-alpha.2` CLI 的 `plugin --profile web add` 与 `--dump-config` 组合输出（Desktop `0.2.3-alpha.2` CLI 对 `--profile desktop --dump-config` 返回 Electron 托管提示而拒绝外部配置）。**未实测范围：** 未来 `0.2.4`/`0.2.5` 实际宿主、以及新的 Electron Desktop 界面或真实模型 Agent 运行。
 
 ### v0.14.0 — Real-Repo Precision & Verification Leads
 

@@ -2,6 +2,11 @@
 
 All notable changes to dsh-code-index are documented here.
 
+## 0.14.1 — DSH 0.2.x & 0.2.3-alpha.2 Compatibility (prepared for release)
+
+- **Broaden DSH `0.2.x` & Cordis `4.x` Peer Ranges:** Expand `@deepseek-ai/dsh-tools` `peerDependencies` to `>=0.2.0-rc.2 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0 || >=0.2.4-0 <0.3.0 || >=0.2.5-0 <0.3.0` and optional `@deepseek-ai/cordis` `peerDependencies` to `>=4.0.1 <5.0.0 || >=4.0.5-0 <5.0.0 || >=4.1.0-0 <5.0.0 || >=4.2.0-0 <5.0.0 || >=4.3.0-0 <5.0.0 || >=4.4.0-0 <5.0.0 || >=4.5.0-0 <5.0.0`, enabling normal npm/pnpm peer resolution with DSH `0.2.3-alpha.2` (`@deepseek-ai/cordis@4.2.0-alpha.1`) without `--force` or `--legacy-peer-deps` while keeping `<0.3.0` / `<5.0.0` upper bounds.
+- **Scope & Compatibility Distinction:** No indexing, call-graph, Review Brief, or cache schema v5 behavior changed from `0.14.0`. Declared `0.2.x` peer compatibility is separated from exact runtime-verified host versions (`0.2.1-rc.3` and `0.2.3-alpha.2` SDK/runtime checks; unverified future `0.2.4`/`0.2.5` releases are permitted to resolve, not pre-certified).
+
 ## 0.14.0 — Real-Repo Precision & Verification Leads (prepared for release)
 
 - **Path Alias & Local Package Resolution:** Lightly parse repository-local `tsconfig.json` / `jsconfig.json` (JSONC comments and trailing commas, `extends`, `baseUrl`, `paths`), local relative `package.json#exports`, and HarmonyOS `oh-package.json5` local relative dependencies (`Index.ets` default entry), skipping `node_modules` / `oh_modules` and `@ohos.*` / `@kit.*` SDK namespaces. Multi-target wildcard aliases never guess: they downgrade strictly to `import-scoped` and emit `ambiguous-alias` in `gaps`.

@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/dsh-code-index)](https://www.npmjs.com/package/dsh-code-index)
 [![CI](https://github.com/lemonxiny55/dsh-code-index/actions/workflows/ci.yml/badge.svg)](https://github.com/lemonxiny55/dsh-code-index/actions)
 
-English | [中文](README.zh.md) · [v0.14.0 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.0) · [npm v0.14.0](https://www.npmjs.com/package/dsh-code-index/v/0.14.0) · [CHANGELOG](CHANGELOG.md)
+English | [中文](README.zh.md) · [v0.14.1 Release](https://github.com/lemonxiny55/dsh-code-index/releases/tag/v0.14.1) · [npm v0.14.1](https://www.npmjs.com/package/dsh-code-index/v/0.14.1) · [CHANGELOG](CHANGELOG.md)
 
 > **See the blast radius before your AI edits the code.**
 >
@@ -24,7 +24,7 @@ English | [中文](README.zh.md) · [v0.14.0 Release](https://github.com/lemonxi
 Requires **Node ≥ 22** (validated on Node 22/24) and a compatible DSH profile with matched first-party DSH packages:
 
 ```sh
-dsh plugin --profile desktop add dsh-code-index@0.14.0
+dsh plugin --profile desktop add dsh-code-index@0.14.1
 ```
 
 Restart DSH Desktop after installation, then try asking your Agent:
@@ -41,15 +41,15 @@ Or try `code_context` on an existing bug:
 ### Web profile
 
 ```sh
-npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.0
+npx @deepseek-ai/dsh@0.2.1-rc.2 plugin --profile web add dsh-code-index@0.14.1
 npx @deepseek-ai/dsh@0.2.1-rc.2 web
 ```
 
-You can also install against a matching `0.2.0-rc.2` profile from npm or a local checkout:
+You can also install against a matching `0.2.0-rc.2` or `0.2.3-alpha.2` profile from npm or a local checkout:
 
 ```sh
 # from npm (prebuilt)
-npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.0
+npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add dsh-code-index@0.14.1
 
 # or from a directory containing this checkout
 npx @deepseek-ai/dsh@0.2.0-rc.2 plugin --profile web add ./dsh-code-index
@@ -80,10 +80,12 @@ dsh plugin --profile web add .
 
 Requires `dsh` (any install path — npx, npm, or source) and Node ≥ 22.
 
-- **Declared peer requirements (retained from v0.12.0 in v0.13.0):** `@deepseek-ai/dsh-tools: >=0.2.0-rc.2 || >=0.2.1-rc.2 <0.2.2 || >=0.2.2-rc.1 <0.2.3` and optional `@deepseek-ai/cordis: ^4.0.1`.
-- The explicit RC ranges fix normal npm peer resolution for the declared DSH 0.2.1 / 0.2.2 RC groups without `--force` or `--legacy-peer-deps`; this does not verify every future SDK or host.
-- DSH host checks include prereleases, while npm uses its default prerelease rules; a version allowed to load is not necessarily verified. Keep DSH/`dsh-tools` and other first-party packages on a matched version group. The plugin API remains a preview API.
-- **Compatibility history:** v0.10.0 pinned `0.2.0-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 broadened the host range; v0.12.0 added explicit RC ranges for npm peer resolution. The development dependency remains `0.2.0-rc.2` for backward API checks; it does not describe the SDK used in every runtime check.
+- **Declared `0.2.x` peer range (updated in v0.14.1):**
+  - `@deepseek-ai/dsh-tools`: `>=0.2.0-rc.2 <0.3.0 || >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0 || >=0.2.3-0 <0.3.0 || >=0.2.4-0 <0.3.0 || >=0.2.5-0 <0.3.0`
+  - `@deepseek-ai/cordis` *(optional)*: `>=4.0.1 <5.0.0 || >=4.0.5-0 <5.0.0 || >=4.1.0-0 <5.0.0 || >=4.2.0-0 <5.0.0 || >=4.3.0-0 <5.0.0 || >=4.4.0-0 <5.0.0 || >=4.5.0-0 <5.0.0`
+- **Declared compatibility vs. verified host versions:** The explicit prerelease-aware tuples fix normal npm/pnpm peer resolution across the `0.2.x` line (including DSH `0.2.3-alpha.2` with `cordis@4.2.0-alpha.1`) without `--force` or `--legacy-peer-deps` while enforcing `<0.3.0` / `<5.0.0`. Permitting a range to resolve is **not** a claim that unvalidated future `0.2.4`/`0.2.5` builds are tested; see the validation boundaries section below for exact tested host/SDK versions (`0.2.0-rc.2`, `0.2.1-rc.2`, `0.2.1-rc.3`, `0.2.2-rc.1`, and `0.2.3-alpha.2`).
+- Keep DSH/`dsh-tools` and other first-party packages on a matched version group. The plugin API remains a preview API.
+- **Compatibility history:** v0.10.0 pinned `0.2.0-rc.2`; v0.10.1 enumerated the then-supported groups; v0.11.2 broadened the host range; v0.12.0 added explicit `0.2.1`/`0.2.2` RC ranges for npm peer resolution; v0.14.1 extended prerelease-safe `0.2.x` (`0.2.0`–`0.2.5`) and `cordis` `4.x` (`4.0`–`4.5`) peer resolution for DSH `0.2.3-alpha.2`. The development dependency remains `0.2.0-rc.2` for backward API checks; it does not describe the SDK used in every runtime check.
 
 ### WSL → Windows checkouts
 
@@ -243,7 +245,11 @@ Each Git worktree gets its own on-disk index and change state (up to 4 contexts 
 ## Validation Boundaries, Technical Specs & Release History
 
 <details>
-<summary>Validation boundaries & historical release acceptance (v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0)</summary>
+<summary>Validation boundaries & historical release acceptance (v0.14.1 / v0.14.0 / v0.13.0 / v0.12.0 / v0.11.1 / v0.10.0)</summary>
+
+### v0.14.1 — DSH `0.2.x` & `0.2.3-alpha.2` Compatibility Patch
+
+- **Declared vs. verified versions:** Peer dependencies declare compatibility across `@deepseek-ai/dsh-tools` (`0.2.0-rc.2`–`0.2.5-x`, `<0.3.0`) and optional `@deepseek-ai/cordis` (`4.0.1`–`4.5.x`, `<5.0.0`). **Runtime-verified in `v0.14.1`:** `pnpm typecheck`, 36 Vitest suites (`363/363` tests including expanded `semver` peer checks), `pnpm build`, `pnpm release:smoke` against `@deepseek-ai/dsh-tools@0.2.1-rc.3`, `node scripts/release-smoke.mjs <tarball> 0.2.3-alpha.2` (`ToolRuntime` + `NativeToolExecutor` + ArkTS/Rust/X-Ray/Review Brief), clean `pnpm add` + `pnpm peers check` with `@deepseek-ai/dsh-tools@0.2.3-alpha.2` + `@deepseek-ai/cordis@4.2.0-alpha.1` (`No peer dependency issues found`), and isolated `DSH_HOME` `dsh` (`0.2.3-alpha.2`) CLI `plugin --profile web add` + `--dump-config` composition (desktop CLI refuses `--profile desktop --dump-config` because the desktop profile is Electron-managed). **Not verified:** future `0.2.4`/`0.2.5` builds and live Electron Desktop UI / model-driven Agent runs.
 
 ### v0.14.0 — Real-Repo Precision & Verification Leads
 
